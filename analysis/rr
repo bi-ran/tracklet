@@ -1,0 +1,38 @@
+#!/bin/bash
+
+make reap_results || exit 1
+
+if [[ $# -eq 0 ]]; then
+    echo -e 'usage: ./rr [input] [label] (clabel) (applyc)'
+    echo -e 'usage: ./rr [input] [label] [clabel] [applyc] [cent int.] ($@)\n'
+    ./reap_results
+    exit 1
+fi
+
+TYPE=(12 13 14 23 24 34)
+for ITYPE in ${!TYPE[@]}; do
+    if [[ $# -gt 4 ]]; then
+        for CMIN in $(seq 0 $5 19); do
+            CMAX=$(( CMIN + $5 ))
+            ./reap_results ${TYPE[ITYPE]} $1 $2-$CMIN-$CMAX $3 $4 $CMIN $CMAX ${@:6} > notes/log-rr-$2-$CMIN-$CMAX-${TYPE[ITYPE]}.log &
+        done
+    else
+        ./reap_results ${TYPE[ITYPE]} $@ > notes/log-rr-$2-${TYPE[ITYPE]}.log &
+    fi
+done
+
+wait
+mv correction-$2-*.root output/
+
+make merge_monads || exit 1
+if [[ $# -gt 4 ]]; then
+    for CMIN in $(seq 0 $5 19); do
+        CMAX=$(( CMIN + $5 ))
+        ./merge_monads $2-$CMIN-$CMAX
+    done
+
+    make collect_cents || exit 1
+    ./collect_cents $2 $5
+else
+    ./merge_monads $2
+fi

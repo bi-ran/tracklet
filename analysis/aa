@@ -1,0 +1,15 @@
+#!/bin/bash
+
+make assess_acceps || exit 1
+
+if [[ $# -ne 2 ]]; then
+    ./assess_acceps
+    exit 1
+fi
+
+TYPE=(12 13 14 23 24 34)
+for ITYPE in ${!TYPE[@]}; do
+    ./assess_acceps ${TYPE[ITYPE]} $@ &
+done
+
+wait
