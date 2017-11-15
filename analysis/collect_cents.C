@@ -60,7 +60,9 @@ int combine_centralities(const char* label, int interval) {
 
         int nbins = h->GetNbinsX();
         float midy = (h->GetBinContent((nbins + 1) / 2) + h->GetBinContent(nbins / 2 + 1)) / 2;
+        float midyerr = (h->GetBinError((nbins + 1) / 2) + h->GetBinError(nbins / 2 + 1)) / 2;
         g->SetPoint(c / interval, 100. / NCENT * (c + interval / 2.), midy);
+        g->SetPointError(c / interval, 0, midyerr);
     }
 
     c1->SaveAs(Form("figs/merged/merged-%s-cent-int%i.png", label, interval));
