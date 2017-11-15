@@ -77,8 +77,8 @@ int transmute_trees(const char* input,
    }
 
    if (isMC) {
-      vx = 0.1048;
-      vy = 0.1687;
+      vx = -0.024793;
+      vy = 0.0692861;
    } else {
       /* run 304906 */
       vx = 0.082604;
@@ -186,14 +186,14 @@ int transmute_trees(const char* input,
             event_weight = 0.;
          } else {
             /* run 304906 */
-            float data_pdf = TMath::Gaus(event_vz, -0.0164225 + vz_shift, 4.73743, 1);
+            float data_pdf = TMath::Gaus(event_vz, -0.203369, 4.80467, 1);
 
             /* hydjet */
-            float mc_pdf = TMath::Gaus(event_vz, 0.408226, 3.49553, 1);
+            float mc_pdf = TMath::Gaus(event_vz, -0.0275464, 4.75225, 1);
             /* ampt, nomelt */
-            // float mc_pdf = TMath::Gaus(event_vz, 0.469444, 3.55434, 1);
+            // float mc_pdf = TMath::Gaus(event_vz, -0.0149484, 4.80579, 1);
             /* ampt, stringmelt */
-            // float mc_pdf = TMath::Gaus(event_vz, 0.492834, 3.52516, 1);
+            // float mc_pdf = TMath::Gaus(event_vz, -0.0565319, 4.81446, 1);
 
             event_weight = event_weight * data_pdf / mc_pdf;
          }
