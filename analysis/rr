@@ -3,7 +3,7 @@
 make reap_results || exit 1
 
 if [[ $# -eq 0 ]]; then
-    echo -e 'usage: ./rr [input] [label] (clabel) (applyc)'
+    echo -e 'usage: ./rr [input] [label] (clabel) (applyc) (-1) ($@)'
     echo -e 'usage: ./rr [input] [label] [clabel] [applyc] [cent int.] ($@)\n'
     ./reap_results
     exit 1
@@ -12,10 +12,14 @@ fi
 TYPE=(12 13 14 23 24 34)
 for ITYPE in ${!TYPE[@]}; do
     if [[ $# -gt 4 ]]; then
-        for CMIN in $(seq 0 $5 19); do
-            CMAX=$(( CMIN + $5 ))
-            ./reap_results ${TYPE[ITYPE]} $1 $2-$CMIN-$CMAX $3 $4 $CMIN $CMAX ${@:6} > notes/log-rr-$2-$CMIN-$CMAX-${TYPE[ITYPE]}.log &
-        done
+        if [[ $5 -ne -1 ]]; then
+            for CMIN in $(seq 0 $5 19); do
+                CMAX=$(( CMIN + $5 ))
+                ./reap_results ${TYPE[ITYPE]} $1 $2-$CMIN-$CMAX $3 $4 $CMIN $CMAX ${@:6} > notes/log-rr-$2-$CMIN-$CMAX-${TYPE[ITYPE]}.log &
+            done
+        else
+            ./reap_results ${TYPE[ITYPE]} ${@:1:4} 0 20 ${@:6} > notes/log-rr-$2-${TYPE[ITYPE]}.log &
+        fi
     else
         ./reap_results ${TYPE[ITYPE]} $@ > notes/log-rr-$2-${TYPE[ITYPE]}.log &
     fi
