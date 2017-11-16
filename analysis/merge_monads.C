@@ -38,6 +38,15 @@
    EXPAND(2, 4)            \
    EXPAND(3, 4)            \
 
+static const int good[6][30] = {
+   { 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
+   { 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 },
+   { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 },
+   { 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 },
+   { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 },
+   { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 }
+};
+
 int merge_monads(const char* label) {
 #define OPEN(q, w)                                                            \
    TFile* f##q##w = new TFile(Form("output/correction-%s-" #q #w ".root",     \
@@ -90,6 +99,16 @@ int merge_monads(const char* label) {
    hampt_nomelt->Draw("c hist same");
    hampt_stringmelt->Draw("c hist same");
 
+#define ZERO(q, w)                                                            \
+   for (int j=1; j<=h##q##w->GetNbinsX(); ++j) {                              \
+      if (!good[INDEX##q##w][j - 1]) {                                        \
+         h##q##w->SetBinContent(j, 0);                                        \
+         h##q##w->SetBinError(j, 0);                                          \
+      }                                                                       \
+   }                                                                          \
+
+   TRACKLETS(ZERO)
+
 #define DRAW(q, w)                                                            \
    h##q##w->SetXTitle("#eta");                                                \
    h##q##w->SetYTitle("dN/d#eta");                                            \
@@ -120,15 +139,6 @@ int merge_monads(const char* label) {
    c1->SaveAs(Form("figs/merged/merged-%s-all.png", label));
 
    TCanvas* c2 = new TCanvas("c2", "", 600, 600);
-
-   static const int good[6][30] = {
-      { 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
-      { 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 },
-      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-      { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 },
-      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-      { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-   };
 
    TH1F* havg = (TH1F*)h12->Clone("havg");
    for (int i=1; i<=havg->GetNbinsX(); i++) {
