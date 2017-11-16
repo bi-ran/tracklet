@@ -47,6 +47,8 @@ int merge_monads(const char* label) {
    TRACKLETS(OPEN)
 
    TH1F* hframe = (TH1F*)f12->Get("hframe")->Clone("hframe");
+   hframe->GetXaxis()->CenterTitle();
+   hframe->GetYaxis()->CenterTitle();
 
    TFile* fhydjet = new TFile("data/hydjet-gen.root");
    TH1F* hhydjet = (TH1F*)fhydjet->Get("hhydjet")->Clone("hhydjet");
@@ -98,7 +100,7 @@ int merge_monads(const char* label) {
 
    TRACKLETS(DRAW)
 
-   TLegend* l1 = new TLegend(0.4, 0.16, 0.64, 0.4);
+   TLegend* l1 = new TLegend(0.4, 0.12, 0.64, 0.36);
    l1->SetTextFont(43);
    l1->SetTextSize(18);
    l1->SetBorderSize(0);
@@ -182,6 +184,13 @@ int merge_monads(const char* label) {
    hratio##q##w->Draw("same");                                                \
 
    TRACKLETS(RATIO)
+
+   TLine* plusp03 = new TLine(-3, 1.03, 3, 1.03);
+   TLine* minusp03 = new TLine(-3, 0.97, 3, 0.97);
+   plusp03->SetLineStyle(7);
+   minusp03->SetLineStyle(7);
+   plusp03->Draw();
+   minusp03->Draw();
 
    TLegend* l3 = new TLegend(0.4, 0.18, 0.64, 0.36);
    l3->SetTextFont(43);

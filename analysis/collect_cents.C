@@ -86,11 +86,13 @@ int combine_centralities(const char* label, int interval) {
     galice_pbpb_5p02->Draw("p same");
     g->Draw("p same");
 
-    TLegend* l2 = new TLegend(0.54, 0.32, 0.9, 0.48);
+    TLegend* l2 = new TLegend(0.54, 0.24, 0.9, 0.48);
     l2->SetBorderSize(0);
     l2->SetFillStyle(0);
+    l2->AddEntry((TObject*)0, "CMS", "");
     l2->AddEntry(g, "XeXe 5.44 TeV", "p");
     l2->AddEntry(gcms_pbpb_2p76, "PbPb 2.76 TeV", "p");
+    l2->AddEntry((TObject*)0, "ALICE", "");
     l2->AddEntry(galice_pbpb_5p02, "PbPb 5.02 TeV", "p");
     l2->Draw();
 
