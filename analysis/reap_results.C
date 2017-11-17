@@ -12,6 +12,7 @@
 #include "TStyle.h"
 #include "TCanvas.h"
 #include "TLegend.h"
+#include "TLatex.h"
 #include "TColor.h"
 
 #include "stdio.h"
@@ -353,23 +354,46 @@ int plotFinalResult(int type,
       /* alpha plots                                                          */
       TH1D* halphaframe = new TH1D("halphaframe", "", 1, 1, 12000);
       halphaframe->SetXTitle("multiplicity");
+      halphaframe->SetYTitle("#alpha");
       halphaframe->SetAxisRange(0.4, 2.0, "Y");
 
-      TCanvas* calphafit = new TCanvas("calphafit", "", 2400, 2000);
-      calphafit->Divide(6, 5);
+      TLatex* t1 = new TLatex();
+      t1->SetTextAlign(23);
 
-      for (int z=1; z<=nVzBin; z++) {
-         calphafit->Clear("d");
-         for (int x=1; x<=nEtaBin; x++) {
-            calphafit->cd(x);
+      TCanvas* cfalphavz = new TCanvas("cfalphavz", "", 2000, 1200);
+      cfalphavz->Divide(5, 3);
+
+      for (int x=1; x<=nEtaBin; x++) {
+         cfalphavz->Clear("d");
+         for (int z=1; z<=nVzBin; z++) {
+            cfalphavz->cd(z);
             gPad->SetLogx();
 
-            halphaframe->SetTitle(Form("%.1f < #eta < %.1f", EtaBins[x-1], EtaBins[x]));
-            halphaframe->SetYTitle("#alpha");
             halphaframe->Draw();
             h1alpha[x-1][z-1]->Draw("sames");
+
+            t1->DrawLatexNDC(0.5, 1.0, Form("%.1f < v_{z} < %.1f", VzBins[z-1], VzBins[z]));
          }
-         calphafit->SaveAs(Form("figs/alpha/alphafit-%s-%i-%i.png", label, type, z));
+
+         cfalphavz->SaveAs(Form("figs/alpha/alphafit-%s-%i-eta-%i.png", label, type, x));
+      }
+
+      TCanvas* cfalphaeta = new TCanvas("cfalphaeta", "", 2000, 2400);
+      cfalphaeta->Divide(5, 6);
+
+      for (int z=1; z<=nVzBin; z++) {
+         cfalphaeta->Clear("d");
+         for (int x=1; x<=nEtaBin; x++) {
+            cfalphaeta->cd(x);
+            gPad->SetLogx();
+
+            halphaframe->Draw();
+            h1alpha[x-1][z-1]->Draw("sames");
+
+            t1->DrawLatexNDC(0.5, 1.0, Form("%.1f < #eta < %.1f", EtaBins[x-1], EtaBins[x]));
+         }
+
+         cfalphaeta->SaveAs(Form("figs/alpha/alphafit-%s-%i-vz-%i.png", label, type, z));
       }
    }
 
