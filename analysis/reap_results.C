@@ -46,8 +46,7 @@ int plotFinalResult(int type,
                     bool apply_correction = 0,           // apply external corrections
                     int cmin = 0, int cmax = 20,         // centrality selection
                     bool apply_geometry_corr = 0,        // apply geometric correction
-                    bool apply_ext_accep_map = 0,        // use predefined acceptance map
-                    bool apply_trigger_corr = 1)         // apply trigger eff correction
+                    bool apply_ext_accep_map = 0)        // use predefined acceptance map
 {
    TFile* finput = new TFile(input, "read");
    TTree* tinput = (TTree*)finput->Get(Form("TrackletTree%i", type));
@@ -56,9 +55,6 @@ int plotFinalResult(int type,
 
    if (ismc) { printf("$ monte carlo analysis\n"); }
    else { printf("$ data analysis\n"); }
-
-   if (!apply_trigger_corr)
-      printf(" # no trigger correction applied\n");
 
    const char* mult = "ntracklet";
    printf("$ event multiplicity handle: number of tracklets\n");
@@ -592,10 +588,6 @@ int plotFinalResult(int type,
    for (int y=1; y<=nTrackletBin; y++) {
       double SDFrac = hSDFrac->GetBinContent(y);
       double TrigEff = hTrigEff->GetBinContent(y);
-      if (!apply_trigger_corr) {
-         SDFrac = 0;
-         TrigEff = 1;
-      }
 
       for (int x=1; x<=nEtaBin; x++) {
          for (int z=1; z<=nVzBin; z++) {
@@ -613,10 +605,7 @@ int plotFinalResult(int type,
       for (int y=1; y<=nTrackletBin; y++) {
          double SDFrac = hSDFrac->GetBinContent(y);
          double TrigEff = hTrigEff->GetBinContent(y);
-         if (!apply_trigger_corr) {
-            SDFrac = 0;
-            TrigEff = 1;
-         }
+
          if (TrigEff != 0) {
             hMeasuredEtanTracklet->SetBinContent(x, y, hMeasuredEtanTracklet->GetBinContent(x, y)/TrigEff*(1-SDFrac*SDMULT));
             hMeasuredEtanTracklet->SetBinError(x, y, hMeasuredEtanTracklet->GetBinError(x, y)/TrigEff*(1-SDFrac*SDMULT));
@@ -673,7 +662,7 @@ int plotFinalResult(int type,
 
    TH1F* hMeasuredFinal = (TH1F*)hMeasuredTrigEffCorrected->Clone();
    hMeasuredFinal->SetName("hMeasuredFinal");
-   if (apply_trigger_corr) { hMeasuredFinal->Multiply(hEmptyEvtCorrection); }
+   hMeasuredFinal->Multiply(hEmptyEvtCorrection);
 
    format(hMeasuredFinal, 20, COLOUR1);
    hMeasuredFinal->SetStats(0);
