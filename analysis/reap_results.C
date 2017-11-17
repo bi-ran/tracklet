@@ -17,6 +17,8 @@
 
 #include "stdio.h"
 
+#include "include/maps.h"
+
 #define COLOUR1   (TColor::GetColor("#f2777a"))
 #define COLOUR2   (TColor::GetColor("#f99157"))
 #define COLOUR3   (TColor::GetColor("#ffcc66"))
@@ -44,7 +46,7 @@ int plotFinalResult(int type,
                     bool apply_correction = 0,           // apply external corrections
                     int cmin = 0, int cmax = 20,         // centrality selection
                     bool apply_geometry_corr = 0,        // apply geometric correction
-                    bool /* apply_ext_accep_map */ = 0,  // use predefined acceptance map
+                    bool apply_ext_accep_map = 0,        // use predefined acceptance map
                     bool apply_trigger_corr = 1)         // apply trigger eff correction
 {
    TFile* finput = new TFile(input, "read");
@@ -172,9 +174,13 @@ int plotFinalResult(int type,
    tinput->Project("hVz", "vz[1]", "weight" * esel);
    tinput->Project("hVzNTracklet", Form("%s:vz[1]", mult), "weight" * esel);
 
+   const int* amap = ext_accep_map(type);
+
    for (int i=1; i<=nEtaBin; i++) {
       for (int j=1; j<=nVzBin; j++) {
          if (!apply_correction || hAcceptance1D->GetBinContent(i, j) != 0) {
+            if (apply_ext_accep_map && !amap[(nVzBin-j)*nEtaBin+i-1])
+               continue;
             hAcceptance1D->SetBinContent(i, j, hVz->GetBinContent(j));
             hAcceptance1D->SetBinError(i, j, 0);
             for (int k=1; k<=nTrackletBin; k++)
@@ -749,6 +755,8 @@ int main(int argc, char* argv[]) {
       return plotFinalResult(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]));
    } else if (argc == 9) {
       return plotFinalResult(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]));
+   } else if (argc == 10) {
+      return plotFinalResult(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]));
    } else {
       printf("usage: ./plotFinalResult [type] [input] [label] [clabel] [applyc] [cmin cmax] [apply g]\n");
       return -1;
