@@ -283,7 +283,7 @@ int plotFinalResult(int type,
                   double alphaerr = truth/sig * sqrt(sigerr/sig*sigerr/sig + trutherr/truth*trutherr/truth);
                   printf("   ^ alpha calculation: eta: %2i, vz: %2i, ntl: %2i, beta: %3.1f, alpha: %8.2f [%8.2f], raw/sig/truth: {%8.2f/%8.2f/%8.2f}\n", x, z, y, beta, alpha, alphaerr, raw, sig, truth);
 
-                  if (alpha > 0 && ((beta != 1 && alpha/alphaerr > 5 && alpha < 5) || (alpha < 2))) {
+                  if (alpha > 0 && ((alpha/alphaerr > 5 && alpha < 2.5) || (alpha < 1.5))) {
                      h3alpha->SetBinContent(x, y, z, alpha);
                      h3alpha->SetBinError(x, y, z, alphaerr);
                      h1alpha[x-1][z-1]->SetBinContent(y, alpha);
@@ -442,7 +442,7 @@ int plotFinalResult(int type,
                }
             }
 
-            if (alpha <= 0 || alpha > 10) {
+            if (alpha <= 0 || alpha > 2.5) {
                printf("     !!! invalid value: %.2f, reset to 1\n", alpha);
                alpha = 1;
             }
