@@ -315,7 +315,7 @@ int plotFinalResult(int type,
             fitalpha[i][j] = new TF1(Form("fitalpha_%i_%i", i, j), "[0]+[1]/(x+[2])+[3]/(x*x)+[4]*x", 25, 10000);
             fitalpha[i][j]->SetParameter(0, 0.84);
             fitalpha[i][j]->SetParLimits(1, 0, 9999);
-            fitalpha[i][j]->SetParLimits(2, -12, 9999);
+            fitalpha[i][j]->SetParLimits(2, 0, 9999);
             fitalpha[i][j]->SetParLimits(3, -9999, 0);
             fitalpha[i][j]->SetParLimits(4, 0, 0.0001);
             h1alpha[i][j]->Fit(fitalpha[i][j], "M Q", "", 25, 10000);
