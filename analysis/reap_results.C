@@ -59,6 +59,11 @@ int plotFinalResult(int type,
    const char* mult = "ntracklet";
    printf("$ event multiplicity handle: number of tracklets\n");
 
+   if (apply_geometry_corr)
+      printf("$ applying geometric correction\n");
+   if (apply_ext_accep_map)
+      printf("$ applying external acceptance maps\n");
+
    TH1::SetDefaultSumw2();
 
    TFile* fcorr = 0;
