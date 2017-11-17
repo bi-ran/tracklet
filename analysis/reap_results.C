@@ -118,7 +118,7 @@ int plotFinalResult(int type,
    TH3F* hHadronWOSelection = new TH3F("hHadronWOSelection", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
 
    TH2F* hAcceptance1D = 0;
-   if (apply_correction) { hAcceptance1D = (TH2F*)fcorr->FindObjectAny("hAcceptance1D"); }
+   if (apply_correction) { hAcceptance1D = (TH2F*)fcorr->Get("hAcceptance1D")->Clone(); }
    else { hAcceptance1D = new TH2F("hAcceptance1D", "", nEtaBin, EtaBins, nVzBin, VzBins); }
    TH3F* hAcceptance2D = new TH3F("hAcceptance2D", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
 
@@ -180,8 +180,12 @@ int plotFinalResult(int type,
    for (int i=1; i<=nEtaBin; i++) {
       for (int j=1; j<=nVzBin; j++) {
          if (!apply_correction || hAcceptance1D->GetBinContent(i, j) != 0) {
-            if (apply_ext_accep_map && !amap[(nVzBin-j)*nEtaBin+i-1])
+            if (apply_ext_accep_map && !amap[(nVzBin-j)*nEtaBin+i-1]) {
+               hAcceptance1D->SetBinContent(i, j, 0);
+               hAcceptance1D->SetBinError(i, j, 0);
                continue;
+            }
+
             hAcceptance1D->SetBinContent(i, j, hVz->GetBinContent(j));
             hAcceptance1D->SetBinError(i, j, 0);
             for (int k=1; k<=nTrackletBin; k++)
