@@ -8,7 +8,7 @@ if [[ $# -lt 3 ]]; then
     exit 1
 fi
 
-PARTS=20
+PARTS=24
 ENTRIES=$1
 SPLIT=$(( ($ENTRIES + $PARTS - 1) / $PARTS ))
 
