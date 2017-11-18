@@ -13,7 +13,7 @@ ENTRIES=$1
 SPLIT=$(( ($ENTRIES + $PARTS - 1) / $PARTS ))
 
 for PART in $(seq 0 $(( $PARTS - 1 )) ); do
-    BASE=$(basename $2 .root)
+    BASE=$(basename $3 .root)
     ./transmute_trees $2 ${3}.$PART $(( $PART * $SPLIT )) $(( ($PART + 1) * $SPLIT )) ${@:4} &> notes/log-tt-$BASE-$1-${PART}.log &
 done
 
