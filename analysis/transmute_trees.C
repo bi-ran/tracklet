@@ -162,7 +162,7 @@ int transmute_trees(const char* input,
 
       // Vertex reconstruction ================================================
       if (use_random_vertex) {
-         vz = gRandom->Rndm() * 30 - 15;
+         vz = gRandom->Rndm() * 30 - 15 - vz_shift;
       } else {
          std::vector<RecHit> layer1raw, layer2raw;
          prepare_hits(layer1raw, par, 1, vx, vy, 0,
@@ -186,7 +186,7 @@ int transmute_trees(const char* input,
             event_weight = 0.;
          } else {
             /* run 304906 */
-            float data_pdf = TMath::Gaus(event_vz, -0.203369, 4.80467, 1);
+            float data_pdf = TMath::Gaus(event_vz, -0.203369 + vz_shift, 4.80467, 1);
 
             /* hydjet */
             float mc_pdf = TMath::Gaus(event_vz, -0.0275464, 4.75225, 1);
