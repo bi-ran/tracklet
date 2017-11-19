@@ -194,6 +194,8 @@ int transmute_trees(const char* input,
             // float mc_pdf = TMath::Gaus(event_vz, -0.0149484, 4.80579, 1);
             /* ampt, stringmelt */
             // float mc_pdf = TMath::Gaus(event_vz, -0.0565319, 4.81446, 1);
+            /* epos */
+            // float mc_pdf = TMath::Gaus(event_vz, -0.0606330, 4.84000, 1);
 
             event_weight = event_weight * data_pdf / mc_pdf;
          }
