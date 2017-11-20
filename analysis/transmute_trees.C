@@ -40,7 +40,7 @@ int transmute_trees(const char* input,
                     const char* output,
                     uint64_t start = 0,
                     uint64_t end = 1000000000,
-                    int sample = 0,
+                    int sample = -1,
                     bool reweight_vertex = 1,
                     bool use_random_vertex = 0,
                     float add_bkg_l1 = 0,
@@ -86,6 +86,11 @@ int transmute_trees(const char* input,
       add_bkg_l2 = 0;
       add_bkg_l3 = 0;
       add_bkg_l4 = 0;
+   }
+
+   if (reweight_vertex && (sample < 0 || sample > 3)) {
+      printf("! invalid sample [%i] for vertex reweighting!\n", sample);
+      return 1;
    }
 
    if (use_random_vertex) {
