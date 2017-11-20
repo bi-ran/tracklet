@@ -59,38 +59,33 @@ int transmute_trees(const char* input,
    TFile* finput = TFile::Open(input);
    TTree* t = (TTree*)finput->Get("pixel/PixelTree");
 
-   bool isMC = 0;
-
    float vz_shift = 0;
-   float vx = 0;
-   float vy = 0;
-   float vz = 0;
+   float vx, vy, vz;
 
    if (t->GetEntries("run < 10") != 0) {
       printf("$ Monte Carlo analysis\n");
-      isMC = true;
-      vz_shift = -0.32054;
 
-      /* pixel barycentre */
-      /* x:  0.121        */
-      /* y: -0.0721       */
-      /* z: -0.33         */
+      /* 94X_mc2017_realistic_v5 */
+      vx = -0.024793;
+      vy = 0.0692861;
+
+      /* pixel barycentre        */
+      vz_shift = -0.32054;
+      /* x:  0.121   |  0.10882  */
+      /* y: -0.0721  | -0.110405 */
+      /* z: -0.33    | -0.323346 */
    } else {
       printf("$ data analysis\n");
+
+      /* run 304906              */
+      vx = 0.082604;
+      vy = -0.030962;
+
       reweight_vertex = 0;
       add_bkg_l1 = 0;
       add_bkg_l2 = 0;
       add_bkg_l3 = 0;
       add_bkg_l4 = 0;
-   }
-
-   if (isMC) {
-      vx = -0.024793;
-      vy = 0.0692861;
-   } else {
-      /* run 304906 */
-      vx = 0.082604;
-      vy = -0.030962;
    }
 
    if (use_random_vertex) {
