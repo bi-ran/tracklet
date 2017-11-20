@@ -29,10 +29,18 @@
    EXPAND(2, 4)            \
    EXPAND(3, 4)            \
 
+static const float vzpar[4][2] = {
+   {-0.0275464, 4.75225},  /* hydjet */
+   {-0.0149484, 4.80579},  /* ampt, no melt */
+   {-0.0565319, 4.81446},  /* ampt, string melt */
+   {-0.0606330, 4.84000}   /* epos */
+};
+
 int transmute_trees(const char* input,
                     const char* output,
                     uint64_t start = 0,
                     uint64_t end = 1000000000,
+                    int sample = 0,
                     bool reweight_vertex = 1,
                     bool use_random_vertex = 0,
                     float add_bkg_l1 = 0,
@@ -90,6 +98,7 @@ int transmute_trees(const char* input,
       reweight_vertex = 0;
    } else if (reweight_vertex) {
       printf("$ reweighting vertex\n");
+      printf("  > to sample: %i\n", sample);
    } else {
       printf("$ tracklet vertex\n");
    }
@@ -187,15 +196,7 @@ int transmute_trees(const char* input,
          } else {
             /* run 304906 */
             float data_pdf = TMath::Gaus(event_vz, -0.203369 + vz_shift, 4.80467, 1);
-
-            /* hydjet */
-            float mc_pdf = TMath::Gaus(event_vz, -0.0275464, 4.75225, 1);
-            /* ampt, nomelt */
-            // float mc_pdf = TMath::Gaus(event_vz, -0.0149484, 4.80579, 1);
-            /* ampt, stringmelt */
-            // float mc_pdf = TMath::Gaus(event_vz, -0.0565319, 4.81446, 1);
-            /* epos */
-            // float mc_pdf = TMath::Gaus(event_vz, -0.0606330, 4.84000, 1);
+            float mc_pdf = TMath::Gaus(event_vz, vzpar[sample][0], vzpar[sample][1], 1);
 
             event_weight = event_weight * data_pdf / mc_pdf;
          }
@@ -290,6 +291,8 @@ int main(int argc, char* argv[]) {
       return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
    } else if (argc == 7) {
       return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]));
+   } else if (argc == 8) {
+      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]));
    } else {
       printf("usage: ./transmute_trees [input] [output] [start] [end]\n"
              "[reweight vertex] [random vertex]\n"
