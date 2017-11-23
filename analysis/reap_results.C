@@ -641,10 +641,10 @@ int plotFinalResult(int type,
    format(hUncorrected, 25, COLOUR2);
    hUncorrected->Draw("e x0 same");
 
-   format(hMeasured, 32, COLOUR4);
+   format(hMeasured, 26, COLOUR3);
    hMeasured->Draw("e x0 same");
 
-   format(hMeasuredTrigEffCorrected, 30, COLOUR5);
+   format(hMeasuredTrigEffCorrected, 32, COLOUR4);
    hMeasuredTrigEffCorrected->Draw("e x0 same");
 
    hMeasuredFinal->Draw("e x0 same");
