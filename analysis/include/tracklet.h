@@ -2,7 +2,7 @@
 #define TRACKLET_H
 
 #include "rechit.h"
-#include "ttrees.h"
+#include "structs.h"
 
 #define NZALLOWANCE 0
 

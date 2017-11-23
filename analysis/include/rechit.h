@@ -8,7 +8,7 @@
 #include "TMath.h"
 #include "Math/Vector3D.h"
 
-#include "ttrees.h"
+#include "structs.h"
 
 class RecHit {
    public:

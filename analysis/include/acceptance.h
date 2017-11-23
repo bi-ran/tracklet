@@ -1,5 +1,5 @@
-#ifndef MAPS_H
-#define MAPS_H
+#ifndef ACCEPTANCE_H
+#define ACCEPTANCE_H
 
 static const int a12[450] = {
     0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0,
@@ -122,4 +122,4 @@ const int* ext_accep_map(int type) {
     __builtin_unreachable();
 }
 
-#endif  /* MAPS_H */
+#endif  /* ACCEPTANCE_H */

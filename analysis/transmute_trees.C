@@ -9,7 +9,7 @@
 #include "TGraph.h"
 #include "TFitResult.h"
 
-#include "include/ttrees.h"
+#include "include/structs.h"
 #include "include/rechit.h"
 #include "include/tracklet.h"
 #include "include/hf.h"

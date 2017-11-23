@@ -1,21 +1,20 @@
-#ifndef TTREES_H
-#define TTREES_H
+#ifndef STRUCTS_H
+#define STRUCTS_H
 
 #define MAX 20000
 
-class TrackletEvent {
-   public:
-      int run, event, lumi, bx;
-      float weight; int mix;
-      int nv; float vx[8], vy[8], vz[8];
-      int hlt; int nhfp, nhfn; float hft; int cbin;
-      float eta1[MAX], phi1[MAX], r1[MAX], cs1[MAX];
-      float eta2[MAX], phi2[MAX], r2[MAX], cs2[MAX];
-      float deta[MAX], dphi[MAX], dr2[MAX];
-      int ntracklet, nhits, nhit1, nhit2;
-      int process, npart;
-      float pt[MAX], eta[MAX], phi[MAX];
-      int chg[MAX], pdg[MAX];
+struct TrackletEvent {
+   int run, event, lumi, bx;
+   float weight; int mix;
+   int nv; float vx[8], vy[8], vz[8];
+   int hlt; int nhfp, nhfn; float hft; int cbin;
+   float eta1[MAX], phi1[MAX], r1[MAX], cs1[MAX];
+   float eta2[MAX], phi2[MAX], r2[MAX], cs2[MAX];
+   float deta[MAX], dphi[MAX], dr2[MAX];
+   int ntracklet, nhits, nhit1, nhit2;
+   int process, npart;
+   float pt[MAX], eta[MAX], phi[MAX];
+   int chg[MAX], pdg[MAX];
 };
 
 void branch_tracklet_event(TTree* t, TrackletEvent& tdata) {
@@ -106,20 +105,19 @@ void set_tracklet_event(TTree* t, TrackletEvent& tdata) {
    t->SetBranchAddress("chg", tdata.chg);
 }
 
-class PixelEvent {
-   public:
-      int run, lumi, event, bx;
-      float bsx, bsy, bsz;
-      int nv; float vx[8], vy[8], vz[8];
-      int hlt; int nhfp, nhfn; float hft;
-      int nHits, nhits1, nhits2, nhits3, nhits4;
-      float eta1[MAX], phi1[MAX], r1[MAX], cs1[MAX];
-      float eta2[MAX], phi2[MAX], r2[MAX], cs2[MAX];
-      float eta3[MAX], phi3[MAX], r3[MAX], cs3[MAX];
-      float eta4[MAX], phi4[MAX], r4[MAX], cs4[MAX];
-      int process, npart;
-      float pt[MAX], eta[MAX], phi[MAX];
-      int chg[MAX], pdg[MAX];
+struct PixelEvent {
+   int run, lumi, event, bx;
+   float bsx, bsy, bsz;
+   int nv; float vx[8], vy[8], vz[8];
+   int hlt; int nhfp, nhfn; float hft;
+   int nHits, nhits1, nhits2, nhits3, nhits4;
+   float eta1[MAX], phi1[MAX], r1[MAX], cs1[MAX];
+   float eta2[MAX], phi2[MAX], r2[MAX], cs2[MAX];
+   float eta3[MAX], phi3[MAX], r3[MAX], cs3[MAX];
+   float eta4[MAX], phi4[MAX], r4[MAX], cs4[MAX];
+   int process, npart;
+   float pt[MAX], eta[MAX], phi[MAX];
+   int chg[MAX], pdg[MAX];
 };
 
 void set_pixel_event(TTree* t, PixelEvent& par) {
@@ -171,4 +169,4 @@ void set_pixel_event(TTree* t, PixelEvent& par) {
    t->SetBranchAddress("pdg", &par.pdg);
 }
 
-#endif   /* TTREES_H */
+#endif   /* STRUCTS_H */
