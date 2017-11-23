@@ -107,30 +107,28 @@ int plotFinalResult(int type,
    TH3F* h3alpha = new TH3F("h3alpha", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
    TH3F* h3alphafinal = new TH3F("h3alphafinal", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
 
-   TH3F* hEverything = new TH3F("hEverything", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
-   TH3F* hCorrected = new TH3F("hCorrected", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
+   TH3F* h3WSEraw = new TH3F("h3WSEraw", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
+   TH3F* h3WSEcorr = new TH3F("h3WSEcorr", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
 
-   TH3F* hHadron = new TH3F("hHadron", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
-   TH3F* hHadronAccepted = new TH3F("hHadronAccepted", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
-   TH3F* hHadronWOSelection = new TH3F("hHadronWOSelection", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
+   TH3F* h3WEHhadron = new TH3F("h3WEHhadron", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
+   TH3F* h3WEHaccepted = new TH3F("h3WEHaccepted", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
+   TH3F* h3WGHhadron = new TH3F("h3WGHhadron", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
 
-   TH2F* hAcceptance1D = 0;
-   if (apply_correction) { hAcceptance1D = (TH2F*)fcorr->Get("hAcceptance1D")->Clone(); }
-   else { hAcceptance1D = new TH2F("hAcceptance1D", "", nEtaBin, EtaBins, nVzBin, VzBins); }
-   TH3F* hAcceptance2D = new TH3F("hAcceptance2D", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
+   TH2F* h2amapxev = new TH2F("h2amapxev", "", nEtaBin, EtaBins, nVzBin, VzBins);
+   TH3F* h3amapxemv = new TH3F("h3amapxemv", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
 
-   TH1F* hVz = new TH1F("hVz", "", nVzBin, VzBins);
-   TH2F* hVzNTracklet = new TH2F("hVzNTracklet", "", nVzBin, VzBins, nTrackletBin, TrackletBins);
+   TH1F* h1WEvz = new TH1F("h1WEvz", "", nVzBin, VzBins);
+   TH2F* h1WEvzmult = new TH2F("h1WEvzmult", "", nVzBin, VzBins, nTrackletBin, TrackletBins);
 
-   TH1F* hTrigEff = 0;
-   if (apply_correction) { hTrigEff = (TH1F*)fcorr->Get("hTrigEff")->Clone(); }
-   else { hTrigEff = new TH1F("hTrigEff", "", nTrackletBin, TrackletBins); }
-   TH1F* hTrigEffNoCut = new TH1F("hTrigEffNoCut", "", nTrackletBin, TrackletBins);
+   TH1F* h1teff = new TH1F("h1teff", "", nTrackletBin, TrackletBins);
+   TH1F* h1WGOXteff = new TH1F("h1WGOXteff", "", nTrackletBin, TrackletBins);
+   TH1F* h1WGXteff = new TH1F("h1WGXteff", "", nTrackletBin, TrackletBins);
 
-   TH1F* hSD = new TH1F("hSD", "", nTrackletBin, TrackletBins);
-   TH1F* hSDFrac = new TH1F("hSDFrac", "", nTrackletBin, TrackletBins);
+   TH1F* h1sdf = new TH1F("h1sdf", "", nTrackletBin, TrackletBins);
+   TH1F* h1WEsdf = new TH1F("h1WEsdf", "", nTrackletBin, TrackletBins);
+   TH1F* h1WENGsdf = new TH1F("h1WENGsdf", "", nTrackletBin, TrackletBins);
 
-   TH1F* hEmptyEvtCorrection;
+   TH1F* h1empty;
 
    TH1F* h1alpha[nEtaBin][nVzBin];
    TH1F* h1alphaerr[nEtaBin][nVzBin];
@@ -147,64 +145,71 @@ int plotFinalResult(int type,
    TF1* falpha[nEtaBin][nVzBin];
    TF1* falphaerr[nEtaBin][nVzBin];
 
+   if (apply_correction) {
+      h2amapxev = (TH2F*)fcorr->Get("h2amapxev")->Clone();
+      h1teff = (TH1F*)fcorr->Get("h1teff")->Clone();
+      h1sdf = (TH1F*)fcorr->Get("h1sdf")->Clone();
+      h1empty = (TH1F*)fcorr->Get("h1empty")->Clone();
+   }
+
    /* nevents                                                                 */
-   TH1F* hnevent = new TH1F("hnevent", "", nVzBin, VzBins);
-   int nevententries = tinput->Draw("vz[1]>>hnevent", "weight" * (esel && gsel), "goff");
-   float nevent = hnevent->Integral(0, hnevent->GetNbinsX() + 1);
+   TH1F* hWEGevent = new TH1F("hWEGevent", "", nVzBin, VzBins);
+   int nWEGentry = tinput->Draw("vz[1]>>hWEGevent", "weight" * (esel && gsel), "goff");
+   float nWEGevent = hWEGevent->Integral(0, hWEGevent->GetNbinsX() + 1);
 
-   TH1F* hneventWOSelection = new TH1F("hneventWOSelection", "", nVzBin, VzBins);
-   tinput->Draw("vz[1]>>hneventWOSelection", "weight" * (gsel), "goff");
-   float neventWOSelection = hneventWOSelection->Integral(0, hneventWOSelection->GetNbinsX() + 1);
+   TH1F* hWGevent = new TH1F("hWGevent", "", nVzBin, VzBins);
+   tinput->Draw("vz[1]>>hWGevent", "weight" * (gsel), "goff");
+   float nWGevent = hWGevent->Integral(0, hWGevent->GetNbinsX() + 1);
 
-   printf("$ weighted events: %f, entries: %i\n", nevent, nevententries);
-   if (nevententries < 1) { printf("  ! no events selected - stopping\n"); }
+   printf("$ weighted events: %f, entries: %i\n", nWEGevent, nWEGentry);
+   if (nWEGentry < 1) { printf("  ! no events selected - stopping\n"); }
 
    /* set acceptance maps                                                     */
-   tinput->Project("hVz", "vz[1]", "weight" * esel);
-   tinput->Project("hVzNTracklet", Form("%s:vz[1]", mult), "weight" * esel);
+   tinput->Project("h1WEvz", "vz[1]", "weight" * esel);
+   tinput->Project("h1WEvzmult", Form("%s:vz[1]", mult), "weight" * esel);
 
    const int* amap = ext_accep_map(type);
 
    for (int i=1; i<=nEtaBin; i++) {
       for (int j=1; j<=nVzBin; j++) {
-         if (!apply_correction || hAcceptance1D->GetBinContent(i, j) != 0) {
+         if (!apply_correction || h2amapxev->GetBinContent(i, j) != 0) {
             if (apply_ext_accep_map && !amap[(nVzBin-j)*nEtaBin+i-1]) {
-               hAcceptance1D->SetBinContent(i, j, 0);
-               hAcceptance1D->SetBinError(i, j, 0);
+               h2amapxev->SetBinContent(i, j, 0);
+               h2amapxev->SetBinError(i, j, 0);
                continue;
             }
 
-            hAcceptance1D->SetBinContent(i, j, hVz->GetBinContent(j));
-            hAcceptance1D->SetBinError(i, j, 0);
+            h2amapxev->SetBinContent(i, j, h1WEvz->GetBinContent(j));
+            h2amapxev->SetBinError(i, j, 0);
             for (int k=1; k<=nTrackletBin; k++)
-               hAcceptance2D->SetBinContent(i, k, j, hVzNTracklet->GetBinContent(j, k));
+               h3amapxemv->SetBinContent(i, k, j, h1WEvzmult->GetBinContent(j, k));
          }
       }
    }
 
    TCanvas* caccepin = new TCanvas("caccepin", "", CANVASW, CANVASH);
-   hAcceptance1D->SetStats(0);
-   hAcceptance1D->Draw();
+   h2amapxev->SetStats(0);
+   h2amapxev->Draw();
    caccepin->SaveAs(Form("figs/accep/accep-input-%s-%i.png", label, type));
 
    /* fit vertex distribution                                                 */
-   hVz->Sumw2();
-   hVz->Scale(1. / hVz->GetEntries());
-   hVz->Fit("gaus");
-   hVz->SetXTitle("v_{z} (cm)");
-   hVz->SetStats(0);
+   h1WEvz->Sumw2();
+   h1WEvz->Scale(1. / h1WEvz->GetEntries());
+   h1WEvz->Fit("gaus");
+   h1WEvz->SetXTitle("v_{z} (cm)");
+   h1WEvz->SetStats(0);
 
    /* truth-level hadrons                                                     */
-   tinput->Project("hHadron", Form("vz[1]:%s:eta", mult), "weight" * (esel && "abs(eta)<3"));
-   tinput->Project("hHadronWOSelection", Form("vz[1]:%s:eta", mult), "weight" * (gsel && "abs(eta)<3"));
-   hHadron->Sumw2();
-   hHadronWOSelection->Sumw2();
+   tinput->Project("h3WEHhadron", Form("vz[1]:%s:eta", mult), "weight" * (esel && "abs(eta)<3"));
+   tinput->Project("h3WGHhadron", Form("vz[1]:%s:eta", mult), "weight" * (gsel && "abs(eta)<3"));
+   h3WEHhadron->Sumw2();
+   h3WGHhadron->Sumw2();
 
-   hHadronAccepted = (TH3F*)hHadron->Clone("hHadronAccepted");
+   h3WEHaccepted = (TH3F*)h3WEHhadron->Clone("h3WEHaccepted");
 
    /* reconstructed tracklets                                                 */
-   tinput->Project("hEverything", Form("vz[1]:%s:eta1", mult), "weight" * (ssel && esel));
-   hEverything->Sumw2();
+   tinput->Project("h3WSEraw", Form("vz[1]:%s:eta1", mult), "weight" * (ssel && esel));
+   h3WSEraw->Sumw2();
 
    TH2F* haccepmc = 0;
    TH2F* haccepdata = 0;
@@ -229,7 +234,7 @@ int plotFinalResult(int type,
    } else {
       for (int x=1; x<=nEtaBin; x++) {
          for (int z=1; z<=nVzBin; z++) {
-            if (hAcceptance1D->GetBinContent(x, z) == 0) {
+            if (h2amapxev->GetBinContent(x, z) == 0) {
                printf("   # acceptance region: eta: %2i, vz: %2i          is 0\n", x, z);
                continue;
             }
@@ -241,11 +246,11 @@ int plotFinalResult(int type,
                h1alpha[x-1][z-1]->SetBinError(y, 0);
                h1alphaerr[x-1][z-1]->SetBinContent(y, 0);
 
-               if (hEverything->GetBinContent(x, y, z) != 0 && hHadron->GetBinContent(x, y, z) != 0) {
-                  double raw = hEverything->GetBinContent(x, y, z);
-                  double rawerr = hEverything->GetBinError(x, y, z);
-                  double truth = hHadron->GetBinContent(x, y, z);
-                  double trutherr = hHadron->GetBinError(x, y, z);
+               if (h3WSEraw->GetBinContent(x, y, z) != 0 && h3WEHhadron->GetBinContent(x, y, z) != 0) {
+                  double raw = h3WSEraw->GetBinContent(x, y, z);
+                  double rawerr = h3WSEraw->GetBinError(x, y, z);
+                  double truth = h3WEHhadron->GetBinContent(x, y, z);
+                  double trutherr = h3WEHhadron->GetBinError(x, y, z);
                   double alpha = truth/raw;
                   double alphaerr = truth/raw * sqrt(rawerr/raw*rawerr/raw + trutherr/truth*trutherr/truth);
                   printf("   ^ alpha calculation: eta: %2i, vz: %2i, ntl: %2i, alpha: %8.2f [%8.2f], raw/sig/truth: {%8.2f/%8.2f}\n", x, z, y, alpha, alphaerr, raw, truth);
@@ -266,7 +271,7 @@ int plotFinalResult(int type,
 
             if (count < nTrackletBin / 2) {
                printf("   # ! acceptance map:  eta: %2i, vz: %2i          set to 0 (bad acceptance/statistics)\n", x, z);
-               hAcceptance1D->SetBinContent(x, z, 0);
+               h2amapxev->SetBinContent(x, z, 0);
             }
          }
       }
@@ -303,18 +308,22 @@ int plotFinalResult(int type,
       stderr = fdopen(stderr_save, "w");
 
       /* offline selection                                                    */
-      tinput->Project("hTrigEff", Form("%s", mult), "weight" * (gsel && osel && "vz[1]>-99"));
-      hTrigEff->Sumw2();
-      tinput->Project("hTrigEffNoCut", Form("%s", mult), "weight" * (gsel && "vz[1]>-99"));
-      hTrigEffNoCut->Sumw2();
-      hTrigEff->Divide(hTrigEffNoCut);
+      tinput->Project("h1WGOXteff", Form("%s", mult), "weight" * (gsel && osel && "vz[1]>-99"));
+      h1WGOXteff->Sumw2();
+      tinput->Project("h1WGXteff", Form("%s", mult), "weight" * (gsel && "vz[1]>-99"));
+      h1WGXteff->Sumw2();
+
+      h1teff = (TH1F*)h1WGOXteff->Clone("h1teff");
+      h1teff->Divide(h1WGXteff);
 
       /* sd fraction (complement of gen selection)                            */
-      tinput->Project("hSDFrac", Form("%s", mult), "weight" * (esel && !gsel));
-      hSDFrac->Sumw2();
-      tinput->Project("hSD", Form("%s", mult), "weight" * esel);
-      hSD->Sumw2();
-      hSDFrac->Divide(hSD);
+      tinput->Project("h1WENGsdf", Form("%s", mult), "weight" * (esel && !gsel));
+      h1WENGsdf->Sumw2();
+      tinput->Project("h1WEsdf", Form("%s", mult), "weight" * esel);
+      h1WEsdf->Sumw2();
+
+      h1sdf = (TH1F*)h1WENGsdf->Clone("h1sdf");
+      h1sdf->Divide(h1WEsdf);
 
       /* vertexing efficiency                                                 */
 
@@ -369,11 +378,11 @@ int plotFinalResult(int type,
    /* apply correction                                                        */
    for (int x=1; x<=nEtaBin; x++) {
       for (int z=1; z<=nVzBin; z++) {
-         if (hAcceptance1D->GetBinContent(x, z) == 0)
+         if (h2amapxev->GetBinContent(x, z) == 0)
             continue;
 
          for (int y=1; y<=nTrackletBin; y++) {
-            double raw = hEverything->GetBinContent(x, y, z);
+            double raw = h3WSEraw->GetBinContent(x, y, z);
 
             double alpha = h1alpha[x-1][z-1]->GetBinContent(y);
             double alphaerr = h1alpha[x-1][z-1]->GetBinError(y);
@@ -420,8 +429,8 @@ int plotFinalResult(int type,
             double ncorr = raw*alpha;
             double ncorrerr = sqrt(alpha*alpha*raw + alpha*alpha*raw*raw);
 
-            hCorrected->SetBinContent(x, y, z, ncorr);
-            hCorrected->SetBinError(x, y, z, ncorrerr);
+            h3WSEcorr->SetBinContent(x, y, z, ncorr);
+            h3WSEcorr->SetBinError(x, y, z, ncorrerr);
          }
 
          bool valid = false;
@@ -432,21 +441,21 @@ int plotFinalResult(int type,
 
          if (!valid) {
             printf("   # ! acceptance map:  eta: %2i, vz: %2i          set to 0 (invalid alpha)\n", x, z);
-            hAcceptance1D->SetBinContent(x, z, 0);
+            h2amapxev->SetBinContent(x, z, 0);
          }
       }
 
       for (int z=1; z<=nVzBin; z++) {
-         if (hAcceptance1D->GetBinContent(x, z) == 0) {
+         if (h2amapxev->GetBinContent(x, z) == 0) {
             for (int y=1; y<=nTrackletBin; y++) {
-               hHadronAccepted->SetBinContent(x, y, z, 0);
-               hHadronAccepted->SetBinError(x, y, z, 0);
+               h3WEHaccepted->SetBinContent(x, y, z, 0);
+               h3WEHaccepted->SetBinError(x, y, z, 0);
 
                h3alphafinal->SetBinContent(x, y, z, 0);
                h3alphafinal->SetBinError(x, y, z, 0);
 
-               hCorrected->SetBinContent(x, y, z, 0);
-               hCorrected->SetBinError(x, y, z, 0);
+               h3WSEcorr->SetBinContent(x, y, z, 0);
+               h3WSEcorr->SetBinError(x, y, z, 0);
             }
          }
       }
@@ -463,52 +472,52 @@ int plotFinalResult(int type,
    calpha->SaveAs(Form("figs/alpha/alpha-%s-%i.png", label, type));
 
    TCanvas* caccep = new TCanvas("caccep", "", CANVASW, CANVASH);
-   hAcceptance1D->SetStats(0);
-   hAcceptance1D->Draw();
+   h2amapxev->SetStats(0);
+   h2amapxev->Draw();
    caccep->SaveAs(Form("figs/accep/accep-%s-%i.png", label, type));
 
-   TH1F* hAcceptance0D = (TH1F*)hAcceptance1D->ProjectionX();
-   hAcceptance0D->SetName("hAcceptance0D");
-   hAcceptance0D->Scale(1. / hAcceptance0D->GetMaximum());
+   TH1F* h1accep2xe = (TH1F*)h2amapxev->ProjectionX();
+   h1accep2xe->SetName("h1accep2xe");
+   h1accep2xe->Scale(1. / h1accep2xe->GetMaximum());
 
    /* truth within acceptance                                                 */
-   TH1F* hTruthAccepted = (TH1F*)hHadronAccepted->Project3D("x");
-   hTruthAccepted->SetName("hTruthAccepted");
+   TH1F* h1WEHaccepted = (TH1F*)h3WEHaccepted->Project3D("x");
+   h1WEHaccepted->SetName("h1WEHaccepted");
 
-   TH1F* hTruth = (TH1F*)hTruthAccepted->Clone("hTruth");
-   hTruth->Sumw2();
-   hTruth->Scale(1. / nevent, "width");
-   hTruth->Divide(hAcceptance0D);
+   TH1F* h1WEHtruth = (TH1F*)h1WEHaccepted->Clone("h1WEHtruth");
+   h1WEHtruth->Sumw2();
+   h1WEHtruth->Scale(1. / nWEGevent, "width");
+   h1WEHtruth->Divide(h1accep2xe);
 
-   hTruthAccepted->Sumw2();
-   hTruthAccepted->Scale(1. / nevent, "width");
-   hTruthAccepted->SetXTitle("#eta");
-   hTruthAccepted->SetYTitle("dN/d#eta");
+   h1WEHaccepted->Sumw2();
+   h1WEHaccepted->Scale(1. / nWEGevent, "width");
+   h1WEHaccepted->SetXTitle("#eta");
+   h1WEHaccepted->SetYTitle("dN/d#eta");
 
    /* final results                                                           */
-   TH1F* hUncorrected = (TH1F*)hEverything->Project3D("x");
-   hUncorrected->SetName("hUncorrected");
-   hUncorrected->Sumw2();
-   hUncorrected->Scale(1. / nevent, "width");
-   hUncorrected->Divide(hAcceptance0D);
+   TH1F* h1WSEraw = (TH1F*)h3WSEraw->Project3D("x");
+   h1WSEraw->SetName("h1WSEraw");
+   h1WSEraw->Sumw2();
+   h1WSEraw->Scale(1. / nWEGevent, "width");
+   h1WSEraw->Divide(h1accep2xe);
 
-   TH1F* hMeasured = (TH1F*)hCorrected->Project3D("x");
-   hMeasured->SetName("hMeasured");
-   hMeasured->Sumw2();
-   hMeasured->Scale(1. / nevent, "width");
-   hMeasured->Divide(hAcceptance0D);
+   TH1F* h1WSEcorr = (TH1F*)h3WSEcorr->Project3D("x");
+   h1WSEcorr->SetName("h1WSEcorr");
+   h1WSEcorr->Sumw2();
+   h1WSEcorr->Scale(1. / nWEGevent, "width");
+   h1WSEcorr->Divide(h1accep2xe);
 
-   TH1F* hTruthWOSelection = (TH1F*)hHadronWOSelection->Project3D("x");
-   hTruthWOSelection->SetName("hTruthWOSelection");
-   hTruthWOSelection->Scale(1. / neventWOSelection, "width");
+   TH1F* h1WGHhadron = (TH1F*)h3WGHhadron->Project3D("x");
+   h1WGHhadron->SetName("h1WGHhadron");
+   h1WGHhadron->Scale(1. / nWGevent, "width");
 
-   TH1F* hTruthWOSelectionMult = (TH1F*)hHadronWOSelection->Project3D("y");
-   hTruthWOSelectionMult->SetName("hTruthWOSelectionMult");
-   hTruthWOSelectionMult->Scale(1. / neventWOSelection, "width");
+   TH1F* h1WGHhadronxm = (TH1F*)h3WGHhadron->Project3D("y");
+   h1WGHhadronxm->SetName("h1WGHhadronxm");
+   h1WGHhadronxm->Scale(1. / nWGevent, "width");
 
    /* alternate calculation                                                   */
-   TH2F* hMeasuredEtanTracklet = new TH2F("hMeasuredEtanTracklet", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins);
-   TH2F* hTruthEtanTracklet = new TH2F("hTruthEtanTracklet", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins);
+   TH2F* h2WSEtcorr = new TH2F("h2WSEtcorr", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins);
+   TH2F* h2WSEtaccepted = new TH2F("h2WSEtaccepted", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins);
 
    for (int x=1; x<=nEtaBin; x++) {
       for (int y=1; y<=nTrackletBin; y++) {
@@ -516,36 +525,36 @@ int plotFinalResult(int type,
          double mcsum = 0, mcsumerr = 0;
 
          for (int z=1; z<=nVzBin; z++) {
-            if (hAcceptance1D->GetBinContent(x, z) != 0) {
-               sum += hCorrected->GetBinContent(x, y, z);
-               double err = hCorrected->GetBinError(x, y, z);
+            if (h2amapxev->GetBinContent(x, z) != 0) {
+               sum += h3WSEcorr->GetBinContent(x, y, z);
+               double err = h3WSEcorr->GetBinError(x, y, z);
                sumerr = sqrt(sumerr*sumerr + err*err);
 
-               mcsum += hHadronAccepted->GetBinContent(x, y, z);
-               double mcerr = hHadronAccepted->GetBinError(x, y, z);
+               mcsum += h3WEHaccepted->GetBinContent(x, y, z);
+               double mcerr = h3WEHaccepted->GetBinError(x, y, z);
                mcsumerr = sqrt(mcsumerr*mcsumerr + mcerr*mcerr);
             }
          }
 
-         hMeasuredEtanTracklet->SetBinContent(x, y, sum);
-         hMeasuredEtanTracklet->SetBinError(x, y, sumerr);
-         hTruthEtanTracklet->SetBinContent(x, y, mcsum);
-         hTruthEtanTracklet->SetBinError(x, y, mcsumerr);
+         h2WSEtcorr->SetBinContent(x, y, sum);
+         h2WSEtcorr->SetBinError(x, y, sumerr);
+         h2WSEtaccepted->SetBinContent(x, y, mcsum);
+         h2WSEtaccepted->SetBinError(x, y, mcsumerr);
       }
    }
 
    /* apply trigger, sd fraction corrections                                  */
    for (int y=1; y<=nTrackletBin; y++) {
-      double SDFrac = hSDFrac->GetBinContent(y);
-      double TrigEff = hTrigEff->GetBinContent(y);
+      double SDFrac = h1sdf->GetBinContent(y);
+      double TrigEff = h1teff->GetBinContent(y);
 
       for (int x=1; x<=nEtaBin; x++) {
          for (int z=1; z<=nVzBin; z++) {
-            if (hAcceptance1D->GetBinContent(x, z) != 0) {
+            if (h2amapxev->GetBinContent(x, z) != 0) {
                if (TrigEff != 0)
-                  hAcceptance2D->SetBinContent(x, y, z, hAcceptance2D->GetBinContent(x, y, z)/TrigEff*(1-SDFrac*SDMULT));
+                  h3amapxemv->SetBinContent(x, y, z, h3amapxemv->GetBinContent(x, y, z)/TrigEff*(1-SDFrac*SDMULT));
             } else {
-               hAcceptance2D->SetBinContent(x, y, z, 0);
+               h3amapxemv->SetBinContent(x, y, z, 0);
             }
          }
       }
@@ -553,44 +562,42 @@ int plotFinalResult(int type,
 
    for (int x=1; x<=nEtaBin; x++) {
       for (int y=1; y<=nTrackletBin; y++) {
-         double SDFrac = hSDFrac->GetBinContent(y);
-         double TrigEff = hTrigEff->GetBinContent(y);
+         double SDFrac = h1sdf->GetBinContent(y);
+         double TrigEff = h1teff->GetBinContent(y);
 
          if (TrigEff != 0) {
-            hMeasuredEtanTracklet->SetBinContent(x, y, hMeasuredEtanTracklet->GetBinContent(x, y)/TrigEff*(1-SDFrac*SDMULT));
-            hMeasuredEtanTracklet->SetBinError(x, y, hMeasuredEtanTracklet->GetBinError(x, y)/TrigEff*(1-SDFrac*SDMULT));
-            hTruthEtanTracklet->SetBinContent(x, y, hTruthEtanTracklet->GetBinContent(x, y)/TrigEff*(1-SDFrac*SDMULT));
-            hTruthEtanTracklet->SetBinError(x, y, hTruthEtanTracklet->GetBinError(x, y)/TrigEff*(1-SDFrac*SDMULT));
+            h2WSEtcorr->SetBinContent(x, y, h2WSEtcorr->GetBinContent(x, y)/TrigEff*(1-SDFrac*SDMULT));
+            h2WSEtcorr->SetBinError(x, y, h2WSEtcorr->GetBinError(x, y)/TrigEff*(1-SDFrac*SDMULT));
+            h2WSEtaccepted->SetBinContent(x, y, h2WSEtaccepted->GetBinContent(x, y)/TrigEff*(1-SDFrac*SDMULT));
+            h2WSEtaccepted->SetBinError(x, y, h2WSEtaccepted->GetBinError(x, y)/TrigEff*(1-SDFrac*SDMULT));
          }
       }
    }
 
-   TH1F* hAcceptance2DEta = (TH1F*)hAcceptance2D->Project3D("x");
-   hAcceptance2DEta->SetName("hAcceptance2DEta");
+   TH1F* h1accep3xe = (TH1F*)h3amapxemv->Project3D("x");
+   h1accep3xe->SetName("h1accep3xe");
 
-   TH1F* hAcceptance2DMult = (TH1F*)hAcceptance2D->Project3D("y");
-   hAcceptance2DMult->SetName("hAcceptance2DMult");
+   TH1F* h1accep3xm = (TH1F*)h3amapxemv->Project3D("y");
+   h1accep3xm->SetName("h1accep3xm");
 
-   TH1F* hMeasuredTrigEffCorrected = (TH1F*)hMeasuredEtanTracklet->ProjectionX();
-   hMeasuredTrigEffCorrected->SetName("hMeasuredTrigEffCorrected");
-   hMeasuredTrigEffCorrected->Scale(1., "width");
-   hMeasuredTrigEffCorrected->Divide(hAcceptance2DEta);
+   TH1F* h1WSEtcorr = (TH1F*)h2WSEtcorr->ProjectionX();
+   h1WSEtcorr->SetName("h1WSEtcorr");
+   h1WSEtcorr->Scale(1., "width");
+   h1WSEtcorr->Divide(h1accep3xe);
 
-   TH1F* hMeasuredTrigEffCorrectedMult = (TH1F*)hMeasuredEtanTracklet->ProjectionY();
-   hMeasuredTrigEffCorrectedMult->SetName("hMeasuredTrigEffCorrectedMult");
-   hMeasuredTrigEffCorrectedMult->Scale(1., "width");
-   hMeasuredTrigEffCorrectedMult->Divide(hAcceptance2DMult);
+   TH1F* h1WSEtcorrxm = (TH1F*)h2WSEtcorr->ProjectionY();
+   h1WSEtcorrxm->SetName("h1WSEtcorrxm");
+   h1WSEtcorrxm->Scale(1., "width");
+   h1WSEtcorrxm->Divide(h1accep3xm);
 
-   TH1F* hTruthTrigEffCorrected = (TH1F*)hTruthEtanTracklet->ProjectionX();
-   hTruthTrigEffCorrected->SetName("hTruthTrigEffCorrected");
-   hTruthTrigEffCorrected->Scale(1., "width");
-   hTruthTrigEffCorrected->Divide(hAcceptance2DEta);
+   TH1F* h1WSEtaccepted = (TH1F*)h2WSEtaccepted->ProjectionX();
+   h1WSEtaccepted->SetName("h1WSEtaccepted");
+   h1WSEtaccepted->Scale(1., "width");
+   h1WSEtaccepted->Divide(h1accep3xe);
 
    if (!apply_correction) {
-      hEmptyEvtCorrection = (TH1F*)hTruthWOSelection->Clone("hEmptyEvtCorrection");
-      hEmptyEvtCorrection->Divide(hMeasuredTrigEffCorrected);
-   } else {
-      hEmptyEvtCorrection = (TH1F*)fcorr->Get("hEmptyEvtCorrection")->Clone();
+      h1empty = (TH1F*)h1WGHhadron->Clone("h1empty");
+      h1empty->Divide(h1WSEtcorr);
    }
 
    bool extendaxis = cmax - cmin < 5;
@@ -606,16 +613,16 @@ int plotFinalResult(int type,
 
    hframe->Draw();
 
-   format(hTruthWOSelection, 1, 1);
-   hTruthWOSelection->SetStats(0);
-   hTruthWOSelection->Draw("hist same");
+   format(h1WGHhadron, 1, 1);
+   h1WGHhadron->SetStats(0);
+   h1WGHhadron->Draw("hist same");
 
-   TH1F* hMeasuredFinal = (TH1F*)hMeasuredTrigEffCorrected->Clone("hMeasuredFinal");
-   hMeasuredFinal->Multiply(hEmptyEvtCorrection);
+   TH1F* h1WSEfinal = (TH1F*)h1WSEtcorr->Clone("h1WSEfinal");
+   h1WSEfinal->Multiply(h1empty);
 
-   format(hMeasuredFinal, 20, COLOUR1);
-   hMeasuredFinal->SetStats(0);
-   hMeasuredFinal->Draw("e x0 same");
+   format(h1WSEfinal, 20, COLOUR1);
+   h1WSEfinal->SetStats(0);
+   h1WSEfinal->Draw("e x0 same");
 
    TLegend* l1 = new TLegend(0.3, 0.3, 0.8, 0.48);
    l1->SetFillStyle(0);
@@ -624,8 +631,8 @@ int plotFinalResult(int type,
    l1->SetTextFont(43);
    l1->SetTextSize(20);
    l1->AddEntry((TObject*)0, Form("%s", label), "");
-   l1->AddEntry(hTruthWOSelection, "Truth", "l");
-   l1->AddEntry(hMeasuredFinal, "Reconstructed", "p");
+   l1->AddEntry(h1WGHhadron, "Truth", "l");
+   l1->AddEntry(h1WSEfinal, "Reconstructed", "p");
    l1->Draw();
 
    cresult->Draw();
@@ -636,18 +643,18 @@ int plotFinalResult(int type,
 
    hframe->Draw();
 
-   hTruthWOSelection->Draw("hist same");
+   h1WGHhadron->Draw("hist same");
 
-   format(hUncorrected, 25, COLOUR2);
-   hUncorrected->Draw("e x0 same");
+   format(h1WSEraw, 25, COLOUR2);
+   h1WSEraw->Draw("e x0 same");
 
-   format(hMeasured, 26, COLOUR3);
-   hMeasured->Draw("e x0 same");
+   format(h1WSEcorr, 26, COLOUR3);
+   h1WSEcorr->Draw("e x0 same");
 
-   format(hMeasuredTrigEffCorrected, 32, COLOUR4);
-   hMeasuredTrigEffCorrected->Draw("e x0 same");
+   format(h1WSEtcorr, 32, COLOUR4);
+   h1WSEtcorr->Draw("e x0 same");
 
-   hMeasuredFinal->Draw("e x0 same");
+   h1WSEfinal->Draw("e x0 same");
 
    TLegend* l2 = new TLegend(0.32, 0.20, 0.75, 0.40);
    l2->SetFillStyle(0);
@@ -656,11 +663,11 @@ int plotFinalResult(int type,
    l2->SetTextFont(43);
    l2->SetTextSize(15);
    l2->AddEntry((TObject*)0, Form("%s", label), "");
-   l2->AddEntry(hTruthWOSelection, "Truth", "l");
-   l2->AddEntry(hUncorrected, "Raw tracklets", "p");
-   l2->AddEntry(hMeasured, "Corrected for efficiency", "p");
-   l2->AddEntry(hMeasuredTrigEffCorrected, "Corrected for trigger eff", "p");
-   l2->AddEntry(hMeasuredFinal, "Final result", "p");
+   l2->AddEntry(h1WGHhadron, "Truth", "l");
+   l2->AddEntry(h1WSEraw, "Raw tracklets", "p");
+   l2->AddEntry(h1WSEcorr, "Corrected for efficiency", "p");
+   l2->AddEntry(h1WSEtcorr, "Corrected for trigger eff", "p");
+   l2->AddEntry(h1WSEfinal, "Final result", "p");
    l2->Draw();
 
    ccompare->Draw();
