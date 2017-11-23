@@ -162,10 +162,8 @@ int plotFinalResult(int type,
    int nevententries = tinput->Draw("vz[1]>>hnevent", "weight" * (esel && gsel), "goff");
    float nevent = hnevent->Integral(0, hnevent->GetNbinsX() + 1);
 
-   TCut hydjet_selection = "weight<20";
-
    TH1F* hneventWOSelection = new TH1F("hneventWOSelection", "", nVzBin, VzBins);
-   tinput->Draw("vz[1]>>hneventWOSelection", "weight" * (gsel && hydjet_selection), "goff");
+   tinput->Draw("vz[1]>>hneventWOSelection", "weight" * (gsel), "goff");
    float neventWOSelection = hneventWOSelection->Integral(0, hneventWOSelection->GetNbinsX() + 1);
 
    printf("$ weighted events: %f, entries: %i\n", nevent, nevententries);
@@ -208,7 +206,7 @@ int plotFinalResult(int type,
 
    /* truth-level hadrons                                                     */
    tinput->Project("hHadron", Form("vz[1]:%s:eta", mult), "weight" * (esel && "abs(eta)<3"));
-   tinput->Project("hHadronWOSelection", Form("vz[1]:%s:eta", mult), "weight" * (gsel && "abs(eta)<3" && hydjet_selection));
+   tinput->Project("hHadronWOSelection", Form("vz[1]:%s:eta", mult), "weight" * (gsel && "abs(eta)<3"));
    hHadron->Sumw2();
    hHadronWOSelection->Sumw2();
 
