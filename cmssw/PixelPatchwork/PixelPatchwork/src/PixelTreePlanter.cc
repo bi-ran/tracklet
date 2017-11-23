@@ -122,6 +122,30 @@ struct PixelEvent{
    float cs4[MAXHITS];
    float ch4[MAXHITS];
 
+   // first disk hits
+   int nhits5;
+   float eta5[MAXHITS];
+   float phi5[MAXHITS];
+   float r5[MAXHITS];
+   float cs5[MAXHITS];
+   float ch5[MAXHITS];
+
+   // second disk hits
+   int nhits6;
+   float eta6[MAXHITS];
+   float phi6[MAXHITS];
+   float r6[MAXHITS];
+   float cs6[MAXHITS];
+   float ch6[MAXHITS];
+
+   // third disk hits
+   int nhits7;
+   float eta7[MAXHITS];
+   float phi7[MAXHITS];
+   float r7[MAXHITS];
+   float cs7[MAXHITS];
+   float ch7[MAXHITS];
+
    // gen particles
    int process;
    int npart;
@@ -209,6 +233,9 @@ void PixelTreePlanter::analyze(const edm::Event& iEvent, const edm::EventSetup& 
    pix_.nhits2 = 0;
    pix_.nhits3 = 0;
    pix_.nhits4 = 0;
+   pix_.nhits5 = 0;
+   pix_.nhits6 = 0;
+   pix_.nhits7 = 0;
    pix_.npart = 0;
 
    fillBS(iEvent);
@@ -346,10 +373,23 @@ void PixelTreePlanter::fillHits(const edm::Event& iEvent) {
       // detector type, tracker = 1
       if (detid.det() != 1) continue;
       // subdetector type, bpix = 1, fpix = 2
-      if (detid.subdetId() != 1) continue;
+      // if (detid.subdetId() != 1) continue;
 
       /* should switch to TrackerTopology */
-      unsigned int layer = (detid.rawId() >> 20) & 0xF;
+      // unsigned int layer = (detid.rawId() >> 20) & 0xF;
+
+      unsigned int layer;
+      switch (detid.subdetId()) {
+         case 1:
+            layer = (detid.rawId() >> 20) & 0xF;
+            break;
+         case 2:
+            layer = (detid.rawId() >> 18) & 0xF;
+            layer += 4;
+            break;
+         default:
+            continue;
+      }
 
       const SiPixelRecHitCollection::DetSet dethits = *(hits->find(detid));
       for (const auto& hit : dethits) {
@@ -374,6 +414,9 @@ void PixelTreePlanter::fillHits(const edm::Event& iEvent) {
             case 2: FILLLAYER(2) break;
             case 3: FILLLAYER(3) break;
             case 4: FILLLAYER(4) break;
+            case 5: FILLLAYER(5) break;
+            case 6: FILLLAYER(6) break;
+            case 7: FILLLAYER(7) break;
          }
       }
    }
@@ -459,6 +502,27 @@ void PixelTreePlanter::beginJob() {
    tpix_->Branch("r4", pix_.r4, "r4[nhits4]/F");
    tpix_->Branch("cs4", pix_.cs4, "cs4[nhits4]/F");
    tpix_->Branch("ch4", pix_.ch4, "ch4[nhits4]/F");
+
+   tpix_->Branch("nhits5", &pix_.nhits5, "nhits5/I");
+   tpix_->Branch("eta5", pix_.eta5, "eta5[nhits5]/F");
+   tpix_->Branch("phi5", pix_.phi5, "phi5[nhits5]/F");
+   tpix_->Branch("r5", pix_.r5, "r5[nhits5]/F");
+   tpix_->Branch("cs5", pix_.cs5, "cs5[nhits5]/F");
+   tpix_->Branch("ch5", pix_.ch5, "ch5[nhits5]/F");
+
+   tpix_->Branch("nhits6", &pix_.nhits6, "nhits6/I");
+   tpix_->Branch("eta6", pix_.eta6, "eta6[nhits6]/F");
+   tpix_->Branch("phi6", pix_.phi6, "phi6[nhits6]/F");
+   tpix_->Branch("r6", pix_.r6, "r6[nhits6]/F");
+   tpix_->Branch("cs6", pix_.cs6, "cs6[nhits6]/F");
+   tpix_->Branch("ch6", pix_.ch6, "ch6[nhits6]/F");
+
+   tpix_->Branch("nhits7", &pix_.nhits7, "nhits7/I");
+   tpix_->Branch("eta7", pix_.eta7, "eta7[nhits7]/F");
+   tpix_->Branch("phi7", pix_.phi7, "phi7[nhits7]/F");
+   tpix_->Branch("r7", pix_.r7, "r7[nhits7]/F");
+   tpix_->Branch("cs7", pix_.cs7, "cs7[nhits7]/F");
+   tpix_->Branch("ch7", pix_.ch7, "ch7[nhits7]/F");
 
    tpix_->Branch("process", &pix_.process, "process/I");
    tpix_->Branch("npart", &pix_.npart, "npart/I");
