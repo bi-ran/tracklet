@@ -104,13 +104,10 @@ int plotFinalResult(int type,
    /* output                                                                  */
    TFile* outf = new TFile(Form("correction-%s-%i.root", label, type), "recreate");
 
-   // TH3F* hbeta = new TH3F("hbeta", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
    TH3F* h3alpha = new TH3F("h3alpha", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
    TH3F* h3alphafinal = new TH3F("h3alphafinal", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
 
    TH3F* hEverything = new TH3F("hEverything", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
-   TH3F* hReproducedBackground = new TH3F("hReproducedBackground", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
-   TH3F* hSubtracted = new TH3F("hSubtracted", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
    TH3F* hCorrected = new TH3F("hCorrected", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
 
    TH3F* hHadron = new TH3F("hHadron", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
@@ -125,9 +122,6 @@ int plotFinalResult(int type,
    TH1F* hVz = new TH1F("hVz", "", nVzBin, VzBins);
    TH2F* hVzNTracklet = new TH2F("hVzNTracklet", "", nVzBin, VzBins, nTrackletBin, TrackletBins);
 
-   // TH1F* hDNDEtaVertexed = new TH1F("hDNDEtaVertexed", "", nEtaBin, EtaBins);
-   // TH1F* hDNDEtaNoVertexed = new TH1F("hDNDEtaNoVertexed", "", nEtaBin, EtaBins);
-
    TH1F* hTrigEff = 0;
    if (apply_correction) { hTrigEff = (TH1F*)fcorr->Get("hTrigEff")->Clone(); }
    else { hTrigEff = new TH1F("hTrigEff", "", nTrackletBin, TrackletBins); }
@@ -138,15 +132,11 @@ int plotFinalResult(int type,
 
    TH1F* hEmptyEvtCorrection;
 
-   TH1F* h1beta[nEtaBin][nVzBin];
-   TH1F* h1betaerr[nEtaBin][nVzBin];
    TH1F* h1alpha[nEtaBin][nVzBin];
    TH1F* h1alphaerr[nEtaBin][nVzBin];
 
    for (int i=0; i<nEtaBin; i++) {
       for (int j=0; j<nVzBin; j++) {
-         h1beta[i][j] = new TH1F(Form("beta_%i_%i", i, j), "", nTrackletBin, TrackletBins);
-         h1betaerr[i][j] = new TH1F(Form("betaerr_%i_%i", i, j), "", nTrackletBin, TrackletBins);
          h1alpha[i][j] = new TH1F(Form("alpha_%i_%i", i, j), "", nTrackletBin, TrackletBins);
          h1alphaerr[i][j] = new TH1F(Form("alphaerr_%i_%i", i, j), "", nTrackletBin, TrackletBins);
       }
@@ -226,33 +216,6 @@ int plotFinalResult(int type,
    TCanvas* c1 = new TCanvas("c1", "scratch", 400, 400);
    c1->Clear();
 
-   /* beta calculation                                                        */
-   for (int x=1; x<=nEtaBin; x++) {
-      for (int y=1; y<=nTrackletBin; y++) {
-         for (int z=1; z<=nVzBin; z++) {
-            h1beta[x-1][z-1]->SetBinContent(y, 0);
-            h1beta[x-1][z-1]->SetBinError(y, 0);
-            h1betaerr[x-1][z-1]->SetBinContent(y, 0);
-
-            if (hAcceptance1D->GetBinContent(x, z) == 0)
-               continue;
-            if (hEverything->GetBinContent(x, y, z) != 0) {
-               h1beta[x-1][z-1]->SetBinContent(y, 0);
-               h1beta[x-1][z-1]->SetBinError(y, 0);
-            }
-         }
-      }
-   }
-
-   for (int i=0; i<nEtaBin; i++) {
-      for (int j=0; j<nVzBin; j++) {
-         h1beta[i][j]->SetXTitle("multiplicity");
-         h1beta[i][j]->SetYTitle("#beta");
-         h1beta[i][j]->SetTitle(Form("%.1f < #eta < %.1f", EtaBins[i], EtaBins[i+1]));
-         h1beta[i][j]->SetAxisRange(0, 1.2, "Y");
-      }
-   }
-
    /* alpha correction                                                        */
    if (apply_correction) {
       for (int i=0; i<nEtaBin; i++) {
@@ -280,16 +243,12 @@ int plotFinalResult(int type,
 
                if (hEverything->GetBinContent(x, y, z) != 0 && hHadron->GetBinContent(x, y, z) != 0) {
                   double raw = hEverything->GetBinContent(x, y, z);
-                  double beta = h1beta[x-1][z-1]->GetBinContent(y);
                   double rawerr = hEverything->GetBinError(x, y, z);
-                  double bkgerr = hReproducedBackground->GetBinError(x, y, z);
-                  double sig = raw*(1-beta);
-                  double sigerr = sqrt(rawerr*rawerr + bkgerr*bkgerr);
                   double truth = hHadron->GetBinContent(x, y, z);
                   double trutherr = hHadron->GetBinError(x, y, z);
-                  double alpha = truth/sig;
-                  double alphaerr = truth/sig * sqrt(sigerr/sig*sigerr/sig + trutherr/truth*trutherr/truth);
-                  printf("   ^ alpha calculation: eta: %2i, vz: %2i, ntl: %2i, beta: %3.1f, alpha: %8.2f [%8.2f], raw/sig/truth: {%8.2f/%8.2f/%8.2f}\n", x, z, y, beta, alpha, alphaerr, raw, sig, truth);
+                  double alpha = truth/raw;
+                  double alphaerr = truth/raw * sqrt(rawerr/raw*rawerr/raw + trutherr/truth*trutherr/truth);
+                  printf("   ^ alpha calculation: eta: %2i, vz: %2i, ntl: %2i, alpha: %8.2f [%8.2f], raw/sig/truth: {%8.2f/%8.2f}\n", x, z, y, alpha, alphaerr, raw, truth);
 
                   if (alpha > 0 && ((alpha/alphaerr > 5 && alpha < 2.5) || (alpha < 1.5))) {
                      h3alpha->SetBinContent(x, y, z, alpha);
@@ -415,13 +374,11 @@ int plotFinalResult(int type,
 
          for (int y=1; y<=nTrackletBin; y++) {
             double raw = hEverything->GetBinContent(x, y, z);
-            double beta = h1beta[x-1][z-1]->GetBinContent(y);
-            double betaerr = h1beta[x-1][z-1]->GetBinError(y);
 
             double alpha = h1alpha[x-1][z-1]->GetBinContent(y);
             double alphaerr = h1alpha[x-1][z-1]->GetBinError(y);
 
-            printf("   ^ alpha application: eta: %2i, vz: %2i, ntl: %2i, beta: %3.1f, alpha: %8.2f [%8.2f], raw/sig: {%8.2f/%8.2f}\n", x, z, y, beta, alpha, alphaerr, raw, raw*(1-beta));
+            printf("   ^ alpha application: eta: %2i, vz: %2i, ntl: %2i, alpha: %8.2f [%8.2f], raw: {%8.2f}\n", x, z, y, alpha, alphaerr, raw);
 
             if (apply_geometry_corr) {
                double gaccepdata = haccepdata->GetBinContent(x, z);
@@ -460,11 +417,8 @@ int plotFinalResult(int type,
             h3alphafinal->SetBinContent(x, y, z, alpha);
             h3alphafinal->SetBinError(x, y, z, alphaerr);
 
-            double ncorr = raw*(1-beta)*alpha;
-            double ncorrerr = sqrt(alpha*alpha*(1-beta)*(1-beta)*raw + betaerr*betaerr*alpha*alpha*raw*raw);
-
-            hSubtracted->SetBinContent(x, y, z, raw*(1-beta));
-            hSubtracted->SetBinError(x, y, z, sqrt(raw*(1-beta)));
+            double ncorr = raw*alpha;
+            double ncorrerr = sqrt(alpha*alpha*raw + alpha*alpha*raw*raw);
 
             hCorrected->SetBinContent(x, y, z, ncorr);
             hCorrected->SetBinError(x, y, z, ncorrerr);
@@ -490,9 +444,6 @@ int plotFinalResult(int type,
 
                h3alphafinal->SetBinContent(x, y, z, 0);
                h3alphafinal->SetBinError(x, y, z, 0);
-
-               hSubtracted->SetBinContent(x, y, z, 0);
-               hSubtracted->SetBinError(x, y, z, 0);
 
                hCorrected->SetBinContent(x, y, z, 0);
                hCorrected->SetBinError(x, y, z, 0);
@@ -540,12 +491,6 @@ int plotFinalResult(int type,
    hUncorrected->Sumw2();
    hUncorrected->Scale(1. / nevent, "width");
    hUncorrected->Divide(hAcceptance0D);
-
-   TH1F* hBackgroundSubtracted = (TH1F*)hSubtracted->Project3D("x");
-   hBackgroundSubtracted->SetName("hBackgroundSubtracted");
-   hBackgroundSubtracted->Sumw2();
-   hBackgroundSubtracted->Scale(1. / nevent, "width");
-   hBackgroundSubtracted->Divide(hAcceptance0D);
 
    TH1F* hMeasured = (TH1F*)hCorrected->Project3D("x");
    hMeasured->SetName("hMeasured");
@@ -696,9 +641,6 @@ int plotFinalResult(int type,
    format(hUncorrected, 25, COLOUR2);
    hUncorrected->Draw("e x0 same");
 
-   format(hBackgroundSubtracted, 26, COLOUR3);
-   hBackgroundSubtracted->Draw("e x0 same");
-
    format(hMeasured, 32, COLOUR4);
    hMeasured->Draw("e x0 same");
 
@@ -716,7 +658,6 @@ int plotFinalResult(int type,
    l2->AddEntry((TObject*)0, Form("%s", label), "");
    l2->AddEntry(hTruthWOSelection, "Truth", "l");
    l2->AddEntry(hUncorrected, "Raw tracklets", "p");
-   l2->AddEntry(hBackgroundSubtracted, "Background subtracted", "p");
    l2->AddEntry(hMeasured, "Corrected for efficiency", "p");
    l2->AddEntry(hMeasuredTrigEffCorrected, "Corrected for trigger eff", "p");
    l2->AddEntry(hMeasuredFinal, "Final result", "p");
