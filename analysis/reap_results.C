@@ -210,8 +210,7 @@ int plotFinalResult(int type,
    hHadron->Sumw2();
    hHadronWOSelection->Sumw2();
 
-   hHadronAccepted = (TH3F*)hHadron->Clone();
-   hHadronAccepted->SetName("hHadronAccepted");
+   hHadronAccepted = (TH3F*)hHadron->Clone("hHadronAccepted");
 
    /* reconstructed tracklets                                                 */
    tinput->Project("hEverything", Form("vz[1]:%s:eta1", mult), "weight" * (ssel && esel));
@@ -525,8 +524,7 @@ int plotFinalResult(int type,
    TH1F* hTruthAccepted = (TH1F*)hHadronAccepted->Project3D("x");
    hTruthAccepted->SetName("hTruthAccepted");
 
-   TH1F* hTruth = (TH1F*)hTruthAccepted->Clone();
-   hTruth->SetName("hTruth");
+   TH1F* hTruth = (TH1F*)hTruthAccepted->Clone("hTruth");
    hTruth->Sumw2();
    hTruth->Scale(1. / nevent, "width");
    hTruth->Divide(hAcceptance0D);
@@ -667,8 +665,7 @@ int plotFinalResult(int type,
    hTruthWOSelection->SetStats(0);
    hTruthWOSelection->Draw("hist same");
 
-   TH1F* hMeasuredFinal = (TH1F*)hMeasuredTrigEffCorrected->Clone();
-   hMeasuredFinal->SetName("hMeasuredFinal");
+   TH1F* hMeasuredFinal = (TH1F*)hMeasuredTrigEffCorrected->Clone("hMeasuredFinal");
    hMeasuredFinal->Multiply(hEmptyEvtCorrection);
 
    format(hMeasuredFinal, 20, COLOUR1);
