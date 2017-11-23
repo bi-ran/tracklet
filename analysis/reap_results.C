@@ -708,7 +708,7 @@ int plotFinalResult(int type,
    hMeasured->Draw("e x0 same");
 
    format(hMeasuredTrigEffCorrected, 30, COLOUR5);
-   // hMeasuredTrigEffCorrected->Draw("e x0 same");
+   hMeasuredTrigEffCorrected->Draw("e x0 same");
 
    hMeasuredFinal->Draw("e x0 same");
 
@@ -723,7 +723,7 @@ int plotFinalResult(int type,
    l2->AddEntry(hUncorrected, "Raw tracklets", "p");
    l2->AddEntry(hBackgroundSubtracted, "Background subtracted", "p");
    l2->AddEntry(hMeasured, "Corrected for efficiency", "p");
-   // l2->AddEntry(hMeasuredTrigEffCorrected, "Corrected for trigger eff", "p");
+   l2->AddEntry(hMeasuredTrigEffCorrected, "Corrected for trigger eff", "p");
    l2->AddEntry(hMeasuredFinal, "Final result", "p");
    l2->Draw();
 
