@@ -336,7 +336,7 @@ int plotFinalResult(int type,
             t1->DrawLatexNDC(0.5, 1.0, Form("%.1f < v_{z} < %.1f", VzBins[z-1], VzBins[z]));
          }
 
-         cfalphavz->SaveAs(Form("figs/alpha/alphafit-%s-%i-eta-%i.png", label, type, x));
+         cfalphavz->SaveAs(Form("figs/fits/alphafit-%s-%i-eta-%i.png", label, type, x));
       }
 
       TCanvas* cfalphaeta = new TCanvas("cfalphaeta", "", 2000, 2400);
@@ -354,7 +354,7 @@ int plotFinalResult(int type,
             t1->DrawLatexNDC(0.5, 1.0, Form("%.1f < #eta < %.1f", EtaBins[x-1], EtaBins[x]));
          }
 
-         cfalphaeta->SaveAs(Form("figs/alpha/alphafit-%s-%i-vz-%i.png", label, type, z));
+         cfalphaeta->SaveAs(Form("figs/fits/alphafit-%s-%i-vz-%i.png", label, type, z));
       }
    }
 
