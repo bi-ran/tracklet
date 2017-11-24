@@ -19,6 +19,7 @@
 
 #include "include/acceptance.h"
 
+#define COLOUR0   (TColor::GetColor("#515151"))
 #define COLOUR1   (TColor::GetColor("#f2777a"))
 #define COLOUR2   (TColor::GetColor("#f99157"))
 #define COLOUR3   (TColor::GetColor("#ffcc66"))
@@ -220,7 +221,7 @@ int reap_results(int type,
 
    TCanvas* caccepin = new TCanvas("caccepin", "", CANVASW, CANVASH);
    h2amapxev->SetStats(0);
-   h2amapxev->Draw();
+   h2amapxev->Draw("colz");
    caccepin->SaveAs(Form("figs/acceptance/accep-input-%s-%i.png", label, type));
 
    /* vertex distribution                                                     */
@@ -329,13 +330,21 @@ int reap_results(int type,
       /* draw trigger efficiency                                              */
       TCanvas* ctrigger = new TCanvas("ctrigger", "", CANVASW, CANVASH);
       gPad->SetLogx();
+      h1teff->SetAxisRange(0, 1.2, "Y");
+      h1teff->SetMarkerStyle(38);
+      h1teff->SetMarkerColor(COLOUR4);
+      h1teff->SetLineColor(COLOUR4);
       h1teff->Draw();
       ctrigger->SaveAs(Form("figs/corrections/trigger-%s-%i.png", label, type));
 
       /* draw single-diffractive fraction                                     */
       TCanvas* csdf = new TCanvas("csdf", "", CANVASW, CANVASH);
       gPad->SetLogx();
-      h1sdf->Draw();
+      h1sdf->SetAxisRange(-0.05, 0.2, "Y");
+      h1sdf->SetMarkerStyle(40);
+      h1sdf->SetMarkerColor(COLOUR5);
+      h1sdf->SetLineColor(COLOUR5);
+      h1sdf->Draw("e0");
       csdf->SaveAs(Form("figs/corrections/sdfrac-%s-%i.png", label, type));
 
       /* draw alpha fits                                                      */
@@ -476,7 +485,7 @@ int reap_results(int type,
    /* draw acceptance                                                         */
    TCanvas* caccep = new TCanvas("caccep", "", CANVASW, CANVASH);
    h2amapxev->SetStats(0);
-   h2amapxev->Draw();
+   h2amapxev->Draw("colz");
    caccep->SaveAs(Form("figs/acceptance/accep-%s-%i.png", label, type));
 
    /* draw alpha                                                              */
@@ -601,6 +610,10 @@ int reap_results(int type,
 
       /* draw empty correction                                                */
       TCanvas* cempty = new TCanvas("cempty", "", CANVASW, CANVASH);
+      h1empty->SetAxisRange(0.8, 1.2, "Y");
+      h1empty->SetMarkerStyle(36);
+      h1empty->SetMarkerColor(COLOUR6);
+      h1empty->SetLineColor(COLOUR6);
       h1empty->Draw();
       cempty->SaveAs(Form("figs/corrections/empty-%s-%i.png", label, type));
    }
@@ -617,7 +630,7 @@ int reap_results(int type,
    hframe->SetYTitle("dN/d#eta");
    hframe->SetStats(0);
 
-   format(h1WGhadron, 1, 1);
+   format(h1WGhadron, 1, COLOUR0);
    format(h1WEraw, 25, COLOUR2);
    format(h1WEcorr, 26, COLOUR3);
    format(h1WEtcorr, 32, COLOUR4);
