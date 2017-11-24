@@ -176,6 +176,13 @@ int reap_results(int type,
       haccepdata = (TH2F*)faccep->Get("hdatacoarse");
    }
 
+   /* scratch canvas                                                          */
+   TCanvas* c1 = new TCanvas("c1", "scratch", 400, 400);
+   c1->Clear();
+
+   gStyle->SetOptStat(0);
+   gStyle->SetOptFit(101);
+
    /* nevents                                                                 */
    TH1F* h1WEGevent = new TH1F("h1WEGevent", "", nvz, vzb);
    int nWEGentry = tinput->Draw("vz[1]>>h1WEGevent", "weight" * (esel && gsel), "goff");
@@ -230,10 +237,6 @@ int reap_results(int type,
 
    /* reconstructed tracklets                                                 */
    tinput->Project("h3WEraw", Form("vz[1]:%s:eta1", mult), "weight" * (ssel && esel));
-
-   /* scratch canvas                                                          */
-   TCanvas* c1 = new TCanvas("c1", "scratch", 400, 400);
-   c1->Clear();
 
    /* calculate corrections                                                   */
    if (!apply_correction) {
@@ -458,8 +461,11 @@ int reap_results(int type,
       }
    }
 
-   gStyle->SetOptStat(0);
-   gStyle->SetOptFit(101);
+   /* draw acceptance                                                         */
+   TCanvas* caccep = new TCanvas("caccep", "", CANVASW, CANVASH);
+   h2amapxev->SetStats(0);
+   h2amapxev->Draw();
+   caccep->SaveAs(Form("figs/acceptance/accep-%s-%i.png", label, type));
 
    /* draw alpha                                                              */
    TCanvas* calpha = new TCanvas("calpha", "", CANVASW, CANVASH);
@@ -469,11 +475,17 @@ int reap_results(int type,
    h2alphafinal->Draw("colz");
    calpha->SaveAs(Form("figs/corrections/alpha-%s-%i.png", label, type));
 
-   /* draw acceptance                                                         */
-   TCanvas* caccep = new TCanvas("caccep", "", CANVASW, CANVASH);
-   h2amapxev->SetStats(0);
-   h2amapxev->Draw();
-   caccep->SaveAs(Form("figs/acceptance/accep-%s-%i.png", label, type));
+   /* draw trigger efficiency                                                 */
+   TCanvas* ctrigger = new TCanvas("ctrigger", "", CANVASW, CANVASH);
+   gPad->SetLogx();
+   h1teff->Draw();
+   ctrigger->SaveAs(Form("figs/corrections/trigger-%s-%i.png", label, type));
+
+   /* draw single-diffractive fraction                                        */
+   TCanvas* csdf = new TCanvas("csdf", "", CANVASW, CANVASH);
+   gPad->SetLogx();
+   h1sdf->Draw();
+   csdf->SaveAs(Form("figs/corrections/sdfrac-%s-%i.png", label, type));
 
    /* project 1d acceptance                                                   */
    TH1F* h1accep2xe = (TH1F*)h2amapxev->ProjectionX();
@@ -590,6 +602,11 @@ int reap_results(int type,
 
    TH1F* h1WEfinal = (TH1F*)h1WEtcorr->Clone("h1WEfinal");
    h1WEfinal->Multiply(h1empty);
+
+   /* draw empty correction                                                   */
+   TCanvas* cempty = new TCanvas("cempty", "", CANVASW, CANVASH);
+   h1empty->Draw();
+   cempty->SaveAs(Form("figs/corrections/empty-%s-%i.png", label, type));
 
    /* analysis stages                                                         */
    TCanvas* cstage = new TCanvas("cstage", "", CANVASW, CANVASH);
