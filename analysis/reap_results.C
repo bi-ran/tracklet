@@ -326,6 +326,18 @@ int reap_results(int type,
 
       /* vertexing efficiency                                                 */
 
+      /* draw trigger efficiency                                              */
+      TCanvas* ctrigger = new TCanvas("ctrigger", "", CANVASW, CANVASH);
+      gPad->SetLogx();
+      h1teff->Draw();
+      ctrigger->SaveAs(Form("figs/corrections/trigger-%s-%i.png", label, type));
+
+      /* draw single-diffractive fraction                                     */
+      TCanvas* csdf = new TCanvas("csdf", "", CANVASW, CANVASH);
+      gPad->SetLogx();
+      h1sdf->Draw();
+      csdf->SaveAs(Form("figs/corrections/sdfrac-%s-%i.png", label, type));
+
       /* draw alpha fits                                                      */
       TH1D* halphaframe = new TH1D("halphaframe", "", 1, 1, 12000);
       halphaframe->SetXTitle("multiplicity");
@@ -475,18 +487,6 @@ int reap_results(int type,
    h2alphafinal->Draw("colz");
    calpha->SaveAs(Form("figs/corrections/alpha-%s-%i.png", label, type));
 
-   /* draw trigger efficiency                                                 */
-   TCanvas* ctrigger = new TCanvas("ctrigger", "", CANVASW, CANVASH);
-   gPad->SetLogx();
-   h1teff->Draw();
-   ctrigger->SaveAs(Form("figs/corrections/trigger-%s-%i.png", label, type));
-
-   /* draw single-diffractive fraction                                        */
-   TCanvas* csdf = new TCanvas("csdf", "", CANVASW, CANVASH);
-   gPad->SetLogx();
-   h1sdf->Draw();
-   csdf->SaveAs(Form("figs/corrections/sdfrac-%s-%i.png", label, type));
-
    /* project 1d acceptance                                                   */
    TH1F* h1accep2xe = (TH1F*)h2amapxev->ProjectionX();
    h1accep2xe->SetName("h1accep2xe");
@@ -598,15 +598,15 @@ int reap_results(int type,
    if (!apply_correction) {
       h1empty = (TH1F*)h1WGhadron->Clone("h1empty");
       h1empty->Divide(h1WEtcorr);
+
+      /* draw empty correction                                                */
+      TCanvas* cempty = new TCanvas("cempty", "", CANVASW, CANVASH);
+      h1empty->Draw();
+      cempty->SaveAs(Form("figs/corrections/empty-%s-%i.png", label, type));
    }
 
    TH1F* h1WEfinal = (TH1F*)h1WEtcorr->Clone("h1WEfinal");
    h1WEfinal->Multiply(h1empty);
-
-   /* draw empty correction                                                   */
-   TCanvas* cempty = new TCanvas("cempty", "", CANVASW, CANVASH);
-   h1empty->Draw();
-   cempty->SaveAs(Form("figs/corrections/empty-%s-%i.png", label, type));
 
    /* analysis stages                                                         */
    TCanvas* cstage = new TCanvas("cstage", "", CANVASW, CANVASH);
