@@ -64,8 +64,6 @@ int plotFinalResult(int type,
    if (apply_ext_accep_map)
       printf("$ applying external acceptance maps\n");
 
-   TH1::SetDefaultSumw2();
-
    TFile* fcorr = 0;
    TFile* faccep = 0;
    if (apply_correction) {
@@ -108,6 +106,8 @@ int plotFinalResult(int type,
 
    /* output                                                                  */
    TFile* outf = new TFile(Form("correction-%s-%i.root", label, type), "recreate");
+
+   TH1::SetDefaultSumw2();
 
    /* declare histograms */
    TH3F* h3alpha = new TH3F("h3alpha", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
@@ -192,7 +192,6 @@ int plotFinalResult(int type,
    caccepin->SaveAs(Form("figs/accep/accep-input-%s-%i.png", label, type));
 
    /* fit vertex distribution                                                 */
-   h1WEvz->Sumw2();
    h1WEvz->Scale(1. / h1WEvz->GetEntries());
    h1WEvz->Fit("gaus");
    h1WEvz->SetXTitle("v_{z} (cm)");
@@ -200,16 +199,12 @@ int plotFinalResult(int type,
 
    /* truth-level hadrons                                                     */
    tinput->Project("h3WEHhadron", Form("vz[1]:%s:eta", mult), "weight" * (esel && "abs(eta)<3"));
-   h3WEHhadron->Sumw2();
-
    tinput->Project("h3WGHhadron", Form("vz[1]:%s:eta", mult), "weight" * (gsel && "abs(eta)<3"));
-   h3WGHhadron->Sumw2();
 
    h3WEHaccepted = (TH3F*)h3WEHhadron->Clone("h3WEHaccepted");
 
    /* reconstructed tracklets                                                 */
    tinput->Project("h3WSEraw", Form("vz[1]:%s:eta1", mult), "weight" * (ssel && esel));
-   h3WSEraw->Sumw2();
 
    TH2F* haccepmc = 0;
    TH2F* haccepdata = 0;
@@ -303,18 +298,14 @@ int plotFinalResult(int type,
 
       /* offline selection                                                    */
       tinput->Project("h1WGOXteff", Form("%s", mult), "weight" * (gsel && osel && "vz[1]>-99"));
-      h1WGOXteff->Sumw2();
       tinput->Project("h1WGXteff", Form("%s", mult), "weight" * (gsel && "vz[1]>-99"));
-      h1WGXteff->Sumw2();
 
       h1teff = (TH1F*)h1WGOXteff->Clone("h1teff");
       h1teff->Divide(h1WGXteff);
 
       /* sd fraction (complement of gen selection)                            */
       tinput->Project("h1WENGsdf", Form("%s", mult), "weight" * (esel && !gsel));
-      h1WENGsdf->Sumw2();
       tinput->Project("h1WEsdf", Form("%s", mult), "weight" * esel);
-      h1WEsdf->Sumw2();
 
       h1sdf = (TH1F*)h1WENGsdf->Clone("h1sdf");
       h1sdf->Divide(h1WEsdf);
@@ -478,30 +469,27 @@ int plotFinalResult(int type,
    /* truth within acceptance                                                 */
    TH1F* h1WEHaccepted = (TH1F*)h3WEHaccepted->Project3D("x");
    h1WEHaccepted->SetName("h1WEHaccepted");
-   h1WEHaccepted->Sumw2();
    h1WEHaccepted->Scale(1. / nWEGevent, "width");
    h1WEHaccepted->Divide(h1accep2xe);
 
+   /* measured                                                                */
    TH1F* h1WSEraw = (TH1F*)h3WSEraw->Project3D("x");
    h1WSEraw->SetName("h1WSEraw");
-   h1WSEraw->Sumw2();
    h1WSEraw->Scale(1. / nWEGevent, "width");
    h1WSEraw->Divide(h1accep2xe);
 
    TH1F* h1WSEcorr = (TH1F*)h3WSEcorr->Project3D("x");
    h1WSEcorr->SetName("h1WSEcorr");
-   h1WSEcorr->Sumw2();
    h1WSEcorr->Scale(1. / nWEGevent, "width");
    h1WSEcorr->Divide(h1accep2xe);
 
+   /* truth                                                                   */
    TH1F* h1WGHhadron = (TH1F*)h3WGHhadron->Project3D("x");
    h1WGHhadron->SetName("h1WGHhadron");
-   h1WGHhadron->Sumw2();
    h1WGHhadron->Scale(1. / nWGevent, "width");
 
    TH1F* h1WGHhadronxm = (TH1F*)h3WGHhadron->Project3D("y");
    h1WGHhadronxm->SetName("h1WGHhadronxm");
-   h1WGHhadronxm->Sumw2();
    h1WGHhadronxm->Scale(1. / nWGevent, "width");
 
    /* alternate calculation                                                   */
