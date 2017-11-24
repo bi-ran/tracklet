@@ -75,7 +75,7 @@ int assess_acceps(int type, std::string data_list, std::string mc_list) {
     hmc->SetStats(0);
     hmc->Draw("colz");
 
-    c1->SaveAs(Form("figs/accep/geoaccep-%i-fine.png", type));
+    c1->SaveAs(Form("figs/acceptance/geometric-%i-fine.png", type));
 
     TCanvas* c2 = new TCanvas("c2", "", 600, 600);
     TH2D* hratio = (TH2D*)hdatacoarse->Clone("hratio");
@@ -83,7 +83,7 @@ int assess_acceps(int type, std::string data_list, std::string mc_list) {
     hratio->SetStats(0);
     hratio->Draw("colz");
 
-    c2->SaveAs(Form("figs/accep/geoaccep-%i.png", type));
+    c2->SaveAs(Form("figs/acceptance/geometric-%i.png", type));
 
     fout->Write("", TObject::kOverwrite);
 

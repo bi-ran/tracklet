@@ -109,22 +109,22 @@ int reap_results(int type,
 
    TH1::SetDefaultSumw2();
 
-   /* declare histograms */
-   TH3F* h3alpha = new TH3F("h3alpha", "", neta, etab, nmult, multb, nvz, vzb);
-   TH3F* h3alphafinal = new TH3F("h3alphafinal", "", neta, etab, nmult, multb, nvz, vzb);
-
-   TH3F* h3WEraw = new TH3F("h3WEraw", "", neta, etab, nmult, multb, nvz, vzb);
-   TH3F* h3WEcorr = new TH3F("h3WEcorr", "", neta, etab, nmult, multb, nvz, vzb);
-
+   /* declare histograms                                                      */
    TH3F* h3WEhadron = new TH3F("h3WEhadron", "", neta, etab, nmult, multb, nvz, vzb);
    TH3F* h3WEtruth = new TH3F("h3WEtruth", "", neta, etab, nmult, multb, nvz, vzb);
    TH3F* h3WGhadron = new TH3F("h3WGhadron", "", neta, etab, nmult, multb, nvz, vzb);
 
-   TH2F* h2amapxev = new TH2F("h2amapxev", "", neta, etab, nvz, vzb);
-   TH3F* h3amapxemv = new TH3F("h3amapxemv", "", neta, etab, nmult, multb, nvz, vzb);
+   TH3F* h3WEraw = new TH3F("h3WEraw", "", neta, etab, nmult, multb, nvz, vzb);
+   TH3F* h3WEcorr = new TH3F("h3WEcorr", "", neta, etab, nmult, multb, nvz, vzb);
+
+   TH3F* h3alpha = new TH3F("h3alpha", "", neta, etab, nmult, multb, nvz, vzb);
+   TH3F* h3alphafinal = new TH3F("h3alphafinal", "", neta, etab, nmult, multb, nvz, vzb);
 
    TH1F* h1WEvz = new TH1F("h1WEvz", "", nvz, vzb);
    TH2F* h1WEvzmult = new TH2F("h1WEvzmult", "", nvz, vzb, nmult, multb);
+
+   TH2F* h2amapxev = new TH2F("h2amapxev", "", neta, etab, nvz, vzb);
+   TH3F* h3amapxemv = new TH3F("h3amapxemv", "", neta, etab, nmult, multb, nvz, vzb);
 
    TH1F* h1teff = new TH1F("h1teff", "", nmult, multb);
    TH1F* h1WGOXteff = new TH1F("h1WGOXteff", "", nmult, multb);
@@ -214,15 +214,15 @@ int reap_results(int type,
    TCanvas* caccepin = new TCanvas("caccepin", "", CANVASW, CANVASH);
    h2amapxev->SetStats(0);
    h2amapxev->Draw();
-   caccepin->SaveAs(Form("figs/accep/accep-input-%s-%i.png", label, type));
+   caccepin->SaveAs(Form("figs/acceptance/accep-input-%s-%i.png", label, type));
 
-   /* fit vertex distribution                                                 */
+   /* vertex distribution                                                     */
    h1WEvz->Scale(1. / h1WEvz->GetEntries());
    h1WEvz->Fit("gaus");
    h1WEvz->SetXTitle("v_{z} (cm)");
    h1WEvz->SetStats(0);
 
-   /* truth-level hadrons                                                     */
+   /* generator-level hadrons                                                 */
    tinput->Project("h3WEhadron", Form("vz[1]:%s:eta", mult), "weight" * (esel && "abs(eta)<3"));
    tinput->Project("h3WGhadron", Form("vz[1]:%s:eta", mult), "weight" * (gsel && "abs(eta)<3"));
 
@@ -231,6 +231,7 @@ int reap_results(int type,
    /* reconstructed tracklets                                                 */
    tinput->Project("h3WEraw", Form("vz[1]:%s:eta1", mult), "weight" * (ssel && esel));
 
+   /* scratch canvas                                                          */
    TCanvas* c1 = new TCanvas("c1", "scratch", 400, 400);
    c1->Clear();
 
@@ -322,7 +323,7 @@ int reap_results(int type,
 
       /* vertexing efficiency                                                 */
 
-      /* alpha plots                                                          */
+      /* draw alpha fits                                                      */
       TH1D* halphaframe = new TH1D("halphaframe", "", 1, 1, 12000);
       halphaframe->SetXTitle("multiplicity");
       halphaframe->SetYTitle("#alpha");
@@ -460,18 +461,21 @@ int reap_results(int type,
    gStyle->SetOptStat(0);
    gStyle->SetOptFit(101);
 
+   /* draw alpha                                                              */
    TCanvas* calpha = new TCanvas("calpha", "", CANVASW, CANVASH);
    TH2D* h2alphafinal = (TH2D*)h3alphafinal->Project3D("zx");
    h2alphafinal->SetName("h2alphafinal");
    h2alphafinal->Scale(1. / nmult);
    h2alphafinal->Draw("colz");
-   calpha->SaveAs(Form("figs/alpha/alpha-%s-%i.png", label, type));
+   calpha->SaveAs(Form("figs/corrections/alpha-%s-%i.png", label, type));
 
+   /* draw acceptance                                                         */
    TCanvas* caccep = new TCanvas("caccep", "", CANVASW, CANVASH);
    h2amapxev->SetStats(0);
    h2amapxev->Draw();
-   caccep->SaveAs(Form("figs/accep/accep-%s-%i.png", label, type));
+   caccep->SaveAs(Form("figs/acceptance/accep-%s-%i.png", label, type));
 
+   /* project 1d acceptance                                                   */
    TH1F* h1accep2xe = (TH1F*)h2amapxev->ProjectionX();
    h1accep2xe->SetName("h1accep2xe");
    h1accep2xe->Scale(1. / h1accep2xe->GetMaximum());
@@ -482,7 +486,7 @@ int reap_results(int type,
    h1WEtruth->Scale(1. / nWEGevent, "width");
    h1WEtruth->Divide(h1accep2xe);
 
-   /* measured                                                                */
+   /* reconstructed tracklets                                                 */
    TH1F* h1WEraw = (TH1F*)h3WEraw->Project3D("x");
    h1WEraw->SetName("h1WEraw");
    h1WEraw->Scale(1. / nWEGevent, "width");
@@ -493,7 +497,7 @@ int reap_results(int type,
    h1WEcorr->Scale(1. / nWEGevent, "width");
    h1WEcorr->Divide(h1accep2xe);
 
-   /* truth                                                                   */
+   /* generator-level hadrons                                                 */
    TH1F* h1WGhadron = (TH1F*)h3WGhadron->Project3D("x");
    h1WGhadron->SetName("h1WGhadron");
    h1WGhadron->Scale(1. / nWGevent, "width");
@@ -502,7 +506,7 @@ int reap_results(int type,
    h1WGhadronxm->SetName("h1WGhadronxm");
    h1WGhadronxm->Scale(1. / nWGevent, "width");
 
-   /* alternate calculation                                                   */
+   /* calculate final results                                                 */
    TH2F* h2WEtcorr = new TH2F("h2WEtcorr", "", neta, etab, nmult, multb);
    TH2F* h2WEttruth = new TH2F("h2WEttruth", "", neta, etab, nmult, multb);
 
@@ -556,7 +560,7 @@ int reap_results(int type,
       }
    }
 
-   /* correct 2d acceptances                                                  */
+   /* project 2d acceptances                                                  */
    TH1F* h1accep3xe = (TH1F*)h3amapxemv->Project3D("x");
    h1accep3xe->SetName("h1accep3xe");
 
@@ -578,6 +582,7 @@ int reap_results(int type,
    h1WEttruth->Scale(1., "width");
    h1WEttruth->Divide(h1accep3xe);
 
+   /* calculate/apply empty correction                                        */
    if (!apply_correction) {
       h1empty = (TH1F*)h1WGhadron->Clone("h1empty");
       h1empty->Divide(h1WEtcorr);
@@ -586,13 +591,11 @@ int reap_results(int type,
    TH1F* h1WEfinal = (TH1F*)h1WEtcorr->Clone("h1WEfinal");
    h1WEfinal->Multiply(h1empty);
 
-   bool extendaxis = cmax - cmin < 5;
-
    /* analysis stages                                                         */
    TCanvas* cstage = new TCanvas("cstage", "", CANVASW, CANVASH);
 
    TH1F* hframe = new TH1F("hframe", "", 1, -3, 3);
-   hframe->SetAxisRange(0, extendaxis ? 2000 : 600, "Y");
+   hframe->SetAxisRange(0, cmax - cmin < 5 ? 2000 : 600, "Y");
    hframe->SetXTitle("#eta");
    hframe->SetYTitle("dN/d#eta");
    hframe->SetStats(0);
