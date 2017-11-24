@@ -137,19 +137,12 @@ int plotFinalResult(int type,
    TH1F* h1empty = new TH1F("h1empty", "", nEtaBin, EtaBins);
 
    TH1F* h1alpha[nEtaBin][nVzBin];
-   TH1F* h1alphaerr[nEtaBin][nVzBin];
-
-   for (int i=0; i<nEtaBin; i++) {
-      for (int j=0; j<nVzBin; j++) {
+   for (int i=0; i<nEtaBin; i++)
+      for (int j=0; j<nVzBin; j++)
          h1alpha[i][j] = new TH1F(Form("alpha_%i_%i", i, j), "", nTrackletBin, TrackletBins);
-         h1alphaerr[i][j] = new TH1F(Form("alphaerr_%i_%i", i, j), "", nTrackletBin, TrackletBins);
-      }
-   }
 
    TF1* fitalpha[nEtaBin][nVzBin];
-   TF1* fitalphaerr[nEtaBin][nVzBin];
    TF1* falpha[nEtaBin][nVzBin];
-   TF1* falphaerr[nEtaBin][nVzBin];
 
    if (apply_correction) {
       h2amapxev = (TH2F*)fcorr->Get("h2amapxev")->Clone();
@@ -233,9 +226,7 @@ int plotFinalResult(int type,
       for (int i=0; i<nEtaBin; i++) {
          for (int j=0; j<nVzBin; j++) {
             h1alpha[i][j] = (TH1F*)fcorr->FindObjectAny(Form("alpha_%i_%i", i, j));
-            h1alphaerr[i][j] = (TH1F*)fcorr->FindObjectAny(Form("alphaerr_%i_%i", i, j));
             falpha[i][j] = (TF1*)fcorr->FindObjectAny(Form("fitalpha_%i_%i", i, j));
-            falphaerr[i][j] = (TF1*)fcorr->FindObjectAny(Form("fitalphaerr_%i_%i", i, j));
          }
       }
    } else {
@@ -251,13 +242,13 @@ int plotFinalResult(int type,
             for (int y=1; y<=nTrackletBin; y++) {
                h1alpha[x-1][z-1]->SetBinContent(y, 0);
                h1alpha[x-1][z-1]->SetBinError(y, 0);
-               h1alphaerr[x-1][z-1]->SetBinContent(y, 0);
 
                if (h3WSEraw->GetBinContent(x, y, z) != 0 && h3WEHhadron->GetBinContent(x, y, z) != 0) {
                   double raw = h3WSEraw->GetBinContent(x, y, z);
                   double rawerr = h3WSEraw->GetBinError(x, y, z);
                   double truth = h3WEHhadron->GetBinContent(x, y, z);
                   double trutherr = h3WEHhadron->GetBinError(x, y, z);
+
                   double alpha = truth/raw;
                   double alphaerr = truth/raw * sqrt(rawerr/raw*rawerr/raw + trutherr/truth*trutherr/truth);
                   printf("   ^ alpha calculation: eta: %2i, vz: %2i, ntl: %2i, alpha: %8.2f [%8.2f], raw/sig/truth: {%8.2f/%8.2f}\n", x, z, y, alpha, alphaerr, raw, truth);
@@ -267,7 +258,6 @@ int plotFinalResult(int type,
                      h3alpha->SetBinError(x, y, z, alphaerr);
                      h1alpha[x-1][z-1]->SetBinContent(y, alpha);
                      h1alpha[x-1][z-1]->SetBinError(y, alphaerr);
-                     h1alphaerr[x-1][z-1]->SetBinContent(y, alphaerr);
                   } else {
                      printf("     ! alpha not used\n");
                   }
@@ -297,14 +287,11 @@ int plotFinalResult(int type,
             fitalpha[i][j]->SetParLimits(2, 0, 9999);
             fitalpha[i][j]->SetParLimits(3, -9999, 0);
             fitalpha[i][j]->SetParLimits(4, 0, 0.0001);
+
             h1alpha[i][j]->Fit(fitalpha[i][j], "M Q", "", 25, 10000);
             h1alpha[i][j]->Fit(fitalpha[i][j], "M E Q", "", 25, 10000);
 
-            fitalphaerr[i][j] = new TF1(Form("fitalphaerr_%i_%i", i, j), "[0]+[1]/x+[2]*exp([3]*x)", 25, 10000);
-            h1alphaerr[i][j]->Fit(fitalphaerr[i][j], "M E Q", "", 25, 10000);
-
             falpha[i][j] = h1alpha[i][j]->GetFunction(Form("fitalpha_%i_%i", i, j));
-            falphaerr[i][j] = h1alphaerr[i][j]->GetFunction(Form("fitalphaerr_%i_%i", i, j));
          }
       }
 
@@ -649,12 +636,10 @@ int plotFinalResult(int type,
    ccompare->Draw();
    ccompare->SaveAs(Form("figs/compare/compare-%s-%i.png", label, type));
 
-   for (int i=0; i<nEtaBin; i++) {
-      for (int j=0; j<nVzBin; j++) {
-         if (falpha[i][j]) falpha[i][j]->Write();
-         if (falphaerr[i][j]) falphaerr[i][j]->Write();
-      }
-   }
+   for (int i=0; i<nEtaBin; i++)
+      for (int j=0; j<nVzBin; j++)
+         if (falpha[i][j])
+            falpha[i][j]->Write();
 
    outf->Write("", TObject::kOverwrite);
 
