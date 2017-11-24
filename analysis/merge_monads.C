@@ -52,7 +52,7 @@ int merge_monads(const char* label) {
 #define OPEN(q, w)                                                            \
    TFile* f##q##w = new TFile(Form("output/correction-%s-" #q #w ".root",     \
          label));                                                             \
-   TH1F* h##q##w = (TH1F*)f##q##w->Get("h1WSEfinal")->Clone("h" #q #w);       \
+   TH1F* h##q##w = (TH1F*)f##q##w->Get("h1WEfinal")->Clone("h" #q #w);        \
 
    TRACKLETS(OPEN)
 
