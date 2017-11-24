@@ -521,29 +521,24 @@ int plotFinalResult(int type,
    }
 
    /* apply trigger, sd fraction corrections                                  */
-   for (int x=1; x<=nEtaBin; x++) {
-      for (int y=1; y<=nTrackletBin; y++) {
-         double SDFrac = h1sdf->GetBinContent(y);
-         double TrigEff = h1teff->GetBinContent(y);
-
-         if (TrigEff != 0) {
-            h2WEtcorr->SetBinContent(x, y, h2WEtcorr->GetBinContent(x, y)/TrigEff*(1-SDFrac*SDMULT));
-            h2WEtcorr->SetBinError(x, y, h2WEtcorr->GetBinError(x, y)/TrigEff*(1-SDFrac*SDMULT));
-            h2WEttruth->SetBinContent(x, y, h2WEttruth->GetBinContent(x, y)/TrigEff*(1-SDFrac*SDMULT));
-            h2WEttruth->SetBinError(x, y, h2WEttruth->GetBinError(x, y)/TrigEff*(1-SDFrac*SDMULT));
-         }
-      }
-   }
-
    for (int y=1; y<=nTrackletBin; y++) {
-      double SDFrac = h1sdf->GetBinContent(y);
-      double TrigEff = h1teff->GetBinContent(y);
+      double sdfrac = h1sdf->GetBinContent(y);
+      double trigeff = h1teff->GetBinContent(y);
+
+      double totalc = (1 - sdfrac * SDMULT) / trigeff;
 
       for (int x=1; x<=nEtaBin; x++) {
+         if (trigeff != 0) {
+            h2WEtcorr->SetBinContent(x, y, h2WEtcorr->GetBinContent(x, y) * totalc);
+            h2WEtcorr->SetBinError(x, y, h2WEtcorr->GetBinError(x, y) * totalc);
+            h2WEttruth->SetBinContent(x, y, h2WEttruth->GetBinContent(x, y) * totalc);
+            h2WEttruth->SetBinError(x, y, h2WEttruth->GetBinError(x, y) * totalc);
+         }
+
          for (int z=1; z<=nVzBin; z++) {
             if (h2amapxev->GetBinContent(x, z) != 0) {
-               if (TrigEff != 0)
-                  h3amapxemv->SetBinContent(x, y, z, h3amapxemv->GetBinContent(x, y, z)/TrigEff*(1-SDFrac*SDMULT));
+               if (trigeff != 0)
+                  h3amapxemv->SetBinContent(x, y, z, h3amapxemv->GetBinContent(x, y, z) * totalc);
             } else {
                h3amapxemv->SetBinContent(x, y, z, 0);
             }
