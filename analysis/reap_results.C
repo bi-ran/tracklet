@@ -1,6 +1,6 @@
 #define CANVASW 600
 #define CANVASH 600
-#define SDMULT 0
+#define SDMULT 1
 
 #include "TFile.h"
 #include "TTree.h"
@@ -100,7 +100,7 @@ int reap_results(int type,
    TCut csel = Form("(cbin>=%i && cbin<%i)", cmin, cmax);
    TCut vsel = "(vz[1]<15 && vz[1]>-15)";
    TCut osel = "(hlt && nhfn>0 && nhfp>0)";
-   TCut gsel = "(1)";
+   TCut gsel = "(process!=102 && process!=103 && process!=104)";
 
    TCut esel = vsel && osel && csel;
 
