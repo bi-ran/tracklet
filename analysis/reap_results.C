@@ -39,14 +39,14 @@ void format(TH1* h1, int style, int col) {
    h1->GetYaxis()->CenterTitle();
 }
 
-int plotFinalResult(int type,
-                    const char* input,
-                    const char* label,
-                    const char* clabel = 0,              // correction file label
-                    bool apply_correction = 0,           // apply external corrections
-                    int cmin = 0, int cmax = 20,         // centrality selection
-                    bool apply_geometry_corr = 0,        // apply geometric correction
-                    bool apply_ext_accep_map = 0)        // use predefined acceptance map
+int reap_results(int type,
+                 const char* input,
+                 const char* label,
+                 const char* clabel = 0,        // correction file label
+                 bool apply_correction = 0,     // apply external corrections
+                 int cmin = 0, int cmax = 20,   // centrality selection
+                 bool apply_geometry_corr = 0,  // apply geometric correction
+                 bool apply_ext_accep_map = 0)  // use predefined acceptance map
 {
    TFile* finput = new TFile(input, "read");
    TTree* tinput = (TTree*)finput->Get(Form("TrackletTree%i", type));
@@ -74,25 +74,25 @@ int plotFinalResult(int type,
    }
 
    /* binning                                                                 */
-   const int nTrackletBin = 15;
-   double TrackletBins[nTrackletBin+1] = {
+   const int nmult = 15;
+   double multb[nmult + 1] = {
           0,   25,   50,  100,  200,
         360,  500,  750, 1200, 1800,
        2400, 3200, 4000, 5400, 7500,
       12000
    };
 
-   const int nEtaBin = 30;
-   double EtaBins[nEtaBin+1];
-   for (int i=0; i<=nEtaBin; i++)
-      EtaBins[i] = i*6.0/nEtaBin-3.0;
+   const int neta = 30;
+   double etab[neta + 1];
+   for (int i=0; i<=neta; i++)
+      etab[i] = i * 6.0 / neta - 3.0;
 
-   const int nVzBin = 15;
-   double VzBins[nVzBin+1];
-   double VzRangeH = 15;
-   double VzRangeL = -15;
-   for (int i=0; i<=nVzBin; i++)
-      VzBins[i] = i*(VzRangeH-VzRangeL)/nVzBin+VzRangeL;
+   const int nvz = 15;
+   double vzb[nvz+1];
+   double vzmax = 15;
+   double vzmin = -15;
+   for (int i=0; i<=nvz; i++)
+      vzb[i] = i * (vzmax - vzmin) / nvz + vzmin;
 
    /* selections                                                              */
    float signal_region = 0.25;
@@ -110,53 +110,68 @@ int plotFinalResult(int type,
    TH1::SetDefaultSumw2();
 
    /* declare histograms */
-   TH3F* h3alpha = new TH3F("h3alpha", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
-   TH3F* h3alphafinal = new TH3F("h3alphafinal", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
+   TH3F* h3alpha = new TH3F("h3alpha", "", neta, etab, nmult, multb, nvz, vzb);
+   TH3F* h3alphafinal = new TH3F("h3alphafinal", "", neta, etab, nmult, multb, nvz, vzb);
 
-   TH3F* h3WEraw = new TH3F("h3WEraw", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
-   TH3F* h3WEcorr = new TH3F("h3WEcorr", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
+   TH3F* h3WEraw = new TH3F("h3WEraw", "", neta, etab, nmult, multb, nvz, vzb);
+   TH3F* h3WEcorr = new TH3F("h3WEcorr", "", neta, etab, nmult, multb, nvz, vzb);
 
-   TH3F* h3WEhadron = new TH3F("h3WEhadron", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
-   TH3F* h3WEtruth = new TH3F("h3WEtruth", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
-   TH3F* h3WGhadron = new TH3F("h3WGhadron", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
+   TH3F* h3WEhadron = new TH3F("h3WEhadron", "", neta, etab, nmult, multb, nvz, vzb);
+   TH3F* h3WEtruth = new TH3F("h3WEtruth", "", neta, etab, nmult, multb, nvz, vzb);
+   TH3F* h3WGhadron = new TH3F("h3WGhadron", "", neta, etab, nmult, multb, nvz, vzb);
 
-   TH2F* h2amapxev = new TH2F("h2amapxev", "", nEtaBin, EtaBins, nVzBin, VzBins);
-   TH3F* h3amapxemv = new TH3F("h3amapxemv", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins, nVzBin, VzBins);
+   TH2F* h2amapxev = new TH2F("h2amapxev", "", neta, etab, nvz, vzb);
+   TH3F* h3amapxemv = new TH3F("h3amapxemv", "", neta, etab, nmult, multb, nvz, vzb);
 
-   TH1F* h1WEvz = new TH1F("h1WEvz", "", nVzBin, VzBins);
-   TH2F* h1WEvzmult = new TH2F("h1WEvzmult", "", nVzBin, VzBins, nTrackletBin, TrackletBins);
+   TH1F* h1WEvz = new TH1F("h1WEvz", "", nvz, vzb);
+   TH2F* h1WEvzmult = new TH2F("h1WEvzmult", "", nvz, vzb, nmult, multb);
 
-   TH1F* h1teff = new TH1F("h1teff", "", nTrackletBin, TrackletBins);
-   TH1F* h1WGOXteff = new TH1F("h1WGOXteff", "", nTrackletBin, TrackletBins);
-   TH1F* h1WGXteff = new TH1F("h1WGXteff", "", nTrackletBin, TrackletBins);
+   TH1F* h1teff = new TH1F("h1teff", "", nmult, multb);
+   TH1F* h1WGOXteff = new TH1F("h1WGOXteff", "", nmult, multb);
+   TH1F* h1WGXteff = new TH1F("h1WGXteff", "", nmult, multb);
 
-   TH1F* h1sdf = new TH1F("h1sdf", "", nTrackletBin, TrackletBins);
-   TH1F* h1WEsdf = new TH1F("h1WEsdf", "", nTrackletBin, TrackletBins);
-   TH1F* h1WENGsdf = new TH1F("h1WENGsdf", "", nTrackletBin, TrackletBins);
+   TH1F* h1sdf = new TH1F("h1sdf", "", nmult, multb);
+   TH1F* h1WEsdf = new TH1F("h1WEsdf", "", nmult, multb);
+   TH1F* h1WENGsdf = new TH1F("h1WENGsdf", "", nmult, multb);
 
-   TH1F* h1empty = new TH1F("h1empty", "", nEtaBin, EtaBins);
+   TH1F* h1empty = new TH1F("h1empty", "", neta, etab);
 
-   TH1F* h1alpha[nEtaBin][nVzBin];
-   for (int i=0; i<nEtaBin; i++)
-      for (int j=0; j<nVzBin; j++)
-         h1alpha[i][j] = new TH1F(Form("alpha_%i_%i", i, j), "", nTrackletBin, TrackletBins);
+   TH1F* h1alpha[neta][nvz];
+   for (int i=0; i<neta; i++)
+      for (int j=0; j<nvz; j++)
+         h1alpha[i][j] = new TH1F(Form("alpha_%i_%i", i, j), "", nmult, multb);
 
-   TF1* fitalpha[nEtaBin][nVzBin];
-   TF1* falpha[nEtaBin][nVzBin];
+   TF1* fitalpha[neta][nvz];
+   TF1* falpha[neta][nvz];
 
    if (apply_correction) {
       h2amapxev = (TH2F*)fcorr->Get("h2amapxev")->Clone();
       h1teff = (TH1F*)fcorr->Get("h1teff")->Clone();
       h1sdf = (TH1F*)fcorr->Get("h1sdf")->Clone();
       h1empty = (TH1F*)fcorr->Get("h1empty")->Clone();
+
+      for (int i=0; i<neta; i++) {
+         for (int j=0; j<nvz; j++) {
+            h1alpha[i][j] = (TH1F*)fcorr->Get(Form("alpha_%i_%i", i, j));
+            falpha[i][j] = (TF1*)fcorr->Get(Form("fitalpha_%i_%i", i, j));
+         }
+      }
+   }
+
+   TH2F* haccepmc = 0;
+   TH2F* haccepdata = 0;
+
+   if (apply_geometry_corr) {
+      haccepmc = (TH2F*)faccep->Get("hmccoarse");
+      haccepdata = (TH2F*)faccep->Get("hdatacoarse");
    }
 
    /* nevents                                                                 */
-   TH1F* h1WEGevent = new TH1F("h1WEGevent", "", nVzBin, VzBins);
+   TH1F* h1WEGevent = new TH1F("h1WEGevent", "", nvz, vzb);
    int nWEGentry = tinput->Draw("vz[1]>>h1WEGevent", "weight" * (esel && gsel), "goff");
    float nWEGevent = h1WEGevent->Integral(0, h1WEGevent->GetNbinsX() + 1);
 
-   TH1F* h1WGevent = new TH1F("h1WGevent", "", nVzBin, VzBins);
+   TH1F* h1WGevent = new TH1F("h1WGevent", "", nvz, vzb);
    tinput->Draw("vz[1]>>h1WGevent", "weight" * (gsel), "goff");
    float nWGevent = h1WGevent->Integral(0, h1WGevent->GetNbinsX() + 1);
 
@@ -169,10 +184,10 @@ int plotFinalResult(int type,
 
    const int* amap = ext_accep_map(type);
 
-   for (int i=1; i<=nEtaBin; i++) {
-      for (int j=1; j<=nVzBin; j++) {
+   for (int i=1; i<=neta; i++) {
+      for (int j=1; j<=nvz; j++) {
          if (!apply_correction || h2amapxev->GetBinContent(i, j) != 0) {
-            if (apply_ext_accep_map && !amap[(nVzBin-j)*nEtaBin+i-1]) {
+            if (apply_ext_accep_map && !amap[(nvz-j)*neta+i-1]) {
                h2amapxev->SetBinContent(i, j, 0);
                h2amapxev->SetBinError(i, j, 0);
                continue;
@@ -180,7 +195,7 @@ int plotFinalResult(int type,
 
             h2amapxev->SetBinContent(i, j, h1WEvz->GetBinContent(j));
             h2amapxev->SetBinError(i, j, 0);
-            for (int k=1; k<=nTrackletBin; k++)
+            for (int k=1; k<=nmult; k++)
                h3amapxemv->SetBinContent(i, k, j, h1WEvzmult->GetBinContent(j, k));
          }
       }
@@ -206,27 +221,13 @@ int plotFinalResult(int type,
    /* reconstructed tracklets                                                 */
    tinput->Project("h3WEraw", Form("vz[1]:%s:eta1", mult), "weight" * (ssel && esel));
 
-   TH2F* haccepmc = 0;
-   TH2F* haccepdata = 0;
-   if (apply_geometry_corr) {
-      haccepmc = (TH2F*)faccep->FindObjectAny("hmccoarse");
-      haccepdata = (TH2F*)faccep->FindObjectAny("hdatacoarse");
-   }
-
    TCanvas* c1 = new TCanvas("c1", "scratch", 400, 400);
    c1->Clear();
 
-   /* alpha correction                                                        */
-   if (apply_correction) {
-      for (int i=0; i<nEtaBin; i++) {
-         for (int j=0; j<nVzBin; j++) {
-            h1alpha[i][j] = (TH1F*)fcorr->FindObjectAny(Form("alpha_%i_%i", i, j));
-            falpha[i][j] = (TF1*)fcorr->FindObjectAny(Form("fitalpha_%i_%i", i, j));
-         }
-      }
-   } else {
-      for (int x=1; x<=nEtaBin; x++) {
-         for (int z=1; z<=nVzBin; z++) {
+   /* calculate corrections                                                   */
+   if (!apply_correction) {
+      for (int x=1; x<=neta; x++) {
+         for (int z=1; z<=nvz; z++) {
             if (h2amapxev->GetBinContent(x, z) == 0) {
                printf("   # acceptance region: eta: %2i, vz: %2i          is 0\n", x, z);
                continue;
@@ -234,7 +235,7 @@ int plotFinalResult(int type,
 
             int count = 0;
 
-            for (int y=1; y<=nTrackletBin; y++) {
+            for (int y=1; y<=nmult; y++) {
                h1alpha[x-1][z-1]->SetBinContent(y, 0);
                h1alpha[x-1][z-1]->SetBinError(y, 0);
 
@@ -244,8 +245,8 @@ int plotFinalResult(int type,
                   double truth = h3WEhadron->GetBinContent(x, y, z);
                   double trutherr = h3WEhadron->GetBinError(x, y, z);
 
-                  double alpha = truth/raw;
-                  double alphaerr = alpha * sqrt(rawerr/raw*rawerr/raw + trutherr/truth*trutherr/truth);
+                  double alpha = truth / raw;
+                  double alphaerr = alpha * sqrt(rawerr/raw * rawerr/raw + trutherr/truth * trutherr/truth);
                   printf("   ^ alpha calculation: eta: %2i, vz: %2i, ntl: %2i, alpha: %8.2f [%8.2f], raw/sig/truth: {%8.2f/%8.2f}\n", x, z, y, alpha, alphaerr, raw, truth);
 
                   if (alpha > 0 && ((alpha/alphaerr > 5 && alpha < 2.5) || (alpha < 1.5))) {
@@ -261,21 +262,21 @@ int plotFinalResult(int type,
                }
             }
 
-            if (count < nTrackletBin / 2) {
+            if (count < nmult / 2) {
                printf("   # ! acceptance map:  eta: %2i, vz: %2i          set to 0 (bad acceptance/statistics)\n", x, z);
                h2amapxev->SetBinContent(x, z, 0);
             }
          }
       }
 
-      /* kill output to stdout/stderr */
+      /* kill output to stdout/stderr                                         */
       int stdout_save = dup(1);
       freopen("/dev/null", "w", stdout);
       int stderr_save = dup(2);
       freopen("/dev/null", "w", stderr);
 
-      for (int j=0; j<nVzBin; j++) {
-         for (int i=0; i<nEtaBin; i++) {
+      for (int j=0; j<nvz; j++) {
+         for (int i=0; i<neta; i++) {
             fitalpha[i][j] = new TF1(Form("fitalpha_%i_%i", i, j), "[0]+[1]/(x+[2])+[3]/(x*x)+[4]*x", 25, 10000);
             fitalpha[i][j]->SetParameter(0, 0.84);
             fitalpha[i][j]->SetParLimits(1, 0, 9999);
@@ -290,7 +291,7 @@ int plotFinalResult(int type,
          }
       }
 
-      /* restore outupt to stdout/stderr */
+      /* restore outupt to stdout/stderr                                      */
       fclose(stdout);
       stdout = fdopen(stdout_save, "w");
       fclose(stderr);
@@ -324,16 +325,16 @@ int plotFinalResult(int type,
       TCanvas* cfalphavz = new TCanvas("cfalphavz", "", 2000, 1200);
       cfalphavz->Divide(5, 3);
 
-      for (int x=1; x<=nEtaBin; x++) {
+      for (int x=1; x<=neta; x++) {
          cfalphavz->Clear("d");
-         for (int z=1; z<=nVzBin; z++) {
+         for (int z=1; z<=nvz; z++) {
             cfalphavz->cd(z);
             gPad->SetLogx();
 
             halphaframe->Draw();
             h1alpha[x-1][z-1]->Draw("sames");
 
-            t1->DrawLatexNDC(0.5, 1.0, Form("%.1f < v_{z} < %.1f", VzBins[z-1], VzBins[z]));
+            t1->DrawLatexNDC(0.5, 1.0, Form("%.1f < v_{z} < %.1f", vzb[z-1], vzb[z]));
          }
 
          cfalphavz->SaveAs(Form("figs/fits/alphafit-%s-%i-eta-%i.png", label, type, x));
@@ -342,16 +343,16 @@ int plotFinalResult(int type,
       TCanvas* cfalphaeta = new TCanvas("cfalphaeta", "", 2000, 2400);
       cfalphaeta->Divide(5, 6);
 
-      for (int z=1; z<=nVzBin; z++) {
+      for (int z=1; z<=nvz; z++) {
          cfalphaeta->Clear("d");
-         for (int x=1; x<=nEtaBin; x++) {
+         for (int x=1; x<=neta; x++) {
             cfalphaeta->cd(x);
             gPad->SetLogx();
 
             halphaframe->Draw();
             h1alpha[x-1][z-1]->Draw("sames");
 
-            t1->DrawLatexNDC(0.5, 1.0, Form("%.1f < #eta < %.1f", EtaBins[x-1], EtaBins[x]));
+            t1->DrawLatexNDC(0.5, 1.0, Form("%.1f < #eta < %.1f", etab[x-1], etab[x]));
          }
 
          cfalphaeta->SaveAs(Form("figs/fits/alphafit-%s-%i-vz-%i.png", label, type, z));
@@ -361,12 +362,12 @@ int plotFinalResult(int type,
    printf("-------------------------------------------------------------\n");
 
    /* apply correction                                                        */
-   for (int x=1; x<=nEtaBin; x++) {
-      for (int z=1; z<=nVzBin; z++) {
+   for (int x=1; x<=neta; x++) {
+      for (int z=1; z<=nvz; z++) {
          if (h2amapxev->GetBinContent(x, z) == 0)
             continue;
 
-         for (int y=1; y<=nTrackletBin; y++) {
+         for (int y=1; y<=nmult; y++) {
             double raw = h3WEraw->GetBinContent(x, y, z);
             double rawerr = h3WEraw->GetBinError(x, y, z);
 
@@ -389,7 +390,7 @@ int plotFinalResult(int type,
             }
 
             if (alpha == 0 && falpha[x-1][z-1] != 0) {
-               alpha = falpha[x-1][z-1]->Eval(TrackletBins[y]);
+               alpha = falpha[x-1][z-1]->Eval(multb[y]);
                printf("     # check fit value: %.2f\n", alpha);
             }
 
@@ -420,7 +421,7 @@ int plotFinalResult(int type,
          }
 
          bool valid = false;
-         for (int y=1; y<=nTrackletBin; y++) {
+         for (int y=1; y<=nmult; y++) {
             if (h3alphafinal->GetBinContent(x, y, z) != 1)
                valid = true;
          }
@@ -431,9 +432,9 @@ int plotFinalResult(int type,
          }
       }
 
-      for (int z=1; z<=nVzBin; z++) {
+      for (int z=1; z<=nvz; z++) {
          if (h2amapxev->GetBinContent(x, z) == 0) {
-            for (int y=1; y<=nTrackletBin; y++) {
+            for (int y=1; y<=nmult; y++) {
                h3WEtruth->SetBinContent(x, y, z, 0);
                h3WEtruth->SetBinError(x, y, z, 0);
 
@@ -453,7 +454,7 @@ int plotFinalResult(int type,
    TCanvas* calpha = new TCanvas("calpha", "", CANVASW, CANVASH);
    TH2D* h2alphafinal = (TH2D*)h3alphafinal->Project3D("zx");
    h2alphafinal->SetName("h2alphafinal");
-   h2alphafinal->Scale(1. / nTrackletBin);
+   h2alphafinal->Scale(1. / nmult);
    h2alphafinal->Draw("colz");
    calpha->SaveAs(Form("figs/alpha/alpha-%s-%i.png", label, type));
 
@@ -493,15 +494,15 @@ int plotFinalResult(int type,
    h1WGhadronxm->Scale(1. / nWGevent, "width");
 
    /* alternate calculation                                                   */
-   TH2F* h2WEtcorr = new TH2F("h2WEtcorr", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins);
-   TH2F* h2WEttruth = new TH2F("h2WEttruth", "", nEtaBin, EtaBins, nTrackletBin, TrackletBins);
+   TH2F* h2WEtcorr = new TH2F("h2WEtcorr", "", neta, etab, nmult, multb);
+   TH2F* h2WEttruth = new TH2F("h2WEttruth", "", neta, etab, nmult, multb);
 
-   for (int x=1; x<=nEtaBin; x++) {
-      for (int y=1; y<=nTrackletBin; y++) {
+   for (int x=1; x<=neta; x++) {
+      for (int y=1; y<=nmult; y++) {
          double sum = 0, sumerr = 0;
          double mcsum = 0, mcsumerr = 0;
 
-         for (int z=1; z<=nVzBin; z++) {
+         for (int z=1; z<=nvz; z++) {
             if (h2amapxev->GetBinContent(x, z) != 0) {
                sum += h3WEcorr->GetBinContent(x, y, z);
                double err = h3WEcorr->GetBinError(x, y, z);
@@ -521,13 +522,13 @@ int plotFinalResult(int type,
    }
 
    /* apply trigger, sd fraction corrections                                  */
-   for (int y=1; y<=nTrackletBin; y++) {
+   for (int y=1; y<=nmult; y++) {
       double sdfrac = h1sdf->GetBinContent(y);
       double trigeff = h1teff->GetBinContent(y);
 
       double totalc = (1 - sdfrac * SDMULT) / trigeff;
 
-      for (int x=1; x<=nEtaBin; x++) {
+      for (int x=1; x<=neta; x++) {
          if (trigeff != 0) {
             h2WEtcorr->SetBinContent(x, y, h2WEtcorr->GetBinContent(x, y) * totalc);
             h2WEtcorr->SetBinError(x, y, h2WEtcorr->GetBinError(x, y) * totalc);
@@ -535,7 +536,7 @@ int plotFinalResult(int type,
             h2WEttruth->SetBinError(x, y, h2WEttruth->GetBinError(x, y) * totalc);
          }
 
-         for (int z=1; z<=nVzBin; z++) {
+         for (int z=1; z<=nvz; z++) {
             if (h2amapxev->GetBinContent(x, z) != 0) {
                if (trigeff != 0)
                   h3amapxemv->SetBinContent(x, y, z, h3amapxemv->GetBinContent(x, y, z) * totalc);
@@ -546,6 +547,7 @@ int plotFinalResult(int type,
       }
    }
 
+   /* correct 2d acceptances                                                  */
    TH1F* h1accep3xe = (TH1F*)h3amapxemv->Project3D("x");
    h1accep3xe->SetName("h1accep3xe");
 
@@ -577,30 +579,26 @@ int plotFinalResult(int type,
 
    bool extendaxis = cmax - cmin < 5;
 
+   /* analysis stages                                                         */
+   TCanvas* cstage = new TCanvas("cstage", "", CANVASW, CANVASH);
+
    TH1F* hframe = new TH1F("hframe", "", 1, -3, 3);
    hframe->SetAxisRange(0, extendaxis ? 2000 : 600, "Y");
    hframe->SetXTitle("#eta");
    hframe->SetYTitle("dN/d#eta");
    hframe->SetStats(0);
 
-   /* analysis stages                                                         */
-   TCanvas* ccompare = new TCanvas("ccompare", "", CANVASW, CANVASH);
+   format(h1WGhadron, 1, 1);
+   format(h1WEraw, 25, COLOUR2);
+   format(h1WEcorr, 26, COLOUR3);
+   format(h1WEtcorr, 32, COLOUR4);
+   format(h1WEfinal, 20, COLOUR1);
 
    hframe->Draw();
-
-   format(h1WGhadron, 1, 1);
    h1WGhadron->Draw("hist same");
-
-   format(h1WEraw, 25, COLOUR2);
    h1WEraw->Draw("e x0 same");
-
-   format(h1WEcorr, 26, COLOUR3);
    h1WEcorr->Draw("e x0 same");
-
-   format(h1WEtcorr, 32, COLOUR4);
    h1WEtcorr->Draw("e x0 same");
-
-   format(h1WEfinal, 20, COLOUR1);
    h1WEfinal->Draw("e x0 same");
 
    TLegend* l1 = new TLegend(0.32, 0.20, 0.75, 0.40);
@@ -617,11 +615,11 @@ int plotFinalResult(int type,
    l1->AddEntry(h1WEfinal, "Final result", "p");
    l1->Draw();
 
-   ccompare->Draw();
-   ccompare->SaveAs(Form("figs/compare/compare-%s-%i.png", label, type));
+   cstage->Draw();
+   cstage->SaveAs(Form("figs/stages/stage-%s-%i.png", label, type));
 
-   for (int i=0; i<nEtaBin; i++)
-      for (int j=0; j<nVzBin; j++)
+   for (int i=0; i<neta; i++)
+      for (int j=0; j<nvz; j++)
          if (falpha[i][j])
             falpha[i][j]->Write();
 
@@ -632,19 +630,19 @@ int plotFinalResult(int type,
 
 int main(int argc, char* argv[]) {
    if (argc == 4) {
-      return plotFinalResult(atoi(argv[1]), argv[2], argv[3]);
+      return reap_results(atoi(argv[1]), argv[2], argv[3]);
    } else if (argc == 5) {
-      return plotFinalResult(atoi(argv[1]), argv[2], argv[3], argv[4]);
+      return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4]);
    } else if (argc == 6) {
-      return plotFinalResult(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]));
+      return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]));
    } else if (argc == 8) {
-      return plotFinalResult(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]));
+      return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]));
    } else if (argc == 9) {
-      return plotFinalResult(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]));
+      return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]));
    } else if (argc == 10) {
-      return plotFinalResult(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]));
+      return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]));
    } else {
-      printf("usage: ./plotFinalResult [type] [input] [label] [clabel] [applyc] [cmin cmax] [apply g]\n");
+      printf("usage: ./reap_results [type] [input] [label] [clabel] [applyc] [cmin cmax] [apply g]\n");
       return -1;
    }
 }
