@@ -250,7 +250,7 @@ int plotFinalResult(int type,
                   double trutherr = h3WEHhadron->GetBinError(x, y, z);
 
                   double alpha = truth/raw;
-                  double alphaerr = truth/raw * sqrt(rawerr/raw*rawerr/raw + trutherr/truth*trutherr/truth);
+                  double alphaerr = alpha * sqrt(rawerr/raw*rawerr/raw + trutherr/truth*trutherr/truth);
                   printf("   ^ alpha calculation: eta: %2i, vz: %2i, ntl: %2i, alpha: %8.2f [%8.2f], raw/sig/truth: {%8.2f/%8.2f}\n", x, z, y, alpha, alphaerr, raw, truth);
 
                   if (alpha > 0 && ((alpha/alphaerr > 5 && alpha < 2.5) || (alpha < 1.5))) {
@@ -377,6 +377,7 @@ int plotFinalResult(int type,
 
          for (int y=1; y<=nTrackletBin; y++) {
             double raw = h3WSEraw->GetBinContent(x, y, z);
+            double rawerr = h3WSEraw->GetBinError(x, y, z);
 
             double alpha = h1alpha[x-1][z-1]->GetBinContent(y);
             double alphaerr = h1alpha[x-1][z-1]->GetBinError(y);
@@ -420,8 +421,8 @@ int plotFinalResult(int type,
             h3alphafinal->SetBinContent(x, y, z, alpha);
             h3alphafinal->SetBinError(x, y, z, alphaerr);
 
-            double ncorr = raw*alpha;
-            double ncorrerr = sqrt(alpha*alpha*raw + alpha*alpha*raw*raw);
+            double ncorr = raw * alpha;
+            double ncorrerr = rawerr * alpha;
 
             h3WSEcorr->SetBinContent(x, y, z, ncorr);
             h3WSEcorr->SetBinError(x, y, z, ncorrerr);
