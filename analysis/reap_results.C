@@ -147,6 +147,11 @@ int reap_results(int type,
    }
 
    if (apply_correction) {
+      delete h2amapxev;
+      delete h1teff;
+      delete h1sdf;
+      delete h1empty;
+
       h2amapxev = (TH2F*)fcorr->Get("h2amapxev")->Clone();
       h1teff = (TH1F*)fcorr->Get("h1teff")->Clone();
       h1sdf = (TH1F*)fcorr->Get("h1sdf")->Clone();
@@ -154,6 +159,9 @@ int reap_results(int type,
 
       for (int i=0; i<neta; i++) {
          for (int j=0; j<nvz; j++) {
+            delete h1alpha[i][j];
+            delete falpha[i][j];
+
             h1alpha[i][j] = (TH1F*)fcorr->Get(Form("alpha_%i_%i", i, j));
             falpha[i][j] = (TF1*)fcorr->Get(Form("falpha_%i_%i", i, j));
          }
