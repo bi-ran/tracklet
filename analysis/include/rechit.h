@@ -74,7 +74,7 @@ void prepare_hits(std::vector<RecHit>& hits, PixelEvent& par, Int_t layer,
       if (smear_pixels) {
          x += gRandom->Gaus(0, 0.0005);
          y += gRandom->Gaus(0, 0.0005);
-         z += gRandom->Gaus(0, 0.003);
+         z += gRandom->Gaus(0, 0.001);
       }
 
       ROOT::Math::XYZVector rel_vector(x - vx, y - vy, z - vz);
