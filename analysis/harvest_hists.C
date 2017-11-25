@@ -28,8 +28,10 @@ static const std::vector<int> colour = {
    TColor::GetColor("#ffcc66"),
    TColor::GetColor("#99cc99"),
    TColor::GetColor("#6699cc"),
-   TColor::GetColor("#9999cc")
+   TColor::GetColor("#9999cc"),
+   TColor::GetColor("#515151")
 };
+static const int ncolours = colour.size();
 
 typedef struct oned_t {
    std::string title;
@@ -120,7 +122,7 @@ int compare_pixels(const char* input, const char* label, const char* list, int o
    h##q->Draw("p hist");                                                      \
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
       hs##q[j]->SetStats(0);                                                  \
-      hs##q[j]->SetLineColor(colour[j]);                                      \
+      hs##q[j]->SetLineColor(colour[j % ncolours]);                           \
       hs##q[j]->Draw("hist same");                                            \
    }                                                                          \
    h##q->SetMarkerStyle(21);                                                  \
@@ -259,7 +261,7 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
    h##q##w->Draw("p hist");                                                   \
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
       hs##q##w[j]->SetStats(0);                                               \
-      hs##q##w[j]->SetLineColor(colour[j]);                                   \
+      hs##q##w[j]->SetLineColor(colour[j % ncolours]);                        \
       hs##q##w[j]->Draw("hist same");                                         \
    }                                                                          \
    h##q##w->Draw("p hist same");                                              \
