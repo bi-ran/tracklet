@@ -108,7 +108,7 @@ int transmute_trees(const char* input,
    if (add_bkg_l##q) {                                                        \
       printf(" # projecting hit distribution of layer " #q "\n");             \
       hlayer##q##hits = new TH3F("hlayer" #q "hits", "",                      \
-                                 75, 0, 15, 60, -3, 3, 64, -3.2, 3.2);        \
+                                 200, 0, 20, 300, -3, 3, 320, -3.2, 3.2);     \
       t->Project("hlayer##q##hits", "phi" #q ":eta" #q ":r" #q);              \
    }                                                                          \
 
