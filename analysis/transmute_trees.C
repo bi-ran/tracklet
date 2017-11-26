@@ -104,12 +104,12 @@ int transmute_trees(const char* input,
    }
 
 #define PREPARE_HIT_DISTRIBUTIONS(q)                                          \
-   TH3F* hlayer##q##hits = 0;                                                 \
+   TH3F* hl##q##hits = 0;                                                     \
    if (add_bkg_l##q) {                                                        \
       printf(" # projecting hit distribution of layer " #q "\n");             \
-      hlayer##q##hits = new TH3F("hlayer" #q "hits", "",                      \
+      hl##q##hits = new TH3F("hl" #q "hits", "",                              \
                                  200, 0, 20, 300, -3, 3, 320, -3.2, 3.2);     \
-      t->Project("hlayer" #q "hits", "phi" #q ":eta" #q ":r" #q);             \
+      t->Project("hl" #q "hits", "phi" #q ":eta" #q ":r" #q);                 \
    }                                                                          \
 
    LAYERS(PREPARE_HIT_DISTRIBUTIONS);
@@ -159,7 +159,7 @@ int transmute_trees(const char* input,
       if (bkghits##q != 0) {                                                  \
          for (int j=par.nhits##q; j<par.nhits##q + bkghits##q; ++j) {         \
             double eta, phi, r;                                               \
-            hlayer##q##hits->GetRandom3(r, eta, phi);                         \
+            hl##q##hits->GetRandom3(r, eta, phi);                             \
             par.eta##q[j] = eta;                                              \
             par.phi##q[j] = phi;                                              \
             par.r##q[j] = r;                                                  \
