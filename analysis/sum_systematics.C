@@ -71,10 +71,19 @@ int sum_systematics(const char* list, const char* label) {
         }
 
         tvars[i]->write();
-    }
 
-    TCanvas* c1 = new TCanvas("c1", "", 600, 600);
-    c1->SaveAs(Form("figs/uncertainties/systematics-%s.png", label));
+        TCanvas* c1 = new TCanvas("c1", "", 600, 600);
+        c1->Divide(3, 3);
+
+        for (std::size_t j = 1; j < nfiles; ++j) {
+            c1->cd(j);
+            svars[i][j]->adiff(options[j])->Draw();
+        }
+
+        c1->SaveAs(Form("figs/uncertainties/systematics-%s-%s-diff.png", hists[i].c_str(), label));
+
+        delete c1;
+    }
 
     fout->Write("", TObject::kOverwrite);
     fout->Close();

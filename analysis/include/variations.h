@@ -80,8 +80,8 @@ class var_t {
       void fit(std::string fitfdiff, std::string fitfratio);
       void write();
 
-      TH1F* adiff() { return hadiff; }
-      TH1F* aratio() { return haratio; }
+      TH1F* adiff(int option);
+      TH1F* aratio(int option);
 };
 
 var_t::var_t(const var_t& var) {
@@ -142,6 +142,26 @@ void var_t::fit(std::string fitfdiff, std::string fitfratio) {
    th1_from_tf1(hfaratio, fratio);
    hfardiff = (TH1F*)hfaratio->Clone(Form("%s_fardiff", tag.c_str()));
    hfardiff->Multiply(hnominal);
+}
+
+TH1F* var_t::adiff(int option) {
+   switch (option) {
+      case 0: return hadiff;
+      case 1: return hardiff;
+      case 2: return hfadiff;
+      case 3: return hfardiff;
+      default: return hadiff;
+   }
+}
+
+TH1F* var_t::aratio(int option) {
+   switch (option) {
+      case 0: return haratio;
+      case 1: return haratio;
+      case 2: return hfaratio;
+      case 3: return hfaratio;
+      default: return haratio;
+   }
 }
 
 void var_t::write() {
