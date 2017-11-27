@@ -141,7 +141,6 @@ int merge_monads(const char* label) {
    TRACKLETS(FILL_LEGEND)
    l1->Draw();
 
-   c1->Draw();
    c1->SaveAs(Form("figs/merged/merged-%s-all.png", label));
 
    TCanvas* c2 = new TCanvas("c2", "", 600, 600);
@@ -191,7 +190,6 @@ int merge_monads(const char* label) {
    l2->AddEntry(hepos, "EPOS LHC", "l");
    l2->Draw();
 
-   c2->Draw();
    c2->SaveAs(Form("figs/merged/merged-%s-avg.png", label));
 
    TCanvas* c3 = new TCanvas("c3", "", 600, 600);
@@ -257,6 +255,11 @@ int merge_monads(const char* label) {
    l4->Draw();
 
    c4->SaveAs(Form("figs/merged/merged-%s-sym.png", label));
+
+#define WRITE(q, w)                                                           \
+   h##q##w->Write("", TObject::kOverwrite);                                   \
+
+   TRACKLETS(WRITE)
 
    f->Write("", TObject::kOverwrite);
    f->Close();
