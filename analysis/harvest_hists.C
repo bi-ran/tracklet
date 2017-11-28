@@ -352,11 +352,6 @@ static const std::vector<twod_t> options_pixel_twod = {
       {"phi1", "phi2", "phi3", "phi4"}, "phi", 1000, {-4, 4},
       "(1)", 0, {600, 2400}, "colz"
    }, {
-      "z-s",
-      {"r1/tan(2*atan(exp(-eta1)))", "r2/tan(2*atan(exp(-eta2)))", "r3/tan(2*atan(exp(-eta3)))", "r4/tan(2*atan(exp(-eta4)))"}, "z", 1000, {-30, 30},
-      {"2.9*phi1", "6.8*phi2", "10.9*phi3", "16.0*phi4"}, "s", 1000, {-60, 60},
-      "(1)", 0, {600, 2400}, "colz"
-   }, {
       "z-r",
       {"r1/tan(2*atan(exp(-eta1)))", "r2/tan(2*atan(exp(-eta2)))", "r3/tan(2*atan(exp(-eta3)))", "r4/tan(2*atan(exp(-eta4)))"}, "z", 1000, {-30, 30},
       {"r1", "r2", "r3", "r4"}, "r", 1000, {0, 20},
