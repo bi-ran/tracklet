@@ -34,8 +34,6 @@ int sum_systematics(const char* list, const char* label) {
         std::size_t ws2 = flist[f].find(" ", ws1 + 1);
         options.push_back(std::stoi(flist[f].substr(ws1 + 1, ws2)));
         labels.push_back(flist[f].substr(ws2 + 1));
-
-        printf("file: %s\noption: %i\nlabel: %s\n", files.back().c_str(), options.back(), labels.back().c_str());
     }
 
     std::vector<std::string> hists = {
