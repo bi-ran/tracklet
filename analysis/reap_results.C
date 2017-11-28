@@ -684,7 +684,7 @@ int main(int argc, char* argv[]) {
    } else if (argc == 10) {
       return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]));
    } else {
-      printf("usage: ./reap_results [type] [input] [label] [clabel] [applyc] [cmin cmax] [apply g]\n");
+      printf("usage: ./reap_results [type] [input] [label] [clabel] [applyc] [cmin cmax] [applyg] [extacc]\n");
       return -1;
    }
 }
