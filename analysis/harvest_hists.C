@@ -22,6 +22,18 @@
    EXPAND(3)            \
    EXPAND(4)            \
 
+#define NTRACKLETS   6
+#define TRACKLETS(EXPAND)  \
+   EXPAND(1, 2)            \
+   EXPAND(1, 3)            \
+   EXPAND(1, 4)            \
+   EXPAND(2, 3)            \
+   EXPAND(2, 4)            \
+   EXPAND(3, 4)            \
+
+#define GET_TREE(q, w)                                                        \
+   TTree* t##q##w = (TTree*)f->Get("TrackletTree" #q #w);                     \
+
 static const std::vector<int> colour = {
    TColor::GetColor("#f2777a"),
    TColor::GetColor("#f99157"),
@@ -34,8 +46,8 @@ static const std::vector<int> colour = {
 static const int ncolours = colour.size();
 
 typedef struct oned_t {
-   std::string title;
-   std::string lvar[NLAYERS];
+   std::string id;
+   std::string label;
    std::string var;
    int         nbin;
    float       range[2];
@@ -46,13 +58,16 @@ typedef struct oned_t {
 
 static const std::vector<oned_t> options_pixel_oned = {
    {
-      "cs", {"cs1", "cs2", "cs3", "cs4"}, "cs", 100, {0, 300},
+      "cs", ";cluster size;", "cs",
+      50, {0, 50},
       1, "(1)", ""
    }, {
-      "ch", {"ch1", "ch2", "ch3", "ch4"}, "ch", 100, {0, 10000000},
+      "ch", ";cluster charge;", "ch",
+      100, {0, 10000000},
       1, "(1)", ""
    }, {
-      "nhits", {"nhits1", "nhits2", "nhits3", "nhits4"}, "nhits", 100, {0, 15000},
+      "nhits", ";number of pixel hits;", "nhits",
+      100, {0, 15000},
       1, "(1)", ""
    }
 };
@@ -82,12 +97,15 @@ int compare_pixels(const char* input, const char* label, const char* list, int o
    TFile* f = new TFile(input, "read");
    TTree* t = (TTree*)f->Get("pixel/PixelTree");
 
-   TCut final_sel = OPTSTR(sel);
+   TCut fsel = OPTSTR(sel);
+
+   const char* varcstr = OPTSTR(var);
 
 #define DRAW_INPUT_LAYER(q)                                                   \
-   TH1D* h##q = new TH1D("hp" #q, OPTSTR(lvar[q - 1]),                        \
+   TH1D* h##q = new TH1D(Form("hp" #q "%s", varcstr),                         \
+         Form(";%s (layer " #q ");", OPTSTR(label)),                          \
          OPT(nbin), OPT(range[0]), OPT(range[1]));                            \
-   t->Draw(Form("%s>>hp" #q, OPTSTR(lvar[q - 1])), final_sel, "goff");        \
+   t->Draw(Form("%s" #q ">>hp" #q "%s", varcstr, varcstr), fsel, "goff");     \
    h##q->Scale(1. / h##q->Integral());                                        \
 
    LAYERS(DRAW_INPUT_LAYER)
@@ -105,10 +123,11 @@ int compare_pixels(const char* input, const char* label, const char* list, int o
       ts[j] = (TTree*)fs[j]->Get("pixel/PixelTree");
 
 #define DRAW_LIST_LAYER(q)                                                    \
-      hs##q[j] = new TH1D(Form("hp" #q "_%zu", j), OPTSTR(lvar[q - 1]),       \
+      hs##q[j] = new TH1D(Form("hp" #q "f%zu%s", j, varcstr),                 \
+            Form(";%s (layer " #q ");", OPTSTR(label)),                       \
             OPT(nbin), OPT(range[0]), OPT(range[1]));                         \
-      ts[j]->Draw(Form("%s>>hp" #q "_%zu", OPTSTR(lvar[q - 1]), j),           \
-            final_sel, "goff");                                               \
+      ts[j]->Draw(Form("%s" #q ">>hp" #q "f%zu%s", varcstr, j, varcstr),      \
+            fsel, "goff");                                                    \
       hs##q[j]->Scale(1. / hs##q[j]->Integral());                             \
 
       LAYERS(DRAW_LIST_LAYER)
@@ -138,7 +157,7 @@ int compare_pixels(const char* input, const char* label, const char* list, int o
    l##q->Draw();                                                              \
                                                                               \
    c##q->SaveAs(Form("figs/pixel/pixel-%s-l" #q "-%s.png",                    \
-         OPTSTR(title), label));                                              \
+         OPTSTR(id), label));                                                 \
    delete c##q;                                                               \
 
    LAYERS(DRAW_ALL_LAYER)
@@ -157,36 +176,30 @@ int compare_pixels(const char* input, const char* label, const char* list, int o
    return 0;
 }
 
-#define NTRACKLETS   6
-#define TRACKLETS(EXPAND)  \
-   EXPAND(1, 2)            \
-   EXPAND(1, 3)            \
-   EXPAND(1, 4)            \
-   EXPAND(2, 3)            \
-   EXPAND(2, 4)            \
-   EXPAND(3, 4)            \
-
-#define GET_TREE(q, w)                                                        \
-   TTree* t##q##w = (TTree*)f->Get("TrackletTree" #q #w);                     \
-
 static const std::vector<oned_t> options_tracklet_oned = {
    {
-      "deta", {}, "deta", 100, {-0.5, 0.5},
+      "deta", ";#Delta#eta;", "deta",
+      100, {-0.5, 0.5},
       1, "abs(deta)<0.5", ""
    }, {
-      "dphi", {}, "dphi", 100, {0, 0.5},
+      "dphi", ";#Delta#phi;", "dphi",
+      100, {0, 0.5},
       1, "abs(dphi)<0.5", ""
    }, {
-      "dr2", {}, "dr2", 100, {0, 0.25},
+      "dr2", ";#Deltar^{2};", "dr2",
+      100, {0, 0.25},
       1, "abs(dr2)<0.25", ""
    }, {
-      "dr", {}, "sqrt(dr2)", 100, {0, 0.5},
+      "dr", ";#Deltar;", "sqrt(dr2)",
+      100, {0, 0.5},
       1, "abs(dr2)<0.25", ""
    }, {
-      "vz", {}, "vz[1]", 100, {-15, 15},
+      "vz", ";v_{z};", "vz[1]",
+      100, {-15, 15},
       0, "(1)", ""
    }, {
-      "ntracklet", {}, "ntracklet", 100, {0, 10000},
+      "ntracklet", ";multiplicity;", "ntracklet",
+      100, {0, 10000},
       1, "(1)", ""
    }
 };
@@ -217,14 +230,16 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
 
    TRACKLETS(GET_TREE)
 
-   TCut final_sel = OPTSTR(sel);
-   final_sel = final_sel && "abs(vz[1])<15";
-   final_sel *= "weight";
+   TCut fsel = OPTSTR(sel);
+   fsel = fsel && "abs(vz[1])<15";
+   fsel *= "weight";
+
+   const char* varcstr = OPTSTR(var);
 
 #define DRAW_INPUT_TRACKLET(q, w)                                             \
-   TH1D* h##q##w = new TH1D("ht" #q #w,                                       \
-         OPTSTR(var), OPT(nbin), OPT(range[0]), OPT(range[1]));               \
-   t##q##w->Draw(Form("%s>>ht" #q #w, OPTSTR(var)), final_sel, "goff");       \
+   TH1D* h##q##w = new TH1D(Form("ht" #q #w "%s", varcstr),                   \
+         OPTSTR(label), OPT(nbin), OPT(range[0]), OPT(range[1]));             \
+   t##q##w->Draw(Form("%s>>ht" #q #w "%s", varcstr, varcstr), fsel, "goff");  \
    h##q##w->Scale(1. / h##q##w->Integral());                                  \
 
    TRACKLETS(DRAW_INPUT_TRACKLET)
@@ -242,10 +257,10 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
 
 #define DRAW_LIST_TRACKLET(q, w)                                              \
       ts##q##w[j] = (TTree*)fs[j]->Get("TrackletTree" #q #w);                 \
-      hs##q##w[j] = new TH1D(Form("ht" #q #w "_%zu", j),                      \
-            OPTSTR(var), OPT(nbin), OPT(range[0]), OPT(range[1]));            \
-      ts##q##w[j]->Draw(Form("%s>>ht" #q #w "_%zu", OPTSTR(var), j),          \
-            final_sel, "goff");                                               \
+      hs##q##w[j] = new TH1D(Form("ht" #q #w "f%zu%s", j, varcstr),           \
+            OPTSTR(label), OPT(nbin), OPT(range[0]), OPT(range[1]));          \
+      ts##q##w[j]->Draw(Form("%s>>ht" #q #w "f%zu%s", varcstr, j, varcstr),   \
+            fsel, "goff");                                                    \
       hs##q##w[j]->Scale(1. / hs##q##w[j]->Integral());                       \
 
       TRACKLETS(DRAW_LIST_TRACKLET)
@@ -275,7 +290,7 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
    l##q##w->Draw();                                                           \
                                                                               \
    c##q##w->SaveAs(Form("figs/tracklet/tracklet-%s-t" #q #w "-%s.png",        \
-         OPTSTR(title), label));                                              \
+         OPTSTR(id), label));                                                 \
    delete c##q##w;                                                            \
 
    TRACKLETS(DRAW_ALL_TRACKLET)
@@ -295,7 +310,7 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
 }
 
 typedef struct twod_t {
-   std::string title;
+   std::string id;
    std::string x_lvar[NLAYERS];
    std::string x_var;
    int         x_nbin;
@@ -370,7 +385,7 @@ int map_pixels(const char* input, const char* label, int opt) {
    h##q->SetStats(0);                                                         \
    h##q->Draw(OPTSTR(gopt));                                                  \
    c##q->SaveAs(Form("figs/pixel/pixel-%s-l" #q "-%s.png",                    \
-         OPTSTR(title), label));                                              \
+         OPTSTR(id), label));                                                 \
    delete c##q;                                                               \
 
    LAYERS(DRAW_PIXEL)
@@ -390,7 +405,7 @@ int map_pixels(const char* input, const char* label, int opt) {
       hall->SetStats(0);
       hall->Draw(OPTSTR(gopt));
       call->SaveAs(Form("figs/pixel/pixel-%s-all-%s.png",
-            OPTSTR(title), label));
+            OPTSTR(id), label));
       delete call;
    }
 
@@ -418,8 +433,8 @@ int map_tracklets(const char* input, const char* label, int opt) {
 
    TRACKLETS(GET_TREE)
 
-   TCut final_sel = OPTSTR(sel);
-   final_sel *= "weight";
+   TCut fsel = OPTSTR(sel);
+   fsel *= "weight";
 
 #define MAP_TRACKLET(q, w)                                                    \
    TH2D* h##q##w = new TH2D("h" #q #w,                                        \
@@ -427,7 +442,7 @@ int map_tracklets(const char* input, const char* label, int opt) {
          OPT(x_nbin), OPT(x_range[0]), OPT(x_range[1]),                       \
          OPT(y_nbin), OPT(y_range[0]), OPT(y_range[1]));                      \
    t##q##w->Draw(Form("%s:%s>>h" #q #w, OPTSTR(y_var), OPTSTR(x_var)),        \
-         final_sel, "goff");                                                  \
+         fsel, "goff");                                                       \
 
    TRACKLETS(MAP_TRACKLET)
 
@@ -436,7 +451,7 @@ int map_tracklets(const char* input, const char* label, int opt) {
    h##q##w->SetStats(0);                                                      \
    h##q##w->Draw(OPTSTR(gopt));                                               \
    c##q##w->SaveAs(Form("figs/tracklet/tracklet-%s-t" #q #w "-%s.png",        \
-         OPTSTR(title), label));                                              \
+         OPTSTR(id), label));                                                 \
    delete c##q##w;                                                            \
 
    TRACKLETS(DRAW_TRACKLET)
