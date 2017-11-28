@@ -190,16 +190,13 @@ int transmute_trees(const char* input,
       float event_weight = 1.;
       // Reweight MC vertex distribution to match data
       if (reweight_vertex) {
-         float event_vz = vz;
-         if (fabs(event_vz) > 18) {
-            event_weight = 0.;
-         } else {
-            /* run 304906 */
-            float data_pdf = TMath::Gaus(event_vz, -0.203369 + vz_shift, 4.80467, 1);
-            float mc_pdf = TMath::Gaus(event_vz, vzpar[sample][0], vzpar[sample][1], 1);
+         float event_vz = (vz < -98 ? par.vz[0] : vz) + vz_shift;
 
-            event_weight = event_weight * data_pdf / mc_pdf;
-         }
+         /* run 304906 */
+         double data_pdf = TMath::Gaus(event_vz, -0.203369, 4.80467, 1);
+         double mc_pdf = TMath::Gaus(event_vz, vzpar[sample][0], vzpar[sample][1], 1);
+
+         event_weight = event_weight * data_pdf / mc_pdf;
       }
 
 #define PREPARE_HITS(q)                                                       \
