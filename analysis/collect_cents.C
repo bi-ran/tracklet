@@ -6,23 +6,26 @@
 #include "TLegend.h"
 #include "TGaxis.h"
 
+#include <vector>
+
 #define NCENT 20
 
-static const int markers[] = {
-    24, 20, 25, 21, 26, 22, 30, 29, 32, 23, 46, 47, 24, 20, 25, 21, 26, 22, 30, 29
+const std::vector<int> markers = {
+    24, 20,
+    25, 21,
+    26, 22,
+    30, 29,
+    32, 23,
+    46, 47
 };
 
-static const int colours[] = {
-    TColor::GetColor("#f2777a"), TColor::GetColor("#f2777a"),
-    TColor::GetColor("#f99157"), TColor::GetColor("#f99157"),
-    TColor::GetColor("#ffcc66"), TColor::GetColor("#ffcc66"),
-    TColor::GetColor("#99cc99"), TColor::GetColor("#99cc99"),
-    TColor::GetColor("#6699cc"), TColor::GetColor("#6699cc"),
-    TColor::GetColor("#9999cc"), TColor::GetColor("#9999cc"),
-    TColor::GetColor("#f2777a"), TColor::GetColor("#f2777a"),
-    TColor::GetColor("#f99157"), TColor::GetColor("#f99157"),
-    TColor::GetColor("#ffcc66"), TColor::GetColor("#ffcc66"),
-    TColor::GetColor("#99cc99"), TColor::GetColor("#99cc99")
+const std::vector<int> colours = {
+    TColor::GetColor("#f2777a"),
+    TColor::GetColor("#f99157"),
+    TColor::GetColor("#ffcc66"),
+    TColor::GetColor("#99cc99"),
+    TColor::GetColor("#6699cc"),
+    TColor::GetColor("#9999cc")
 };
 
 TGraphErrors* cms_pbpb_2p76();
@@ -53,9 +56,9 @@ int combine_centralities(const char* label, int interval) {
         TFile* f = new TFile(Form("output/merged-%s-%i-%i.root", label, c, c + interval), "read");
         TH1F* h = (TH1F*)f->Get("havg");
 
-        h->SetMarkerStyle(markers[c / interval]);
-        h->SetMarkerColor(colours[c / interval]);
-        h->SetLineColor(colours[c / interval]);
+        h->SetMarkerStyle(markers[(c / interval) % markers.size()]);
+        h->SetMarkerColor(colours[(c / interval) % colours.size()]);
+        h->SetLineColor(colours[(c / interval) % colours.size()]);
         h->Draw("same");
 
         int nbins = h->GetNbinsX();
@@ -82,6 +85,15 @@ int combine_centralities(const char* label, int interval) {
     gframe->GetYaxis()->CenterTitle();
     gframe->Draw();
 
+    gframe->GetXaxis()->SetLabelOffset(999);
+    gframe->GetXaxis()->SetTickLength(0);
+
+    TGaxis* axis = new TGaxis(100, 1, 0, 1, 0, 100, 510, "-");
+    axis->SetLabelOffset(-0.04);
+    axis->SetLabelFont(42);
+    axis->SetLabelSize(0.04);
+    axis->Draw();
+
     gcms_pbpb_2p76->Draw("p same");
     galice_pbpb_5p02->Draw("p same");
     g->Draw("p same");
@@ -95,15 +107,6 @@ int combine_centralities(const char* label, int interval) {
     l2->AddEntry((TObject*)0, "ALICE", "");
     l2->AddEntry(galice_pbpb_5p02, "PbPb 5.02 TeV", "p");
     l2->Draw();
-
-    gframe->GetXaxis()->SetLabelOffset(999);
-    gframe->GetXaxis()->SetTickLength(0);
-
-    TGaxis* axis = new TGaxis(100, 1, 0, 1, 0, 100, 510, "-");
-    axis->SetLabelOffset(-0.04);
-    axis->SetLabelFont(42);
-    axis->SetLabelSize(0.04);
-    axis->Draw();
 
     c2->SaveAs(Form("figs/merged/merged-%s-midy-int%i.png", label, interval));
 
@@ -134,8 +137,8 @@ TGraphErrors* cms_pbpb_2p76() {
     gcms_pbpb_2p76->SetPoint(17, 97.5, 1612);       gcms_pbpb_2p76->SetPointError(17, 0, 55);
 
     gcms_pbpb_2p76->SetMarkerStyle(24);
-    gcms_pbpb_2p76->SetMarkerColor(colours[8]);
-    gcms_pbpb_2p76->SetLineColor(colours[8]);
+    gcms_pbpb_2p76->SetMarkerColor(colours[5]);
+    gcms_pbpb_2p76->SetLineColor(colours[5]);
 
     return gcms_pbpb_2p76;
 }
