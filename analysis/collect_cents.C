@@ -28,17 +28,37 @@ const std::vector<int> colours = {
     TColor::GetColor("#9999cc")
 };
 
+const float npart[NCENT] = {
+    2.939,  3.97, 5.221, 6.951, 9.311,
+    12.67, 17.12, 22.88, 29.98, 38.61,
+    48.78,  60.7, 74.49,  90.3, 108.3,
+    128.8, 151.9, 178.0, 207.1, 237.7
+};
+
+const float nparterr[NCENT] = {
+    1.62, 2.46,  3.3, 4.22, 5.19,
+    6.22, 7.19,  8.0, 8.78, 9.41,
+    9.95, 10.4, 10.7, 11.0, 11.2,
+    11.4, 11.5, 11.7, 11.4,  9.9
+};
+
 TGraphErrors* cms_pbpb_2p76();
+TGraphErrors* cms_pbpb_2p76_norm();
 TGraphErrors* alice_pbpb_5p02();
+TGraphErrors* alice_pbpb_5p02_norm();
 
 int combine_centralities(const char* label, int interval) {
     bool logscale = interval < 5;
     const int n = NCENT / interval;
 
+    if (interval != 1) { printf("warning: npart errors not accurate!\n"); }
+
     TGraphErrors* g = new TGraphErrors(n);
     g->SetName("gcent");
     g->SetMarkerStyle(25);
     g->SetMarkerColor(colours[0]);
+
+    TGraphErrors* gnorm = (TGraphErrors*)g->Clone("gcentnorm");
 
     TCanvas* c1 = new TCanvas("c1", "", 600, 600);
     if (logscale) { gPad->SetLogy(); }
@@ -64,8 +84,17 @@ int combine_centralities(const char* label, int interval) {
         int nbins = h->GetNbinsX();
         float midy = (h->GetBinContent((nbins + 1) / 2) + h->GetBinContent(nbins / 2 + 1)) / 2;
         float midyerr = (h->GetBinError((nbins + 1) / 2) + h->GetBinError(nbins / 2 + 1)) / 2;
+
         g->SetPoint(c / interval, 100. / NCENT * (c + interval / 2.), midy);
         g->SetPointError(c / interval, 0, midyerr);
+
+        float avgnpart = 0;
+        for (int s = c; s < c + interval && s < NCENT; ++s)
+            avgnpart += npart[s];
+        avgnpart /= interval;
+
+        gnorm->SetPoint(c / interval, avgnpart, midy / avgnpart);
+        gnorm->SetPointError(c / interval, nparterr[c], midyerr / avgnpart);
     }
 
     c1->SaveAs(Form("figs/merged/merged-%s-cent-int%i.png", label, interval));
@@ -110,6 +139,36 @@ int combine_centralities(const char* label, int interval) {
 
     c2->SaveAs(Form("figs/merged/merged-%s-midy-int%i.png", label, interval));
 
+    TGraphErrors* gcms_pbpb_2p76_norm = cms_pbpb_2p76_norm();
+    TGraphErrors* galice_pbpb_5p02_norm = alice_pbpb_5p02_norm();
+
+    TCanvas* c3 = new TCanvas("c3", "", 600, 600);
+
+    TH1F* gnormframe = new TH1F("gframe", "", 1, -20, 420);
+    gnormframe->SetStats(0);
+    gnormframe->SetAxisRange(0, 10, "Y");
+    gnormframe->SetXTitle("N_{part}");
+    gnormframe->SetYTitle("#frac{dN}{d#eta}#lbar_{#eta=0} / #LTN_{part}#GT");
+    gnormframe->GetXaxis()->CenterTitle();
+    gnormframe->GetYaxis()->CenterTitle();
+    gnormframe->Draw();
+
+    gcms_pbpb_2p76_norm->Draw("p same");
+    galice_pbpb_5p02_norm->Draw("p same");
+    gnorm->Draw("p same");
+
+    TLegend* l3 = new TLegend(0.54, 0.24, 0.9, 0.48);
+    l3->SetBorderSize(0);
+    l3->SetFillStyle(0);
+    l3->AddEntry((TObject*)0, "CMS", "");
+    l3->AddEntry(gnorm, "XeXe 5.44 TeV", "p");
+    l3->AddEntry(gcms_pbpb_2p76_norm, "PbPb 2.76 TeV", "p");
+    l3->AddEntry((TObject*)0, "ALICE", "");
+    l3->AddEntry(galice_pbpb_5p02_norm, "PbPb 5.02 TeV", "p");
+    l3->Draw();
+
+    c3->SaveAs(Form("figs/merged/merged-%s-midynorm-int%i.png", label, interval));
+
     return 0;
 }
 
@@ -143,6 +202,35 @@ TGraphErrors* cms_pbpb_2p76() {
     return gcms_pbpb_2p76;
 }
 
+TGraphErrors* cms_pbpb_2p76_norm() {
+    TGraphErrors* gcms_pbpb_2p76_norm = new TGraphErrors(17);
+    gcms_pbpb_2p76_norm->SetName("gcms_pbpb_2p76_norm");
+
+    gcms_pbpb_2p76_norm->SetPoint(0, 5.71, 3.87 / 2);   gcms_pbpb_2p76_norm->SetPointError(0, 0, 0.64 / 2);
+    gcms_pbpb_2p76_norm->SetPoint(1, 8.64, 4.23 / 2);   gcms_pbpb_2p76_norm->SetPointError(1, 0, 0.74 / 2);
+    gcms_pbpb_2p76_norm->SetPoint(2, 12.8, 4.54 / 2);   gcms_pbpb_2p76_norm->SetPointError(2, 0, 0.60 / 2);
+    gcms_pbpb_2p76_norm->SetPoint(3, 18.5, 4.8 / 2);    gcms_pbpb_2p76_norm->SetPointError(3, 0, 0.59 / 2);
+    gcms_pbpb_2p76_norm->SetPoint(4, 25.8, 5.07 / 2);   gcms_pbpb_2p76_norm->SetPointError(4, 0, 0.53 / 2);
+    gcms_pbpb_2p76_norm->SetPoint(5, 35.3, 5.3 / 2);    gcms_pbpb_2p76_norm->SetPointError(5, 0, 0.53 / 2);
+    gcms_pbpb_2p76_norm->SetPoint(6, 46.7, 5.59 / 2);   gcms_pbpb_2p76_norm->SetPointError(6, 0, 0.46 / 2);
+    gcms_pbpb_2p76_norm->SetPoint(7, 60.4, 5.83 / 2);   gcms_pbpb_2p76_norm->SetPointError(7, 0, 0.44 / 2);
+    gcms_pbpb_2p76_norm->SetPoint(8, 76.8, 6.07 / 2);   gcms_pbpb_2p76_norm->SetPointError(8, 0, 0.40 / 2);
+    gcms_pbpb_2p76_norm->SetPoint(9, 95.8, 6.26 / 2);   gcms_pbpb_2p76_norm->SetPointError(9, 0, 0.37 / 2);
+    gcms_pbpb_2p76_norm->SetPoint(10, 117, 6.54 / 2);   gcms_pbpb_2p76_norm->SetPointError(10, 0, 0.33 / 2);
+    gcms_pbpb_2p76_norm->SetPoint(11, 142, 6.77 / 2);   gcms_pbpb_2p76_norm->SetPointError(11, 0, 0.30 / 2);
+    gcms_pbpb_2p76_norm->SetPoint(12, 171, 6.98 / 2);   gcms_pbpb_2p76_norm->SetPointError(12, 0, 0.30 / 2);
+    gcms_pbpb_2p76_norm->SetPoint(13, 203, 7.19 / 2);   gcms_pbpb_2p76_norm->SetPointError(13, 0, 0.28 / 2);
+    gcms_pbpb_2p76_norm->SetPoint(14, 240, 7.45 / 2);   gcms_pbpb_2p76_norm->SetPointError(14, 0, 0.28 / 2);
+    gcms_pbpb_2p76_norm->SetPoint(15, 283, 7.66 / 2);   gcms_pbpb_2p76_norm->SetPointError(15, 0, 0.28 / 2);
+    gcms_pbpb_2p76_norm->SetPoint(16, 329, 7.97 / 2);   gcms_pbpb_2p76_norm->SetPointError(16, 0, 0.28 / 2);
+
+    gcms_pbpb_2p76_norm->SetMarkerStyle(24);
+    gcms_pbpb_2p76_norm->SetMarkerColor(colours[5]);
+    gcms_pbpb_2p76_norm->SetLineColor(colours[5]);
+
+    return gcms_pbpb_2p76_norm;
+}
+
 TGraphErrors* alice_pbpb_5p02() {
     TGraphErrors* galice_pbpb_5p02 = new TGraphErrors(11);
     galice_pbpb_5p02->SetName("galice_pbpb_5p02");
@@ -164,6 +252,29 @@ TGraphErrors* alice_pbpb_5p02() {
     galice_pbpb_5p02->SetLineColor(colours[6]);
 
     return galice_pbpb_5p02;
+}
+
+TGraphErrors* alice_pbpb_5p02_norm() {
+    TGraphErrors* galice_pbpb_5p02_norm = new TGraphErrors(11);
+    galice_pbpb_5p02_norm->SetName("galice_pbpb_5p02_norm");
+
+    galice_pbpb_5p02_norm->SetPoint(0, 15.6, 5.8 / 2);  galice_pbpb_5p02_norm->SetPointError(0, 2, 0.5 / 2);
+    galice_pbpb_5p02_norm->SetPoint(1, 30.4, 6.3 / 2);  galice_pbpb_5p02_norm->SetPointError(1, 3, 0.4 / 2);
+    galice_pbpb_5p02_norm->SetPoint(2, 53.6, 6.8 / 2);  galice_pbpb_5p02_norm->SetPointError(2, 4, 0.3 / 2);
+    galice_pbpb_5p02_norm->SetPoint(3, 86.3, 7.4 / 2);  galice_pbpb_5p02_norm->SetPointError(3, 4, 0.3 / 2);
+    galice_pbpb_5p02_norm->SetPoint(4, 131, 7.8 / 2);   galice_pbpb_5p02_norm->SetPointError(4, 4, 0.3 / 2);
+    galice_pbpb_5p02_norm->SetPoint(5, 188, 8.4 / 2);   galice_pbpb_5p02_norm->SetPointError(5, 3, 0.3 / 2);
+    galice_pbpb_5p02_norm->SetPoint(6, 263, 9.0 / 2);   galice_pbpb_5p02_norm->SetPointError(6, 2, 0.3 / 2);
+    galice_pbpb_5p02_norm->SetPoint(7, 320, 9.4 / 2);   galice_pbpb_5p02_norm->SetPointError(7, 1.7, 0.3 / 2);
+    galice_pbpb_5p02_norm->SetPoint(8, 346, 9.6 / 2);   galice_pbpb_5p02_norm->SetPointError(8, 1.2, 0.3 / 2);
+    galice_pbpb_5p02_norm->SetPoint(9, 372, 9.9 / 2);   galice_pbpb_5p02_norm->SetPointError(9, 0.8, 0.3 / 2);
+    galice_pbpb_5p02_norm->SetPoint(10, 398, 10.2 / 2); galice_pbpb_5p02_norm->SetPointError(10, 0.5, 0.3 / 2);
+
+    galice_pbpb_5p02_norm->SetMarkerStyle(30);
+    galice_pbpb_5p02_norm->SetMarkerColor(colours[6]);
+    galice_pbpb_5p02_norm->SetLineColor(colours[6]);
+
+    return galice_pbpb_5p02_norm;
 }
 
 int main(int argc, char* argv[]) {
