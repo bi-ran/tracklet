@@ -162,7 +162,7 @@ int compare_pixels(const char* input, const char* label, const char* list, int o
 
    LAYERS(DRAW_ALL_LAYER)
 
-   TFile* fout = new TFile(Form("%s.root", label), "update");
+   TFile* fout = new TFile(Form("data/%s.root", label), "update");
 
 #define SAVE_LAYER(q)                                                         \
    h##q->Write("", TObject::kOverwrite);                                      \
@@ -295,7 +295,7 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
 
    TRACKLETS(DRAW_ALL_TRACKLET)
 
-   TFile* fout = new TFile(Form("%s.root", label), "update");
+   TFile* fout = new TFile(Form("data/%s.root", label), "update");
 
 #define SAVE_TRACKLET(q, w)                                                   \
    h##q##w->Write("", TObject::kOverwrite);                                   \
@@ -311,6 +311,7 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
 
 typedef struct twod_t {
    std::string id;
+   std::string label;
    std::string x_lvar[NLAYERS];
    std::string x_var;
    int         x_nbin;
@@ -327,34 +328,46 @@ typedef struct twod_t {
 
 static const std::vector<twod_t> options_pixel_twod = {
    {
-      "eta-phi",
-      {"eta1", "eta2", "eta3", "eta4"}, "eta", 1000, {-4, 4},
-      {"phi1", "phi2", "phi3", "phi4"}, "phi", 1000, {-4, 4},
+      "eta-phi", ";#eta;#phi",
+      {"eta1", "eta2", "eta3", "eta4"}, "", 1000, {-4, 4},
+      {"phi1", "phi2", "phi3", "phi4"}, "", 1000, {-4, 4},
       "(1)", 0, {600, 600}, "colz"
    }, {
-      "eta-r",
-      {"eta1", "eta2", "eta3", "eta4"}, "eta", 1000, {-4, 4},
-      {"r1", "r2", "r3", "r4"}, "r", 1000, {0, 20},
+      "eta-r", ";#eta;r",
+      {"eta1", "eta2", "eta3", "eta4"}, "", 1000, {-4, 4},
+      {"r1", "r2", "r3", "r4"}, "", 1000, {0, 20},
       "(1)", 1, {600, 600}, "colz"
    }, {
-      "eta-cs",
-      {"eta1", "eta2", "eta3", "eta4"}, "eta", 200, {-4, 4},
-      {"cs1", "cs2", "cs3", "cs4"}, "cs", 40, {0, 40},
+      "eta-cs", ";#eta;cluster size",
+      {"eta1", "eta2", "eta3", "eta4"}, "", 200, {-4, 4},
+      {"cs1", "cs2", "cs3", "cs4"}, "", 40, {0, 40},
       "(1)", 0, {600, 600}, "colz"
    }, {
-      "x-y",
-      {"r1*cos(phi1)", "r2*cos(phi2)", "r3*cos(phi3)", "r4*cos(phi4)"}, "x", 1000, {-20, 20},
-      {"r1*sin(phi1)", "r2*sin(phi2)", "r3*sin(phi3)", "r4*sin(phi4)"}, "y", 1000, {-20, 20},
+      "x-y", ";x;y",
+      {"r1*cos(phi1)",
+       "r2*cos(phi2)",
+       "r3*cos(phi3)",
+       "r4*cos(phi4)"}, "", 1000, {-20, 20},
+      {"r1*sin(phi1)",
+       "r2*sin(phi2)",
+       "r3*sin(phi3)",
+       "r4*sin(phi4)"}, "", 1000, {-20, 20},
       "(1)", 1, {600, 600}, "colz"
    }, {
-      "z-phi",
-      {"r1/tan(2*atan(exp(-eta1)))", "r2/tan(2*atan(exp(-eta2)))", "r3/tan(2*atan(exp(-eta3)))", "r4/tan(2*atan(exp(-eta4)))"}, "z", 1000, {-30, 30},
-      {"phi1", "phi2", "phi3", "phi4"}, "phi", 1000, {-4, 4},
+      "z-phi", ";z;#phi",
+      {"r1/tan(2*atan(exp(-eta1)))",
+       "r2/tan(2*atan(exp(-eta2)))",
+       "r3/tan(2*atan(exp(-eta3)))",
+       "r4/tan(2*atan(exp(-eta4)))"}, "", 1000, {-30, 30},
+      {"phi1", "phi2", "phi3", "phi4"}, "", 1000, {-4, 4},
       "(1)", 0, {600, 2400}, "colz"
    }, {
-      "z-r",
-      {"r1/tan(2*atan(exp(-eta1)))", "r2/tan(2*atan(exp(-eta2)))", "r3/tan(2*atan(exp(-eta3)))", "r4/tan(2*atan(exp(-eta4)))"}, "z", 1000, {-30, 30},
-      {"r1", "r2", "r3", "r4"}, "r", 1000, {0, 20},
+      "z-r", ";z;r",
+      {"r1/tan(2*atan(exp(-eta1)))",
+       "r2/tan(2*atan(exp(-eta2)))",
+       "r3/tan(2*atan(exp(-eta3)))",
+       "r4/tan(2*atan(exp(-eta4)))"}, "", 1000, {-30, 30},
+      {"r1", "r2", "r3", "r4"}, "", 1000, {0, 20},
       "(1)", 1, {600, 600}, "colz"
    }
 };
@@ -366,8 +379,7 @@ int map_pixels(const char* input, const char* label, int opt) {
    TTree* t = (TTree*)f->Get("pixel/PixelTree");
 
 #define MAP_PIXEL(q)                                                          \
-   TH2D* h##q = new TH2D("h" #q,                                              \
-         Form(";%s;%s", OPTSTR(x_lvar[q - 1]), OPTSTR(y_lvar[q - 1])),        \
+   TH2D* h##q = new TH2D("h" #q, Form("layer " #q "%s", OPTSTR(label)),       \
          OPT(x_nbin), OPT(x_range[0]), OPT(x_range[1]),                       \
          OPT(y_nbin), OPT(y_range[0]), OPT(y_range[1]));                      \
    t->Draw(Form("%s:%s>>h" #q, OPTSTR(y_lvar[q - 1]), OPTSTR(x_lvar[q - 1])), \
@@ -386,8 +398,7 @@ int map_pixels(const char* input, const char* label, int opt) {
    LAYERS(DRAW_PIXEL)
 
    if (OPT(overlay)) {
-      TH2D* hall = new TH2D("hall",
-            Form(";%s;%s", OPTSTR(x_var), OPTSTR(y_var)),
+      TH2D* hall = new TH2D("hall", OPTSTR(label),
             OPT(x_nbin), OPT(x_range[0]), OPT(x_range[1]),
             OPT(y_nbin), OPT(y_range[0]), OPT(y_range[1]));
 
@@ -409,12 +420,12 @@ int map_pixels(const char* input, const char* label, int opt) {
 
 static const std::vector<twod_t> options_tracklet_twod = {
    {
-      "eta-phi",
+      "eta-phi", ";#eta;#phi",
       {}, "eta1", 1000, {-4, 4},
       {}, "phi1", 1000, {-4, 4},
       "vz[1]>-99", 0, {600, 600}, "colz"
    }, {
-      "eta-vz",
+      "eta-vz", ";#eta;v_{z}",
       {}, "eta1", 200, {-4, 4},
       {}, "vz[1]", 200, {-20, 20},
       "vz[1]>-99", 0, {600, 600}, "colz"
@@ -432,8 +443,7 @@ int map_tracklets(const char* input, const char* label, int opt) {
    fsel *= "weight";
 
 #define MAP_TRACKLET(q, w)                                                    \
-   TH2D* h##q##w = new TH2D("h" #q #w,                                        \
-         Form(";%s;%s", OPTSTR(x_var), OPTSTR(y_var)),                        \
+   TH2D* h##q##w = new TH2D("h" #q #w, Form("layer " #q "%s", OPTSTR(label)), \
          OPT(x_nbin), OPT(x_range[0]), OPT(x_range[1]),                       \
          OPT(y_nbin), OPT(y_range[0]), OPT(y_range[1]));                      \
    t##q##w->Draw(Form("%s:%s>>h" #q #w, OPTSTR(y_var), OPTSTR(x_var)),        \
