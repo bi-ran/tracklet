@@ -56,38 +56,38 @@ int merge_monads(const char* label) {
 
    TRACKLETS(OPEN)
 
-   TH1F* hframe = (TH1F*)f12->Get("hframe")->Clone("hframe");
+   TH1F* hframe = (TH1F*)f12->Get("hframe")->Clone();
    hframe->GetXaxis()->CenterTitle();
    hframe->GetYaxis()->CenterTitle();
 
    TFile* fgen = new TFile("data/gen.root");
 
-   TH1F* hhydjet = (TH1F*)fgen->Get("hhydjet")->Clone("hhydjet");
+   TH1F* hhydjet = (TH1F*)fgen->Get("hhydjet")->Clone();
    hhydjet->SetMarkerSize(0);
    hhydjet->SetMarkerColor(COLOUR_HYDJET);
    hhydjet->SetLineColor(COLOUR_HYDJET);
    hhydjet->SetStats(0);
 
-   TH1F* hdpmjet = (TH1F*)fgen->Get("hdpmjet")->Clone("hdpmjet");
+   TH1F* hdpmjet = (TH1F*)fgen->Get("hdpmjet")->Clone();
    hdpmjet->SetMarkerSize(0);
    hdpmjet->SetMarkerColor(COLOUR_DPMJET);
    hdpmjet->SetLineColor(COLOUR_DPMJET);
    hdpmjet->SetStats(0);
 
-   TH1F* hamptnomelt = (TH1F*)fgen->Get("hamptnomelt")->Clone("hamptnomelt");
-   hamptnomelt->SetMarkerSize(0);
-   hamptnomelt->SetMarkerColor(COLOUR_AMPT);
-   hamptnomelt->SetLineColor(COLOUR_AMPT);
-   hamptnomelt->SetLineStyle(7);
-   hamptnomelt->SetStats(0);
+   TH1F* hamptnm = (TH1F*)fgen->Get("hamptnm")->Clone();
+   hamptnm->SetMarkerSize(0);
+   hamptnm->SetMarkerColor(COLOUR_AMPT);
+   hamptnm->SetLineColor(COLOUR_AMPT);
+   hamptnm->SetLineStyle(7);
+   hamptnm->SetStats(0);
 
-   TH1F* hamptsmelt = (TH1F*)fgen->Get("hamptsmelt")->Clone("hamptsmelt");
-   hamptsmelt->SetMarkerSize(0);
-   hamptsmelt->SetMarkerColor(COLOUR_AMPT);
-   hamptsmelt->SetLineColor(COLOUR_AMPT);
-   hamptsmelt->SetStats(0);
+   TH1F* hamptsm = (TH1F*)fgen->Get("hamptsm")->Clone();
+   hamptsm->SetMarkerSize(0);
+   hamptsm->SetMarkerColor(COLOUR_AMPT);
+   hamptsm->SetLineColor(COLOUR_AMPT);
+   hamptsm->SetStats(0);
 
-   TH1F* hepos = (TH1F*)fgen->Get("hepos")->Clone("hepos");
+   TH1F* hepos = (TH1F*)fgen->Get("hepos")->Clone();
    hepos->SetMarkerSize(0);
    hepos->SetMarkerColor(COLOUR_EPOS);
    hepos->SetLineColor(COLOUR_EPOS);
@@ -100,8 +100,8 @@ int merge_monads(const char* label) {
    hframe->Draw();
    hhydjet->Draw("c hist same");
    hdpmjet->Draw("c hist same");
-   hamptnomelt->Draw("c hist same");
-   hamptsmelt->Draw("c hist same");
+   hamptnm->Draw("c hist same");
+   hamptsm->Draw("c hist same");
    hepos->Draw("c hist same");
 
 #define ZERO(q, w)                                                            \
@@ -131,8 +131,8 @@ int merge_monads(const char* label) {
    l1->SetFillStyle(0);
    l1->AddEntry(hhydjet, "HYDJET", "l");
    l1->AddEntry(hdpmjet, "DPMJET-III", "l");
-   l1->AddEntry(hamptnomelt, "AMPT (w/o string melting)", "l");
-   l1->AddEntry(hamptsmelt, "AMPT (with string melting)", "l");
+   l1->AddEntry(hamptnm, "AMPT (w/o string melting)", "l");
+   l1->AddEntry(hamptsm, "AMPT (with string melting)", "l");
    l1->AddEntry(hepos, "EPOS LHC", "l");
 
 #define FILL_LEGEND(q, w)                                                     \
@@ -172,8 +172,8 @@ int merge_monads(const char* label) {
    hframe->Draw();
    hhydjet->Draw("c hist same");
    hdpmjet->Draw("c hist same");
-   hamptnomelt->Draw("c hist same");
-   hamptsmelt->Draw("c hist same");
+   hamptnm->Draw("c hist same");
+   hamptsm->Draw("c hist same");
    hepos->Draw("c hist same");
    havg->Draw("same");
 
@@ -185,8 +185,8 @@ int merge_monads(const char* label) {
    l2->AddEntry(havg, "XeXe 5.442 TeV", "p");
    l2->AddEntry(hhydjet, "HYDJET", "l");
    l2->AddEntry(hdpmjet, "DPMJET-III", "l");
-   l2->AddEntry(hamptnomelt, "AMPT (w/o string melting)", "l");
-   l2->AddEntry(hamptsmelt, "AMPT (with string melting)", "l");
+   l2->AddEntry(hamptnm, "AMPT (w/o string melting)", "l");
+   l2->AddEntry(hamptsm, "AMPT (with string melting)", "l");
    l2->AddEntry(hepos, "EPOS LHC", "l");
    l2->Draw();
 
@@ -236,8 +236,8 @@ int merge_monads(const char* label) {
    hframe->Draw();
    hhydjet->Draw("c hist same");
    hdpmjet->Draw("c hist same");
-   hamptnomelt->Draw("c hist same");
-   hamptsmelt->Draw("c hist same");
+   hamptnm->Draw("c hist same");
+   hamptsm->Draw("c hist same");
    hepos->Draw("c hist same");
    hsym->Draw("same");
 
@@ -249,12 +249,14 @@ int merge_monads(const char* label) {
    l4->AddEntry(hsym, "XeXe 5.442 TeV", "p");
    l4->AddEntry(hhydjet, "HYDJET", "l");
    l4->AddEntry(hdpmjet, "DPMJET-III", "l");
-   l4->AddEntry(hamptnomelt, "AMPT (w/o string melting)", "l");
-   l4->AddEntry(hamptsmelt, "AMPT (with string melting)", "l");
+   l4->AddEntry(hamptnm, "AMPT (w/o string melting)", "l");
+   l4->AddEntry(hamptsm, "AMPT (with string melting)", "l");
    l4->AddEntry(hepos, "EPOS LHC", "l");
    l4->Draw();
 
    c4->SaveAs(Form("figs/merged/merged-%s-sym.png", label));
+
+   hframe->Write("", TObject::kOverwrite);
 
 #define WRITE(q, w)                                                           \
    h##q##w->Write("", TObject::kOverwrite);                                   \
