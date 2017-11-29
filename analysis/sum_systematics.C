@@ -37,7 +37,7 @@ int sum_systematics(const char* list, const char* label) {
     }
 
     std::vector<std::string> hists = {
-        "h12", "h13", "h14", "h23", "h24", "h34", "havg"
+        "h12", "h13", "h14", "h23", "h24", "h34", "havg", "hsym"
     };
     std::size_t nhists = hists.size();
 
@@ -70,17 +70,21 @@ int sum_systematics(const char* list, const char* label) {
 
         tvars[i]->write();
 
-        TCanvas* c1 = new TCanvas("c1", "", 600, 600);
-        c1->Divide(3, 3);
-
         for (std::size_t j = 1; j < nfiles; ++j) {
-            c1->cd(j);
-            svars[i][j]->adiff(options[j])->Draw();
+            TCanvas* c1 = new TCanvas("c1", "", 600, 600);
+            svars[i][j]->adiff(0)->Draw();
+
+            c1->SaveAs(Form("figs/uncertainties/systematics-%s-%s-%s-diff.png", hists[i].c_str(), label, labels[j].c_str()));
+
+            delete c1;
         }
 
-        c1->SaveAs(Form("figs/uncertainties/systematics-%s-%s-diff.png", hists[i].c_str(), label));
+        TCanvas* c2 = new TCanvas("c2", "", 600, 600);
+        tvars[i]->total()->Draw("p hist");
 
-        delete c1;
+        c2->SaveAs(Form("figs/uncertainties/systematics-%s-%s-diff-total.png", hists[i].c_str(), label));
+
+        delete c2;
     }
 
     fout->Write("", TObject::kOverwrite);
