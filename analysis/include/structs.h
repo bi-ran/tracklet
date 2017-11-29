@@ -110,11 +110,14 @@ struct PixelEvent {
    float bsx, bsy, bsz;
    int nv; float vx[8], vy[8], vz[8];
    int hlt; int nhfp, nhfn; float hft;
-   int nhits1, nhits2, nhits3, nhits4;
+   int nhits1, nhits2, nhits3, nhits4, nhits5, nhits6, nhits7;
    float eta1[MAX], phi1[MAX], r1[MAX], cs1[MAX];
    float eta2[MAX], phi2[MAX], r2[MAX], cs2[MAX];
    float eta3[MAX], phi3[MAX], r3[MAX], cs3[MAX];
    float eta4[MAX], phi4[MAX], r4[MAX], cs4[MAX];
+   float eta5[MAX], phi5[MAX], r5[MAX], cs5[MAX];
+   float eta6[MAX], phi6[MAX], r6[MAX], cs6[MAX];
+   float eta7[MAX], phi7[MAX], r7[MAX], cs7[MAX];
    int process, npart;
    float pt[MAX], eta[MAX], phi[MAX];
    int chg[MAX], pdg[MAX];
@@ -159,6 +162,21 @@ void set_pixel_event(TTree* t, PixelEvent& par) {
    t->SetBranchAddress("phi4", par.phi4);
    t->SetBranchAddress("r4", par.r4);
    t->SetBranchAddress("cs4", par.cs4);
+   t->SetBranchAddress("nhits5", &par.nhits5);
+   t->SetBranchAddress("eta5", par.eta5);
+   t->SetBranchAddress("phi5", par.phi5);
+   t->SetBranchAddress("r5", par.r5);
+   t->SetBranchAddress("cs5", par.cs5);
+   t->SetBranchAddress("nhits6", &par.nhits6);
+   t->SetBranchAddress("eta6", par.eta6);
+   t->SetBranchAddress("phi6", par.phi6);
+   t->SetBranchAddress("r6", par.r6);
+   t->SetBranchAddress("cs6", par.cs6);
+   t->SetBranchAddress("nhits7", &par.nhits7);
+   t->SetBranchAddress("eta7", par.eta7);
+   t->SetBranchAddress("phi7", par.phi7);
+   t->SetBranchAddress("r7", par.r7);
+   t->SetBranchAddress("cs7", par.cs7);
 
    t->SetBranchAddress("process", &par.process);
    t->SetBranchAddress("npart", &par.npart);

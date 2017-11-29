@@ -14,12 +14,14 @@
 #include "include/tracklet.h"
 #include "include/hf.h"
 
-#define NLAYERS   4
 #define LAYERS(EXPAND)     \
    EXPAND(1)               \
    EXPAND(2)               \
    EXPAND(3)               \
    EXPAND(4)               \
+   EXPAND(5)               \
+   EXPAND(6)               \
+   EXPAND(7)               \
 
 #define TRACKLETS(EXPAND)  \
    EXPAND(1, 2)            \
@@ -28,6 +30,9 @@
    EXPAND(2, 3)            \
    EXPAND(2, 4)            \
    EXPAND(3, 4)            \
+   EXPAND(1, 5)            \
+   EXPAND(1, 6)            \
+   EXPAND(1, 7)            \
 
 static const float vzpar[4][2] = {
    {-0.0275464, 4.75225},  /* hydjet */
@@ -87,6 +92,10 @@ int transmute_trees(const char* input,
       add_bkg_l3 = 0;
       add_bkg_l4 = 0;
    }
+
+   float add_bkg_l5 = 0;
+   float add_bkg_l6 = 0;
+   float add_bkg_l7 = 0;
 
    if (reweight_vertex && (sample < 0 || sample > 3)) {
       printf("! invalid sample [%i] for vertex reweighting!\n", sample);
