@@ -114,8 +114,6 @@ int transmute_trees(const char* input,
 
    LAYERS(PREPARE_HIT_DISTRIBUTIONS);
 
-   int mix[NLAYERS] = {0};
-
    PixelEvent par;
    set_pixel_event(t, par);
 
@@ -261,7 +259,6 @@ int transmute_trees(const char* input,
          tdata##q##w.vz[j] += vz_shift;                                       \
                                                                               \
       tdata##q##w.weight = event_weight;                                      \
-      tdata##q##w.mix = mix[w - 1];                                           \
                                                                               \
       trackletTree##q##w->Fill();                                             \
 

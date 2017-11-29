@@ -110,7 +110,7 @@ struct PixelEvent {
    float bsx, bsy, bsz;
    int nv; float vx[8], vy[8], vz[8];
    int hlt; int nhfp, nhfn; float hft;
-   int nHits, nhits1, nhits2, nhits3, nhits4;
+   int nhits1, nhits2, nhits3, nhits4;
    float eta1[MAX], phi1[MAX], r1[MAX], cs1[MAX];
    float eta2[MAX], phi2[MAX], r2[MAX], cs2[MAX];
    float eta3[MAX], phi3[MAX], r3[MAX], cs3[MAX];
