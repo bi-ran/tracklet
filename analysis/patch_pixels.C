@@ -47,7 +47,10 @@ int patch_hlt(const char* fpixel, const char* fhlt) {
         tp->GetEntry(i);
 
         int64_t j = mm->get(prun, plumi, pevent);
-        if (j == -1) { continue; }
+        if (j == -1) {
+            printf("run: %i, lumi: %i, event: %i not found!\n", prun, plumi, pevent);
+            return 1;
+        }
 
         th->GetEntry(j);
         b->Fill();
