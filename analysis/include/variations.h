@@ -123,9 +123,9 @@ void var_t::fit(std::string fitfdiff, std::string fitfratio) {
 
    TF1* fdiff = new TF1(Form("%s_fdiff", tag.c_str()), fitfdiff.c_str());
    fdiff->SetRange(min, max);
-   hadiff->Fit(Form("%s_fdiff", tag.c_str()), "F Q", "", min, max);
-   hadiff->Fit(Form("%s_fdiff", tag.c_str()), "F Q", "", min, max);
-   hadiff->Fit(Form("%s_fdiff", tag.c_str()), "F M Q", "", min, max);
+   hadiff->Fit(Form("%s_fdiff", tag.c_str()), "F Q 0", "", min, max);
+   hadiff->Fit(Form("%s_fdiff", tag.c_str()), "F Q 0", "", min, max);
+   hadiff->Fit(Form("%s_fdiff", tag.c_str()), "F M Q 0", "", min, max);
 
    fdiff = (TF1*)hadiff->GetFunction(Form("%s_fdiff", tag.c_str()));
    hfadiff = (TH1F*)hadiff->Clone(Form("%s_fadiff", tag.c_str()));
@@ -133,9 +133,9 @@ void var_t::fit(std::string fitfdiff, std::string fitfratio) {
 
    TF1* fratio = new TF1(Form("%s_fratio", tag.c_str()), fitfratio.c_str());
    fratio->SetRange(min, max);
-   haratio->Fit(Form("%s_fratio", tag.c_str()), "F Q", "", min, max);
-   haratio->Fit(Form("%s_fratio", tag.c_str()), "F Q", "", min, max);
-   haratio->Fit(Form("%s_fratio", tag.c_str()), "F M Q", "", min, max);
+   haratio->Fit(Form("%s_fratio", tag.c_str()), "F Q 0", "", min, max);
+   haratio->Fit(Form("%s_fratio", tag.c_str()), "F Q 0", "", min, max);
+   haratio->Fit(Form("%s_fratio", tag.c_str()), "F M Q 0", "", min, max);
 
    fratio = (TF1*)haratio->GetFunction(Form("%s_fratio", tag.c_str()));
    hfaratio = (TH1F*)haratio->Clone(Form("%s_faratio", tag.c_str()));
@@ -177,9 +177,6 @@ void var_t::write() {
    hardiff->Write("", TObject::kOverwrite);
    hfaratio->Write("", TObject::kOverwrite);
    hfardiff->Write("", TObject::kOverwrite);
-
-   fdiff->Write("", TObject::kOverwrite);
-   fratio->Write("", TObject::kOverwrite);
 }
 
 class sumvar_t {
