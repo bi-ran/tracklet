@@ -1,20 +1,27 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
-#define MAX 20000
+#define MAXL1  17500
+#define MAXL2  14500
+#define MAXL3  12500
+#define MAXL4  11000
+#define MAXL5  14000
+#define MAXL6  15000
+#define MAXL7  16000
+#define MAXP   15000
 
 struct TrackletEvent {
    int run, event, lumi, bx;
    float weight; int mix;
    int nv; float vx[8], vy[8], vz[8];
    int hlt; int nhfp, nhfn; float hft; int cbin;
-   float eta1[MAX], phi1[MAX], r1[MAX], cs1[MAX];
-   float eta2[MAX], phi2[MAX], r2[MAX], cs2[MAX];
-   float deta[MAX], dphi[MAX], dr2[MAX];
+   float eta1[MAXL7], phi1[MAXL7], r1[MAXL7], cs1[MAXL7];
+   float eta2[MAXL7], phi2[MAXL7], r2[MAXL7], cs2[MAXL7];
+   float deta[MAXL7], dphi[MAXL7], dr2[MAXL7];
    int ntracklet, nhits, nhit1, nhit2;
    int process, npart;
-   float pt[MAX], eta[MAX], phi[MAX];
-   int chg[MAX], pdg[MAX];
+   float pt[MAXP], eta[MAXP], phi[MAXP];
+   int chg[MAXP], pdg[MAXP];
 };
 
 void branch_tracklet_event(TTree* t, TrackletEvent& tdata) {
@@ -111,16 +118,16 @@ struct PixelEvent {
    int nv; float vx[8], vy[8], vz[8];
    int hlt; int nhfp, nhfn; float hft;
    int nhits1, nhits2, nhits3, nhits4, nhits5, nhits6, nhits7;
-   float eta1[MAX], phi1[MAX], r1[MAX], cs1[MAX];
-   float eta2[MAX], phi2[MAX], r2[MAX], cs2[MAX];
-   float eta3[MAX], phi3[MAX], r3[MAX], cs3[MAX];
-   float eta4[MAX], phi4[MAX], r4[MAX], cs4[MAX];
-   float eta5[MAX], phi5[MAX], r5[MAX], cs5[MAX];
-   float eta6[MAX], phi6[MAX], r6[MAX], cs6[MAX];
-   float eta7[MAX], phi7[MAX], r7[MAX], cs7[MAX];
+   float eta1[MAXL1], phi1[MAXL1], r1[MAXL1], cs1[MAXL1];
+   float eta2[MAXL2], phi2[MAXL2], r2[MAXL2], cs2[MAXL2];
+   float eta3[MAXL3], phi3[MAXL3], r3[MAXL3], cs3[MAXL3];
+   float eta4[MAXL4], phi4[MAXL4], r4[MAXL4], cs4[MAXL4];
+   float eta5[MAXL5], phi5[MAXL5], r5[MAXL5], cs5[MAXL5];
+   float eta6[MAXL6], phi6[MAXL6], r6[MAXL6], cs6[MAXL6];
+   float eta7[MAXL7], phi7[MAXL7], r7[MAXL7], cs7[MAXL7];
    int process, npart;
-   float pt[MAX], eta[MAX], phi[MAX];
-   int chg[MAX], pdg[MAX];
+   float pt[MAXP], eta[MAXP], phi[MAXP];
+   int chg[MAXP], pdg[MAXP];
 };
 
 void set_pixel_event(TTree* t, PixelEvent& par) {
