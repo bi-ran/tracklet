@@ -64,6 +64,33 @@ void prepare_hits(std::vector<RecHit>& hits, PixelEvent& par, Int_t layer,
                rawhits.push_back(tmp);
          }
          break;
+      case 5:
+         for (int ihit = 0; ihit < par.nhits5; ++ihit) {
+            if (gRandom->Rndm() < drop_prob) { continue; }
+            RecHit tmp(par.eta5[ihit], par.phi5[ihit], par.r5[ihit], par.cs5[ihit]);
+            rawhits.push_back(tmp);
+            if (gRandom->Rndm() < split_prob)
+               rawhits.push_back(tmp);
+         }
+         break;
+      case 6:
+         for (int ihit = 0; ihit < par.nhits6; ++ihit) {
+            if (gRandom->Rndm() < drop_prob) { continue; }
+            RecHit tmp(par.eta6[ihit], par.phi6[ihit], par.r6[ihit], par.cs6[ihit]);
+            rawhits.push_back(tmp);
+            if (gRandom->Rndm() < split_prob)
+               rawhits.push_back(tmp);
+         }
+         break;
+      case 7:
+         for (int ihit = 0; ihit < par.nhits7; ++ihit) {
+            if (gRandom->Rndm() < drop_prob) { continue; }
+            RecHit tmp(par.eta7[ihit], par.phi7[ihit], par.r7[ihit], par.cs7[ihit]);
+            rawhits.push_back(tmp);
+            if (gRandom->Rndm() < split_prob)
+               rawhits.push_back(tmp);
+         }
+         break;
    }
 
    for (std::size_t ihit = 0; ihit < rawhits.size(); ++ihit) {
