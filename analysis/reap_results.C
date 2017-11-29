@@ -47,7 +47,7 @@ int reap_results(int type,
                  bool apply_correction = 0,     // apply external corrections
                  int cmin = 0, int cmax = 20,   // centrality selection
                  bool apply_geometry_corr = 0,  // apply geometric correction
-                 bool apply_ext_accep_map = 0)  // use predefined acceptance map
+                 bool apply_ext_accep_map = 1)  // use predefined acceptance map
 {
    TFile* finput = new TFile(input, "read");
    TTree* tinput = (TTree*)finput->Get(Form("TrackletTree%i", type));
