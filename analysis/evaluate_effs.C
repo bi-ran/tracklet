@@ -71,7 +71,7 @@ int evaluate_effs(const char* list) {
 
    TCanvas* c1 = new TCanvas("c1", "", 600, 600);
 
-   TLegend* l1 = new TLegend(0.5, 0.725, 0.9, 0.875);
+   TLegend* l1 = new TLegend(0.5, 0.56, 0.9, 0.72);
    l1->SetBorderSize(0);
    l1->SetFillStyle(0);
    l1->SetTextFont(43);
@@ -79,8 +79,8 @@ int evaluate_effs(const char* list) {
 
    for (std::size_t i = 0; i < nfiles; ++i) {
       heff[i]->SetAxisRange(0.0, 1.2, "Y");
-      heff[i]->SetXTitle("Number of first layer hits");
-      heff[i]->SetYTitle("Efficiency");
+      heff[i]->SetXTitle("number of pixel hits (layer 1)");
+      heff[i]->SetYTitle("efficiency");
       heff[i]->SetStats(0);
       heff[i]->Draw("same");
 
@@ -94,7 +94,7 @@ int evaluate_effs(const char* list) {
    TCanvas* c2 = new TCanvas("c2", "", 600, 600);
    c2->SetLogy();
 
-   TLegend* l2 = new TLegend(0.5, 0.725, 0.9, 0.875);
+   TLegend* l2 = new TLegend(0.5, 0.56, 0.9, 0.72);
    l2->SetBorderSize(0);
    l2->SetFillStyle(0);
    l2->SetTextFont(43);
@@ -103,8 +103,8 @@ int evaluate_effs(const char* list) {
    for (std::size_t i = 0; i < nfiles; ++i) {
       hres[i]->SetAxisRange(0.001, 1, "Y");
       hres[i]->SetTitle("");
-      hres[i]->SetXTitle("nhit1");
-      hres[i]->SetYTitle("Resolution (cm)");
+      hres[i]->SetXTitle("number of pixel hits (layer 1)");
+      hres[i]->SetYTitle("resolution (cm)");
       hres[i]->SetStats(0);
       hres[i]->Draw("same");
 
