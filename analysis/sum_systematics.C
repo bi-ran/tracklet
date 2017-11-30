@@ -77,7 +77,7 @@ int sum_systematics(const char* list, const char* label) {
             TCanvas* c1 = new TCanvas("c1", "", 600, 600);
             svars[i][j]->adiff(0)->Draw();
 
-            c1->SaveAs(Form("figs/uncertainties/systematics-%s-%s-%s-diff.png", hists[i].c_str(), label, labels[j].c_str()));
+            c1->SaveAs(Form("figs/uncertainties/systematics-%s-%s-diff-%s.png", hists[i].c_str(), label, labels[j].c_str()));
 
             delete c1;
         }
