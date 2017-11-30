@@ -27,13 +27,16 @@ int sum_systematics(const char* list, const char* label) {
 
     std::vector<std::string> files;
     std::vector<int> options;
+    std::vector<std::string> fdiff;
     std::vector<std::string> labels;
     for (std::size_t f = 0; f < nfiles; ++f) {
         std::size_t ws1 = flist[f].find(" ");
         files.push_back(flist[f].substr(0, ws1));
         std::size_t ws2 = flist[f].find(" ", ws1 + 1);
         options.push_back(std::stoi(flist[f].substr(ws1 + 1, ws2)));
-        labels.push_back(flist[f].substr(ws2 + 1));
+        std::size_t ws3 = flist[f].find(" ", ws2 + 1);
+        fdiff.push_back(flist[f].substr(ws2 + 1, ws3 - (ws2 + 1)));
+        labels.push_back(flist[f].substr(ws3 + 1));
     }
 
     std::vector<std::string> hists = {
@@ -62,7 +65,7 @@ int sum_systematics(const char* list, const char* label) {
             h[i][j] = (TH1F*)f[j]->Get(hists[i].c_str())->Clone(Form("%s%s", hists[i].c_str(), labels[j].c_str()));
 
             svars[i][j] = new var_t(hists[i], labels[j], hnominal, h[i][j]);
-            svars[i][j]->fit("pol2", "pol2");
+            svars[i][j]->fit(fdiff[j].c_str(), "pol2");
             svars[i][j]->write();
 
             tvars[i]->add(svars[i][j], options[j]);
