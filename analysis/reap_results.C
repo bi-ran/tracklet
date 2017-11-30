@@ -47,7 +47,8 @@ int reap_results(int type,
                  bool apply_correction = 0,     // apply external corrections
                  int cmin = 0, int cmax = 20,   // centrality selection
                  bool apply_geometry_corr = 0,  // apply geometric correction
-                 bool apply_ext_accep_map = 1)  // use predefined acceptance map
+                 bool apply_ext_accep_map = 1,  // use predefined acceptance map
+                 float maxdr2 = 0.25)           // signal region selection
 {
    TFile* finput = new TFile(input, "read");
    TTree* tinput = (TTree*)finput->Get(Form("TrackletTree%i", type));
@@ -96,8 +97,7 @@ int reap_results(int type,
       vzb[i] = i * (vzmax - vzmin) / nvz + vzmin;
 
    /* selections                                                              */
-   float signal_region = 0.25;
-   TCut ssel = Form("(dr2<%f)", signal_region);
+   TCut ssel = Form("(dr2<%f)", maxdr2);
    TCut csel = Form("(cbin>=%i && cbin<%i)", cmin, cmax);
    TCut vsel = "(vz[1]<15 && vz[1]>-15)";
    TCut osel = "(hlt && nhfn>0 && nhfp>0)";
@@ -683,8 +683,10 @@ int main(int argc, char* argv[]) {
       return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]));
    } else if (argc == 10) {
       return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]));
+   } else if (argc == 11) {
+      return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]), atof(argv[10]));
    } else {
-      printf("usage: ./reap_results [type] [input] [label] [clabel] [applyc] [cmin cmax] [applyg] [extacc]\n");
+      printf("usage: ./reap_results [type] [input] [label] [clabel] [applyc] [cmin cmax] [applyg] [extacc] [maxdr2]\n");
       return -1;
    }
 }

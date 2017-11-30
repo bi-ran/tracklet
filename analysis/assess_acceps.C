@@ -24,7 +24,7 @@ void convert(TH2* h1) {
     delete hvz;
 }
 
-int assess_acceps(int type, std::string data_list, std::string mc_list) {
+int assess_acceps(int type, std::string data_list, std::string mc_list, float maxdr2) {
     std::string line;
 
     std::vector<std::string> datafiles;
@@ -51,14 +51,14 @@ int assess_acceps(int type, std::string data_list, std::string mc_list) {
     int nvzbin = 3000;
 
     TH2D* hdata = new TH2D("hdata", "", netabin, -3, 3, nvzbin, -15, 15);
-    tdata->Project("hdata", "vz[1]:eta1", "dr2<0.25 && abs(vz[1])<15");
+    tdata->Project("hdata", "vz[1]:eta1", Form("dr2<%f && abs(vz[1])<15", maxdr2));
     convert(hdata);
     TH2D* hdatacoarse = (TH2D*)hdata->Clone("hdatacoarse");
     hdatacoarse->RebinX(netabin / 30);
     hdatacoarse->RebinY(nvzbin / 15);
 
     TH2D* hmc = new TH2D("hmc", "", netabin, -3, 3, nvzbin, -15, 15);
-    tmc->Project("hmc", "vz[1]:eta1", "dr2<0.25 && abs(vz[1])<15");
+    tmc->Project("hmc", "vz[1]:eta1", Form("dr2<%f && abs(vz[1])<15", maxdr2));
     convert(hmc);
     TH2D* hmccoarse = (TH2D*)hmc->Clone("hmccoarse");
     hmccoarse->RebinX(netabin / 30);
@@ -92,9 +92,11 @@ int assess_acceps(int type, std::string data_list, std::string mc_list) {
 
 int main(int argc, char* argv[]) {
     if (argc == 4) {
-        return assess_acceps(atoi(argv[1]), argv[2], argv[3]);
+        return assess_acceps(atoi(argv[1]), argv[2], argv[3], 0.5);
+    } else if (argc == 5) {
+        return assess_acceps(atoi(argv[1]), argv[2], argv[3], atof(argv[4]));
     } else {
-        printf("usage: ./assess_acceps [type] [data] [mc]\n");
+        printf("usage: ./assess_acceps [type] [data] [mc] (max dr)\n");
         return 1;
     }
 }
