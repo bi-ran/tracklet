@@ -13,9 +13,9 @@ TYPE=(12 13 14 23 24 34)
 for ITYPE in ${!TYPE[@]}; do
     if [[ $# -gt 4 ]]; then
         if [[ $5 -ne -1 ]]; then
-            for CMIN in $(seq 0 $5 19); do
-                CMAX=$(( CMIN + $5 ))
-                ./reap_results ${TYPE[ITYPE]} $1 $2-$CMIN-$CMAX $3 $4 $CMIN $CMAX ${@:6} > notes/log-rr-$2-$CMIN-$CMAX-${TYPE[ITYPE]}.log &
+            for (( CMAX=20; CMAX>=$5; CMAX-=$5 )); do
+                CMIN=$(( CMAX - $5 ))
+                ./reap_results ${TYPE[ITYPE]} $1 $2.$CMIN.$CMAX $3 $4 $CMIN $CMAX ${@:6} > notes/log-rr-$2.$CMIN.$CMAX-${TYPE[ITYPE]}.log &
             done
         else
             ./reap_results ${TYPE[ITYPE]} ${@:1:4} 0 20 ${@:6} > notes/log-rr-$2-${TYPE[ITYPE]}.log &
@@ -26,13 +26,13 @@ for ITYPE in ${!TYPE[@]}; do
 done
 
 wait
-mv correction-$2-*.root output/
+mv correction-$2*.root output/
 
 make merge_monads || exit 1
 if [[ $# -gt 4 && $5 -ne -1 ]]; then
-    for CMIN in $(seq 0 $5 19); do
-        CMAX=$(( CMIN + $5 ))
-        ./merge_monads $2-$CMIN-$CMAX
+    for (( CMAX=20; CMAX>=$5; CMAX-=$5 )); do
+        CMIN=$(( CMAX - $5 ))
+        ./merge_monads $2.$CMIN.$CMAX
     done
 
     make collect_cents || exit 1

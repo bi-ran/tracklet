@@ -8,7 +8,8 @@
 
 #include <vector>
 
-#define NCENT 20
+#define NCENT       20
+#define NEXCLUDE    2
 
 const std::vector<int> markers = {
     24, 20,
@@ -47,11 +48,9 @@ TGraphErrors* cms_pbpb_2p76_norm();
 TGraphErrors* alice_pbpb_5p02();
 TGraphErrors* alice_pbpb_5p02_norm();
 
-int combine_centralities(const char* label, int interval) {
+int collect_cents(const char* label, int interval) {
     bool logscale = interval < 5;
-    const int n = NCENT / interval;
-
-    if (interval != 1) { printf("warning: npart errors not accurate!\n"); }
+    const int n = NCENT / interval - NEXCLUDE / (NCENT % interval);
 
     TGraphErrors* g = new TGraphErrors(n);
     g->SetName("gcent");
@@ -72,29 +71,31 @@ int combine_centralities(const char* label, int interval) {
     hframe->GetYaxis()->CenterTitle();
     hframe->Draw();
 
-    for (int c = 0; c < NCENT; c += interval) {
-        TFile* f = new TFile(Form("output/merged-%s-%i-%i.root", label, c, c + interval), "read");
+    for (int c = NCENT; c >= interval + NEXCLUDE; c -= interval) {
+        TFile* f = new TFile(Form("output/merged-%s.%i.%i.root", label, c - interval, c), "read");
         TH1F* h = (TH1F*)f->Get("havg");
 
-        h->SetMarkerStyle(markers[(c / interval) % markers.size()]);
-        h->SetMarkerColor(colours[(c / interval) % colours.size()]);
-        h->SetLineColor(colours[(c / interval) % colours.size()]);
+        int cindex = (c - NEXCLUDE) / interval - 1;
+
+        h->SetMarkerStyle(markers[cindex % markers.size()]);
+        h->SetMarkerColor(colours[cindex % colours.size()]);
+        h->SetLineColor(colours[cindex % colours.size()]);
         h->Draw("same");
 
         int nbins = h->GetNbinsX();
         float midy = (h->GetBinContent((nbins + 1) / 2) + h->GetBinContent(nbins / 2 + 1)) / 2;
         float midyerr = (h->GetBinError((nbins + 1) / 2) + h->GetBinError(nbins / 2 + 1)) / 2;
 
-        g->SetPoint(c / interval, 100. / NCENT * (c + interval / 2.), midy);
-        g->SetPointError(c / interval, 0, midyerr);
+        g->SetPoint(cindex, 100. / NCENT * ((2 * c - interval) / 2.), midy);
+        g->SetPointError(cindex, 0, midyerr);
 
         float avgnpart = 0;
-        for (int s = c; s < c + interval && s < NCENT; ++s)
+        for (int s = c - interval; s < c && s < NCENT; ++s)
             avgnpart += npart[s];
         avgnpart /= interval;
 
-        gnorm->SetPoint(c / interval, avgnpart, midy / avgnpart);
-        gnorm->SetPointError(c / interval, nparterr[c], midyerr / avgnpart);
+        gnorm->SetPoint(cindex, avgnpart, midy / avgnpart);
+        gnorm->SetPointError(cindex, 0, midyerr / avgnpart);
     }
 
     c1->SaveAs(Form("figs/merged/merged-%s-cent-int%i.png", label, interval));
@@ -144,9 +145,9 @@ int combine_centralities(const char* label, int interval) {
 
     TCanvas* c3 = new TCanvas("c3", "", 600, 600);
 
-    TH1F* gnormframe = new TH1F("gframe", "", 1, -20, 420);
+    TH1F* gnormframe = new TH1F("gnormframe", "", 1, -20, 420);
     gnormframe->SetStats(0);
-    gnormframe->SetAxisRange(0, 10, "Y");
+    gnormframe->SetAxisRange(0, 7, "Y");
     gnormframe->SetXTitle("N_{part}");
     gnormframe->SetYTitle("#frac{dN}{d#eta}#lbar_{#eta=0} / #LTN_{part}#GT");
     gnormframe->GetXaxis()->CenterTitle();
@@ -279,9 +280,9 @@ TGraphErrors* alice_pbpb_5p02_norm() {
 
 int main(int argc, char* argv[]) {
     if (argc == 3) {
-        return combine_centralities(argv[1], atoi(argv[2]));
+        return collect_cents(argv[1], atoi(argv[2]));
     } else {
-        printf("usage: ./combine_centralities [label] [interval]\n");
+        printf("usage: ./collect_cents [label] [interval]\n");
         return 1;
     }
 }
