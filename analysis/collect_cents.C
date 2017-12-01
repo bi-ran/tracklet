@@ -192,7 +192,7 @@ TGraphErrors* cms_pbpb_2p76() {
 }
 
 TGraphErrors* cms_pbpb_2p76_norm() {
-    TGraphErrors* gcms_pbpb_2p76_norm = new TGraphErrors(17);
+    TGraphErrors* gcms_pbpb_2p76_norm = new TGraphErrors(18);
     gcms_pbpb_2p76_norm->SetName("gcms_pbpb_2p76_norm");
 
     gcms_pbpb_2p76_norm->SetPoint(0, 5.71, 3.87 / 2);   gcms_pbpb_2p76_norm->SetPointError(0, 0, 0.64 / 2);
@@ -212,6 +212,7 @@ TGraphErrors* cms_pbpb_2p76_norm() {
     gcms_pbpb_2p76_norm->SetPoint(14, 240, 7.45 / 2);   gcms_pbpb_2p76_norm->SetPointError(14, 0, 0.28 / 2);
     gcms_pbpb_2p76_norm->SetPoint(15, 283, 7.66 / 2);   gcms_pbpb_2p76_norm->SetPointError(15, 0, 0.28 / 2);
     gcms_pbpb_2p76_norm->SetPoint(16, 329, 7.97 / 2);   gcms_pbpb_2p76_norm->SetPointError(16, 0, 0.28 / 2);
+    gcms_pbpb_2p76_norm->SetPoint(17, 381, 8.46 / 2);   gcms_pbpb_2p76_norm->SetPointError(17, 0, 0.29 / 2);
 
     gcms_pbpb_2p76_norm->SetMarkerStyle(24);
     gcms_pbpb_2p76_norm->SetMarkerColor(colours[5]);
