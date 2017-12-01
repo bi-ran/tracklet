@@ -624,8 +624,14 @@ int reap_results(int type,
    /* analysis stages                                                         */
    TCanvas* cstage = new TCanvas("cstage", "", CANVASW, CANVASH);
 
+   int ymax = h1WEfinal->GetMaximum();
+   if (ymax < 80) { ymax = ((ymax / 10) + 1) * 10; }
+   else if (ymax < 200) { ymax = ((ymax / 20) + 1) * 20; }
+   else if (ymax < 1200) { ymax = ((ymax / 200) + 1) * 200; }
+   else { ymax = ((ymax / 400) + 1) * 400; }
+
    TH1F* hframe = new TH1F("hframe", "", 1, -3, 3);
-   hframe->SetAxisRange(0, cmax - cmin < 5 ? 2000 : 600, "Y");
+   hframe->SetAxisRange(0, ymax, "Y");
    hframe->SetXTitle("#eta");
    hframe->SetYTitle("dN/d#eta");
    hframe->SetStats(0);

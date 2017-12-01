@@ -49,8 +49,15 @@ TGraphErrors* alice_pbpb_5p02();
 TGraphErrors* alice_pbpb_5p02_norm();
 
 int collect_cents(const char* label, int interval) {
-    bool logscale = interval < 5;
-    const int n = NCENT / interval - NEXCLUDE / (NCENT % interval);
+    int n = NCENT / interval;
+    switch (interval) {
+        case 1:
+            n -= NEXCLUDE;
+            break;
+        default:
+            n -= NEXCLUDE / (NCENT % interval);
+            break;
+    }
 
     TGraphErrors* g = new TGraphErrors(n);
     g->SetName("gcent");
@@ -59,32 +66,15 @@ int collect_cents(const char* label, int interval) {
 
     TGraphErrors* gnorm = (TGraphErrors*)g->Clone("gcentnorm");
 
-    TCanvas* c1 = new TCanvas("c1", "", 600, 600);
-    if (logscale) { gPad->SetLogy(); }
-
-    TH1F* hframe = new TH1F("hframe", "", 1, -3, 3);
-    hframe->SetStats(0);
-    hframe->SetAxisRange(logscale, logscale ? 1600 : 600, "Y");
-    hframe->SetXTitle("#eta");
-    hframe->SetYTitle("#frac{dN}{d#eta}");
-    hframe->GetXaxis()->CenterTitle();
-    hframe->GetYaxis()->CenterTitle();
-    hframe->Draw();
-
     for (int c = NCENT; c >= interval + NEXCLUDE; c -= interval) {
         TFile* f = new TFile(Form("output/merged-%s.%i.%i.root", label, c - interval, c), "read");
         TH1F* h = (TH1F*)f->Get("havg");
 
-        int cindex = (c - NEXCLUDE) / interval - 1;
-
-        h->SetMarkerStyle(markers[cindex % markers.size()]);
-        h->SetMarkerColor(colours[cindex % colours.size()]);
-        h->SetLineColor(colours[cindex % colours.size()]);
-        h->Draw("same");
-
         int nbins = h->GetNbinsX();
         float midy = (h->GetBinContent((nbins + 1) / 2) + h->GetBinContent(nbins / 2 + 1)) / 2;
         float midyerr = (h->GetBinError((nbins + 1) / 2) + h->GetBinError(nbins / 2 + 1)) / 2;
+
+        int cindex = (c - NEXCLUDE) / interval - 1;
 
         g->SetPoint(cindex, 100. / NCENT * ((2 * c - interval) / 2.), midy);
         g->SetPointError(cindex, 0, midyerr);
@@ -97,8 +87,6 @@ int collect_cents(const char* label, int interval) {
         gnorm->SetPoint(cindex, avgnpart, midy / avgnpart);
         gnorm->SetPointError(cindex, 0, midyerr / avgnpart);
     }
-
-    c1->SaveAs(Form("figs/merged/merged-%s-cent-int%i.png", label, interval));
 
     TGraphErrors* gcms_pbpb_2p76 = cms_pbpb_2p76();
     TGraphErrors* galice_pbpb_5p02 = alice_pbpb_5p02();
