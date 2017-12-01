@@ -59,7 +59,9 @@ class var_t {
 
       TH1F* hdiff = 0;        /* raw diff                      */
       TH1F* hadiff = 0;       /* abs diff                      */
+      TH1F* hadratio = 0;     /* abs ratio from abs diff       */
       TH1F* hfadiff = 0;      /* fit abs diff                  */
+      TH1F* hfadratio = 0;    /* abs ratio from fit abs diff   */
 
       TH1F* hratio = 0;       /* raw ratio                     */
       TH1F* haratio = 0;      /* abs ratio                     */
@@ -110,11 +112,14 @@ void var_t::calculate() {
    th1_abs(hadiff);
 
    hratio = (TH1F*)hvar->Clone(Form("%s_ratio", tag.c_str()));
-   hratio->Divide(hvar, hnominal);
+   hratio->Divide(hnominal);
    haratio = (TH1F*)hratio->Clone(Form("%s_aratio", tag.c_str()));
    th1_ratio_abs(haratio);
+
    hardiff = (TH1F*)haratio->Clone(Form("%s_ardiff", tag.c_str()));
    hardiff->Multiply(hnominal);
+   hadratio = (TH1F*)hadiff->Clone(Form("%s_adratio", tag.c_str()));
+   hadratio->Divide(hnominal);
 }
 
 void var_t::fit(std::string fitfdiff, std::string fitfratio) {
@@ -140,8 +145,11 @@ void var_t::fit(std::string fitfdiff, std::string fitfratio) {
    fratio = (TF1*)haratio->GetFunction(Form("%s_fratio", tag.c_str()));
    hfaratio = (TH1F*)haratio->Clone(Form("%s_faratio", tag.c_str()));
    th1_from_tf1(hfaratio, fratio);
+
    hfardiff = (TH1F*)hfaratio->Clone(Form("%s_fardiff", tag.c_str()));
    hfardiff->Multiply(hnominal);
+   hfadratio = (TH1F*)hfadiff->Clone(Form("%s_fadratio", tag.c_str()));
+   hfadratio->Divide(hnominal);
 }
 
 TH1F* var_t::adiff(int option) {
@@ -156,9 +164,9 @@ TH1F* var_t::adiff(int option) {
 
 TH1F* var_t::aratio(int option) {
    switch (option) {
-      case 0: return haratio;
+      case 0: return hadratio;
       case 1: return haratio;
-      case 2: return hfaratio;
+      case 2: return hfadratio;
       case 3: return hfaratio;
       default: return haratio;
    }
