@@ -1,6 +1,6 @@
 #!/bin/bash
 
-make transmute_trees
+make transmute_trees || exit 1
 
 if [[ $# -lt 3 ]]; then
     echo -e "usage: ./tt [total entries] [arguments to transmute_trees, excluding entry range]\n"

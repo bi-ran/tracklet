@@ -49,7 +49,7 @@ class var_t {
    friend class sumvar_t;
 
    private:
-      std::string name = ""; /* histogram name               */
+      std::string name = "";  /* histogram name                */
       std::string type = "";  /* variation type                */
 
       std::string tag = "";   /* histogram tag                 */

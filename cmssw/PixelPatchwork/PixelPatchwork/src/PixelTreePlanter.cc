@@ -57,13 +57,11 @@ Prepare the pixel tree for analysis
 
 #include "TTree.h"
 
-#define PI        3.14159265358979
-
 #define MAXPART   500000
 #define MAXHITS   500000
 #define MAXVTX    100
 
-struct PixelEvent{
+struct PixelEvent {
    int run;
    int lumi;
    int event;

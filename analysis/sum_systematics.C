@@ -32,25 +32,29 @@ int sum_systematics(const char* list, const char* label) {
     for (std::size_t f = 0; f < nfiles; ++f) {
         std::size_t ws1 = flist[f].find(" ");
         files.push_back(flist[f].substr(0, ws1));
+
         std::size_t ws2 = flist[f].find(" ", ws1 + 1);
         options.push_back(std::stoi(flist[f].substr(ws1 + 1, ws2)));
+
         std::size_t ws3 = flist[f].find(" ", ws2 + 1);
         fdiff.push_back(flist[f].substr(ws2 + 1, ws3 - (ws2 + 1)));
         labels.push_back(flist[f].substr(ws3 + 1));
     }
 
     std::vector<std::string> hists = {
-        "h12", "h13", "h14", "h23", "h24", "h34", "havg", "hsym"
+        "h12", "h13", "h14",
+        "h23", "h24", "h34",
+        "havg", "hsym"
     };
     std::size_t nhists = hists.size();
-
-    TH1::SetDefaultSumw2();
 
     TFile* f[nfiles];
     for (std::size_t i = 0; i < nfiles; ++i)
         f[i] = new TFile(files[i].c_str(), "read");
 
     TFile* fout = new TFile(Form("output/systematics-%s.root", label), "recreate");
+
+    TH1::SetDefaultSumw2();
 
     var_t* svars[nhists][nfiles];
     sumvar_t* tvars[nhists];

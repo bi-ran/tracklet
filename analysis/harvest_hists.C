@@ -1,9 +1,8 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "TCut.h"
-#include "TH1D.h"
-#include "TH2D.h"
-
+#include "TH1.h"
+#include "TH2.h"
 #include "TColor.h"
 #include "TCanvas.h"
 #include "TLegend.h"
@@ -533,4 +532,3 @@ int main(int argc, char* argv[]) {
       return 1;
    }
 }
-

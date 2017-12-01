@@ -47,7 +47,7 @@ int transmute_trees(const char* input,
                     uint64_t end = 1000000000,
                     int sample = -1,
                     bool reweight_vertex = 1,
-                    bool use_random_vertex = 0,
+                    bool random_vertex = 0,
                     float add_bkg_l1 = 0,
                     float add_bkg_l2 = 0,
                     float add_bkg_l3 = 0,
@@ -102,7 +102,7 @@ int transmute_trees(const char* input,
       return 1;
    }
 
-   if (use_random_vertex) {
+   if (random_vertex) {
       printf("$ random vertex\n");
       reweight_vertex = 0;
    } else if (reweight_vertex) {
@@ -112,16 +112,16 @@ int transmute_trees(const char* input,
       printf("$ tracklet vertex\n");
    }
 
-#define PREPARE_HIT_DISTRIBUTIONS(q)                                          \
+#define PROJECT_BACKGROUND(q)                                                 \
    TH3F* hl##q##hits = 0;                                                     \
    if (add_bkg_l##q) {                                                        \
       printf(" # projecting hit distribution of layer " #q "\n");             \
       hl##q##hits = new TH3F("hl" #q "hits", "",                              \
-                                 200, 0, 20, 300, -3, 3, 320, -3.2, 3.2);     \
+            200, 0, 20, 300, -3, 3, 320, -3.2, 3.2);                          \
       t->Project("hl" #q "hits", "phi" #q ":eta" #q ":r" #q);                 \
    }                                                                          \
 
-   LAYERS(PREPARE_HIT_DISTRIBUTIONS);
+   LAYERS(PROJECT_BACKGROUND);
 
    PixelEvent par;
    set_pixel_event(t, par);
@@ -139,7 +139,7 @@ int transmute_trees(const char* input,
    printf(" # number of events: %lu\n", nentries);
    printf("................................................................\n");
 
-   // Main loop ===============================================================
+   /* main routine                                                            */
    for (uint64_t i=start; i<nentries && i<end; i++) {
       t->GetEntry(i);
       if (i % 1000 == 0)
@@ -148,11 +148,11 @@ int transmute_trees(const char* input,
       /* hlt filter applied at production */
       int cbin = hfbin(par.hft);
 
-#define SAVE_VERTICES(q, w)            \
-      tdata##q##w.nv = par.nv + 1;     \
-      tdata##q##w.vx[0] = par.vx[0];   \
-      tdata##q##w.vy[0] = par.vy[0];   \
-      tdata##q##w.vz[0] = par.vz[0];   \
+#define SAVE_VERTICES(q, w)                                                   \
+      tdata##q##w.nv = par.nv + 1;                                            \
+      tdata##q##w.vx[0] = par.vx[0];                                          \
+      tdata##q##w.vy[0] = par.vy[0];                                          \
+      tdata##q##w.vz[0] = par.vz[0];                                          \
 
       TRACKLETS(SAVE_VERTICES);
 
@@ -176,8 +176,7 @@ int transmute_trees(const char* input,
 
       LAYERS(ADD_BACKGROUND);
 
-      // Vertex reconstruction ================================================
-      if (use_random_vertex) {
+      if (random_vertex) {
          vz = gRandom->Rndm() * 30 - 15 - vz_shift;
       } else {
          std::vector<RecHit> layer1raw, layer2raw;
@@ -195,7 +194,6 @@ int transmute_trees(const char* input,
       TRACKLETS(SET_VERTEX);
 
       float event_weight = 1.;
-      // Reweight MC vertex distribution to match data
       if (reweight_vertex) {
          float event_vz = (vz < -98 ? par.vz[0] : vz) + vz_shift;
 
