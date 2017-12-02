@@ -197,6 +197,7 @@ int merge_monads(const char* label) {
 #define RATIO(q, w)                                                           \
    TH1D* hratio##q##w = (TH1D*)h##q##w->Clone("hratio" #q #w);                \
    hratio##q##w->Divide(havg);                                                \
+   hratio##q##w->SetStats(0);                                                 \
    hratio##q##w->SetAxisRange(0.8, 1.2, "Y");                                 \
    hratio##q##w->SetYTitle("ratio");                                          \
    hratio##q##w->Draw("same");                                                \
