@@ -98,13 +98,14 @@ int compare_pixels(const char* input, const char* label, const char* list, int o
 
    TCut fsel = OPTSTR(sel);
 
+   const char* idcstr = OPTSTR(id);
    const char* varcstr = OPTSTR(var);
 
 #define DRAW_INPUT_LAYER(q)                                                   \
-   TH1D* h##q = new TH1D(Form("hp" #q "%s", varcstr),                         \
+   TH1D* h##q = new TH1D(Form("hp" #q "%s", idcstr),                          \
          Form(";%s (layer " #q ");", OPTSTR(label)),                          \
          OPT(nbin), OPT(range[0]), OPT(range[1]));                            \
-   t->Draw(Form("%s" #q ">>hp" #q "%s", varcstr, varcstr), fsel, "goff");     \
+   t->Draw(Form("%s" #q ">>hp" #q "%s", varcstr, idcstr), fsel, "goff");      \
    h##q->Scale(1. / h##q->Integral());                                        \
 
    LAYERS(DRAW_INPUT_LAYER)
@@ -122,10 +123,10 @@ int compare_pixels(const char* input, const char* label, const char* list, int o
       ts[j] = (TTree*)fs[j]->Get("pixel/PixelTree");
 
 #define DRAW_LIST_LAYER(q)                                                    \
-      hs##q[j] = new TH1D(Form("hp" #q "f%zu%s", j, varcstr),                 \
+      hs##q[j] = new TH1D(Form("hp" #q "f%zu%s", j, idcstr),                  \
             Form(";%s (layer " #q ");", OPTSTR(label)),                       \
             OPT(nbin), OPT(range[0]), OPT(range[1]));                         \
-      ts[j]->Draw(Form("%s" #q ">>hp" #q "f%zu%s", varcstr, j, varcstr),      \
+      ts[j]->Draw(Form("%s" #q ">>hp" #q "f%zu%s", varcstr, j, idcstr),       \
             fsel, "goff");                                                    \
       hs##q[j]->Scale(1. / hs##q[j]->Integral());                             \
 
@@ -235,12 +236,13 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
    fsel = fsel && "abs(vz[1])<15";
    fsel *= "weight";
 
+   const char* idcstr = OPTSTR(id);
    const char* varcstr = OPTSTR(var);
 
 #define DRAW_INPUT_TRACKLET(q, w)                                             \
-   TH1D* h##q##w = new TH1D(Form("ht" #q #w "%s", varcstr),                   \
+   TH1D* h##q##w = new TH1D(Form("ht" #q #w "%s", idcstr),                    \
          OPTSTR(label), OPT(nbin), OPT(range[0]), OPT(range[1]));             \
-   t##q##w->Draw(Form("%s>>ht" #q #w "%s", varcstr, varcstr), fsel, "goff");  \
+   t##q##w->Draw(Form("%s>>ht" #q #w "%s", varcstr, idcstr), fsel, "goff");   \
    h##q##w->Scale(1. / h##q##w->Integral());                                  \
 
    TRACKLETS(DRAW_INPUT_TRACKLET)
@@ -258,9 +260,9 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
 
 #define DRAW_LIST_TRACKLET(q, w)                                              \
       ts##q##w[j] = (TTree*)fs[j]->Get("TrackletTree" #q #w);                 \
-      hs##q##w[j] = new TH1D(Form("ht" #q #w "f%zu%s", j, varcstr),           \
+      hs##q##w[j] = new TH1D(Form("ht" #q #w "f%zu%s", j, idcstr),            \
             OPTSTR(label), OPT(nbin), OPT(range[0]), OPT(range[1]));          \
-      ts##q##w[j]->Draw(Form("%s>>ht" #q #w "f%zu%s", varcstr, j, varcstr),   \
+      ts##q##w[j]->Draw(Form("%s>>ht" #q #w "f%zu%s", varcstr, j, idcstr),    \
             fsel, "goff");                                                    \
       hs##q##w[j]->Scale(1. / hs##q##w[j]->Integral());                       \
 
