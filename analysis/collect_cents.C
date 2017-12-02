@@ -11,15 +11,6 @@
 #define NCENT       20
 #define NEXCLUDE    2
 
-const std::vector<int> markers = {
-    24, 20,
-    25, 21,
-    26, 22,
-    30, 29,
-    32, 23,
-    46, 47
-};
-
 const std::vector<int> colours = {
     TColor::GetColor("#f2777a"),
     TColor::GetColor("#f99157"),
@@ -107,9 +98,9 @@ int collect_cents(const char* label, int interval) {
     gframe->GetXaxis()->SetTickLength(0);
 
     TGaxis* axis = new TGaxis(100, 1, 0, 1, 0, 100, 510, "-");
-    axis->SetLabelOffset(-0.04);
-    axis->SetLabelFont(42);
-    axis->SetLabelSize(0.04);
+    axis->SetLabelOffset(-0.032);
+    axis->SetLabelFont(43);
+    axis->SetLabelSize(17);
     axis->Draw();
 
     gcms_pbpb_2p76->Draw("p same");
@@ -135,7 +126,7 @@ int collect_cents(const char* label, int interval) {
 
     TH1F* gnormframe = new TH1F("gnormframe", "", 1, -20, 420);
     gnormframe->SetStats(0);
-    gnormframe->SetAxisRange(0, 7, "Y");
+    gnormframe->SetAxisRange(0, 6, "Y");
     gnormframe->SetXTitle("N_{part}");
     gnormframe->SetYTitle("#frac{dN}{d#eta}#lbar_{#eta=0} / #LTN_{part}#GT");
     gnormframe->GetXaxis()->CenterTitle();
