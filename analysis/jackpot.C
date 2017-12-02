@@ -33,6 +33,14 @@ int jackpot(const char* res, const char* sys, const char* label) {
 
    watermark();
 
+   TLegend* l1 = new TLegend(0.36, 0.16, 0.64, 0.32);
+   l1->SetTextFont(43);
+   l1->SetTextSize(16);
+   l1->SetBorderSize(0);
+   l1->SetFillStyle(0);
+   l1->AddEntry(havg, "XeXe 5.442 TeV", "p");
+   l1->Draw();
+
    c1->SaveAs(Form("figs/results/results-avg-%s.png", label));
 
    TCanvas* c2 = new TCanvas("c2", "", 400, 400);
@@ -44,6 +52,14 @@ int jackpot(const char* res, const char* sys, const char* label) {
    hsym->Draw("e x0 same");
 
    watermark();
+
+   TLegend* l2 = new TLegend(0.36, 0.16, 0.64, 0.32);
+   l2->SetTextFont(43);
+   l2->SetTextSize(16);
+   l2->SetBorderSize(0);
+   l2->SetFillStyle(0);
+   l2->AddEntry(hsym, "XeXe 5.442 TeV", "p");
+   l2->Draw();
 
    c2->SaveAs(Form("figs/results/results-sym-%s.png", label));
 
