@@ -17,6 +17,7 @@ for ITYPE in ${!TYPE[@]}; do
                 CMIN=$(( CMAX - $5 ))
                 ./reap_results ${TYPE[ITYPE]} $1 $2.$CMIN.$CMAX $3 $4 $CMIN $CMAX ${@:6} > notes/log-rr-$2.$CMIN.$CMAX-${TYPE[ITYPE]}.log &
             done
+            wait
         elif [[ $5 -eq 0 ]]; then
             ./reap_results ${TYPE[ITYPE]} $1 $2.$6.$7 $3 $4 ${@:6} > notes/log-rr-$2.$6.$7-${TYPE[ITYPE]}.log &
         else
