@@ -1,33 +1,11 @@
 #include "TFile.h"
 #include "TH1.h"
 #include "TGraphErrors.h"
-#include "TColor.h"
 #include "TCanvas.h"
 #include "TLegend.h"
-#include "TLatex.h"
 
+#include "include/cosmetics.h"
 #include "include/errorband.h"
-
-#define COLOUR1   TColor::GetColor("#f2777a")
-#define COLOUR2   TColor::GetColor("#f99157")
-#define COLOUR3   TColor::GetColor("#ffcc66")
-#define COLOUR4   TColor::GetColor("#99cc99")
-#define COLOUR5   TColor::GetColor("#6699cc")
-#define COLOUR6   TColor::GetColor("#9999cc")
-
-void watermark() {
-   TLatex* lcms = new TLatex();
-   lcms->SetTextFont(62);
-   lcms->SetTextSize(0.05);
-   lcms->SetTextAlign(13);
-   lcms->DrawLatexNDC(0.12, 0.88, "CMS");
-
-   TLatex* linfo = new TLatex();
-   linfo->SetTextFont(42);
-   linfo->SetTextSize(0.04);
-   linfo->SetTextAlign(31);
-   linfo->DrawLatexNDC(0.89, 0.92, "XeXe #sqrt{s_{NN}}=5.44 TeV");
-}
 
 int jackpot(const char* res, const char* sys, const char* label) {
    TFile* fres = new TFile(res, "read");

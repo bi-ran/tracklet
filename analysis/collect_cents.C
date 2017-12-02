@@ -8,17 +8,10 @@
 
 #include <vector>
 
+#include "include/cosmetics.h"
+
 #define NCENT       20
 #define NEXCLUDE    2
-
-const std::vector<int> colours = {
-    TColor::GetColor("#f2777a"),
-    TColor::GetColor("#f99157"),
-    TColor::GetColor("#ffcc66"),
-    TColor::GetColor("#99cc99"),
-    TColor::GetColor("#6699cc"),
-    TColor::GetColor("#9999cc")
-};
 
 const float npart[NCENT] = {
     2.939,  3.97, 5.221, 6.951, 9.311,
@@ -52,8 +45,8 @@ int collect_cents(const char* label, int interval) {
 
     TGraphErrors* g = new TGraphErrors(n);
     g->SetName("gcent");
-    g->SetMarkerStyle(25);
-    g->SetMarkerColor(colours[0]);
+    g->SetMarkerStyle(21);
+    g->SetMarkerColor(COLOUR1);
 
     TGraphErrors* gnorm = (TGraphErrors*)g->Clone("gcentnorm");
 
@@ -107,6 +100,8 @@ int collect_cents(const char* label, int interval) {
     galice_pbpb_5p02->Draw("p same");
     g->Draw("p same");
 
+    watermark();
+
     TLegend* l2 = new TLegend(0.54, 0.24, 0.9, 0.48);
     l2->SetBorderSize(0);
     l2->SetFillStyle(0);
@@ -136,6 +131,8 @@ int collect_cents(const char* label, int interval) {
     gcms_pbpb_2p76_norm->Draw("p same");
     galice_pbpb_5p02_norm->Draw("p same");
     gnorm->Draw("p same");
+
+    watermark();
 
     TLegend* l3 = new TLegend(0.54, 0.24, 0.9, 0.48);
     l3->SetBorderSize(0);
@@ -176,8 +173,8 @@ TGraphErrors* cms_pbpb_2p76() {
     gcms_pbpb_2p76->SetPoint(17, 97.5, 1612);       gcms_pbpb_2p76->SetPointError(17, 0, 55);
 
     gcms_pbpb_2p76->SetMarkerStyle(24);
-    gcms_pbpb_2p76->SetMarkerColor(colours[5]);
-    gcms_pbpb_2p76->SetLineColor(colours[5]);
+    gcms_pbpb_2p76->SetMarkerColor(COLOUR5);
+    gcms_pbpb_2p76->SetLineColor(COLOUR5);
 
     return gcms_pbpb_2p76;
 }
@@ -206,8 +203,8 @@ TGraphErrors* cms_pbpb_2p76_norm() {
     gcms_pbpb_2p76_norm->SetPoint(17, 381, 8.46 / 2);   gcms_pbpb_2p76_norm->SetPointError(17, 0, 0.29 / 2);
 
     gcms_pbpb_2p76_norm->SetMarkerStyle(24);
-    gcms_pbpb_2p76_norm->SetMarkerColor(colours[5]);
-    gcms_pbpb_2p76_norm->SetLineColor(colours[5]);
+    gcms_pbpb_2p76_norm->SetMarkerColor(COLOUR5);
+    gcms_pbpb_2p76_norm->SetLineColor(COLOUR5);
 
     return gcms_pbpb_2p76_norm;
 }
@@ -229,8 +226,8 @@ TGraphErrors* alice_pbpb_5p02() {
     galice_pbpb_5p02->SetPoint(10, 98.75, 2035);    galice_pbpb_5p02->SetPointError(10, 0, 52);
 
     galice_pbpb_5p02->SetMarkerStyle(30);
-    galice_pbpb_5p02->SetMarkerColor(colours[6]);
-    galice_pbpb_5p02->SetLineColor(colours[6]);
+    galice_pbpb_5p02->SetMarkerColor(COLOUR4);
+    galice_pbpb_5p02->SetLineColor(COLOUR4);
 
     return galice_pbpb_5p02;
 }
@@ -252,8 +249,8 @@ TGraphErrors* alice_pbpb_5p02_norm() {
     galice_pbpb_5p02_norm->SetPoint(10, 398, 10.2 / 2); galice_pbpb_5p02_norm->SetPointError(10, 0.5, 0.3 / 2);
 
     galice_pbpb_5p02_norm->SetMarkerStyle(30);
-    galice_pbpb_5p02_norm->SetMarkerColor(colours[6]);
-    galice_pbpb_5p02_norm->SetLineColor(colours[6]);
+    galice_pbpb_5p02_norm->SetMarkerColor(COLOUR4);
+    galice_pbpb_5p02_norm->SetLineColor(COLOUR4);
 
     return galice_pbpb_5p02_norm;
 }
