@@ -48,7 +48,9 @@ int reap_results(int type,
                  int cmin = 0, int cmax = 20,   // centrality selection
                  bool apply_geometry_corr = 0,  // apply geometric correction
                  bool apply_ext_accep_map = 1,  // use predefined acceptance map
-                 float maxdr2 = 0.25)           // signal region selection
+                 bool multhandle = 0,           // alternate mult handle
+                 float maxdr2 = 0.25,           // signal region selection
+                 const char* accepdir = "output/acceptances/rlt0p5")
 {
    TFile* finput = new TFile(input, "read");
    TTree* tinput = (TTree*)finput->Get(Form("TrackletTree%i", type));
@@ -58,7 +60,7 @@ int reap_results(int type,
    if (ismc) { printf("$ monte carlo analysis\n"); }
    else { printf("$ data analysis\n"); }
 
-   const char* mult = "ntracklet";
+   const char* mult = multhandle ? "nhit2" : "ntracklet";
    printf("$ event multiplicity handle: number of tracklets\n");
 
    if (apply_geometry_corr)
@@ -72,7 +74,7 @@ int reap_results(int type,
       fcorr = new TFile(Form("output/correction-%s-%i.root", clabel, type));
 
       if (apply_geometry_corr)
-         faccep = new TFile(Form("output/acceptance-%i.root", type));
+         faccep = new TFile(Form("%s/acceptance-%i.root", accepdir, type));
    }
 
    /* binning                                                                 */
@@ -690,9 +692,13 @@ int main(int argc, char* argv[]) {
    } else if (argc == 10) {
       return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]));
    } else if (argc == 11) {
-      return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]), atof(argv[10]));
+      return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]), atoi(argv[10]));
+   } else if (argc == 12) {
+      return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]), atoi(argv[10]), atof(argv[11]));
+   } else if (argc == 13) {
+      return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]), atoi(argv[10]), atof(argv[11]), argv[12]);
    } else {
-      printf("usage: ./reap_results [type] [input] [label] [clabel] [applyc] [cmin cmax] [applyg] [extacc] [maxdr2]\n");
+      printf("usage: ./reap_results [type] [input] [label] [clabel] [applyc] [cmin cmax] [applyg] [extacc] [mult] [maxdr2] [accep dir]\n");
       return -1;
    }
 }
