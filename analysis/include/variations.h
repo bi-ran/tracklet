@@ -49,9 +49,8 @@ class var_t {
    friend class sumvar_t;
 
    private:
-      std::string name = "";  /* histogram name                */
-      std::string type = "";  /* variation type                */
-
+      std::string label = ""; /* histogram label               */
+      std::string stype = ""; /* variation type                */
       std::string tag = "";   /* histogram tag                 */
 
       TH1F* hnominal = 0;     /* nominal                       */
@@ -75,30 +74,24 @@ class var_t {
       void calculate();
 
    public:
-      var_t(const var_t& var);
-      var_t(std::string name, std::string type, TH1F* hnominal, TH1F* hvar);
+      var_t(std::string label, std::string stype, TH1F* hnominal, TH1F* hvar);
       ~var_t();
 
-      void fit(std::string fitfdiff, std::string fitfratio);
+      void fit(std::string ffdiff, std::string ffratio);
       void write();
 
       TH1F* adiff(int option);
       TH1F* aratio(int option);
 };
 
-var_t::var_t(const var_t& var) {
-   name = var.name;
-   type = var.type;
-}
+var_t::var_t(std::string label_, std::string stype_, TH1F* hnominal_, TH1F* hvar_) {
+   label = label_;
+   stype = stype_;
 
-var_t::var_t(std::string name_, std::string type_, TH1F* hnominal_, TH1F* hvar_) {
-   name = name_;
-   type = type_;
-
-   tag = name + "_" + type;
+   tag = label + "_" + stype;
 
    hnominal = (TH1F*)hnominal_->Clone(Form("%s_nominal", tag.c_str()));
-   hvar = (TH1F*)hvar_->Clone(Form("%s_variation", tag.c_str()));
+   hvar = (TH1F*)hvar_->Clone(Form("%s_var", tag.c_str()));
 
    calculate();
 }
@@ -122,11 +115,11 @@ void var_t::calculate() {
    hadratio->Divide(hnominal);
 }
 
-void var_t::fit(std::string fitfdiff, std::string fitfratio) {
+void var_t::fit(std::string ffdiff, std::string ffratio) {
    double min = hnominal->GetBinLowEdge(hnominal->FindFirstBinAbove(0.1));
    double max = hnominal->GetBinLowEdge(hnominal->FindLastBinAbove(0.1) + 1);
 
-   TF1* fdiff = new TF1(Form("%s_fdiff", tag.c_str()), fitfdiff.c_str());
+   fdiff = new TF1(Form("%s_fdiff", tag.c_str()), ffdiff.c_str());
    fdiff->SetRange(min, max);
    hadiff->Fit(Form("%s_fdiff", tag.c_str()), "F Q", "", min, max);
    hadiff->Fit(Form("%s_fdiff", tag.c_str()), "F Q", "", min, max);
@@ -136,7 +129,7 @@ void var_t::fit(std::string fitfdiff, std::string fitfratio) {
    hfadiff = (TH1F*)hadiff->Clone(Form("%s_fadiff", tag.c_str()));
    th1_from_tf1(hfadiff, fdiff);
 
-   TF1* fratio = new TF1(Form("%s_fratio", tag.c_str()), fitfratio.c_str());
+   fratio = new TF1(Form("%s_fratio", tag.c_str()), ffratio.c_str());
    fratio->SetRange(min, max);
    haratio->Fit(Form("%s_fratio", tag.c_str()), "F Q", "", min, max);
    haratio->Fit(Form("%s_fratio", tag.c_str()), "F Q", "", min, max);
@@ -196,7 +189,6 @@ class sumvar_t {
       TH1F* htratio = 0;
 
    public:
-      sumvar_t(const sumvar_t& tvar);
       sumvar_t(std::string label, TH1F* hnominal);
       ~sumvar_t();
 
@@ -234,11 +226,11 @@ void sumvar_t::add(var_t* var, int option) {
          th1_sqrt_sum_squares(htdiff, var->hardiff);
          break;
       case 2:
-         if (!var->hfadiff) { printf("no fit found!\n"); return; }
+         if (!var->hfadiff) { printf("error: no fit found!\n"); return; }
          th1_sqrt_sum_squares(htdiff, var->hfadiff);
          break;
       case 3:
-         if (!var->hfaratio) { printf("no fit found!\n"); return; }
+         if (!var->hfaratio) { printf("error: no fit found!\n"); return; }
          th1_sqrt_sum_squares(htdiff, var->hfardiff);
          break;
       case 4:
