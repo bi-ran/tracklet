@@ -4,64 +4,95 @@
 #include "TCanvas.h"
 #include "TLegend.h"
 
+#include <vector>
+#include <string>
+#include <fstream>
+
 #include "include/cosmetics.h"
 #include "include/errorband.h"
 
-int jackpot(const char* res, const char* sys, const char* label) {
-   TFile* fres = new TFile(res, "read");
-   TH1F* hframe = (TH1F*)fres->Get("hframe")->Clone();
-   TH1F* havg = (TH1F*)fres->Get("havg")->Clone();
-   TH1F* hsym = (TH1F*)fres->Get("hsym")->Clone();
+static const std::vector<int> colours = {
+   COLOUR1, COLOUR3, COLOUR4, COLOUR5, COLOUR6, COLOUR2
+};
 
-   TFile* fsys = new TFile(sys, "read");
-   TH1F* hsavg = (TH1F*)fsys->Get("havg_total")->Clone();
-   TH1F* hssym = (TH1F*)fsys->Get("hsym_total")->Clone();
+int jackpot(const char* list, const char* hist, const char* label) {
+   std::vector<std::string> rlist;
+   std::ifstream fstream(list);
+   if (fstream) {
+      std::string line;
+      while (std::getline(fstream, line))
+         rlist.push_back(line);
+   }
+   std::size_t nres = rlist.size();
+
+   if (!nres) {
+      printf("error: no files provided!\n");
+      return 1;
+   }
+
+   std::vector<TFile*> fres;
+   std::vector<TFile*> fsys;
+   std::vector<std::string> labels;
+   std::vector<std::string> legends;
+   for (std::size_t f = 0; f < nres; ++f) {
+      std::size_t ws1 = rlist[f].find(" ");
+      fres.push_back(TFile::Open(rlist[f].substr(0, ws1).c_str(), "read"));
+
+      std::size_t ws2 = rlist[f].find(" ", ws1 + 1);
+      fsys.push_back(TFile::Open(rlist[f].substr(ws1 + 1, ws2 - (ws1 + 1)).c_str(), "read"));
+
+      std::size_t ws3 = rlist[f].find(" ", ws2 + 1);
+      labels.push_back(rlist[f].substr(ws2 + 1, ws3 - (ws2 + 1)));
+
+      legends.push_back(rlist[f].substr(ws3 + 1));
+   }
 
    TFile* fout = new TFile(Form("output/results-%s.root", label), "recreate");
 
+   TH1::SetDefaultSumw2();
+
+   TH1F* hframe = (TH1F*)fres[0]->Get("hframe")->Clone();
+
+   TH1F* hres[nres];
+   TH1F* hsys[nres];
+   for (std::size_t i = 0; i < nres; ++i) {
+      hres[i] = (TH1F*)fres[i]->Get(hist)->Clone(Form("%s_%s", hist, labels[i].c_str()));
+      hsys[i] = (TH1F*)fsys[i]->Get(Form("%s_tdiff", hist))->Clone(Form("%s_%s_tdiff", hist, labels[i].c_str()));
+   }
+
    TGraph* gr = new TGraph();
    gr->SetFillStyle(1001);
-   gr->SetFillColorAlpha(COLOUR2, 0.4);
 
    TCanvas* c1 = new TCanvas("c1", "", 400, 400);
+   gPad->SetLogy();
 
+   hframe->SetAxisRange(1, 5000, "Y");
    hframe->Draw();
-   draw_sys_unc(gr, havg, hsavg);
-   havg->SetMarkerStyle(21);
-   havg->SetMarkerSize(0.72);
-   havg->Draw("e x0 same");
+
+   for (std::size_t i = 0; i < nres; ++i) {
+      hres[i]->SetMarkerStyle(20);
+      hres[i]->SetMarkerSize(0.64);
+      hres[i]->SetMarkerColor(colours[i % colours.size()]);
+      hres[i]->SetLineColor(colours[i % colours.size()]);
+
+      gr->SetFillColorAlpha(colours[i % colours.size()], 0.4);
+      draw_sys_unc(gr, hres[i], hsys[i]);
+      hres[i]->Draw("e x0 same");
+   }
 
    watermark();
 
-   TLegend* l1 = new TLegend(0.36, 0.16, 0.64, 0.32);
+   TLegend* l1 = new TLegend(0.4, 0.3, 0.6, 0.475);
    l1->SetTextFont(43);
-   l1->SetTextSize(16);
+   l1->SetTextSize(12);
    l1->SetBorderSize(0);
    l1->SetFillStyle(0);
-   l1->AddEntry(havg, "XeXe 5.442 TeV", "p");
+   l1->AddEntry((TObject*)0, "XeXe", "");
+   for (std::size_t i = 0; i < nres; ++i)
+      l1->AddEntry(hres[i], legends[i].c_str(), "p");
    l1->Draw();
 
-   c1->SaveAs(Form("figs/results/results-avg-%s.png", label));
-
-   TCanvas* c2 = new TCanvas("c2", "", 400, 400);
-
-   hframe->Draw();
-   draw_sys_unc(gr, hsym, hssym);
-   hsym->SetMarkerStyle(21);
-   hsym->SetMarkerSize(0.64);
-   hsym->Draw("e x0 same");
-
-   watermark();
-
-   TLegend* l2 = new TLegend(0.36, 0.16, 0.64, 0.32);
-   l2->SetTextFont(43);
-   l2->SetTextSize(16);
-   l2->SetBorderSize(0);
-   l2->SetFillStyle(0);
-   l2->AddEntry(hsym, "XeXe 5.442 TeV", "p");
-   l2->Draw();
-
-   c2->SaveAs(Form("figs/results/results-sym-%s.png", label));
+   c1->SaveAs(Form("figs/results/results-%s-%s.png", hist, label));
 
    fout->Write("", TObject::kOverwrite);
    fout->Close();
@@ -73,7 +104,7 @@ int main(int argc, char* argv[]) {
    if (argc == 4) {
       return jackpot(argv[1], argv[2], argv[3]);
    } else {
-      printf("usage: ./jackpot [results] [systematics] [label]\n");
+      printf("usage: ./jackpot [list] [hist] [label]\n");
       return 1;
    }
 }
