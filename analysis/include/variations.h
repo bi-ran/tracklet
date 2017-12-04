@@ -189,32 +189,38 @@ void var_t::write() {
 
 class sumvar_t {
    private:
-      std::string name = "";
+      std::string label = "";
 
       TH1F* hnominal = 0;
-      TH1F* htotal = 0;
+      TH1F* htdiff = 0;
+      TH1F* htratio = 0;
 
    public:
       sumvar_t(const sumvar_t& tvar);
-      sumvar_t(std::string name, TH1F* hnominal);
+      sumvar_t(std::string label, TH1F* hnominal);
       ~sumvar_t();
 
       void add(var_t* var, int option);
       void write();
 
-      TH1F* total() { return htotal; }
+      TH1F* diff() {
+         return htdiff;
+      }
+      TH1F* ratio() {
+         htratio->Divide(htdiff, hnominal);
+         return htratio;
+      }
 };
 
-sumvar_t::sumvar_t(const sumvar_t& tvar) {
-   name = tvar.name;
-}
+sumvar_t::sumvar_t(std::string label_, TH1F* hnominal_) {
+   label = label_;
 
-sumvar_t::sumvar_t(std::string name_, TH1F* hnominal_) {
-   name = name_;
+   hnominal = (TH1F*)hnominal_->Clone(Form("%s_nominal", label.c_str()));
+   htdiff = (TH1F*)hnominal_->Clone(Form("%s_tdiff", label.c_str()));
+   htratio = (TH1F*)hnominal_->Clone(Form("%s_tratio", label.c_str()));
 
-   hnominal = (TH1F*)hnominal_->Clone(Form("%s_nominal", name.c_str()));
-   htotal = (TH1F*)hnominal_->Clone(Form("%s_total", name.c_str()));
-   htotal->Reset("ICES");
+   htdiff->Reset("ICES");
+   htratio->Reset("ICES");
 }
 
 sumvar_t::~sumvar_t() {};
@@ -222,18 +228,18 @@ sumvar_t::~sumvar_t() {};
 void sumvar_t::add(var_t* var, int option) {
    switch (option) {
       case 0:
-         th1_sqrt_sum_squares(htotal, var->hadiff);
+         th1_sqrt_sum_squares(htdiff, var->hadiff);
          break;
       case 1:
-         th1_sqrt_sum_squares(htotal, var->hardiff);
+         th1_sqrt_sum_squares(htdiff, var->hardiff);
          break;
       case 2:
          if (!var->hfadiff) { printf("no fit found!\n"); return; }
-         th1_sqrt_sum_squares(htotal, var->hfadiff);
+         th1_sqrt_sum_squares(htdiff, var->hfadiff);
          break;
       case 3:
          if (!var->hfaratio) { printf("no fit found!\n"); return; }
-         th1_sqrt_sum_squares(htotal, var->hfardiff);
+         th1_sqrt_sum_squares(htdiff, var->hfardiff);
          break;
       case 4:
          break;
@@ -244,7 +250,8 @@ void sumvar_t::add(var_t* var, int option) {
 
 void sumvar_t::write() {
    hnominal->Write("", TObject::kOverwrite);
-   htotal->Write("", TObject::kOverwrite);
+   htdiff->Write("", TObject::kOverwrite);
+   htratio->Write("", TObject::kOverwrite);
 }
 
 #endif  /* VARIATIONS_H */
