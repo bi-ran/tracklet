@@ -20,17 +20,34 @@
 #include "include/acceptance.h"
 #include "include/cosmetics.h"
 
-void format(TH1* h1, int style, int col) {
+void fmtstyle(TH1* h1, int style, int colour) {
    h1->SetMarkerStyle(style);
    h1->SetMarkerSize(1.2);
-   h1->SetMarkerColor(col);
-   h1->SetLineColor(col);
+   h1->SetMarkerColor(colour);
+   h1->SetLineColor(colour);
+}
 
-   h1->SetTitle("");
-   h1->SetXTitle("");
-   h1->SetYTitle("");
+void fmttitle(TH1* h1, const char* title) {
+   h1->SetTitle(title);
    h1->GetXaxis()->CenterTitle();
+   h1->GetXaxis()->SetTitleOffset(1.44);
    h1->GetYaxis()->CenterTitle();
+   h1->GetYaxis()->SetTitleOffset(1.44);
+}
+
+void fmtaxes(TH1* h1, float ymin, float ymax, const char* title) {
+   h1->SetAxisRange(ymin, ymax, "Y");
+
+   fmttitle(h1, title);
+}
+
+void format(TH1* h1, int style, int colour,
+              float ymin, float ymax,
+              const char* title) {
+   h1->SetStats(0);
+
+   fmtstyle(h1, style, colour);
+   fmtaxes(h1, ymin, ymax, title);
 }
 
 int reap_results(int type,
@@ -216,14 +233,13 @@ int reap_results(int type,
 
    TCanvas* caccepin = new TCanvas("caccepin", "", CANVASW, CANVASH);
    h2amapxev->SetStats(0);
+   fmttitle(h2amapxev, ";#eta;v_{z}");
    h2amapxev->Draw("colz");
    caccepin->SaveAs(Form("figs/acceptance/accep-input-%s-%i.png", label, type));
 
    /* vertex distribution                                                     */
    h1WEvz->Scale(1. / h1WEvz->GetEntries());
    h1WEvz->Fit("gaus");
-   h1WEvz->SetXTitle("v_{z} (cm)");
-   h1WEvz->SetStats(0);
 
    /* generator-level hadrons                                                 */
    tinput->Project("h3WEhadron", Form("vz[1]:%s:eta", mult), "weight" * (esel && "abs(eta)<3"));
@@ -325,28 +341,22 @@ int reap_results(int type,
       /* draw trigger efficiency                                              */
       TCanvas* ctrigger = new TCanvas("ctrigger", "", CANVASW, CANVASH);
       gPad->SetLogx();
-      h1teff->SetAxisRange(0, 1.2, "Y");
-      h1teff->SetMarkerStyle(38);
-      h1teff->SetMarkerColor(COLOUR4);
-      h1teff->SetLineColor(COLOUR4);
+      format(h1teff, 38, COLOUR4, 0, 1.2,
+         ";number of tracklets;trigger efficiency");
       h1teff->Draw();
       ctrigger->SaveAs(Form("figs/corrections/trigger-%s-%i.png", label, type));
 
       /* draw single-diffractive fraction                                     */
       TCanvas* csdf = new TCanvas("csdf", "", CANVASW, CANVASH);
       gPad->SetLogx();
-      h1sdf->SetAxisRange(-0.05, 0.2, "Y");
-      h1sdf->SetMarkerStyle(40);
-      h1sdf->SetMarkerColor(COLOUR5);
-      h1sdf->SetLineColor(COLOUR5);
+      format(h1sdf, 40, COLOUR5, -0.05, 0.2,
+         ";number of tracklets;single-diffractive event fraction");
       h1sdf->Draw("e0");
       csdf->SaveAs(Form("figs/corrections/sdfrac-%s-%i.png", label, type));
 
       /* draw alpha fits                                                      */
       TH1D* halphaframe = new TH1D("halphaframe", "", 1, 1, 12000);
-      halphaframe->SetXTitle("multiplicity");
-      halphaframe->SetYTitle("#alpha");
-      halphaframe->SetAxisRange(0.4, 2.0, "Y");
+      fmtaxes(halphaframe, 0.4, 2.0, ";number of tracklets;#alpha");
 
       TLatex* t1 = new TLatex();
       t1->SetTextAlign(23);
@@ -479,7 +489,6 @@ int reap_results(int type,
 
    /* draw acceptance                                                         */
    TCanvas* caccep = new TCanvas("caccep", "", CANVASW, CANVASH);
-   h2amapxev->SetStats(0);
    h2amapxev->Draw("colz");
    caccep->SaveAs(Form("figs/acceptance/accep-%s-%i.png", label, type));
 
@@ -488,6 +497,8 @@ int reap_results(int type,
    TH2D* h2alphafinal = (TH2D*)h3alphafinal->Project3D("zx");
    h2alphafinal->SetName("h2alphafinal");
    h2alphafinal->Scale(1. / nmult);
+   h2alphafinal->SetStats(0);
+   fmttitle(h2alphafinal, ";#eta;v_{z}");
    h2alphafinal->Draw("colz");
    calpha->SaveAs(Form("figs/corrections/alpha-%s-%i.png", label, type));
 
@@ -606,9 +617,8 @@ int reap_results(int type,
       /* draw empty correction                                                */
       TCanvas* cempty = new TCanvas("cempty", "", CANVASW, CANVASH);
       h1empty->SetAxisRange(0.8, 1.2, "Y");
-      h1empty->SetMarkerStyle(36);
-      h1empty->SetMarkerColor(COLOUR6);
-      h1empty->SetLineColor(COLOUR6);
+      format(h1empty, 36, COLOUR6, 0.8, 1.2,
+         ";#eta;empty event correction");
       h1empty->Draw();
       cempty->SaveAs(Form("figs/corrections/empty-%s-%i.png", label, type));
    }
@@ -626,16 +636,13 @@ int reap_results(int type,
    else { ymax = ((ymax / 400) + 1) * 400; }
 
    TH1F* hframe = new TH1F("hframe", "", 1, -3, 3);
-   hframe->SetAxisRange(0, ymax, "Y");
-   hframe->SetXTitle("#eta");
-   hframe->SetYTitle("dN/d#eta");
-   hframe->SetStats(0);
+   format(hframe, 21, 1, 0, ymax, ";#eta;dN/d#eta");
 
-   format(h1WGhadron, 1, COLOUR0);
-   format(h1WEraw, 25, COLOUR2);
-   format(h1WEcorr, 26, COLOUR3);
-   format(h1WEtcorr, 32, COLOUR4);
-   format(h1WEfinal, 20, COLOUR1);
+   fmtstyle(h1WGhadron, 1, COLOUR0);
+   fmtstyle(h1WEraw, 25, COLOUR2);
+   fmtstyle(h1WEcorr, 26, COLOUR3);
+   fmtstyle(h1WEtcorr, 32, COLOUR4);
+   fmtstyle(h1WEfinal, 20, COLOUR1);
 
    hframe->Draw();
    h1WGhadron->Draw("hist same");
