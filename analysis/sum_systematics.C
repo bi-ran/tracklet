@@ -1,6 +1,6 @@
 #include "TFile.h"
 #include "TH1.h"
-#include "TColor.h"
+#include "TStyle.h"
 #include "TCanvas.h"
 #include "TLegend.h"
 
@@ -9,6 +9,14 @@
 #include <fstream>
 
 #include "include/variations.h"
+
+void fmtaxes(TH1* h1, const char* title) {
+    h1->SetTitle(title);
+    h1->GetXaxis()->CenterTitle();
+    h1->GetXaxis()->SetTitleOffset(1.44);
+    h1->GetYaxis()->CenterTitle();
+    h1->GetYaxis()->SetTitleOffset(1.44);
+}
 
 int sum_systematics(const char* list, const char* label) {
     std::vector<std::string> flist;
@@ -56,6 +64,8 @@ int sum_systematics(const char* list, const char* label) {
 
     TH1::SetDefaultSumw2();
 
+    gStyle->SetOptStat(0);
+
     var_t* svars[nhists][nfiles];
     sumvar_t* tvars[nhists];
 
@@ -77,25 +87,37 @@ int sum_systematics(const char* list, const char* label) {
 
         tvars[i]->write();
 
+        TH1F* h;
+        std::string path = Form("figs/uncertainties/systematics-%s-%s",
+                label, hists[i].c_str());
+
         for (std::size_t j = 1; j < nfiles; ++j) {
             TCanvas* c1 = new TCanvas("c1", "", 600, 600);
 
-            svars[i][j]->adiff(0)->Draw();
-            c1->SaveAs(Form("figs/uncertainties/systematics-%s-%s-diff-%s.png", hists[i].c_str(), label, labels[j].c_str()));
+            h = svars[i][j]->adiff(0);
+            fmtaxes(h, ";#eta;absolute difference");
+            h->Draw();
+            c1->SaveAs(Form("%s-%s-diff.png", path.c_str(), labels[j].c_str()));
 
-            svars[i][j]->aratio(0)->Draw();
-            c1->SaveAs(Form("figs/uncertainties/systematics-%s-%s-ratio-%s.png", hists[i].c_str(), label, labels[j].c_str()));
+            h = svars[i][j]->aratio(0);
+            fmtaxes(h, ";#eta;ratio");
+            h->Draw();
+            c1->SaveAs(Form("%s-%s-ratio.png", path.c_str(), labels[j].c_str()));
 
             delete c1;
         }
 
         TCanvas* c2 = new TCanvas("c2", "", 600, 600);
 
-        tvars[i]->diff()->Draw("p hist");
-        c2->SaveAs(Form("figs/uncertainties/systematics-%s-%s-diff-total.png", hists[i].c_str(), label));
+        h = tvars[i]->diff();
+        fmtaxes(h, ";#eta;absolute difference");
+        h->Draw("p hist");
+        c2->SaveAs(Form("%s.total-diff.png", path.c_str()));
 
-        tvars[i]->ratio()->Draw("p hist");
-        c2->SaveAs(Form("figs/uncertainties/systematics-%s-%s-ratio-total.png", hists[i].c_str(), label));
+        h = tvars[i]->ratio();
+        fmtaxes(h, ";#eta;ratio");
+        h->Draw("p hist");
+        c2->SaveAs(Form("%s.total-ratio.png", path.c_str()));
 
         delete c2;
     }
