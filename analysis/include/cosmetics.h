@@ -3,6 +3,7 @@
 
 #include "TColor.h"
 
+#define COLOUR0   TColor::GetColor("#515151")
 #define COLOUR1   TColor::GetColor("#f2777a")
 #define COLOUR2   TColor::GetColor("#f99157")
 #define COLOUR3   TColor::GetColor("#ffcc66")

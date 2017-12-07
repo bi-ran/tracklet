@@ -18,14 +18,7 @@
 #include "stdio.h"
 
 #include "include/acceptance.h"
-
-#define COLOUR0   (TColor::GetColor("#515151"))
-#define COLOUR1   (TColor::GetColor("#f2777a"))
-#define COLOUR2   (TColor::GetColor("#f99157"))
-#define COLOUR3   (TColor::GetColor("#ffcc66"))
-#define COLOUR4   (TColor::GetColor("#99cc99"))
-#define COLOUR5   (TColor::GetColor("#6699cc"))
-#define COLOUR6   (TColor::GetColor("#9999cc"))
+#include "include/cosmetics.h"
 
 void format(TH1* h1, int style, int col) {
    h1->SetMarkerStyle(style);
