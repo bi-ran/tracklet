@@ -113,6 +113,7 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
    if (jacobian) {
       TFile* fj = new TFile(jacobian, "read");
       TH1F* hj = (TH1F*)fj->Get("hjavg")->Clone();
+      TH1F* hjsys = (TH1F*)fj->Get("hjsys")->Clone();
 
       TCanvas* c2 = new TCanvas("c2", "", 400, 400);
       gPad->SetLogy(logy);
@@ -121,13 +122,16 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
       hframe->SetTitle(";y;dN/dy");
       hframe->Draw();
 
-      TH1F* hyres[nres]; TH1F* hysys[nres];
+      TH1F* hyres[nres]; TH1F* hysys[nres]; TH1F* hyjsys[nres];
       for (std::size_t i = 0; i < nres; ++i) {
          hyres[i] = (TH1F*)hres[i]->Clone(Form("%sy_%s", hist, labels[i].c_str()));
-         hysys[i] = (TH1F*)hsys[i]->Clone(Form("%sy_%s_tdiff", hist, labels[i].c_str()));
-
          hyres[i]->Multiply(hj);
+
+         hyjsys[i] = (TH1F*)hyres[i]->Clone(Form("%sy_%s_jsys", hist, labels[i].c_str()));
+         hyjsys[i]->Multiply(hjsys);
+         hysys[i] = (TH1F*)hsys[i]->Clone(Form("%sy_%s_tdiff", hist, labels[i].c_str()));
          hysys[i]->Multiply(hj);
+         hysys[i]->Add(hyjsys[i]);
 
          int cindex = (coffset + i) % colours.size();
 
