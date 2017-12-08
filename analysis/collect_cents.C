@@ -4,6 +4,7 @@
 #include "TColor.h"
 #include "TCanvas.h"
 #include "TLegend.h"
+#include "TLegendEntry.h"
 #include "TGaxis.h"
 
 #include <vector>
@@ -153,20 +154,30 @@ int collect_cents(const char* label, int interval) {
 
     watermark();
 
-    TLegend* l3 = new TLegend(0.54, 0.24, 0.9, 0.48);
+    TLegend* l3 = new TLegend(0.6, 0.38, 0.9, 0.58);
     l3->SetBorderSize(0);
     l3->SetFillStyle(0);
-    l3->AddEntry((TObject*)0, "CMS", "");
+    l3->SetTextFont(43);
+    l3->SetTextSize(15);
+    TLegendEntry* hcms = l3->AddEntry((TObject*)0, "CMS", "");
+    hcms->SetTextFont(63);
+    hcms->SetTextSize(17);
     l3->AddEntry(gnorm, "XeXe 5.44 TeV", "p");
     l3->AddEntry(gcms_pbpb_2p76_norm, "PbPb 2.76 TeV", "p");
-    l3->AddEntry((TObject*)0, "ALICE", "");
+    TLegendEntry* halice = l3->AddEntry((TObject*)0, "ALICE", "");
+    halice->SetTextFont(63);
+    halice->SetTextSize(17);
     l3->AddEntry(galice_pbpb_5p02_norm, "PbPb 5.02 TeV", "p");
     l3->Draw();
 
     TLegend* l4 = new TLegend(0.6, 0.18, 0.9, 0.30);
     l4->SetBorderSize(0);
     l4->SetFillStyle(0);
-    l4->AddEntry((TObject*)0, "PHOBOS", "");
+    l4->SetTextFont(43);
+    l4->SetTextSize(15);
+    TLegendEntry* hphobos = l4->AddEntry((TObject*)0, "PHOBOS", "");
+    hphobos->SetTextFont(63);
+    hphobos->SetTextSize(17);
     l4->AddEntry(gphobos_auau_0p2_norm, "AuAu 200 GeV", "p");
     l4->AddEntry(gphobos_cucu_0p2_norm, "CuCu 200 GeV", "p");
     l4->Draw();
