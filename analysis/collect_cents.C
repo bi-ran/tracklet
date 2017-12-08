@@ -46,11 +46,16 @@ int collect_cents(const char* label, int interval) {
     }
 
     TGraphErrors* g = new TGraphErrors(n);
-    g->SetName("gcent");
+    g->SetName("g");
     g->SetMarkerStyle(21);
     g->SetMarkerColor(COLOUR1);
+    g->SetFillStyle(1001);
+    g->SetFillColorAlpha(COLOUR1, 0.4);
 
-    TGraphErrors* gnorm = (TGraphErrors*)g->Clone("gcentnorm");
+    TGraphErrors* gs = (TGraphErrors*)g->Clone("gs");
+
+    TGraphErrors* gnorm = (TGraphErrors*)g->Clone("gnorm");
+    TGraphErrors* gsnorm = (TGraphErrors*)g->Clone("gsnorm");
 
     for (int c = NCENT; c >= interval + NEXCLUDE; c -= interval) {
         TFile* f = new TFile(Form("output/merged-%s.%i.%i.root", label, c - interval, c), "read");
@@ -65,6 +70,9 @@ int collect_cents(const char* label, int interval) {
         g->SetPoint(cindex, 100. / NCENT * ((2 * c - interval) / 2.), midy);
         g->SetPointError(cindex, 0, midyerr);
 
+        gs->SetPoint(cindex, 100. / NCENT * ((2 * c - interval) / 2.), midy);
+        gs->SetPointError(cindex, 0, midy * 0.03);
+
         float avgnpart = 0;
         for (int s = c - interval; s < c && s < NCENT; ++s)
             avgnpart += npart[s];
@@ -72,6 +80,9 @@ int collect_cents(const char* label, int interval) {
 
         gnorm->SetPoint(cindex, avgnpart, midy / avgnpart);
         gnorm->SetPointError(cindex, 0, midyerr / avgnpart);
+
+        gsnorm->SetPoint(cindex, avgnpart, midy / avgnpart);
+        gsnorm->SetPointError(cindex, 0, midy * 0.03 / avgnpart);
     }
 
     TGraphErrors* gcms_pbpb_2p76 = cms_pbpb_2p76();
@@ -100,6 +111,7 @@ int collect_cents(const char* label, int interval) {
 
     gcms_pbpb_2p76->Draw("p same");
     galice_pbpb_5p02->Draw("p same");
+    gs->Draw("p 3 same");
     g->Draw("p same");
 
     watermark();
@@ -136,6 +148,7 @@ int collect_cents(const char* label, int interval) {
     galice_pbpb_5p02_norm->Draw("p same");
     gphobos_auau_0p2_norm->Draw("p same");
     gphobos_cucu_0p2_norm->Draw("p same");
+    gsnorm->Draw("p 3 same");
     gnorm->Draw("p same");
 
     watermark();
