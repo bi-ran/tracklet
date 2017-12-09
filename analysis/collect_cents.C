@@ -122,10 +122,16 @@ int collect_cents(const char* label, int interval) {
     TLegend* l2 = new TLegend(0.54, 0.24, 0.9, 0.48);
     l2->SetBorderSize(0);
     l2->SetFillStyle(0);
-    l2->AddEntry((TObject*)0, "CMS", "");
+    l2->SetTextFont(43);
+    l2->SetTextSize(15);
+    TLegendEntry* hcms = l2->AddEntry((TObject*)0, "CMS", "");
+    hcms->SetTextFont(63);
+    hcms->SetTextSize(17);
     l2->AddEntry(g, "XeXe 5.44 TeV", "p");
     l2->AddEntry(gcms_pbpb_2p76, "PbPb 2.76 TeV", "p");
-    l2->AddEntry((TObject*)0, "ALICE", "");
+    TLegendEntry* halice = l2->AddEntry((TObject*)0, "ALICE", "");
+    halice->SetTextFont(63);
+    halice->SetTextSize(17);
     l2->AddEntry(galice_pbpb_5p02, "PbPb 5.02 TeV", "p");
     l2->Draw();
 
@@ -165,14 +171,14 @@ int collect_cents(const char* label, int interval) {
     l3->SetFillStyle(0);
     l3->SetTextFont(43);
     l3->SetTextSize(15);
-    TLegendEntry* hcms = l3->AddEntry((TObject*)0, "CMS", "");
-    hcms->SetTextFont(63);
-    hcms->SetTextSize(17);
+    TLegendEntry* h2cms = l3->AddEntry((TObject*)0, "CMS", "");
+    h2cms->SetTextFont(63);
+    h2cms->SetTextSize(17);
     l3->AddEntry(gnorm, "XeXe 5.44 TeV", "p");
     l3->AddEntry(gcms_pbpb_2p76_norm, "PbPb 2.76 TeV", "p");
-    TLegendEntry* halice = l3->AddEntry((TObject*)0, "ALICE", "");
-    halice->SetTextFont(63);
-    halice->SetTextSize(17);
+    TLegendEntry* h2alice = l3->AddEntry((TObject*)0, "ALICE", "");
+    h2alice->SetTextFont(63);
+    h2alice->SetTextSize(17);
     l3->AddEntry(galice_pbpb_5p02_norm, "PbPb 5.02 TeV", "p");
     l3->Draw();
 
@@ -193,9 +199,9 @@ int collect_cents(const char* label, int interval) {
     l5->SetFillStyle(0);
     l5->SetTextFont(43);
     l5->SetTextSize(15);
-    TLegendEntry* h2cms = l5->AddEntry((TObject*)0, "CMS", "");
-    h2cms->SetTextFont(63);
-    h2cms->SetTextSize(17);
+    TLegendEntry* h3cms = l5->AddEntry((TObject*)0, "CMS", "");
+    h3cms->SetTextFont(63);
+    h3cms->SetTextSize(17);
     l5->AddEntry(gcms_pp_13p0_norm, "pp 13 TeV", "p");
     l5->AddEntry(gcms_ppb_8p16_norm, "pPb 8.16 TeV", "p");
     l5->Draw();

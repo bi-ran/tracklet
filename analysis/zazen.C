@@ -3,6 +3,7 @@
 #include "TGraphErrors.h"
 #include "TCanvas.h"
 #include "TLegend.h"
+#include "TLegendEntry.h"
 
 #include <vector>
 #include <string>
@@ -95,12 +96,14 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
 
    watermark();
 
-   TLegend* l1 = new TLegend(0.4, 0.3, 0.6, 0.475);
+   TLegend* l1 = new TLegend(0.415, 0.3, 0.6, 0.475);
    l1->SetTextFont(43);
    l1->SetTextSize(12);
    l1->SetBorderSize(0);
    l1->SetFillStyle(0);
-   l1->AddEntry((TObject*)0, "XeXe", "");
+   TLegendEntry* hxx = l1->AddEntry((TObject*)0, "XeXe", "");
+   hxx->SetTextFont(63);
+   hxx->SetTextSize(13);
    for (std::size_t i = 0; i < nres; ++i)
       l1->AddEntry(hres[i], legends[i].c_str(), "p");
    l1->Draw();
@@ -140,12 +143,14 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
 
       watermark();
 
-      TLegend* l2 = new TLegend(0.4, 0.3, 0.6, 0.475);
+      TLegend* l2 = new TLegend(0.415, 0.3, 0.6, 0.475);
       l2->SetTextFont(43);
       l2->SetTextSize(12);
       l2->SetBorderSize(0);
       l2->SetFillStyle(0);
-      l2->AddEntry((TObject*)0, "XeXe", "");
+      TLegendEntry* h2xx = l2->AddEntry((TObject*)0, "XeXe", "");
+      h2xx->SetTextFont(63);
+      h2xx->SetTextSize(13);
       for (std::size_t i = 0; i < nres; ++i)
          l2->AddEntry(hyres[i], legends[i].c_str(), "p");
       l2->Draw();
