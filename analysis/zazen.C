@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <sstream>
 
 #include "include/cosmetics.h"
 #include "include/errorband.h"
@@ -23,6 +24,17 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
       while (std::getline(fstream, line))
          rlist.push_back(line);
    }
+
+   if (rlist.empty()) {
+      printf("error: empty list!\n");
+      return 1;
+   }
+
+   int ymin, ymax; bool logy; int coffset;
+   std::stringstream sstream(rlist.front());
+   sstream >> ymin >> ymax >> logy >> coffset;
+
+   rlist.erase(rlist.begin());
    std::size_t nres = rlist.size();
 
    if (!nres) {
@@ -63,18 +75,20 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
    gr->SetFillStyle(1001);
 
    TCanvas* c1 = new TCanvas("c1", "", 400, 400);
-   gPad->SetLogy();
+   gPad->SetLogy(logy);
 
-   hframe->SetAxisRange(1, 5000, "Y");
+   hframe->SetAxisRange(ymin, ymax, "Y");
    hframe->Draw();
 
    for (std::size_t i = 0; i < nres; ++i) {
+      int cindex = (coffset + i) % colours.size();
+
       hres[i]->SetMarkerStyle(20);
       hres[i]->SetMarkerSize(0.64);
-      hres[i]->SetMarkerColor(colours[i % colours.size()]);
-      hres[i]->SetLineColor(colours[i % colours.size()]);
+      hres[i]->SetMarkerColor(colours[cindex]);
+      hres[i]->SetLineColor(colours[cindex]);
 
-      gr->SetFillColorAlpha(colours[i % colours.size()], 0.4);
+      gr->SetFillColorAlpha(colours[cindex], 0.4);
       draw_sys_unc(gr, hres[i], hsys[i]);
       hres[i]->Draw("e x0 same");
    }
@@ -98,9 +112,9 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
       TH1F* hj = (TH1F*)fj->Get("hjavg")->Clone();
 
       TCanvas* c2 = new TCanvas("c2", "", 400, 400);
-      gPad->SetLogy();
+      gPad->SetLogy(logy);
 
-      hframe->SetAxisRange(1, 5000, "Y");
+      hframe->SetAxisRange(ymin, ymax, "Y");
       hframe->SetTitle(";y;dN/dy");
       hframe->Draw();
 
@@ -112,12 +126,14 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
          hyres[i]->Multiply(hj);
          hysys[i]->Multiply(hj);
 
+         int cindex = (coffset + i) % colours.size();
+
          hyres[i]->SetMarkerStyle(20);
          hyres[i]->SetMarkerSize(0.64);
-         hyres[i]->SetMarkerColor(colours[i % colours.size()]);
-         hyres[i]->SetLineColor(colours[i % colours.size()]);
+         hyres[i]->SetMarkerColor(colours[cindex]);
+         hyres[i]->SetLineColor(colours[cindex]);
 
-         gr->SetFillColorAlpha(colours[i % colours.size()], 0.4);
+         gr->SetFillColorAlpha(colours[cindex], 0.4);
          draw_sys_unc(gr, hyres[i], hysys[i]);
          hyres[i]->Draw("e x0 same");
       }
