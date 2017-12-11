@@ -34,6 +34,8 @@ TGraphErrors* alice_pbpb_5p02();
 TGraphErrors* alice_pbpb_5p02_norm();
 TGraphErrors* phobos_auau_0p2_norm();
 TGraphErrors* phobos_cucu_0p2_norm();
+TGraphErrors* cms_pp_13p0_norm();
+TGraphErrors* cms_ppb_8p16_norm();
 
 int collect_cents(const char* label, int interval) {
     int n = NCENT / interval;
@@ -133,6 +135,8 @@ int collect_cents(const char* label, int interval) {
     TGraphErrors* galice_pbpb_5p02_norm = alice_pbpb_5p02_norm();
     TGraphErrors* gphobos_auau_0p2_norm = phobos_auau_0p2_norm();
     TGraphErrors* gphobos_cucu_0p2_norm = phobos_cucu_0p2_norm();
+    TGraphErrors* gcms_pp_13p0_norm = cms_pp_13p0_norm();
+    TGraphErrors* gcms_ppb_8p16_norm = cms_ppb_8p16_norm();
 
     TCanvas* c3 = new TCanvas("c3", "", 600, 600);
 
@@ -149,6 +153,8 @@ int collect_cents(const char* label, int interval) {
     galice_pbpb_5p02_norm->Draw("p same");
     gphobos_auau_0p2_norm->Draw("p same");
     gphobos_cucu_0p2_norm->Draw("p same");
+    gcms_pp_13p0_norm->Draw("p same");
+    gcms_ppb_8p16_norm->Draw("p same");
     gsnorm->Draw("p 3 same");
     gnorm->Draw("p same");
 
@@ -181,6 +187,18 @@ int collect_cents(const char* label, int interval) {
     l4->AddEntry(gphobos_auau_0p2_norm, "AuAu 200 GeV", "p");
     l4->AddEntry(gphobos_cucu_0p2_norm, "CuCu 200 GeV", "p");
     l4->Draw();
+
+    TLegend* l5 = new TLegend(0.35, 0.18, 0.65, 0.30);
+    l5->SetBorderSize(0);
+    l5->SetFillStyle(0);
+    l5->SetTextFont(43);
+    l5->SetTextSize(15);
+    TLegendEntry* h2cms = l5->AddEntry((TObject*)0, "CMS", "");
+    h2cms->SetTextFont(63);
+    h2cms->SetTextSize(17);
+    l5->AddEntry(gcms_pp_13p0_norm, "pp 13 TeV", "p");
+    l5->AddEntry(gcms_ppb_8p16_norm, "pPb 8.16 TeV", "p");
+    l5->Draw();
 
     c3->SaveAs(Form("figs/merged/merged-%s-midynorm-int%i.png", label, interval));
 
@@ -341,6 +359,32 @@ TGraphErrors* phobos_cucu_0p2_norm() {
     gphobos_cucu_0p2_norm->SetLineColor(COLOUR3);
 
     return gphobos_cucu_0p2_norm;
+}
+
+TGraphErrors* cms_pp_13p0_norm() {
+    TGraphErrors* gcms_pp_13p0_norm = new TGraphErrors(1);
+    gcms_pp_13p0_norm->SetName("gcms_pp_13p0_norm");
+
+    gcms_pp_13p0_norm->SetPoint(0, 2, 5.49 / 2);    gcms_pp_13p0_norm->SetPointError(0, 0, 0.17 / 2);
+
+    gcms_pp_13p0_norm->SetMarkerStyle(43);
+    gcms_pp_13p0_norm->SetMarkerColor(COLOUR0);
+    gcms_pp_13p0_norm->SetLineColor(COLOUR0);
+
+    return gcms_pp_13p0_norm;
+}
+
+TGraphErrors* cms_ppb_8p16_norm() {
+    TGraphErrors* gcms_ppb_8p16_norm = new TGraphErrors(1);
+    gcms_ppb_8p16_norm->SetName("gcms_ppb_8p16_norm");
+
+    gcms_ppb_8p16_norm->SetPoint(0, 8.12, 2.475);   gcms_ppb_8p16_norm->SetPointError(0, 0, 0.07);
+
+    gcms_ppb_8p16_norm->SetMarkerStyle(45);
+    gcms_ppb_8p16_norm->SetMarkerColor(COLOUR6);
+    gcms_ppb_8p16_norm->SetLineColor(COLOUR6);
+
+    return gcms_ppb_8p16_norm;
 }
 
 int main(int argc, char* argv[]) {
