@@ -9,19 +9,27 @@
 
 #include <vector>
 #include <string>
+#include <algorithm>
 #include <fstream>
 
 #define OPT(val) options[opt].val
 #define OPTSTR(str) options[opt].str.c_str()
 
-#define NLAYERS   4
-#define LAYERS(EXPAND)  \
-   EXPAND(1)            \
-   EXPAND(2)            \
-   EXPAND(3)            \
-   EXPAND(4)            \
+#define PIXELS(EXPAND)     \
+   BPIX(EXPAND)            \
+   FPIX(EXPAND)            \
 
-#define NTRACKLETS   6
+#define BPIX(EXPAND)       \
+   EXPAND(1)               \
+   EXPAND(2)               \
+   EXPAND(3)               \
+   EXPAND(4)               \
+
+#define FPIX(EXPAND)       \
+   EXPAND(5)               \
+   EXPAND(6)               \
+   EXPAND(7)               \
+
 #define TRACKLETS(EXPAND)  \
    EXPAND(1, 2)            \
    EXPAND(1, 3)            \
@@ -29,8 +37,11 @@
    EXPAND(2, 3)            \
    EXPAND(2, 4)            \
    EXPAND(3, 4)            \
+   EXPAND(1, 5)            \
+   EXPAND(1, 6)            \
+   EXPAND(1, 7)            \
 
-#define GET_TREE(q, w)                                                        \
+#define TREES(q, w)                                                           \
    TTree* t##q##w = (TTree*)f->Get("TrackletTree" #q #w);                     \
 
 static const std::vector<int> colour = {
@@ -101,39 +112,41 @@ int compare_pixels(const char* input, const char* label, const char* list, int o
    const char* idcstr = OPTSTR(id);
    const char* varcstr = OPTSTR(var);
 
-#define DRAW_INPUT_LAYER(q)                                                   \
+#define SETUP_1D_PIXELS(q)                                                    \
    TH1D* h##q = new TH1D(Form("hp" #q "%s", idcstr),                          \
          Form(";%s (layer " #q ");", OPTSTR(label)),                          \
          OPT(nbin), OPT(range[0]), OPT(range[1]));                            \
+   TH1D* hs##q[nfiles] = {0};                                                 \
+   for (std::size_t j = 0; j < nfiles; ++j) {                                 \
+      hs##q[j] = new TH1D(Form("hp" #q "f%zu%s", j, idcstr),                  \
+            Form(";%s (layer " #q ");", OPTSTR(label)),                       \
+            OPT(nbin), OPT(range[0]), OPT(range[1]));                         \
+   }                                                                          \
+
+   PIXELS(SETUP_1D_PIXELS)
+
+#define DRAW_1D_PIXELS_INPUT(q)                                               \
    t->Draw(Form("%s" #q ">>hp" #q "%s", varcstr, idcstr), fsel, "goff");      \
    h##q->Scale(1. / h##q->Integral());                                        \
 
-   LAYERS(DRAW_INPUT_LAYER)
+   PIXELS(DRAW_1D_PIXELS_INPUT)
 
    TFile* fs[nfiles] = {0};
    TTree* ts[nfiles] = {0};
-
-#define SETUP_LAYER(q)                                                        \
-   TH1D* hs##q[nfiles] = {0};                                                 \
-
-   LAYERS(SETUP_LAYER)
 
    for (std::size_t j = 0; j < nfiles; ++j) {
       fs[j] = new TFile(files[j].c_str(), "read");
       ts[j] = (TTree*)fs[j]->Get("pixel/PixelTree");
 
-#define DRAW_LIST_LAYER(q)                                                    \
-      hs##q[j] = new TH1D(Form("hp" #q "f%zu%s", j, idcstr),                  \
-            Form(";%s (layer " #q ");", OPTSTR(label)),                       \
-            OPT(nbin), OPT(range[0]), OPT(range[1]));                         \
+#define DRAW_1D_PIXELS_LIST(q)                                                \
       ts[j]->Draw(Form("%s" #q ">>hp" #q "f%zu%s", varcstr, j, idcstr),       \
             fsel, "goff");                                                    \
       hs##q[j]->Scale(1. / hs##q[j]->Integral());                             \
 
-      LAYERS(DRAW_LIST_LAYER)
+      PIXELS(DRAW_1D_PIXELS_LIST)
    }
 
-#define DRAW_ALL_LAYER(q)                                                     \
+#define DRAW_1D_PIXELS_ALL(q)                                                 \
    TCanvas* c##q = new TCanvas("c" #q, "", 600, 600);                         \
    if (OPT(logscale)) { c##q->SetLogy(); }                                    \
                                                                               \
@@ -162,16 +175,16 @@ int compare_pixels(const char* input, const char* label, const char* list, int o
          OPTSTR(id), label));                                                 \
    delete c##q;                                                               \
 
-   LAYERS(DRAW_ALL_LAYER)
+   PIXELS(DRAW_1D_PIXELS_ALL)
 
    TFile* fout = new TFile(Form("data/%s.root", label), "update");
 
-#define SAVE_LAYER(q)                                                         \
+#define SAVE_1D_PIXELS(q)                                                     \
    h##q->Write("", TObject::kOverwrite);                                      \
    for (std::size_t j = 0; j < nfiles; ++j)                                   \
       hs##q[j]->Write("", TObject::kOverwrite);                               \
 
-   LAYERS(SAVE_LAYER)
+   PIXELS(SAVE_1D_PIXELS)
 
    fout->Close();
 
@@ -230,7 +243,7 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
 
    TFile* f = new TFile(input, "read");
 
-   TRACKLETS(GET_TREE)
+   TRACKLETS(TREES)
 
    TCut fsel = OPTSTR(sel);
    fsel = fsel && "abs(vz[1])<15 && hlt";
@@ -239,38 +252,42 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
    const char* idcstr = OPTSTR(id);
    const char* varcstr = OPTSTR(var);
 
-#define DRAW_INPUT_TRACKLET(q, w)                                             \
+   TFile* fs[nfiles] = {0};
+   for (std::size_t j = 0; j < nfiles; ++j)
+      fs[j] = new TFile(files[j].c_str(), "read");
+
+#define SETUP_1D_TRACKLETS(q, w)                                              \
    TH1D* h##q##w = new TH1D(Form("ht" #q #w "%s", idcstr),                    \
          Form(";%s (layers " #q "+" #w ");", OPTSTR(label)),                  \
          OPT(nbin), OPT(range[0]), OPT(range[1]));                            \
-   t##q##w->Draw(Form("%s>>ht" #q #w "%s", varcstr, idcstr), fsel, "goff");   \
-   h##q##w->Scale(1. / h##q##w->Integral());                                  \
-
-   TRACKLETS(DRAW_INPUT_TRACKLET)
-
-   TFile* fs[nfiles] = {0};
-
-#define SETUP_TRACKLET(q, w)                                                  \
+                                                                              \
    TTree* ts##q##w[nfiles] = {0};                                             \
    TH1D* hs##q##w[nfiles] = {0};                                              \
-
-   TRACKLETS(SETUP_TRACKLET)
-
-   for (std::size_t j = 0; j < nfiles; ++j) {
-      fs[j] = new TFile(files[j].c_str(), "read");
-
-#define DRAW_LIST_TRACKLET(q, w)                                              \
+   for (std::size_t j = 0; j < nfiles; ++j) {                                 \
       ts##q##w[j] = (TTree*)fs[j]->Get("TrackletTree" #q #w);                 \
       hs##q##w[j] = new TH1D(Form("ht" #q #w "f%zu%s", j, idcstr),            \
             OPTSTR(label), OPT(nbin), OPT(range[0]), OPT(range[1]));          \
+   }                                                                          \
+
+   TRACKLETS(SETUP_1D_TRACKLETS)
+
+#define DRAW_1D_TRACKLETS_INPUT(q, w)                                         \
+   t##q##w->Draw(Form("%s>>ht" #q #w "%s", varcstr, idcstr), fsel, "goff");   \
+   h##q##w->Scale(1. / h##q##w->Integral());                                  \
+
+   TRACKLETS(DRAW_1D_TRACKLETS_INPUT)
+
+   for (std::size_t j = 0; j < nfiles; ++j) {
+
+#define DRAW_1D_TRACKLETS_LIST(q, w)                                          \
       ts##q##w[j]->Draw(Form("%s>>ht" #q #w "f%zu%s", varcstr, j, idcstr),    \
             fsel, "goff");                                                    \
       hs##q##w[j]->Scale(1. / hs##q##w[j]->Integral());                       \
 
-      TRACKLETS(DRAW_LIST_TRACKLET)
+      TRACKLETS(DRAW_1D_TRACKLETS_LIST)
    }
 
-#define DRAW_ALL_TRACKLET(q, w)                                               \
+#define DRAW_1D_TRACKLETS_ALL(q, w)                                           \
    TCanvas* c##q##w = new TCanvas("c" #q #w, "", 600, 600);                   \
    if (OPT(logscale)) { c##q##w->SetLogy(); }                                 \
                                                                               \
@@ -299,16 +316,16 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
          OPTSTR(id), label));                                                 \
    delete c##q##w;                                                            \
 
-   TRACKLETS(DRAW_ALL_TRACKLET)
+   TRACKLETS(DRAW_1D_TRACKLETS_ALL)
 
    TFile* fout = new TFile(Form("data/%s.root", label), "update");
 
-#define SAVE_TRACKLET(q, w)                                                   \
+#define SAVE_1D_TRACKLETS(q, w)                                               \
    h##q##w->Write("", TObject::kOverwrite);                                   \
    for (std::size_t j = 0; j < nfiles; ++j)                                   \
       hs##q##w[j]->Write("", TObject::kOverwrite);                            \
 
-   TRACKLETS(SAVE_TRACKLET)
+   TRACKLETS(SAVE_1D_TRACKLETS)
 
    fout->Close();
 
@@ -318,63 +335,57 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
 typedef struct twod_t {
    std::string id;
    std::string label[2];
-   std::string x_lvar[NLAYERS];
-   std::string x_var;
-   int         x_nbin;
-   float       x_range[2];
-   std::string y_lvar[NLAYERS];
-   std::string y_var;
-   int         y_nbin;
-   float       y_range[2];
-   std::string sel;
-   int         overlay;
+   std::string xvar;
+   float       xbins[3];
+   std::string yvar;
+   float       ybins[3];
    int         csize[2];
+   int         custom;
+   std::string sel;
    std::string gopt;
 } twod_t;
 
 static const std::vector<twod_t> options_pixel_twod = {
    {
       "eta-phi", {"#eta", "#phi"},
-      {"eta1", "eta2", "eta3", "eta4"}, "", 1000, {-4, 4},
-      {"phi1", "phi2", "phi3", "phi4"}, "", 1000, {-4, 4},
-      "(1)", 0, {600, 600}, "colz"
+      "eta@", {1000, -4, 4},
+      "phi@", {1000, -4, 4},
+      {600, 600}, 0x23, "(1)", "colz"
    }, {
       "eta-r", {"#eta", "r"},
-      {"eta1", "eta2", "eta3", "eta4"}, "", 1000, {-4, 4},
-      {"r1", "r2", "r3", "r4"}, "", 1000, {0, 20},
-      "(1)", 1, {600, 600}, "colz"
+      "eta@", {1000, -4, 4},
+      "r@", {1000, 0, 20},
+      {600, 600}, 0x33, "(1)", "colz"
    }, {
       "eta-cs", {"#eta", "cluster size"},
-      {"eta1", "eta2", "eta3", "eta4"}, "", 200, {-4, 4},
-      {"cs1", "cs2", "cs3", "cs4"}, "", 40, {0, 40},
-      "(1)", 0, {600, 600}, "colz"
+      "eta@", {200, -4, 4},
+      "cs@", {40, 0, 40},
+      {600, 600}, 0x03, "(1)", "colz"
    }, {
       "x-y", {"x", "y"},
-      {"r1*cos(phi1)",
-       "r2*cos(phi2)",
-       "r3*cos(phi3)",
-       "r4*cos(phi4)"}, "", 1000, {-20, 20},
-      {"r1*sin(phi1)",
-       "r2*sin(phi2)",
-       "r3*sin(phi3)",
-       "r4*sin(phi4)"}, "", 1000, {-20, 20},
-      "(1)", 1, {600, 600}, "colz"
+      "r@*cos(phi@)", {1000, -20, 20},
+      "r@*sin(phi@)", {1000, -20, 20},
+      {600, 600}, 0x13, "(1)", "colz"
    }, {
       "z-phi", {"z", "#phi"},
-      {"r1/tan(2*atan(exp(-eta1)))",
-       "r2/tan(2*atan(exp(-eta2)))",
-       "r3/tan(2*atan(exp(-eta3)))",
-       "r4/tan(2*atan(exp(-eta4)))"}, "", 1000, {-30, 30},
-      {"phi1", "phi2", "phi3", "phi4"}, "", 1000, {-4, 4},
-      "(1)", 0, {600, 2400}, "colz"
+      "r@/tan(2*atan(exp(-eta@)))", {1000, -30, 30},
+      "phi@", {1000, -4, 4},
+      {600, 2400}, 0x01, "(1)", "colz"
    }, {
       "z-r", {"z", "r"},
-      {"r1/tan(2*atan(exp(-eta1)))",
-       "r2/tan(2*atan(exp(-eta2)))",
-       "r3/tan(2*atan(exp(-eta3)))",
-       "r4/tan(2*atan(exp(-eta4)))"}, "", 1000, {-30, 30},
-      {"r1", "r2", "r3", "r4"}, "", 1000, {0, 20},
-      "(1)", 1, {600, 600}, "colz"
+      "r@/tan(2*atan(exp(-eta@)))", {1000, -30, 30},
+      "r@", {1000, 0, 20},
+      {600, 600}, 0x11, "(1)", "colz"
+   }, {
+      "fpix-z-phi", {"z", "#phi"},
+      "r@/tan(2*atan(exp(-eta@)))", {1000, -45, 45},
+      "phi@", {1000, -4, 4},
+      {600, 2400}, 0x22, "(1)", "colz"
+   }, {
+      "fpix-z-r", {"z", "r"},
+      "r@/tan(2*atan(exp(-eta@)))", {1000, -45, 45},
+      "r@", {1000, 0, 20},
+      {600, 600}, 0x02, "(1)", "colz"
    }
 };
 
@@ -387,17 +398,23 @@ int map_pixels(const char* input, const char* label, int opt) {
    const char* l0str = OPTSTR(label[0]);
    const char* l1str = OPTSTR(label[1]);
 
-#define MAP_PIXEL(q)                                                          \
+#define SETUP_2D_PIXELS(q)                                                    \
+   std::string xvar##q = OPT(xvar);                                           \
+   std::string yvar##q = OPT(yvar);                                           \
+   std::replace(xvar##q.begin(), xvar##q.end(), '@', #q[0]);                  \
+   std::replace(yvar##q.begin(), yvar##q.end(), '@', #q[0]);                  \
+                                                                              \
    TH2D* h##q = new TH2D("h" #q,                                              \
          Form(";%s (layer " #q ");%s (layer " #q ")", l0str, l1str),          \
-         OPT(x_nbin), OPT(x_range[0]), OPT(x_range[1]),                       \
-         OPT(y_nbin), OPT(y_range[0]), OPT(y_range[1]));                      \
-   t->Draw(Form("%s:%s>>h" #q, OPTSTR(y_lvar[q - 1]), OPTSTR(x_lvar[q - 1])), \
+         (int)OPT(xbins[0]), OPT(xbins[1]), OPT(xbins[2]),                    \
+         (int)OPT(ybins[0]), OPT(ybins[1]), OPT(ybins[2]));                   \
+
+   PIXELS(SETUP_2D_PIXELS)
+
+#define DRAW_2D_PIXELS(q)                                                     \
+   t->Draw(Form("%s:%s>>h" #q, yvar##q.c_str(), xvar##q.c_str()),             \
          OPTSTR(sel), "goff");                                                \
-
-   LAYERS(MAP_PIXEL)
-
-#define DRAW_PIXEL(q)                                                         \
+                                                                              \
    TCanvas* c##q = new TCanvas("c" #q, "", OPT(csize[0]), OPT(csize[1]));     \
    h##q->SetStats(0);                                                         \
    h##q->Draw(OPTSTR(gopt));                                                  \
@@ -405,17 +422,19 @@ int map_pixels(const char* input, const char* label, int opt) {
          OPTSTR(id), label));                                                 \
    delete c##q;                                                               \
 
-   LAYERS(DRAW_PIXEL)
+   if (OPT(custom) & 0x1) { BPIX(DRAW_2D_PIXELS) }
+   if (OPT(custom) & 0x2) { FPIX(DRAW_2D_PIXELS) }
 
-   if (OPT(overlay)) {
+   if (OPT(custom) >> 4) {
       TH2D* hall = new TH2D("hall", Form(";%s;%s", l0str, l1str),
-            OPT(x_nbin), OPT(x_range[0]), OPT(x_range[1]),
-            OPT(y_nbin), OPT(y_range[0]), OPT(y_range[1]));
+            (int)OPT(xbins[0]), OPT(xbins[1]), OPT(xbins[2]),
+            (int)OPT(ybins[0]), OPT(ybins[1]), OPT(ybins[2]));
 
-#define OVERLAY_PIXEL(q)                                                      \
+#define OVERLAY_2D_PIXELS(q)                                                  \
       hall->Add(h##q);                                                        \
 
-      LAYERS(OVERLAY_PIXEL)
+      if (OPT(custom) & 0x10) { BPIX(OVERLAY_2D_PIXELS) }
+      if (OPT(custom) & 0x20) { FPIX(OVERLAY_2D_PIXELS) } 
 
       TCanvas* call = new TCanvas("call", "", 600, 600);
       hall->SetStats(0);
@@ -431,14 +450,14 @@ int map_pixels(const char* input, const char* label, int opt) {
 static const std::vector<twod_t> options_tracklet_twod = {
    {
       "eta-phi", {"#eta", "#phi"},
-      {}, "eta1", 1000, {-4, 4},
-      {}, "phi1", 1000, {-4, 4},
-      "(1)", 0, {600, 600}, "colz"
+      "eta1", {1000, -4, 4},
+      "phi1", {1000, -4, 4},
+      {600, 600}, 0, "(1)", "colz"
    }, {
       "eta-vz", {"#eta", "v_{z}"},
-      {}, "eta1", 200, {-4, 4},
-      {}, "vz[1]", 200, {-20, 20},
-      "(1)", 0, {600, 600}, "colz"
+      "eta1", {200, -4, 4},
+      "vz[1]", {200, -20, 20},
+      {600, 600}, 0, "(1)", "colz"
    }
 };
 
@@ -447,7 +466,7 @@ int map_tracklets(const char* input, const char* label, int opt) {
 
    TFile* f = new TFile(input, "READ");
 
-   TRACKLETS(GET_TREE)
+   TRACKLETS(TREES)
 
    const char* l0str = OPTSTR(label[0]);
    const char* l1str = OPTSTR(label[1]);
@@ -456,18 +475,19 @@ int map_tracklets(const char* input, const char* label, int opt) {
    fsel = fsel && "abs(vz[1])<15 && hlt";
    fsel *= "weight";
 
-#define MAP_TRACKLET(q, w)                                                    \
+#define SETUP_2D_TRACKLETS(q, w)                                              \
    TH2D* h##q##w = new TH2D("h" #q #w,                                        \
          Form(";%s (layer " #q "+" #w ");%s (layer " #q "+" #w ")",           \
                l0str, l1str),                                                 \
-         OPT(x_nbin), OPT(x_range[0]), OPT(x_range[1]),                       \
-         OPT(y_nbin), OPT(y_range[0]), OPT(y_range[1]));                      \
-   t##q##w->Draw(Form("%s:%s>>h" #q #w, OPTSTR(y_var), OPTSTR(x_var)),        \
+         OPT(xbins[0]), OPT(xbins[1]), OPT(xbins[2]),                         \
+         OPT(ybins[0]), OPT(ybins[1]), OPT(ybins[2]));                        \
+
+   TRACKLETS(SETUP_2D_TRACKLETS)
+
+#define DRAW_2D_TRACKLETS(q, w)                                               \
+   t##q##w->Draw(Form("%s:%s>>h" #q #w, OPTSTR(yvar), OPTSTR(xvar)),          \
          fsel, "goff");                                                       \
-
-   TRACKLETS(MAP_TRACKLET)
-
-#define DRAW_TRACKLET(q, w)                                                   \
+                                                                              \
    TCanvas* c##q##w = new TCanvas("c" #q #w, "", 600, 600);                   \
    h##q##w->SetStats(0);                                                      \
    h##q##w->Draw(OPTSTR(gopt));                                               \
@@ -475,7 +495,7 @@ int map_tracklets(const char* input, const char* label, int opt) {
          OPTSTR(id), label));                                                 \
    delete c##q##w;                                                            \
 
-   TRACKLETS(DRAW_TRACKLET)
+   TRACKLETS(DRAW_2D_TRACKLETS)
 
    return 0;
 }
