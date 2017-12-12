@@ -5,53 +5,78 @@
 #include "TLine.h"
 #include "TColor.h"
 
+#include <map>
+
 #include "include/cosmetics.h"
 
-#define COLOUR_HYDJET   TColor::GetColor("#3498db")
-#define COLOUR_DPMJET   TColor::GetColor("#2ecc71")
-#define COLOUR_AMPT     TColor::GetColor("#ec5f67")
-#define COLOUR_EPOS     TColor::GetColor("#ffcc00")
-
-#define MARKER12  24
-#define MARKER13  25
-#define MARKER14  26
-#define MARKER23  30
-#define MARKER24  32
-#define MARKER34  46
-#define MARKER15  48
-#define MARKER16  49
-#define MARKER17  43
-
-#define COLOUR12  TColor::GetColor("#f2777a")
-#define COLOUR13  TColor::GetColor("#f99157")
-#define COLOUR14  TColor::GetColor("#ffcc66")
-#define COLOUR23  TColor::GetColor("#99cc99")
-#define COLOUR24  TColor::GetColor("#6699cc")
-#define COLOUR34  TColor::GetColor("#9999cc")
-#define COLOUR15  TColor::GetColor("#db2d20")
-#define COLOUR16  TColor::GetColor("#01a252")
-#define COLOUR17  TColor::GetColor("#01a0e4")
-
-#define INDEX12   0
-#define INDEX13   1
-#define INDEX14   2
-#define INDEX23   3
-#define INDEX24   4
-#define INDEX34   5
-#define INDEX15   2
-#define INDEX16   2
-#define INDEX17   2
-
 #define TRACKLETS(EXPAND)  \
+   BPIX(EXPAND)            \
+   FPIX(EXPAND)            \
+
+#define BPIX(EXPAND)       \
    EXPAND(1, 2)            \
    EXPAND(1, 3)            \
    EXPAND(1, 4)            \
    EXPAND(2, 3)            \
    EXPAND(2, 4)            \
    EXPAND(3, 4)            \
+
+#define FPIX(EXPAND)       \
    EXPAND(1, 5)            \
    EXPAND(1, 6)            \
    EXPAND(1, 7)            \
+
+#define TLTSEP(p, EXPAND)  \
+   BPIXEP(p, EXPAND)       \
+   FPIXEP(p, EXPAND)       \
+
+#define BPIXEP(p, EXPAND)  \
+   EXPAND(p, 1, 2)         \
+   EXPAND(p, 1, 3)         \
+   EXPAND(p, 1, 4)         \
+   EXPAND(p, 2, 3)         \
+   EXPAND(p, 2, 4)         \
+   EXPAND(p, 3, 4)         \
+
+#define FPIXEP(p, EXPAND)  \
+   EXPAND(p, 1, 5)         \
+   EXPAND(p, 1, 6)         \
+   EXPAND(p, 1, 7)         \
+
+#define GEN(p, EXPAND)     \
+   EXPAND(p, dpmjet)       \
+   EXPAND(p, epos)         \
+   EXPAND(p, hydjet)       \
+   EXPAND(p, amptnm)       \
+   EXPAND(p, amptsm)       \
+
+#define COLOUR_DPMJET   TColor::GetColor("#2ecc71")
+#define COLOUR_EPOS     TColor::GetColor("#ffcc00")
+#define COLOUR_HYDJET   TColor::GetColor("#3498db")
+#define COLOUR_AMPT     TColor::GetColor("#ec5f67")
+
+#define INDEX12 0
+#define INDEX13 1
+#define INDEX14 2
+#define INDEX23 3
+#define INDEX24 4
+#define INDEX34 5
+#define INDEX15 6
+#define INDEX16 7
+#define INDEX17 8
+#define NTYPES  9
+
+static const int markers[NTYPES] = {
+   24, 25, 26,
+   30, 32, 46,
+   48, 49, 43
+};
+
+static const int colours[NTYPES] = {
+   COLOUR1, COLOUR2, COLOUR3,
+   COLOUR4, COLOUR5, COLOUR6,
+   COLOUR7, COLOUR8, COLOUR9
+};
 
 static const int good[9][30] = {
    { 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
@@ -65,7 +90,28 @@ static const int good[9][30] = {
    { 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1 }
 };
 
+typedef struct gen_t {
+   const char* label;
+   int lstyle; int lcolour;
+} gen_t;
+
+static const std::map<std::string, gen_t> geninfo = {
+   {"dpmjet", {"DPMJET-III", 1, COLOUR_DPMJET}},
+   {"epos", {"EPOS LHC", 1, COLOUR_EPOS}},
+   {"hydjet", {"HYDJET", 1, COLOUR_HYDJET}},
+   {"amptnm", {"AMPT (w/o string melting)", 7, COLOUR_AMPT}},
+   {"amptsm", {"AMPT (w. string melting)", 1, COLOUR_AMPT}}
+};
+
 int merge_monads(const char* label) {
+   TFile* fgen = new TFile("data/gen.root");
+
+#define OPENGEN(f, g)                                                         \
+   TH1F* h##g = (TH1F*)f->Get("h" #g)->Clone();                               \
+   gformat(h##g, geninfo.at(#g).lstyle, geninfo.at(#g).lcolour);              \
+
+   GEN(fgen, OPENGEN)
+
 #define OPEN(q, w)                                                            \
    TFile* f##q##w = new TFile(Form("output/correction-%s-" #q #w ".root",     \
          label));                                                             \
@@ -73,35 +119,11 @@ int merge_monads(const char* label) {
 
    TRACKLETS(OPEN)
 
-   TH1F* hframe = (TH1F*)f12->Get("hframe")->Clone();
+#define STYLE(q, w)                                                           \
+   htitle(h##q##w, ";#eta;dN/d#eta");                                         \
+   hstyle(h##q##w, markers[INDEX##q##w], colours[INDEX##q##w]);               \
 
-   TFile* fgen = new TFile("data/gen.root");
-
-   TH1F* hhydjet = (TH1F*)fgen->Get("hhydjet")->Clone();
-   gformat(hhydjet, 1, COLOUR_HYDJET);
-
-   TH1F* hdpmjet = (TH1F*)fgen->Get("hdpmjet")->Clone();
-   gformat(hdpmjet, 1, COLOUR_DPMJET);
-
-   TH1F* hamptnm = (TH1F*)fgen->Get("hamptnm")->Clone();
-   gformat(hamptnm, 7, COLOUR_AMPT);
-
-   TH1F* hamptsm = (TH1F*)fgen->Get("hamptsm")->Clone();
-   gformat(hamptsm, 1, COLOUR_AMPT);
-
-   TH1F* hepos = (TH1F*)fgen->Get("hepos")->Clone();
-   gformat(hepos, 1, COLOUR_EPOS);
-
-   TFile* f = new TFile(Form("output/merged-%s.root", label), "recreate");
-
-   TCanvas* c1 = new TCanvas("c1", "", 600, 600);
-
-   hframe->Draw();
-   hhydjet->Draw("c hist same");
-   hdpmjet->Draw("c hist same");
-   hamptnm->Draw("c hist same");
-   hamptsm->Draw("c hist same");
-   hepos->Draw("c hist same");
+   TRACKLETS(STYLE)
 
 #define ZERO(q, w)                                                            \
    for (int j=1; j<=h##q##w->GetNbinsX(); ++j) {                              \
@@ -113,31 +135,61 @@ int merge_monads(const char* label) {
 
    TRACKLETS(ZERO)
 
+   TH1F* hframe = (TH1F*)f12->Get("hframe")->Clone();
+   hframe->GetXaxis()->CenterTitle();
+   hframe->GetYaxis()->CenterTitle();
+
+   TFile* f = new TFile(Form("output/merged-%s.root", label), "recreate");
+
 #define DRAW(q, w)                                                            \
-   h##q##w->SetXTitle("#eta");                                                \
-   h##q##w->SetYTitle("dN/d#eta");                                            \
-   h##q##w->SetMarkerStyle(MARKER##q##w);                                     \
-   h##q##w->SetMarkerColor(COLOUR##q##w);                                     \
-   h##q##w->SetLineColor(COLOUR##q##w);                                       \
    h##q##w->Draw("same");                                                     \
 
+#define ADDENTRY(l, q, w)                                                     \
+   l->AddEntry(h##q##w, "layers " #q "+" #w, "p");                            \
+
+#define DRAWGEN(z, g)                                                         \
+   h##g->Draw("c hist same");                                                 \
+
+#define ADDENTRYGEN(l, g)                                                     \
+   l->AddEntry(h##g, geninfo.at(#g).label, "l");                              \
+
+   TCanvas* c1 = new TCanvas("c1", "", 600, 600);
+
+   hframe->Draw();
+   GEN(, DRAWGEN);
    TRACKLETS(DRAW)
 
    TLegend* l1 = new TLegend(0.36, 0.12, 0.64, 0.36);
    lstyle(l1, 43, 16);
-   l1->AddEntry(hhydjet, "HYDJET", "l");
-   l1->AddEntry(hdpmjet, "DPMJET-III", "l");
-   l1->AddEntry(hamptnm, "AMPT (w/o string melting)", "l");
-   l1->AddEntry(hamptsm, "AMPT (with string melting)", "l");
-   l1->AddEntry(hepos, "EPOS LHC", "l");
-
-#define FILL_LEGEND(q, w)                                                     \
-   l1->AddEntry(h##q##w, "layers " #q "+" #w, "p");                           \
-
-   TRACKLETS(FILL_LEGEND)
+   GEN(l1, ADDENTRYGEN)
+   TLTSEP(l1, ADDENTRY)
    l1->Draw();
 
    c1->SaveAs(Form("figs/merged/merged-%s-all.png", label));
+
+   TCanvas* c1b = new TCanvas("c1b", "", 600, 600);
+
+   hframe->Draw();
+   BPIX(DRAW)
+
+   TLegend* l1b = new TLegend(0.36, 0.12, 0.64, 0.36);
+   lstyle(l1b, 43, 16);
+   BPIXEP(l1b, ADDENTRY)
+   l1b->Draw();
+
+   c1b->SaveAs(Form("figs/merged/merged-%s-bpix.png", label));
+
+   TCanvas* c1f = new TCanvas("c1f", "", 600, 600);
+
+   hframe->Draw();
+   FPIX(DRAW)
+
+   TLegend* l1f = new TLegend(0.36, 0.12, 0.64, 0.36);
+   lstyle(l1f, 43, 16);
+   FPIXEP(l1f, ADDENTRY)
+   l1f->Draw();
+
+   c1f->SaveAs(Form("figs/merged/merged-%s-fpix.png", label));
 
    TCanvas* c2 = new TCanvas("c2", "", 600, 600);
 
@@ -166,21 +218,13 @@ int merge_monads(const char* label) {
    }
 
    hframe->Draw();
-   hhydjet->Draw("c hist same");
-   hdpmjet->Draw("c hist same");
-   hamptnm->Draw("c hist same");
-   hamptsm->Draw("c hist same");
-   hepos->Draw("c hist same");
+   GEN(, DRAWGEN)
    havg->Draw("same");
 
    TLegend* l2 = new TLegend(0.36, 0.16, 0.64, 0.32);
    lstyle(l2, 43, 16);
    l2->AddEntry(havg, "XeXe 5.442 TeV", "p");
-   l2->AddEntry(hhydjet, "HYDJET", "l");
-   l2->AddEntry(hdpmjet, "DPMJET-III", "l");
-   l2->AddEntry(hamptnm, "AMPT (w/o string melting)", "l");
-   l2->AddEntry(hamptsm, "AMPT (with string melting)", "l");
-   l2->AddEntry(hepos, "EPOS LHC", "l");
+   GEN(l2, ADDENTRYGEN)
    l2->Draw();
 
    c2->SaveAs(Form("figs/merged/merged-%s-avg.png", label));
@@ -190,9 +234,7 @@ int merge_monads(const char* label) {
 #define RATIO(q, w)                                                           \
    TH1D* hratio##q##w = (TH1D*)h##q##w->Clone("hratio" #q #w);                \
    hratio##q##w->Divide(havg);                                                \
-   hratio##q##w->SetStats(0);                                                 \
-   hratio##q##w->SetAxisRange(0.8, 1.2, "Y");                                 \
-   hratio##q##w->SetYTitle("ratio");                                          \
+   hformat(hratio##q##w, 0.8f, 1.2f, ";#eta;ratio (w.r.t. average)");         \
    hratio##q##w->Draw("same");                                                \
 
    TRACKLETS(RATIO)
@@ -206,11 +248,7 @@ int merge_monads(const char* label) {
 
    TLegend* l3 = new TLegend(0.4, 0.16, 0.64, 0.32);
    lstyle(l3, 43, 16);
-
-#define FILL_RATIO_LEGEND(q, w)                                               \
-   l3->AddEntry("hratio" #q #w, "layers " #q "+" #w, "p");                    \
-
-   TRACKLETS(FILL_RATIO_LEGEND)
+   TLTSEP(l3, ADDENTRY)
    l3->Draw();
 
    c3->SaveAs(Form("figs/merged/merged-%s-ratio.png", label));
@@ -225,21 +263,13 @@ int merge_monads(const char* label) {
    }
 
    hframe->Draw();
-   hhydjet->Draw("c hist same");
-   hdpmjet->Draw("c hist same");
-   hamptnm->Draw("c hist same");
-   hamptsm->Draw("c hist same");
-   hepos->Draw("c hist same");
+   GEN(, DRAWGEN)
    hsym->Draw("same");
 
    TLegend* l4 = new TLegend(0.36, 0.16, 0.64, 0.32);
    lstyle(l4, 43, 16);
    l4->AddEntry(hsym, "XeXe 5.442 TeV", "p");
-   l4->AddEntry(hhydjet, "HYDJET", "l");
-   l4->AddEntry(hdpmjet, "DPMJET-III", "l");
-   l4->AddEntry(hamptnm, "AMPT (w/o string melting)", "l");
-   l4->AddEntry(hamptsm, "AMPT (with string melting)", "l");
-   l4->AddEntry(hepos, "EPOS LHC", "l");
+   GEN(l4, ADDENTRYGEN)
    l4->Draw();
 
    c4->SaveAs(Form("figs/merged/merged-%s-sym.png", label));
