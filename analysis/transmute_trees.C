@@ -35,10 +35,10 @@
    EXPAND(1, 7)            \
 
 static const float vzpar[4][2] = {
-   {-0.0275464, 4.75225},  /* hydjet */
-   {-0.0149484, 4.80579},  /* ampt, no melt */
-   {-0.0565319, 4.81446},  /* ampt, string melt */
-   {-0.0606330, 4.84000}   /* epos */
+   {-0.0193527, 4.74366},  /* hydjet */
+   {-0.0152161, 4.79966},  /* ampt, no melt */
+   {-0.0543361, 4.80512},  /* ampt, string melt */
+   {-0.0547904, 4.82184}   /* epos */
 };
 
 int transmute_trees(const char* input,
@@ -70,15 +70,15 @@ int transmute_trees(const char* input,
    if (t->GetEntries("run < 10") != 0) {
       printf("$ Monte Carlo analysis\n");
 
-      /* 94X_mc2017_realistic_v5 */
-      vx = -0.024793;
-      vy = 0.0692861;
+      /* 94X_mc2017_realistic_ForXeXe_v2 */
+      vx = -0.026;
+      vy = 0.081;
 
       /* pixel barycentre        */
-      vz_shift = -0.32054;
-      /* x:  0.121   |  0.10882  */
-      /* y: -0.0721  | -0.110405 */
-      /* z: -0.33    | -0.323346 */
+      vz_shift = -0.323346;
+      /* x:  0.10882  */
+      /* y: -0.110405 */
+      /* z: -0.323346 */
    } else {
       printf("$ data analysis\n");
 
@@ -198,7 +198,7 @@ int transmute_trees(const char* input,
          float event_vz = (vz < -98 ? par.vz[0] : vz) + vz_shift;
 
          /* run 304906 */
-         double data_pdf = TMath::Gaus(event_vz, -0.203369, 4.80467, 1);
+         double data_pdf = TMath::Gaus(event_vz, -0.0814019, 4.83389, 1);
          double mc_pdf = TMath::Gaus(event_vz, vzpar[sample][0], vzpar[sample][1], 1);
 
          event_weight = event_weight * data_pdf / mc_pdf;
