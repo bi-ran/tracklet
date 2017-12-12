@@ -18,6 +18,9 @@
 #define MARKER23  30
 #define MARKER24  32
 #define MARKER34  46
+#define MARKER15  48
+#define MARKER16  49
+#define MARKER17  43
 
 #define COLOUR12  TColor::GetColor("#f2777a")
 #define COLOUR13  TColor::GetColor("#f99157")
@@ -25,6 +28,9 @@
 #define COLOUR23  TColor::GetColor("#99cc99")
 #define COLOUR24  TColor::GetColor("#6699cc")
 #define COLOUR34  TColor::GetColor("#9999cc")
+#define COLOUR15  TColor::GetColor("#db2d20")
+#define COLOUR16  TColor::GetColor("#01a252")
+#define COLOUR17  TColor::GetColor("#01a0e4")
 
 #define INDEX12   0
 #define INDEX13   1
@@ -32,6 +38,9 @@
 #define INDEX23   3
 #define INDEX24   4
 #define INDEX34   5
+#define INDEX15   2
+#define INDEX16   2
+#define INDEX17   2
 
 #define TRACKLETS(EXPAND)  \
    EXPAND(1, 2)            \
@@ -40,14 +49,20 @@
    EXPAND(2, 3)            \
    EXPAND(2, 4)            \
    EXPAND(3, 4)            \
+   EXPAND(1, 5)            \
+   EXPAND(1, 6)            \
+   EXPAND(1, 7)            \
 
-static const int good[6][30] = {
+static const int good[9][30] = {
    { 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
    { 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 },
    { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 },
    { 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 },
    { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 },
-   { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 }
+   { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 },
+   { 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1 },
+   { 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1 },
+   { 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1 }
 };
 
 int merge_monads(const char* label) {

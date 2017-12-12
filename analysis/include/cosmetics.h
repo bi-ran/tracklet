@@ -10,6 +10,9 @@
 #define COLOUR4   TColor::GetColor("#99cc99")
 #define COLOUR5   TColor::GetColor("#6699cc")
 #define COLOUR6   TColor::GetColor("#9999cc")
+#define COLOUR7   TColor::GetColor("#db2d20")
+#define COLOUR8   TColor::GetColor("#01a252")
+#define COLOUR9   TColor::GetColor("#01a0e4")
 
 #include "TLatex.h"
 
