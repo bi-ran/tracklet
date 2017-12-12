@@ -8,15 +8,8 @@
 #include <string>
 #include <fstream>
 
+#include "include/cosmetics.h"
 #include "include/variations.h"
-
-void fmtaxes(TH1* h1, const char* title) {
-    h1->SetTitle(title);
-    h1->GetXaxis()->CenterTitle();
-    h1->GetXaxis()->SetTitleOffset(1.44);
-    h1->GetYaxis()->CenterTitle();
-    h1->GetYaxis()->SetTitleOffset(1.44);
-}
 
 int sum_systematics(const char* list, const char* label) {
     std::vector<std::string> flist;
@@ -95,12 +88,12 @@ int sum_systematics(const char* list, const char* label) {
             TCanvas* c1 = new TCanvas("c1", "", 600, 600);
 
             h = svars[i][j]->adiff(0);
-            fmtaxes(h, ";#eta;absolute difference");
+            htitle(h, ";#eta;absolute difference");
             h->Draw();
             c1->SaveAs(Form("%s-%s-diff.png", path.c_str(), labels[j].c_str()));
 
             h = svars[i][j]->aratio(0);
-            fmtaxes(h, ";#eta;ratio");
+            htitle(h, ";#eta;ratio");
             h->Draw();
             c1->SaveAs(Form("%s-%s-ratio.png", path.c_str(), labels[j].c_str()));
 
@@ -110,12 +103,12 @@ int sum_systematics(const char* list, const char* label) {
         TCanvas* c2 = new TCanvas("c2", "", 600, 600);
 
         h = tvars[i]->diff();
-        fmtaxes(h, ";#eta;absolute difference");
+        htitle(h, ";#eta;absolute difference");
         h->Draw("p hist");
         c2->SaveAs(Form("%s.total-diff.png", path.c_str()));
 
         h = tvars[i]->ratio();
-        fmtaxes(h, ";#eta;ratio");
+        htitle(h, ";#eta;ratio");
         h->Draw("p hist");
         c2->SaveAs(Form("%s.total-ratio.png", path.c_str()));
 

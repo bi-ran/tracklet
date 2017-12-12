@@ -95,12 +95,8 @@ int collect_cents(const char* label, int interval) {
     gPad->SetLogy();
 
     TH1F* gframe = new TH1F("gframe", "", 1, 0, 100);
-    gframe->SetStats(0);
-    gframe->SetAxisRange(1, 4000, "Y");
-    gframe->SetXTitle("Centrality [%]");
-    gframe->SetYTitle("#frac{dN}{d#eta}#lbar_{#eta=0}");
-    gframe->GetXaxis()->CenterTitle();
-    gframe->GetYaxis()->CenterTitle();
+    hformat(gframe, 1.f, 4000.f,
+            ";Centrality [%];#frac{dN}{d#eta}#lbar_{#eta=0}");
     gframe->Draw();
 
     gframe->GetXaxis()->SetLabelOffset(999);
@@ -120,10 +116,7 @@ int collect_cents(const char* label, int interval) {
     watermark();
 
     TLegend* l2 = new TLegend(0.54, 0.24, 0.9, 0.48);
-    l2->SetBorderSize(0);
-    l2->SetFillStyle(0);
-    l2->SetTextFont(43);
-    l2->SetTextSize(15);
+    lstyle(l2, 43, 15);
     TLegendEntry* hcms = l2->AddEntry((TObject*)0, "CMS", "");
     hcms->SetTextFont(63);
     hcms->SetTextSize(17);
@@ -147,12 +140,8 @@ int collect_cents(const char* label, int interval) {
     TCanvas* c3 = new TCanvas("c3", "", 600, 600);
 
     TH1F* gnormframe = new TH1F("gnormframe", "", 1, -20, 420);
-    gnormframe->SetStats(0);
-    gnormframe->SetAxisRange(0, 6, "Y");
-    gnormframe->SetXTitle("N_{part}");
-    gnormframe->SetYTitle("#frac{dN}{d#eta}#lbar_{#eta=0} / #LTN_{part}#GT");
-    gnormframe->GetXaxis()->CenterTitle();
-    gnormframe->GetYaxis()->CenterTitle();
+    hformat(gnormframe, 0.f, 6.f,
+            ";N_{part};#frac{dN}{d#eta}#lbar_{#eta=0} / #LTN_{part}#GT");
     gnormframe->Draw();
 
     gcms_pbpb_2p76_norm->Draw("p same");
@@ -167,10 +156,7 @@ int collect_cents(const char* label, int interval) {
     watermark();
 
     TLegend* l3 = new TLegend(0.6, 0.38, 0.9, 0.58);
-    l3->SetBorderSize(0);
-    l3->SetFillStyle(0);
-    l3->SetTextFont(43);
-    l3->SetTextSize(15);
+    lstyle(l3, 43, 15);
     TLegendEntry* h2cms = l3->AddEntry((TObject*)0, "CMS", "");
     h2cms->SetTextFont(63);
     h2cms->SetTextSize(17);
@@ -183,10 +169,7 @@ int collect_cents(const char* label, int interval) {
     l3->Draw();
 
     TLegend* l4 = new TLegend(0.6, 0.18, 0.9, 0.30);
-    l4->SetBorderSize(0);
-    l4->SetFillStyle(0);
-    l4->SetTextFont(43);
-    l4->SetTextSize(15);
+    lstyle(l4, 43, 15);
     TLegendEntry* hphobos = l4->AddEntry((TObject*)0, "PHOBOS", "");
     hphobos->SetTextFont(63);
     hphobos->SetTextSize(17);
@@ -195,10 +178,7 @@ int collect_cents(const char* label, int interval) {
     l4->Draw();
 
     TLegend* l5 = new TLegend(0.35, 0.18, 0.65, 0.30);
-    l5->SetBorderSize(0);
-    l5->SetFillStyle(0);
-    l5->SetTextFont(43);
-    l5->SetTextSize(15);
+    lstyle(l5, 43, 15);
     TLegendEntry* h3cms = l5->AddEntry((TObject*)0, "CMS", "");
     h3cms->SetTextFont(63);
     h3cms->SetTextSize(17);

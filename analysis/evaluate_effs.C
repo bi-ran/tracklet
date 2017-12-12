@@ -10,6 +10,8 @@
 #include <vector>
 #include <string>
 
+#include "include/cosmetics.h"
+
 static const std::vector<int> colour = {
    TColor::GetColor("#f2777a"),
    TColor::GetColor("#f99157"),
@@ -54,34 +56,22 @@ int evaluate_effs(const char* list) {
 
       heff[i] = new TProfile(Form("heff_%zu", i), "", 20, 0, 100);
       t[i]->Draw(Form("vz[1]>-99:nhit1>>heff_%zu", i), "nhit1>0 && abs(vz[0])<15", "goff");
-
-      heff[i]->SetMarkerStyle(marker[i]);
-      heff[i]->SetLineColor(colour[i]);
-      heff[i]->SetMarkerColor(colour[i]);
+      hstyle(heff[i], marker[i], colour[i]);
 
       hvznhit1[i] = new TH2D(Form("hvznhit1_%zu", i), "", 10, 0, 100, 100, -2, 2);
       t[i]->Draw(Form("vz[1]-vz[0]:nhit1>>hvznhit1_%zu", i), "nhit1>0 && abs(vz[0])<15", "goff colz");
       hvznhit1[i]->FitSlicesY();
       hres[i] = (TH1D*)gDirectory->Get(Form("hvznhit1_%zu_2", i));
-
-      hres[i]->SetMarkerStyle(marker[i]);
-      hres[i]->SetLineColor(colour[i]);
-      hres[i]->SetMarkerColor(colour[i]);
+      hstyle(hres[i], marker[i], colour[i]);
    }
 
    TCanvas* c1 = new TCanvas("c1", "", 600, 600);
 
    TLegend* l1 = new TLegend(0.5, 0.56, 0.9, 0.72);
-   l1->SetBorderSize(0);
-   l1->SetFillStyle(0);
-   l1->SetTextFont(43);
-   l1->SetTextSize(16);
+   lstyle(l1, 43, 16);
 
    for (std::size_t i = 0; i < nfiles; ++i) {
-      heff[i]->SetAxisRange(0.0, 1.2, "Y");
-      heff[i]->SetXTitle("number of pixel hits (layer 1)");
-      heff[i]->SetYTitle("efficiency");
-      heff[i]->SetStats(0);
+      hformat(heff[i], 0, 1.2, ";number of pixel hits (layer 1);efficiency");
       heff[i]->Draw("same");
 
       l1->AddEntry(heff[i], legends[i].c_str(), "pl");
@@ -95,17 +85,10 @@ int evaluate_effs(const char* list) {
    c2->SetLogy();
 
    TLegend* l2 = new TLegend(0.5, 0.56, 0.9, 0.72);
-   l2->SetBorderSize(0);
-   l2->SetFillStyle(0);
-   l2->SetTextFont(43);
-   l2->SetTextSize(16);
+   lstyle(l2, 43, 16);
 
    for (std::size_t i = 0; i < nfiles; ++i) {
-      hres[i]->SetAxisRange(0.001, 1, "Y");
-      hres[i]->SetTitle("");
-      hres[i]->SetXTitle("number of pixel hits (layer 1)");
-      hres[i]->SetYTitle("resolution (cm)");
-      hres[i]->SetStats(0);
+      hformat(hres[i], 0.001, 1, ";number of pixel hits (layer 1);resolution (cm)");
       hres[i]->Draw("same");
 
       l2->AddEntry(hres[i], legends[i].c_str(), "pl");

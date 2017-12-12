@@ -97,10 +97,7 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
    watermark();
 
    TLegend* l1 = new TLegend(0.415, 0.3, 0.6, 0.475);
-   l1->SetTextFont(43);
-   l1->SetTextSize(12);
-   l1->SetBorderSize(0);
-   l1->SetFillStyle(0);
+   lstyle(l1, 43, 12);
    TLegendEntry* hxx = l1->AddEntry((TObject*)0, "XeXe", "");
    hxx->SetTextFont(63);
    hxx->SetTextSize(13);
@@ -118,8 +115,7 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
       TCanvas* c2 = new TCanvas("c2", "", 400, 400);
       gPad->SetLogy(logy);
 
-      hframe->SetAxisRange(ymin, ymax, "Y");
-      hframe->SetTitle(";y;dN/dy");
+      hformat(hframe, ymin, ymax, ";y;dN/dy");
       hframe->Draw();
 
       TH1F* hyres[nres]; TH1F* hysys[nres]; TH1F* hyjsys[nres];
@@ -148,10 +144,7 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
       watermark();
 
       TLegend* l2 = new TLegend(0.415, 0.3, 0.6, 0.475);
-      l2->SetTextFont(43);
-      l2->SetTextSize(12);
-      l2->SetBorderSize(0);
-      l2->SetFillStyle(0);
+      lstyle(l2, 43, 12);
       TLegendEntry* h2xx = l2->AddEntry((TObject*)0, "XeXe", "");
       h2xx->SetTextFont(63);
       h2xx->SetTextSize(13);

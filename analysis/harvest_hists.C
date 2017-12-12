@@ -12,6 +12,8 @@
 #include <algorithm>
 #include <fstream>
 
+#include "include/cosmetics.h"
+
 #define OPT(val) options[opt].val
 #define OPTSTR(str) options[opt].str.c_str()
 
@@ -162,10 +164,7 @@ int compare_pixels(const char* input, const char* label, const char* list, int o
    h##q->Draw("p hist same");                                                 \
                                                                               \
    TLegend* l##q = new TLegend(0.57, 0.725, 0.93, 0.875);                     \
-   l##q->SetBorderSize(0);                                                    \
-   l##q->SetFillStyle(0);                                                     \
-   l##q->SetTextFont(43);                                                     \
-   l##q->SetTextSize(16);                                                     \
+   lstyle(l##q, 43, 16);                                                      \
    l##q->AddEntry(h##q, "data", "p");                                         \
    for (std::size_t j = 0; j < nfiles; ++j)                                   \
       l##q->AddEntry(hs##q[j], legends[j].c_str(), "l");                      \
@@ -303,10 +302,7 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
    h##q##w->Draw("p hist same");                                              \
                                                                               \
    TLegend* l##q##w = new TLegend(0.57, 0.725, 0.93, 0.875);                  \
-   l##q##w->SetBorderSize(0);                                                 \
-   l##q##w->SetFillStyle(0);                                                  \
-   l##q##w->SetTextFont(43);                                                  \
-   l##q##w->SetTextSize(16);                                                  \
+   lstyle(l##q##w, 43, 16);                                                   \
    l##q##w->AddEntry(h##q##w, "data", "p");                                   \
    for (std::size_t j = 0; j < nfiles; ++j)                                   \
       l##q##w->AddEntry(hs##q##w[j], legends[j].c_str(), "l");                \

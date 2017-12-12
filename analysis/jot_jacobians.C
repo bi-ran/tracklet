@@ -21,21 +21,6 @@ static const std::vector<int> colours = {
 };
 static const int ncolours = colours.size();
 
-void format(TH1* h1, int style, int colour, const char* title) {
-   h1->SetStats(0);
-
-   h1->SetMarkerStyle(style);
-   h1->SetMarkerSize(1.2);
-   h1->SetMarkerColor(colour);
-   h1->SetLineColor(colour);
-
-   h1->SetTitle(title);
-   h1->GetXaxis()->CenterTitle();
-   h1->GetXaxis()->SetTitleOffset(1.44);
-   h1->GetYaxis()->CenterTitle();
-   h1->GetYaxis()->SetTitleOffset(1.44);
-}
-
 int jot_jacobians(const char* list) {
    std::vector<std::string> flist;
    std::ifstream fstream(list);
@@ -90,19 +75,16 @@ int jot_jacobians(const char* list) {
       hh[i] = new TH1F(Form("hh%s", tags[i].c_str()), "", neta, etab);
       t[i]->Project(Form("hh%s", tags[i].c_str()), "eta", gsel);
       hh[i]->Scale(1./nevent, "width");
-      hh[i]->SetAxisRange(0, 600, "Y");
-      format(hh[i], 21, colours[i % ncolours], ";#eta;dN/d#eta");
+      hformat(hh[i], 21, colours[i % ncolours], 0, 600, ";#eta;dN/d#eta");
 
       hy[i] = new TH1F(Form("hy%s", tags[i].c_str()), "", neta, etab);
       t[i]->Project(Form("hy%s", tags[i].c_str()), "y", gsel);
       hy[i]->Scale(1./nevent, "width");
-      hy[i]->SetAxisRange(0, 600, "Y");
-      format(hy[i], 20, colours[(i + 1) % ncolours], ";y;dN/dy");
+      hformat(hy[i], 20, colours[(i + 1) % ncolours], 0, 600, ";y;dN/dy");
 
       hj[i] = (TH1F*)hy[i]->Clone(Form("hj%s", tags[i].c_str()));
       hj[i]->Divide(hh[i]);
-      hj[i]->SetAxisRange(0.5, 1.5, "Y");
-      format(hj[i], 45, colours[(i + 2) % ncolours], ";#eta;");
+      hformat(hj[i], 45, colours[(i + 2) % ncolours], 0.5, 1.5, ";#eta;");
 
       TCanvas* c1 = new TCanvas("c1", "", 600, 600);
 
@@ -145,10 +127,7 @@ int jot_jacobians(const char* list) {
       hj[i]->Draw("p e x0 same");
 
    TLegend* l2 = new TLegend(0.5, 0.72, 0.84, 0.9);
-   l2->SetBorderSize(0);
-   l2->SetFillStyle(0);
-   l2->SetTextFont(43);
-   l2->SetTextSize(15);
+   lstyle(l2, 43, 15);
    for (std::size_t i = 0; i < nfiles; ++i)
       l2->AddEntry(hj[i], legends[i].c_str(), "p");
    l2->Draw();
@@ -161,10 +140,7 @@ int jot_jacobians(const char* list) {
       hjr[i]->Draw("p e x0 same");
 
    TLegend* l3 = new TLegend(0.5, 0.72, 0.84, 0.9);
-   l3->SetBorderSize(0);
-   l3->SetFillStyle(0);
-   l3->SetTextFont(43);
-   l3->SetTextSize(15);
+   lstyle(l3, 43, 15);
    for (std::size_t i = 0; i < nfiles; ++i)
       l3->AddEntry(hjr[i], legends[i].c_str(), "p");
    l3->Draw();

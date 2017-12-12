@@ -5,6 +5,8 @@
 #include "TLine.h"
 #include "TColor.h"
 
+#include "include/cosmetics.h"
+
 #define COLOUR_HYDJET   TColor::GetColor("#3498db")
 #define COLOUR_DPMJET   TColor::GetColor("#2ecc71")
 #define COLOUR_AMPT     TColor::GetColor("#ec5f67")
@@ -57,41 +59,23 @@ int merge_monads(const char* label) {
    TRACKLETS(OPEN)
 
    TH1F* hframe = (TH1F*)f12->Get("hframe")->Clone();
-   hframe->GetXaxis()->CenterTitle();
-   hframe->GetYaxis()->CenterTitle();
 
    TFile* fgen = new TFile("data/gen.root");
 
    TH1F* hhydjet = (TH1F*)fgen->Get("hhydjet")->Clone();
-   hhydjet->SetMarkerSize(0);
-   hhydjet->SetMarkerColor(COLOUR_HYDJET);
-   hhydjet->SetLineColor(COLOUR_HYDJET);
-   hhydjet->SetStats(0);
+   gformat(hhydjet, 1, COLOUR_HYDJET);
 
    TH1F* hdpmjet = (TH1F*)fgen->Get("hdpmjet")->Clone();
-   hdpmjet->SetMarkerSize(0);
-   hdpmjet->SetMarkerColor(COLOUR_DPMJET);
-   hdpmjet->SetLineColor(COLOUR_DPMJET);
-   hdpmjet->SetStats(0);
+   gformat(hdpmjet, 1, COLOUR_DPMJET);
 
    TH1F* hamptnm = (TH1F*)fgen->Get("hamptnm")->Clone();
-   hamptnm->SetMarkerSize(0);
-   hamptnm->SetMarkerColor(COLOUR_AMPT);
-   hamptnm->SetLineColor(COLOUR_AMPT);
-   hamptnm->SetLineStyle(7);
-   hamptnm->SetStats(0);
+   gformat(hamptnm, 7, COLOUR_AMPT);
 
    TH1F* hamptsm = (TH1F*)fgen->Get("hamptsm")->Clone();
-   hamptsm->SetMarkerSize(0);
-   hamptsm->SetMarkerColor(COLOUR_AMPT);
-   hamptsm->SetLineColor(COLOUR_AMPT);
-   hamptsm->SetStats(0);
+   gformat(hamptsm, 1, COLOUR_AMPT);
 
    TH1F* hepos = (TH1F*)fgen->Get("hepos")->Clone();
-   hepos->SetMarkerSize(0);
-   hepos->SetMarkerColor(COLOUR_EPOS);
-   hepos->SetLineColor(COLOUR_EPOS);
-   hepos->SetStats(0);
+   gformat(hepos, 1, COLOUR_EPOS);
 
    TFile* f = new TFile(Form("output/merged-%s.root", label), "recreate");
 
@@ -125,10 +109,7 @@ int merge_monads(const char* label) {
    TRACKLETS(DRAW)
 
    TLegend* l1 = new TLegend(0.36, 0.12, 0.64, 0.36);
-   l1->SetTextFont(43);
-   l1->SetTextSize(16);
-   l1->SetBorderSize(0);
-   l1->SetFillStyle(0);
+   lstyle(l1, 43, 16);
    l1->AddEntry(hhydjet, "HYDJET", "l");
    l1->AddEntry(hdpmjet, "DPMJET-III", "l");
    l1->AddEntry(hamptnm, "AMPT (w/o string melting)", "l");
@@ -178,10 +159,7 @@ int merge_monads(const char* label) {
    havg->Draw("same");
 
    TLegend* l2 = new TLegend(0.36, 0.16, 0.64, 0.32);
-   l2->SetTextFont(43);
-   l2->SetTextSize(16);
-   l2->SetBorderSize(0);
-   l2->SetFillStyle(0);
+   lstyle(l2, 43, 16);
    l2->AddEntry(havg, "XeXe 5.442 TeV", "p");
    l2->AddEntry(hhydjet, "HYDJET", "l");
    l2->AddEntry(hdpmjet, "DPMJET-III", "l");
@@ -212,10 +190,7 @@ int merge_monads(const char* label) {
    minusp03->Draw();
 
    TLegend* l3 = new TLegend(0.4, 0.16, 0.64, 0.32);
-   l3->SetTextFont(43);
-   l3->SetTextSize(16);
-   l3->SetBorderSize(0);
-   l3->SetFillStyle(0);
+   lstyle(l3, 43, 16);
 
 #define FILL_RATIO_LEGEND(q, w)                                               \
    l3->AddEntry("hratio" #q #w, "layers " #q "+" #w, "p");                    \
@@ -243,10 +218,7 @@ int merge_monads(const char* label) {
    hsym->Draw("same");
 
    TLegend* l4 = new TLegend(0.36, 0.16, 0.64, 0.32);
-   l4->SetTextFont(43);
-   l4->SetTextSize(16);
-   l4->SetBorderSize(0);
-   l4->SetFillStyle(0);
+   lstyle(l4, 43, 16);
    l4->AddEntry(hsym, "XeXe 5.442 TeV", "p");
    l4->AddEntry(hhydjet, "HYDJET", "l");
    l4->AddEntry(hdpmjet, "DPMJET-III", "l");
