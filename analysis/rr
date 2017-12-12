@@ -4,45 +4,56 @@ make reap_results || exit 1
 
 if [[ $# -eq 0 ]]; then
     echo -e 'usage: ./rr [input] [label] (clabel) (applyc) (-1) ($@)'
-    echo -e 'usage: ./rr [input] [label] [clabel] [applyc] [cent int.] ($@)\n'
+    echo -e 'usage: ./rr [input] [label] [clabel] [applyc] [0] [cmin cmax] ($@)'
+    echo -e 'usage: ./rr [input] [label] [clabel] [applyc] [interval] ($@)\n'
     ./reap_results
     exit 1
 fi
 
-TYPE=(12 13 14 23 24 34)
-for ITYPE in ${!TYPE[@]}; do
+TYPES=(12 13 14 23 24 34 15 16 17)
+for TYPE in ${TYPES[@]}; do
     if [[ $# -gt 4 ]]; then
         if [[ $5 -gt 0 ]]; then
             for (( CMAX=20; CMAX>=$5; CMAX-=$5 )); do
                 CMIN=$(( CMAX - $5 ))
-                ./reap_results ${TYPE[ITYPE]} $1 $2.$CMIN.$CMAX $3 $4 $CMIN $CMAX ${@:6} > notes/log-rr-$2.$CMIN.$CMAX-${TYPE[ITYPE]}.log &
+                ./reap_results $TYPE $1 $2.a.$CMIN.$CMAX $3.a.$CMIN.$CMAX $4 $CMIN $CMAX ${@:6} > notes/log-rr-$2.a.$CMIN.$CMAX-$TYPE.log &
             done
             wait
+
+            mv correction-$2.a.*.*-$TYPE.root output/
         elif [[ $5 -eq 0 ]]; then
-            ./reap_results ${TYPE[ITYPE]} $1 $2.$6.$7 $3 $4 ${@:6} > notes/log-rr-$2.$6.$7-${TYPE[ITYPE]}.log &
+            if [[ $# -lt 7 ]]; then
+                exit 2
+            fi
+
+            ./reap_results $TYPE $1 $2.s.$6.$7 $3.s.$6.$7 $4 ${@:6} > notes/log-rr-$2.s.$6.$7-$TYPE.log &
         else
-            ./reap_results ${TYPE[ITYPE]} ${@:1:4} 0 20 ${@:6} > notes/log-rr-$2-${TYPE[ITYPE]}.log &
+            ./reap_results $TYPE ${@:1:4} 0 20 ${@:6} > notes/log-rr-$2-$TYPE.log &
         fi
     else
-        ./reap_results ${TYPE[ITYPE]} $@ > notes/log-rr-$2-${TYPE[ITYPE]}.log &
+        ./reap_results $TYPE $@ > notes/log-rr-$2-$TYPE.log &
     fi
 done
-
 wait
-mv correction-$2*.root output/
+
+if [[ $# -le 4 || $5 -lt 0 ]]; then
+    mv correction-$2-*.root output/
+elif [[ $# -gt 4 && $5 -eq 0 ]]; then
+    mv correction-$2.s.$6.$7-*.root output/
+fi
 
 make merge_monads || exit 1
 if [[ $# -gt 4 && $5 -ge 0 ]]; then
     if [[ $5 -gt 0 ]]; then
         for (( CMAX=20; CMAX>=$5; CMAX-=$5 )); do
             CMIN=$(( CMAX - $5 ))
-            ./merge_monads $2.$CMIN.$CMAX
+            ./merge_monads $2.a.$CMIN.$CMAX
         done
 
         make collect_cents || exit 1
-        ./collect_cents $2 $5
+        ./collect_cents $2.a $5
     else
-        ./merge_monads $2.$6.$7
+        ./merge_monads $2.s.$6.$7
     fi
 else
     ./merge_monads $2
