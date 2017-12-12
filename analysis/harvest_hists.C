@@ -212,7 +212,7 @@ static const std::vector<oned_t> options_tracklet_oned = {
       100, {-15, 15},
       0, "(1)", ""
    }, {
-      "ntracklet", "multiplicity", "ntracklet",
+      "ntracklet", "number of tracklets", "ntracklet",
       100, {0, 10000},
       1, "(1)", ""
    }
