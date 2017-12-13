@@ -99,6 +99,7 @@ int sum_systematics(const char* list, const char* label) {
             c1->SaveAs(Form("%s-%s-ratio.png", path.c_str(), labels[j].c_str()));
 
             delete c1;
+            delete svars[i][j];
         }
 
         TCanvas* c2 = new TCanvas("c2", "", 600, 600);
@@ -114,6 +115,7 @@ int sum_systematics(const char* list, const char* label) {
         c2->SaveAs(Form("%s.total-ratio.png", path.c_str()));
 
         delete c2;
+        delete tvars[i];
     }
 
     fout->Write("", TObject::kOverwrite);

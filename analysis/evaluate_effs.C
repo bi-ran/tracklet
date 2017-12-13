@@ -35,6 +35,11 @@ int evaluate_effs(const char* list) {
    }
    std::size_t nfiles = flist.size();
 
+   if (!nfiles) {
+      printf("error: no files provided!\n");
+      return 1;
+   }
+
    std::vector<std::string> files;
    std::vector<std::string> legends;
    for (std::size_t f = 0; f < nfiles; ++f) {
@@ -66,7 +71,7 @@ int evaluate_effs(const char* list) {
    lstyle(l1, 43, 16);
 
    for (std::size_t i = 0; i < nfiles; ++i) {
-      hformat(heff[i], 0, 1.2, ";number of pixel hits (layer 1);efficiency");
+      hformat(heff[i], 0.f, 1.2f, ";number of pixel hits (layer 1);efficiency");
       heff[i]->Draw("same");
 
       l1->AddEntry(heff[i], legends[i].c_str(), "pl");
@@ -83,7 +88,7 @@ int evaluate_effs(const char* list) {
    lstyle(l2, 43, 16);
 
    for (std::size_t i = 0; i < nfiles; ++i) {
-      hformat(hres[i], 0.001, 1, ";number of pixel hits (layer 1);resolution (cm)");
+      hformat(hres[i], 0.001f, 1.f, ";number of pixel hits (layer 1);resolution (cm)");
       hres[i]->Draw("same");
 
       l2->AddEntry(hres[i], legends[i].c_str(), "pl");

@@ -94,8 +94,8 @@ int reap_results(int type,
 
    /* declare histograms                                                      */
    TH3F* h3WEhadron = new TH3F("h3WEhadron", "", neta, etab, nmult, multb, nvz, vzb);
-   TH3F* h3WEtruth = new TH3F("h3WEtruth", "", neta, etab, nmult, multb, nvz, vzb);
    TH3F* h3WGhadron = new TH3F("h3WGhadron", "", neta, etab, nmult, multb, nvz, vzb);
+   TH3F* h3WEtruth;
 
    TH3F* h3WEraw = new TH3F("h3WEraw", "", neta, etab, nmult, multb, nvz, vzb);
    TH3F* h3WEcorr = new TH3F("h3WEcorr", "", neta, etab, nmult, multb, nvz, vzb);
