@@ -118,7 +118,7 @@ int compare_pixels(const char* input, const char* label, const char* list, int o
    TH1D* h##q = new TH1D(Form("hp" #q "%s", idcstr),                          \
          Form(";%s (layer " #q ");", OPTSTR(label)),                          \
          OPT(nbin), OPT(range[0]), OPT(range[1]));                            \
-   TH1D* hs##q[nfiles] = {0};                                                 \
+   TH1D* hs##q[nfiles];                                                       \
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
       hs##q[j] = new TH1D(Form("hp" #q "f%zu%s", j, idcstr),                  \
             Form(";%s (layer " #q ");", OPTSTR(label)),                       \
@@ -133,9 +133,7 @@ int compare_pixels(const char* input, const char* label, const char* list, int o
 
    PIXELS(DRAW_1D_PIXELS_INPUT)
 
-   TFile* fs[nfiles] = {0};
-   TTree* ts[nfiles] = {0};
-
+   TFile* fs[nfiles]; TTree* ts[nfiles];
    for (std::size_t j = 0; j < nfiles; ++j) {
       fs[j] = new TFile(files[j].c_str(), "read");
       ts[j] = (TTree*)fs[j]->Get("pixel/PixelTree");
@@ -251,7 +249,7 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
    const char* idcstr = OPTSTR(id);
    const char* varcstr = OPTSTR(var);
 
-   TFile* fs[nfiles] = {0};
+   TFile* fs[nfiles];
    for (std::size_t j = 0; j < nfiles; ++j)
       fs[j] = new TFile(files[j].c_str(), "read");
 
@@ -260,8 +258,7 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
          Form(";%s (layers " #q "+" #w ");", OPTSTR(label)),                  \
          OPT(nbin), OPT(range[0]), OPT(range[1]));                            \
                                                                               \
-   TTree* ts##q##w[nfiles] = {0};                                             \
-   TH1D* hs##q##w[nfiles] = {0};                                              \
+   TTree* ts##q##w[nfiles]; TH1D* hs##q##w[nfiles];                           \
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
       ts##q##w[j] = (TTree*)fs[j]->Get("TrackletTree" #q #w);                 \
       hs##q##w[j] = new TH1D(Form("ht" #q #w "f%zu%s", j, idcstr),            \

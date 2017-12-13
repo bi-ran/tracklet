@@ -43,13 +43,8 @@ int evaluate_effs(const char* list) {
       legends.push_back(flist[f].substr(pos + 1));
    }
 
-   TFile* f[nfiles] = {0};
-   TTree* t[nfiles] = {0};
-
-   TProfile* heff[nfiles] = {0};
-   TH2D* hvznhit1[nfiles] = {0};
-   TH1D* hres[nfiles] = {0};
-
+   TFile* f[nfiles]; TTree* t[nfiles];
+   TProfile* heff[nfiles]; TH2D* hvznhit1[nfiles]; TH1D* hres[nfiles];
    for (std::size_t i = 0; i < nfiles; ++i) {
       f[i] = new TFile(files[i].c_str(), "read");
       t[i] = (TTree*)f[i]->Get("TrackletTree12");

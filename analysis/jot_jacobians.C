@@ -49,9 +49,7 @@ int jot_jacobians(const char* list) {
       legends.push_back(flist[i].substr(ws2 + 1));
    }
 
-   TFile* f[nfiles] = {0};
-   TTree* t[nfiles] = {0};
-
+   TFile* f[nfiles]; TTree* t[nfiles];
    for (std::size_t i = 0; i < nfiles; ++i) {
       f[i] = new TFile(files[i].c_str(), "read");
       t[i] = (TTree*)f[i]->Get("pixel/PixelTree");
