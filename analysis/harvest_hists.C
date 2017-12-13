@@ -152,14 +152,14 @@ int compare_pixels(const char* input, const char* label, const char* list, int o
    TCanvas* c##q = new TCanvas("c" #q, "", 600, 600);                         \
    if (OPT(custom)) { c##q->SetLogy(); }                                      \
                                                                               \
-   h##q->Draw("p hist");                                                      \
+   h##q->Draw("p e");                                                         \
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
       hs##q[j]->SetLineColor(colour[j % ncolours]);                           \
-      hs##q[j]->Draw("hist same");                                            \
+      hs##q[j]->Draw("hist e same");                                          \
    }                                                                          \
    h##q->SetMarkerStyle(21);                                                  \
    h##q->SetMarkerSize(0.6);                                                  \
-   h##q->Draw("p hist same");                                                 \
+   h##q->Draw("p e same");                                                    \
                                                                               \
    TLegend* l##q = new TLegend(0.57, 0.725, 0.93, 0.875);                     \
    lstyle(l##q, 43, 16);                                                      \
@@ -288,12 +288,12 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
                                                                               \
    h##q##w->SetMarkerStyle(21);                                               \
    h##q##w->SetMarkerSize(0.6);                                               \
-   h##q##w->Draw("p hist");                                                   \
+   h##q##w->Draw("p e");                                                      \
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
       hs##q##w[j]->SetLineColor(colour[j % ncolours]);                        \
-      hs##q##w[j]->Draw("hist same");                                         \
+      hs##q##w[j]->Draw("hist e same");                                       \
    }                                                                          \
-   h##q##w->Draw("p hist same");                                              \
+   h##q##w->Draw("p e same");                                                 \
                                                                               \
    TLegend* l##q##w = new TLegend(0.57, 0.725, 0.93, 0.875);                  \
    lstyle(l##q##w, 43, 16);                                                   \
