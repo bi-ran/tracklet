@@ -92,11 +92,11 @@ int assess_acceps(int type, std::string data_list, std::string mc_list, float ma
 
 int main(int argc, char* argv[]) {
     if (argc == 4) {
-        return assess_acceps(atoi(argv[1]), argv[2], argv[3], 0.5);
+        return assess_acceps(atoi(argv[1]), argv[2], argv[3], 0.25);
     } else if (argc == 5) {
         return assess_acceps(atoi(argv[1]), argv[2], argv[3], atof(argv[4]));
     } else {
-        printf("usage: ./assess_acceps [type] [data] [mc] (max dr)\n");
+        printf("usage: ./assess_acceps [type] [data] [mc] (max dr2)\n");
         return 1;
     }
 }
