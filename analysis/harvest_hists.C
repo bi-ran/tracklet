@@ -83,7 +83,7 @@ static const std::vector<oned_t> options_pixel_oned = {
    }
 };
 
-int compare_pixels(const char* input, const char* label, const char* list, int opt) {
+int compare_pixels(const char* list, const char* label, int opt) {
    std::vector<oned_t> options = options_pixel_oned;
 
    std::vector<std::string> flist;
@@ -94,6 +94,11 @@ int compare_pixels(const char* input, const char* label, const char* list, int o
          flist.push_back(line);
    }
    std::size_t nfiles = flist.size();
+
+   if (!nfiles) {
+      printf("error: no files provided!\n");
+      exit(1);
+   }
 
    std::vector<std::string> files;
    std::vector<std::string> legends;
@@ -111,75 +116,61 @@ int compare_pixels(const char* input, const char* label, const char* list, int o
    TH1::SetDefaultSumw2();
    gStyle->SetOptStat(0);
 
-   TFile* f = new TFile(input, "read");
-   TTree* t = (TTree*)f->Get("pixel/PixelTree");
-
-   TFile* fs[nfiles]; TTree* ts[nfiles];
+   TFile* f[nfiles]; TTree* t[nfiles];
    for (std::size_t j = 0; j < nfiles; ++j) {
-      fs[j] = new TFile(files[j].c_str(), "read");
-      ts[j] = (TTree*)fs[j]->Get("pixel/PixelTree");
+      f[j] = new TFile(files[j].c_str(), "read");
+      t[j] = (TTree*)f[j]->Get("pixel/PixelTree");
    }
 
 #define SETUP_1D_PIXELS(q)                                                    \
-   TH1D* h##q = new TH1D(Form("hp" #q "%s", idstr),                           \
-         Form(";%s (layer " #q ");", OS(label)),                              \
-         (int)OPT(bins[0]), OPT(bins[1]), OPT(bins[2]));                      \
-   TH1D* hs##q[nfiles];                                                       \
+   TH1D* h##q[nfiles];                                                        \
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
-      hs##q[j] = new TH1D(Form("hp" #q "f%zu%s", j, idstr),                   \
+      h##q[j] = new TH1D(Form("hp" #q "f%zu%s", j, idstr),                    \
             Form(";%s (layer " #q ");", OS(label)),                           \
             (int)OPT(bins[0]), OPT(bins[1]), OPT(bins[2]));                   \
    }                                                                          \
 
    PIXELS(SETUP_1D_PIXELS)
 
-#define DRAW_1D_PIXELS_INPUT(q)                                               \
-   t->Draw(Form("%s" #q ">>hp" #q "%s", varstr, idstr), fsel, "goff");        \
-   h##q->Scale(1. / h##q->Integral());                                        \
-
-   PIXELS(DRAW_1D_PIXELS_INPUT)
-
-#define DRAW_1D_PIXELS_LIST(q)                                                \
+#define DRAW_1D_PIXELS(q)                                                     \
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
-      ts[j]->Draw(Form("%s" #q ">>hp" #q "f%zu%s", varstr, j, idstr),         \
+      t[j]->Draw(Form("%s" #q ">>hp" #q "f%zu%s", varstr, j, idstr),          \
             fsel, "goff");                                                    \
-      hs##q[j]->Scale(1. / hs##q[j]->Integral());                             \
+      h##q[j]->Scale(1. / h##q[j]->Integral());                               \
    }
 
-   PIXELS(DRAW_1D_PIXELS_LIST)
+   PIXELS(DRAW_1D_PIXELS)
 
-#define DRAW_1D_PIXELS_ALL(q)                                                 \
+#define PLOT_1D_PIXELS(q)                                                     \
    TCanvas* c##q = new TCanvas("c" #q, "", 600, 600);                         \
    if (OPT(custom)) { c##q->SetLogy(); }                                      \
                                                                               \
-   h##q->Draw("p e");                                                         \
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
-      hs##q[j]->SetLineColor(colour[j % ncolours]);                           \
-      hs##q[j]->Draw("hist e same");                                          \
+      h##q[j]->SetLineColor(colour[j % ncolours]);                            \
+      h##q[j]->Draw("hist e same");                                           \
    }                                                                          \
-   h##q->SetMarkerStyle(21);                                                  \
-   h##q->SetMarkerSize(0.6);                                                  \
-   h##q->Draw("p e same");                                                    \
+   h##q[0]->SetMarkerStyle(21);                                               \
+   h##q[0]->SetMarkerSize(0.6);                                               \
+   h##q[0]->Draw("p e same");                                                 \
                                                                               \
    TLegend* l##q = new TLegend(0.57, 0.725, 0.93, 0.875);                     \
    lstyle(l##q, 43, 16);                                                      \
-   l##q->AddEntry(h##q, "data", "p");                                         \
-   for (std::size_t j = 0; j < nfiles; ++j)                                   \
-      l##q->AddEntry(hs##q[j], CS(legends[j]), "l");                          \
+   l##q->AddEntry(h##q[0], CS(legends[0]), "p");                              \
+   for (std::size_t j = 1; j < nfiles; ++j)                                   \
+      l##q->AddEntry(h##q[j], CS(legends[j]), "l");                           \
    l##q->Draw();                                                              \
                                                                               \
    c##q->SaveAs(Form("figs/pixel/pixel-%s-l" #q "-%s.png",                    \
          OS(id), label));                                                     \
    delete c##q;                                                               \
 
-   PIXELS(DRAW_1D_PIXELS_ALL)
+   PIXELS(PLOT_1D_PIXELS)
 
    TFile* fout = new TFile(Form("data/%s.root", label), "update");
 
 #define SAVE_1D_PIXELS(q)                                                     \
-   h##q->Write("", TObject::kOverwrite);                                      \
    for (std::size_t j = 0; j < nfiles; ++j)                                   \
-      hs##q[j]->Write("", TObject::kOverwrite);                               \
+      h##q[j]->Write("", TObject::kOverwrite);                                \
 
    PIXELS(SAVE_1D_PIXELS)
 
@@ -216,7 +207,7 @@ static const std::vector<oned_t> options_tracklet_oned = {
    }
 };
 
-int compare_tracklets(const char* input, const char* label, const char* list, int opt) {
+int compare_tracklets(const char* list, const char* label, int opt) {
    std::vector<oned_t> options = options_tracklet_oned;
 
    std::vector<std::string> flist;
@@ -227,6 +218,11 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
          flist.push_back(line);
    }
    std::size_t nfiles = flist.size();
+
+   if (!nfiles) {
+      printf("error: no files provided!\n");
+      exit(1);
+   }
 
    std::vector<std::string> files;
    std::vector<std::string> legends;
@@ -246,74 +242,60 @@ int compare_tracklets(const char* input, const char* label, const char* list, in
    TH1::SetDefaultSumw2();
    gStyle->SetOptStat(0);
 
-   TFile* f = new TFile(input, "read");
-
-   TFile* fs[nfiles];
+   TFile* f[nfiles];
    for (std::size_t j = 0; j < nfiles; ++j)
-      fs[j] = new TFile(files[j].c_str(), "read");
+      f[j] = new TFile(files[j].c_str(), "read");
 
 #define SETUP_1D_TRACKLETS(q, w)                                              \
-   TTree* t##q##w = (TTree*)f->Get("TrackletTree" #q #w);                     \
-   TH1D* h##q##w = new TH1D(Form("ht" #q #w "%s", idstr),                     \
-         Form(";%s (layers " #q "+" #w ");", OS(label)),                      \
-         (int)OPT(bins[0]), OPT(bins[1]), OPT(bins[2]));                      \
-                                                                              \
-   TTree* ts##q##w[nfiles]; TH1D* hs##q##w[nfiles];                           \
+   TTree* t##q##w[nfiles]; TH1D* h##q##w[nfiles];                             \
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
-      ts##q##w[j] = (TTree*)fs[j]->Get("TrackletTree" #q #w);                 \
-      hs##q##w[j] = new TH1D(Form("ht" #q #w "f%zu%s", j, idstr), OS(label),  \
+      t##q##w[j] = (TTree*)f[j]->Get("TrackletTree" #q #w);                   \
+      h##q##w[j] = new TH1D(Form("ht" #q #w "f%zu%s", j, idstr),              \
+            Form(";%s (layers " #q "+" #w ");", OS(label)),                   \
             (int)OPT(bins[0]), OPT(bins[1]), OPT(bins[2]));                   \
    }                                                                          \
 
    TRACKLETS(SETUP_1D_TRACKLETS)
 
-#define DRAW_1D_TRACKLETS_INPUT(q, w)                                         \
-   t##q##w->Draw(Form("%s>>ht" #q #w "%s", varstr, idstr), fsel, "goff");     \
-   h##q##w->Scale(1. / h##q##w->Integral());                                  \
-
-   TRACKLETS(DRAW_1D_TRACKLETS_INPUT)
-
-#define DRAW_1D_TRACKLETS_LIST(q, w)                                          \
+#define DRAW_1D_TRACKLETS(q, w)                                               \
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
-      ts##q##w[j]->Draw(Form("%s>>ht" #q #w "f%zu%s", varstr, j, idstr),      \
+      t##q##w[j]->Draw(Form("%s>>ht" #q #w "f%zu%s", varstr, j, idstr),       \
             fsel, "goff");                                                    \
-      hs##q##w[j]->Scale(1. / hs##q##w[j]->Integral());                       \
+      h##q##w[j]->Scale(1. / h##q##w[j]->Integral());                         \
    }                                                                          \
 
-   TRACKLETS(DRAW_1D_TRACKLETS_LIST)
+   TRACKLETS(DRAW_1D_TRACKLETS)
 
-#define DRAW_1D_TRACKLETS_ALL(q, w)                                           \
+#define PLOT_1D_TRACKLETS(q, w)                                               \
    TCanvas* c##q##w = new TCanvas("c" #q #w, "", 600, 600);                   \
    if (OPT(custom)) { c##q##w->SetLogy(); }                                   \
                                                                               \
-   h##q##w->SetMarkerStyle(21);                                               \
-   h##q##w->SetMarkerSize(0.6);                                               \
-   h##q##w->Draw("p e");                                                      \
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
-      hs##q##w[j]->SetLineColor(colour[j % ncolours]);                        \
-      hs##q##w[j]->Draw("hist e same");                                       \
+      h##q##w[j]->SetLineColor(colour[j % ncolours]);                         \
+      h##q##w[j]->Draw("hist e same");                                        \
    }                                                                          \
-   h##q##w->Draw("p e same");                                                 \
+   h##q##w[0]->SetMarkerStyle(21);                                            \
+   h##q##w[0]->SetMarkerSize(0.6);                                            \
+   h##q##w[0]->Draw("p e same");                                              \
                                                                               \
    TLegend* l##q##w = new TLegend(0.57, 0.725, 0.93, 0.875);                  \
    lstyle(l##q##w, 43, 16);                                                   \
-   l##q##w->AddEntry(h##q##w, "data", "p");                                   \
-   for (std::size_t j = 0; j < nfiles; ++j)                                   \
-      l##q##w->AddEntry(hs##q##w[j], CS(legends[j]), "l");                    \
+   l##q##w->AddEntry(h##q##w[0], CS(legends[0]), "p");                        \
+   for (std::size_t j = 1; j < nfiles; ++j)                                   \
+      l##q##w->AddEntry(h##q##w[j], CS(legends[j]), "l");                     \
    l##q##w->Draw();                                                           \
                                                                               \
    c##q##w->SaveAs(Form("figs/tracklet/tracklet-%s-t" #q #w "-%s.png",        \
          OS(id), label));                                                     \
    delete c##q##w;                                                            \
 
-   TRACKLETS(DRAW_1D_TRACKLETS_ALL)
+   TRACKLETS(PLOT_1D_TRACKLETS)
 
    TFile* fout = new TFile(Form("data/%s.root", label), "update");
 
 #define SAVE_1D_TRACKLETS(q, w)                                               \
-   h##q##w->Write("", TObject::kOverwrite);                                   \
    for (std::size_t j = 0; j < nfiles; ++j)                                   \
-      hs##q##w[j]->Write("", TObject::kOverwrite);                            \
+      h##q##w[j]->Write("", TObject::kOverwrite);                             \
 
    TRACKLETS(SAVE_1D_TRACKLETS)
 
@@ -516,28 +498,28 @@ int main(int argc, char* argv[]) {
       
       switch (mode) {
          case 0:
-            if (argc == 5) {
+            if (argc == 4) {
                for (std::size_t i = 0; i < options_pixel_oned.size(); ++i)
-                  compare_pixels(argv[2], argv[3], argv[4], i);
-            } else if (argc > 5) {
-               for (int i = 5; i < argc; ++i) {
-                  compare_pixels(argv[2], argv[3], argv[4], atoi(argv[i]));
+                  compare_pixels(argv[2], argv[3], i);
+            } else if (argc > 4) {
+               for (int i = 4; i < argc; ++i) {
+                  compare_pixels(argv[2], argv[3], atoi(argv[i]));
                }
             } else {
-               printf("usage: ./harvest_hists [0] [pixel] [label] [list] (opt)\n");
+               printf("usage: ./harvest_hists [0] [list] [label] (opt)\n");
                return 1;
             }
             break;
          case 1:
-            if (argc == 5) {
+            if (argc == 4) {
                for (std::size_t i = 0; i < options_tracklet_oned.size(); ++i)
-                  compare_tracklets(argv[2], argv[3], argv[4], i);
-            } else if (argc > 5) {
-               for (int i = 5; i < argc; ++i) {
-                  compare_tracklets(argv[2], argv[3], argv[4], atoi(argv[i]));
+                  compare_tracklets(argv[2], argv[3], i);
+            } else if (argc > 4) {
+               for (int i = 4; i < argc; ++i) {
+                  compare_tracklets(argv[2], argv[3], atoi(argv[i]));
                }
             } else {
-               printf("usage: ./harvest_hists [1] [tracklet] [label] [list] (opt)\n");
+               printf("usage: ./harvest_hists [1] [list] [label] (opt)\n");
                return 1;
             }
             break;
