@@ -5,7 +5,6 @@ ROOTFLAGS := `root-config --cflags --libs` -lEG
 BUILDDIR = ./build
 
 SRCS  = $(wildcard *.C)
-SRCS += $(wildcard */*.C)
 EXES  = $(patsubst %.C,%,$(SRCS))
 DEPS  = $(patsubst %.C,$(BUILDDIR)/%.d,$(SRCS))
 
