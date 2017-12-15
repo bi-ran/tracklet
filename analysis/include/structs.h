@@ -15,8 +15,8 @@ struct TrackletEvent {
    float weight; int mix;
    int nv; float vx[8], vy[8], vz[8];
    int hlt; int nhfp, nhfn; float hft; int cbin;
-   float eta1[MAXL7], phi1[MAXL7], r1[MAXL7], cs1[MAXL7];
-   float eta2[MAXL7], phi2[MAXL7], r2[MAXL7], cs2[MAXL7];
+   float eta1[MAXL7], phi1[MAXL7], r1[MAXL7];
+   float eta2[MAXL7], phi2[MAXL7], r2[MAXL7];
    float deta[MAXL7], dphi[MAXL7], dr2[MAXL7];
    int ntracklet, nhits, nhit1, nhit2;
    int process, npart;
@@ -50,11 +50,9 @@ void branch_tracklet_event(TTree* t, TrackletEvent& tdata) {
    t->Branch("eta1", tdata.eta1, "eta1[ntracklet]/F");
    t->Branch("phi1", tdata.phi1, "phi1[ntracklet]/F");
    t->Branch("r1", tdata.r1, "r1[ntracklet]/F");
-   t->Branch("cs1", tdata.cs1, "cs1[ntracklet]/F");
    t->Branch("eta2", tdata.eta2, "eta2[ntracklet]/F");
    t->Branch("phi2", tdata.phi2, "phi2[ntracklet]/F");
    t->Branch("r2", tdata.r2, "r2[ntracklet]/F");
-   t->Branch("cs2", tdata.cs2, "cs2[ntracklet]/F");
    t->Branch("deta", tdata.deta, "deta[ntracklet]/F");
    t->Branch("dphi", tdata.dphi, "dphi[ntracklet]/F");
    t->Branch("dr2", tdata.dr2, "dr2[ntracklet]/F");
@@ -94,11 +92,9 @@ void set_tracklet_event(TTree* t, TrackletEvent& tdata) {
    t->SetBranchAddress("eta1", tdata.eta1);
    t->SetBranchAddress("phi1", tdata.phi1);
    t->SetBranchAddress("r1", tdata.r1);
-   t->SetBranchAddress("cs1", tdata.cs1);
    t->SetBranchAddress("eta2", tdata.eta2);
    t->SetBranchAddress("phi2", tdata.phi2);
    t->SetBranchAddress("r2", tdata.r2);
-   t->SetBranchAddress("cs2", tdata.cs2);
    t->SetBranchAddress("deta", tdata.deta);
    t->SetBranchAddress("dphi", tdata.dphi);
    t->SetBranchAddress("dr2", tdata.dr2);

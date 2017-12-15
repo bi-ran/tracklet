@@ -52,12 +52,10 @@ class Tracklet {
          eta1 = h1.eta;
          phi1 = h1.phi;
          r1 = h1.r;
-         cs1 = h1.cs;
 
          eta2 = h2.eta;
          phi2 = h2.phi;
          r2 = h2.r;
-         cs2 = h2.cs;
 
          deta = eta1 - eta2;
          dphi = dphi_2s1f1b(phi1, phi2);
@@ -69,11 +67,9 @@ class Tracklet {
       float eta1;
       float phi1;
       float r1;
-      int cs1;
       float eta2;
       float phi2;
       float r2;
-      int cs2;
       float deta;
       float dphi;
       float dr2;

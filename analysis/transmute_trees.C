@@ -239,8 +239,6 @@ int transmute_trees(const char* input,
          tdata##q##w.phi2[j] = tracklets##q##w[j].phi2;                       \
          tdata##q##w.r1[j]   = tracklets##q##w[j].r1;                         \
          tdata##q##w.r2[j]   = tracklets##q##w[j].r2;                         \
-         tdata##q##w.cs1[j]  = tracklets##q##w[j].cs1;                        \
-         tdata##q##w.cs2[j]  = tracklets##q##w[j].cs2;                        \
          tdata##q##w.deta[j] = tracklets##q##w[j].deta;                       \
          tdata##q##w.dphi[j] = tracklets##q##w[j].dphi;                       \
          tdata##q##w.dr2[j] = tracklets##q##w[j].dr2;                         \

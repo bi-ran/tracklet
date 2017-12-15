@@ -12,15 +12,14 @@
 
 class RecHit {
    public:
-      RecHit(float eta, float phi, float r, int cs) :
-         eta(eta), phi(phi), r(r), cs(cs) {};
+      RecHit(float eta, float phi, float r) :
+         eta(eta), phi(phi), r(r) {};
 
       ~RecHit() {};
 
       float eta;
       float phi;
       float r;
-      int cs;   // cluster size
 };
 
 void prepare_hits(std::vector<RecHit>& hits, PixelEvent& par, Int_t layer,
@@ -29,13 +28,13 @@ void prepare_hits(std::vector<RecHit>& hits, PixelEvent& par, Int_t layer,
    std::vector<RecHit> rawhits;
 
 #define MANIPULATE_PIXELS(q)                                                  \
-   for (int i = 0; i < par.nhits##q; ++i) {                                   \
-      if (gRandom->Rndm() < drop) { continue; }                               \
-      RecHit tmp(par.eta##q[i], par.phi##q[i], par.r##q[i], par.cs##q[i]);    \
-      rawhits.push_back(tmp);                                                 \
-      if (gRandom->Rndm() < split)                                            \
-         rawhits.push_back(tmp);                                              \
-   }                                                                          \
+         for (int i = 0; i < par.nhits##q; ++i) {                             \
+            if (gRandom->Rndm() < drop) { continue; }                         \
+            RecHit tmp(par.eta##q[i], par.phi##q[i], par.r##q[i]);            \
+            rawhits.push_back(tmp);                                           \
+            if (gRandom->Rndm() < split)                                      \
+               rawhits.push_back(tmp);                                        \
+         }                                                                    \
 
    switch (layer) {
       case 1: MANIPULATE_PIXELS(1) break;
@@ -59,7 +58,7 @@ void prepare_hits(std::vector<RecHit>& hits, PixelEvent& par, Int_t layer,
       }
 
       ROOT::Math::XYZVector rel_vector(x - vx, y - vy, z - vz);
-      RecHit rel_hit(rel_vector.eta(), rel_vector.phi(), rel_vector.rho(), rawhits[i].cs);
+      RecHit rel_hit(rel_vector.eta(), rel_vector.phi(), rel_vector.rho());
       hits.push_back(rel_hit);
    }
 }
