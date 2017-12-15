@@ -25,87 +25,41 @@ class RecHit {
 
 void prepare_hits(std::vector<RecHit>& hits, PixelEvent& par, Int_t layer,
                   float vx, float vy, float vz,
-                  float split_prob, float drop_prob, bool smear_pixels) {
+                  float split, float drop, bool smear) {
    std::vector<RecHit> rawhits;
+
+#define MANIPULATE_PIXELS(q)                                                  \
+   for (int i = 0; i < par.nhits##q; ++i) {                                   \
+      if (gRandom->Rndm() < drop) { continue; }                               \
+      RecHit tmp(par.eta##q[i], par.phi##q[i], par.r##q[i], par.cs##q[i]);    \
+      rawhits.push_back(tmp);                                                 \
+      if (gRandom->Rndm() < split)                                            \
+         rawhits.push_back(tmp);                                              \
+   }                                                                          \
+
    switch (layer) {
-      case 1:
-         for (int ihit = 0; ihit < par.nhits1; ++ihit) {
-            if (gRandom->Rndm() < drop_prob) { continue; }
-            RecHit tmp(par.eta1[ihit], par.phi1[ihit], par.r1[ihit], par.cs1[ihit]);
-            rawhits.push_back(tmp);
-            if (gRandom->Rndm() < split_prob)
-               rawhits.push_back(tmp);
-         }
-         break;
-      case 2:
-         for (int ihit = 0; ihit < par.nhits2; ++ihit) {
-            if (gRandom->Rndm() < drop_prob) { continue; }
-            RecHit tmp(par.eta2[ihit], par.phi2[ihit], par.r2[ihit], par.cs2[ihit]);
-            rawhits.push_back(tmp);
-            if (gRandom->Rndm() < split_prob)
-               rawhits.push_back(tmp);
-         }
-         break;
-      case 3:
-         for (int ihit = 0; ihit < par.nhits3; ++ihit) {
-            if (gRandom->Rndm() < drop_prob) { continue; }
-            RecHit tmp(par.eta3[ihit], par.phi3[ihit], par.r3[ihit], par.cs3[ihit]);
-            rawhits.push_back(tmp);
-            if (gRandom->Rndm() < split_prob)
-               rawhits.push_back(tmp);
-         }
-         break;
-      case 4:
-         for (int ihit = 0; ihit < par.nhits4; ++ihit) {
-            if (gRandom->Rndm() < drop_prob) { continue; }
-            RecHit tmp(par.eta4[ihit], par.phi4[ihit], par.r4[ihit], par.cs4[ihit]);
-            rawhits.push_back(tmp);
-            if (gRandom->Rndm() < split_prob)
-               rawhits.push_back(tmp);
-         }
-         break;
-      case 5:
-         for (int ihit = 0; ihit < par.nhits5; ++ihit) {
-            if (gRandom->Rndm() < drop_prob) { continue; }
-            RecHit tmp(par.eta5[ihit], par.phi5[ihit], par.r5[ihit], par.cs5[ihit]);
-            rawhits.push_back(tmp);
-            if (gRandom->Rndm() < split_prob)
-               rawhits.push_back(tmp);
-         }
-         break;
-      case 6:
-         for (int ihit = 0; ihit < par.nhits6; ++ihit) {
-            if (gRandom->Rndm() < drop_prob) { continue; }
-            RecHit tmp(par.eta6[ihit], par.phi6[ihit], par.r6[ihit], par.cs6[ihit]);
-            rawhits.push_back(tmp);
-            if (gRandom->Rndm() < split_prob)
-               rawhits.push_back(tmp);
-         }
-         break;
-      case 7:
-         for (int ihit = 0; ihit < par.nhits7; ++ihit) {
-            if (gRandom->Rndm() < drop_prob) { continue; }
-            RecHit tmp(par.eta7[ihit], par.phi7[ihit], par.r7[ihit], par.cs7[ihit]);
-            rawhits.push_back(tmp);
-            if (gRandom->Rndm() < split_prob)
-               rawhits.push_back(tmp);
-         }
-         break;
+      case 1: MANIPULATE_PIXELS(1) break;
+      case 2: MANIPULATE_PIXELS(2) break;
+      case 3: MANIPULATE_PIXELS(3) break;
+      case 4: MANIPULATE_PIXELS(4) break;
+      case 5: MANIPULATE_PIXELS(5) break;
+      case 6: MANIPULATE_PIXELS(6) break;
+      case 7: MANIPULATE_PIXELS(7) break;
    }
 
-   for (std::size_t ihit = 0; ihit < rawhits.size(); ++ihit) {
-      float x = rawhits[ihit].r * cos(rawhits[ihit].phi);
-      float y = rawhits[ihit].r * sin(rawhits[ihit].phi);
-      float z = rawhits[ihit].r / tan(atan(exp(-rawhits[ihit].eta)) * 2);
+   for (std::size_t i = 0; i < rawhits.size(); ++i) {
+      float x = rawhits[i].r * cos(rawhits[i].phi);
+      float y = rawhits[i].r * sin(rawhits[i].phi);
+      float z = rawhits[i].r / tan(atan(exp(-rawhits[i].eta)) * 2);
 
-      if (smear_pixels) {
+      if (smear) {
          x += gRandom->Gaus(0, 0.002);
          y += gRandom->Gaus(0, 0.002);
          z += gRandom->Gaus(0, 0.005);
       }
 
       ROOT::Math::XYZVector rel_vector(x - vx, y - vy, z - vz);
-      RecHit rel_hit(rel_vector.eta(), rel_vector.phi(), rel_vector.rho(), rawhits[ihit].cs);
+      RecHit rel_hit(rel_vector.eta(), rel_vector.phi(), rel_vector.rho(), rawhits[i].cs);
       hits.push_back(rel_hit);
    }
 }

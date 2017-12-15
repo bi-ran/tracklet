@@ -48,9 +48,9 @@ int transmute_trees(const char* input,
                     int sample = -1,
                     bool reweight_vertex = 1,
                     bool random_vertex = 0,
-                    float split_prob = 0,
-                    float drop_prob = 0,
-                    bool smear_pixels = 0,
+                    float split = 0,
+                    float drop = 0,
+                    bool smear = 0,
                     float add_bkg_l1 = 0,
                     float add_bkg_l2 = 0,
                     float add_bkg_l3 = 0,
@@ -181,10 +181,8 @@ int transmute_trees(const char* input,
          vz = gRandom->Rndm() * 30 - 15 - vz_shift;
       } else {
          std::vector<RecHit> layer1raw, layer2raw;
-         prepare_hits(layer1raw, par, 1, vx, vy, 0,
-                      split_prob, drop_prob, smear_pixels);
-         prepare_hits(layer2raw, par, 2, vx, vy, 0,
-                      split_prob, drop_prob, smear_pixels);
+         prepare_hits(layer1raw, par, 1, vx, vy, 0, split, drop, smear);
+         prepare_hits(layer2raw, par, 2, vx, vy, 0, split, drop, smear);
 
          vz = reco_vertex(layer1raw, layer2raw, VTX_DPHI, VTX_DZ);
       }
@@ -207,8 +205,7 @@ int transmute_trees(const char* input,
 
 #define PREPARE_HITS(q)                                                       \
       std::vector<RecHit> layer##q;                                           \
-      prepare_hits(layer##q, par, q, vx, vy, vz,                              \
-                   split_prob, drop_prob, smear_pixels);                      \
+      prepare_hits(layer##q, par, q, vx, vy, vz, split, drop, smear);         \
 
       LAYERS(PREPARE_HITS);
 
