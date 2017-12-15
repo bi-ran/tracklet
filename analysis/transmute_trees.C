@@ -48,13 +48,16 @@ int transmute_trees(const char* input,
                     int sample = -1,
                     bool reweight_vertex = 1,
                     bool random_vertex = 0,
+                    float split_prob = 0,
+                    float drop_prob = 0,
+                    bool smear_pixels = 0,
                     float add_bkg_l1 = 0,
                     float add_bkg_l2 = 0,
                     float add_bkg_l3 = 0,
                     float add_bkg_l4 = 0,
-                    float split_prob = 0,
-                    float drop_prob = 0,
-                    bool smear_pixels = 0)
+                    float add_bkg_l5 = 0,
+                    float add_bkg_l6 = 0,
+                    float add_bkg_l7 = 0)
 {
    printf("................................................................\n");
    TTimeStamp myTime;
@@ -91,11 +94,10 @@ int transmute_trees(const char* input,
       add_bkg_l2 = 0;
       add_bkg_l3 = 0;
       add_bkg_l4 = 0;
+      add_bkg_l5 = 0;
+      add_bkg_l6 = 0;
+      add_bkg_l7 = 0;
    }
-
-   float add_bkg_l5 = 0;
-   float add_bkg_l6 = 0;
-   float add_bkg_l7 = 0;
 
    if (reweight_vertex && (sample < 0 || sample > 3)) {
       printf("! invalid sample [%i] for vertex reweighting!\n", sample);
@@ -106,8 +108,7 @@ int transmute_trees(const char* input,
       printf("$ random vertex\n");
       reweight_vertex = 0;
    } else if (reweight_vertex) {
-      printf("$ reweighting vertex\n");
-      printf("  > to sample: %i\n", sample);
+      printf("$ reweighting vertex\n  > sample: %i\n", sample);
    } else {
       printf("$ tracklet vertex\n");
    }
@@ -288,24 +289,23 @@ int main(int argc, char* argv[]) {
       return transmute_trees(argv[1], argv[2]);
    } else if (argc == 5) {
       return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]));
-   } else if (argc == 6) {
-      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));
    } else if (argc == 7) {
       return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]));
    } else if (argc == 8) {
       return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]));
-   } else if (argc == 12) {
-      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]), atof(argv[10]), atof(argv[11]));
-   } else if (argc == 13) {
-      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]), atof(argv[10]), atof(argv[11]), atof(argv[12]));
-   } else if (argc == 14) {
-      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]), atof(argv[10]), atof(argv[11]), atof(argv[12]), atof(argv[13]));
-   } else if (argc == 15) {
-      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]), atof(argv[10]), atof(argv[11]), atof(argv[12]), atof(argv[13]), atoi(argv[14]));
+   } else if (argc == 9) {
+      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]));
+   } else if (argc == 10) {
+      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]));
+   } else if (argc == 11) {
+      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]), atoi(argv[10]));
+   } else if (argc == 18) {
+      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]), atoi(argv[10]), atof(argv[11]), atof(argv[12]), atof(argv[13]), atof(argv[14]), atof(argv[15]), atof(argv[16]), atof(argv[17]));
    } else {
-      printf("usage: ./transmute_trees [input] [output] [start] [end]\n"
-             "[reweight vertex] [random vertex]\n"
-             "[additional hits * 4] [split] [drop] [smear]\n");
+      printf("usage: ./transmute_trees [in out]\n"
+             "[start end]\n"
+             "[sample reweight] [random vertex]\n"
+             "[split] [drop] [smear] [hits * 7]\n");
       return 1;
    }
 }
