@@ -73,10 +73,6 @@ static const std::vector<varinfo_t> options_pixel_1d = {
       {{50, 0, 50}},
       {600, 600}, 1, "(1)", ""
    }, {
-      "ch", {"cluster charge"}, {"ch"},
-      {{100, 0, 10000000}},
-      {600, 600}, 1, "(1)", ""
-   }, {
       "nhits", {"number of pixel hits"}, {"nhits"},
       {{100, 0, 15000}},
       {600, 600}, 1, "(1)", ""
@@ -322,7 +318,7 @@ static const std::vector<varinfo_t> options_pixel_2d = {
       "x-y", {"x", "y"},
       {"r@*cos(phi@)", "r@*sin(phi@)"},
       {{1000, -20, 20}, {1000, -20, 20}},
-      {600, 600}, 0x13, "(1)", "colz"
+      {600, 600}, 0x11, "(1)", "colz"
    }, {
       "z-phi", {"z", "#phi"},
       {"r@/tan(2*atan(exp(-eta@)))", "phi@"},
@@ -334,6 +330,16 @@ static const std::vector<varinfo_t> options_pixel_2d = {
       {{1000, -30, 30}, {1000, 0, 20}},
       {600, 600}, 0x33, "(1)", "colz"
    }, {
+      "fpix-x-y-plus", {"x", "y"},
+      {"r@*cos(phi@)", "r@*sin(phi@)"},
+      {{1000, -20, 20}, {1000, -20, 20}},
+      {600, 600}, 0x02, "(eta@>0)", "colz"
+   }, {
+      "fpix-x-y-minus", {"x", "y"},
+      {"r@*cos(phi@)", "r@*sin(phi@)"},
+      {{1000, -20, 20}, {1000, -20, 20}},
+      {600, 600}, 0x02, "(eta@<0)", "colz"
+   }, {
       "fpix-z-phi", {"z", "#phi"},
       {"r@/tan(2*atan(exp(-eta@)))", "phi@"},
       {{1000, -60, 60}, {1000, -4, 4}},
@@ -343,7 +349,12 @@ static const std::vector<varinfo_t> options_pixel_2d = {
 
 int map_pixels(std::vector<varinfo_t> const& options,
       const char* input, const char* label, int opt) {
-   TCut fsel = OS(sel);
+#define SELECTION(q)                                                          \
+   std::string sel##q = OPT(sel);                                             \
+   std::replace(sel##q.begin(), sel##q.end(), '@', #q[0]);                    \
+   TCut fsel##q = sel##q.c_str();                                             \
+
+   PIXELS(SELECTION)
 
    const char* l0str = OS(label[0]);
    const char* l1str = OS(label[1]);
@@ -369,7 +380,7 @@ int map_pixels(std::vector<varinfo_t> const& options,
 
 #define DRAW_2D_PIXELS(q)                                                     \
    t->Draw(Form("%s:%s>>h" #q "%s", CS(y##q), CS(x##q), idstr),               \
-         fsel, "goff");                                                       \
+         fsel##q, "goff");                                                    \
                                                                               \
    TCanvas* c##q = new TCanvas("c" #q, "", OPT(csize[0]), OPT(csize[1]));     \
    h##q->Draw(OS(gopt));                                                      \
