@@ -184,10 +184,6 @@ static const std::vector<varinfo_t> options_tracklet_1d = {
       {{100, 0, 0.5}},
       {600, 600}, 1, "abs(dphi)<0.5", ""
    }, {
-      "dr2", {"#Deltar^{2}"}, {"dr2"},
-      {{100, 0, 0.25}},
-      {600, 600}, 1, "abs(dr2)<0.25", ""
-   }, {
       "dr", {"#Deltar"}, {"sqrt(dr2)"},
       {{100, 0, 0.5}},
       {600, 600}, 1, "abs(dr2)<0.25", ""
