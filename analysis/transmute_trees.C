@@ -14,6 +14,7 @@
 #include "include/tracklet.h"
 #include "include/hf.h"
 
+#define NLAYER 7
 #define LAYERS(EXPAND)     \
    EXPAND(1)               \
    EXPAND(2)               \
@@ -41,6 +42,9 @@ static const float vzpar[4][2] = {
    {-0.0547904, 4.82184}   /* epos */
 };
 
+#define BKG_ARG(q)   , float add_bkg_l##q = 0
+#define BKG_ARGV(q)  , atof(argv[10 + q])
+
 int transmute_trees(const char* input,
                     const char* output,
                     uint64_t start = 0,
@@ -50,14 +54,8 @@ int transmute_trees(const char* input,
                     bool random_vertex = 0,
                     float split = 0,
                     float drop = 0,
-                    bool smear = 0,
-                    float add_bkg_l1 = 0,
-                    float add_bkg_l2 = 0,
-                    float add_bkg_l3 = 0,
-                    float add_bkg_l4 = 0,
-                    float add_bkg_l5 = 0,
-                    float add_bkg_l6 = 0,
-                    float add_bkg_l7 = 0)
+                    bool smear = 0
+                    LAYERS(BKG_ARG))
 {
    printf("................................................................\n");
    TTimeStamp myTime;
@@ -90,13 +88,8 @@ int transmute_trees(const char* input,
       vy = -0.030962;
 
       reweight_vertex = 0;
-      add_bkg_l1 = 0;
-      add_bkg_l2 = 0;
-      add_bkg_l3 = 0;
-      add_bkg_l4 = 0;
-      add_bkg_l5 = 0;
-      add_bkg_l6 = 0;
-      add_bkg_l7 = 0;
+#define BKG_RESET(q) add_bkg_l##q = 0;
+      LAYERS(BKG_RESET);
    }
 
    if (reweight_vertex && (sample < 0 || sample > 3)) {
@@ -294,8 +287,8 @@ int main(int argc, char* argv[]) {
       return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]));
    } else if (argc == 11) {
       return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]), atoi(argv[10]));
-   } else if (argc == 18) {
-      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]), atoi(argv[10]), atof(argv[11]), atof(argv[12]), atof(argv[13]), atof(argv[14]), atof(argv[15]), atof(argv[16]), atof(argv[17]));
+   } else if (argc == 11 + NLAYER) {
+      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]), atoi(argv[10]) LAYERS(BKG_ARGV));
    } else {
       printf("usage: ./transmute_trees [in out]\n"
              "[start end]\n"
