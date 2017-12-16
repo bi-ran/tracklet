@@ -2,15 +2,23 @@
 #include "TTree.h"
 #include "TBranch.h"
 
-int patch_hlt(const char* pixel, const char* output) {
+int patch_pixels(const char* pixel, const char* output) {
     TFile* f = new TFile(pixel, "read");
     TTree* tp = (TTree*)f->Get("pixel/PixelTree");
-    TTree* th = (TTree*)f->Get("hltbitanalysis/HltTree");
+    TTree* th = 0;
 
-    int hlt;
-    th->SetBranchStatus("*", 0);
-    th->SetBranchStatus("HLT_HIL1MinimumBiasHF_OR_SinglePixelTrack_v1", 1);
-    th->SetBranchAddress("HLT_HIL1MinimumBiasHF_OR_SinglePixelTrack_v1", &hlt);
+    f->GetListOfKeys()->Print();
+    bool sim = f->GetListOfKeys()->Contains("hltbitanalysis");
+
+    int hlt = 1;
+
+    if (sim) {
+        th = (TTree*)f->Get("hltbitanalysis/HltTree");
+
+        th->SetBranchStatus("*", 0);
+        th->SetBranchStatus("HLT_HIL1MinimumBiasHF_OR_SinglePixelTrack_v1", 1);
+        th->SetBranchAddress("HLT_HIL1MinimumBiasHF_OR_SinglePixelTrack_v1", &hlt);
+    }
 
     TFile* fout = new TFile(output, "recreate");
     fout->mkdir("pixel");
@@ -20,10 +28,10 @@ int patch_hlt(const char* pixel, const char* output) {
 
     TBranch* b = tout->Branch("hlt", &hlt, "hlt/I");
 
-    int64_t nentries = tp->GetEntries();
+    int64_t nentries = tout->GetEntries();
     for (int64_t i=0; i<nentries; ++i) {
-        tp->GetEntry(i);
-        th->GetEntry(i);
+        tout->GetEntry(i);
+        if (sim) { th->GetEntry(i); }
 
         b->Fill();
     }
@@ -36,32 +44,9 @@ int patch_hlt(const char* pixel, const char* output) {
     return 0;
 }
 
-int patch_dummy_hlt(const char* pixel) {
-    TFile* f = new TFile(pixel, "update");
-    TTree* t = (TTree*)f->Get("pixel/PixelTree");
-
-    int hlt = 1;
-    TBranch* b = t->Branch("hlt", &hlt, "hlt/I");
-
-    uint64_t nentries = t->GetEntries();
-    for (uint64_t i=0; i<nentries; ++i) {
-        t->GetEntry(i);
-
-        b->Fill();
-    }
-
-    f->cd("pixel");
-    t->Write("", TObject::kOverwrite);
-    f->Close();
-
-    return 0;
-}
-
 int main(int argc, char* argv[]) {
-    if (argc == 2) {
-        return patch_dummy_hlt(argv[1]);
-    } else if (argc == 3) {
-        return patch_hlt(argv[1], argv[2]);
+    if (argc == 3) {
+        return patch_pixels(argv[1], argv[2]);
     } else {
         printf("usage: ./patch_pixels [pixel] [output]\n");
         return 1;
