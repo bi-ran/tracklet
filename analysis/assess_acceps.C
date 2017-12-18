@@ -16,7 +16,7 @@ void convert(TH2* h1) {
 
     for (int i=1; i<=h1->GetNbinsX(); ++i) {
         for (int j=1; j<=h1->GetNbinsY(); ++j) {
-            double data_pdf = TMath::Gaus(hvz->GetBinCenter(j), -0.0814019, 4.83389, 1);
+            double data_pdf = TMath::Gaus(hvz->GetBinCenter(j), -0.0815653, 4.83254, 1);
             if (h1->GetBinContent(i, j)) { h1->SetBinContent(i, j, data_pdf); }
         }
     }

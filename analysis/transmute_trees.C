@@ -36,10 +36,10 @@
    EXPAND(1, 7)            \
 
 static const float vzpar[4][2] = {
-   {-0.0193527, 4.74366},  /* hydjet */
-   {-0.0152161, 4.79966},  /* ampt, no melt */
-   {-0.0543361, 4.80512},  /* ampt, string melt */
-   {-0.0547904, 4.82184}   /* epos */
+   {-0.0338060, 4.75367},  /* hydjet */
+   {-0.0195822, 4.80904},  /* ampt, no melt */
+   {-0.0601216, 4.80841},  /* ampt, string melt */
+   {-0.0635175, 4.83656}   /* epos */
 };
 
 #define BKG_ARG(q)   , float add_bkg_l##q = 0
@@ -71,7 +71,7 @@ int transmute_trees(const char* input,
    if (t->GetEntries("run < 10") != 0) {
       printf("$ Monte Carlo analysis\n");
 
-      /* 94X_mc2017_realistic_ForXeXe_v2 */
+      /* private RealisticXeXeCollision2017  */
       vx = -0.026;
       vy = 0.081;
 
@@ -190,7 +190,7 @@ int transmute_trees(const char* input,
          float event_vz = (vz < -98 ? par.vz[0] : vz) + vz_shift;
 
          /* run 304906 */
-         double data_pdf = TMath::Gaus(event_vz, -0.0814019, 4.83389, 1);
+         double data_pdf = TMath::Gaus(event_vz, -0.0815653, 4.83254, 1);
          double mc_pdf = TMath::Gaus(event_vz, vzpar[sample][0], vzpar[sample][1], 1);
 
          event_weight = event_weight * data_pdf / mc_pdf;
