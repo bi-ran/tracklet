@@ -9,46 +9,46 @@
 
 #include "include/cosmetics.h"
 
-#define TRACKLETS(EXPAND)  \
-   BPIX(EXPAND)            \
-   FPIX(EXPAND)            \
+#define TRKLTS2P(EXPAND)      \
+   BTRKLT2P(EXPAND)           \
+   FTRKLT2P(EXPAND)           \
 
-#define BPIX(EXPAND)       \
-   EXPAND(1, 2)            \
-   EXPAND(1, 3)            \
-   EXPAND(1, 4)            \
-   EXPAND(2, 3)            \
-   EXPAND(2, 4)            \
-   EXPAND(3, 4)            \
+#define BTRKLT2P(EXPAND)      \
+   EXPAND(1, 2)               \
+   EXPAND(1, 3)               \
+   EXPAND(1, 4)               \
+   EXPAND(2, 3)               \
+   EXPAND(2, 4)               \
+   EXPAND(3, 4)               \
 
-#define FPIX(EXPAND)       \
-   EXPAND(1, 5)            \
-   EXPAND(1, 6)            \
-   EXPAND(1, 7)            \
+#define FTRKLT2P(EXPAND)      \
+   EXPAND(1, 5)               \
+   EXPAND(1, 6)               \
+   EXPAND(1, 7)               \
 
-#define TLTSEP(p, EXPAND)  \
-   BPIXEP(p, EXPAND)       \
-   FPIXEP(p, EXPAND)       \
+#define TRKLTS3P(p, EXPAND)   \
+   BTRKLT3P(p, EXPAND)        \
+   FTRKLT3P(p, EXPAND)        \
 
-#define BPIXEP(p, EXPAND)  \
-   EXPAND(p, 1, 2)         \
-   EXPAND(p, 1, 3)         \
-   EXPAND(p, 1, 4)         \
-   EXPAND(p, 2, 3)         \
-   EXPAND(p, 2, 4)         \
-   EXPAND(p, 3, 4)         \
+#define BTRKLT3P(p, EXPAND)   \
+   EXPAND(p, 1, 2)            \
+   EXPAND(p, 1, 3)            \
+   EXPAND(p, 1, 4)            \
+   EXPAND(p, 2, 3)            \
+   EXPAND(p, 2, 4)            \
+   EXPAND(p, 3, 4)            \
 
-#define FPIXEP(p, EXPAND)  \
-   EXPAND(p, 1, 5)         \
-   EXPAND(p, 1, 6)         \
-   EXPAND(p, 1, 7)         \
+#define FTRKLT3P(p, EXPAND)   \
+   EXPAND(p, 1, 5)            \
+   EXPAND(p, 1, 6)            \
+   EXPAND(p, 1, 7)            \
 
-#define GEN(p, EXPAND)     \
-   EXPAND(p, dpmjet)       \
-   EXPAND(p, epos)         \
-   EXPAND(p, hydjet)       \
-   EXPAND(p, amptnm)       \
-   EXPAND(p, amptsm)       \
+#define GEN2P(p, EXPAND)      \
+   EXPAND(p, dpmjet)          \
+   EXPAND(p, epos)            \
+   EXPAND(p, hydjet)          \
+   EXPAND(p, amptnm)          \
+   EXPAND(p, amptsm)          \
 
 #define COLOUR_DPMJET   TColor::GetColor("#2ecc71")
 #define COLOUR_EPOS     TColor::GetColor("#ffcc00")
@@ -110,20 +110,20 @@ int merge_monads(const char* label) {
    TH1F* h##g = (TH1F*)f->Get("h" #g)->Clone();                               \
    gformat(h##g, geninfo.at(#g).lstyle, geninfo.at(#g).lcolour);              \
 
-   GEN(fgen, OPENGEN)
+   GEN2P(fgen, OPENGEN)
 
 #define OPEN(q, w)                                                            \
    TFile* f##q##w = new TFile(Form("output/correction-%s-" #q #w ".root",     \
          label));                                                             \
    TH1F* h##q##w = (TH1F*)f##q##w->Get("h1WEfinal")->Clone("h" #q #w);        \
 
-   TRACKLETS(OPEN)
+   TRKLTS2P(OPEN)
 
 #define STYLE(q, w)                                                           \
    htitle(h##q##w, ";#eta;dN/d#eta");                                         \
    hstyle(h##q##w, markers[INDEX##q##w], colours[INDEX##q##w]);               \
 
-   TRACKLETS(STYLE)
+   TRKLTS2P(STYLE)
 
 #define ZERO(q, w)                                                            \
    for (int j=1; j<=h##q##w->GetNbinsX(); ++j) {                              \
@@ -133,7 +133,7 @@ int merge_monads(const char* label) {
       }                                                                       \
    }                                                                          \
 
-   TRACKLETS(ZERO)
+   TRKLTS2P(ZERO)
 
    TH1F* hframe = (TH1F*)f12->Get("hframe")->Clone();
    hframe->GetXaxis()->CenterTitle();
@@ -156,13 +156,13 @@ int merge_monads(const char* label) {
    TCanvas* c1 = new TCanvas("c1", "", 600, 600);
 
    hframe->Draw();
-   GEN(, DRAWGEN);
-   TRACKLETS(DRAW)
+   GEN2P(, DRAWGEN);
+   TRKLTS2P(DRAW)
 
    TLegend* l1 = new TLegend(0.36, 0.12, 0.64, 0.36);
    lstyle(l1, 43, 16);
-   GEN(l1, ADDENTRYGEN)
-   TLTSEP(l1, ADDENTRY)
+   GEN2P(l1, ADDENTRYGEN)
+   TRKLTS3P(l1, ADDENTRY)
    l1->Draw();
 
    c1->SaveAs(Form("figs/merged/merged-%s-all.png", label));
@@ -170,11 +170,11 @@ int merge_monads(const char* label) {
    TCanvas* c1b = new TCanvas("c1b", "", 600, 600);
 
    hframe->Draw();
-   BPIX(DRAW)
+   BTRKLT2P(DRAW)
 
    TLegend* l1b = new TLegend(0.36, 0.12, 0.64, 0.36);
    lstyle(l1b, 43, 16);
-   BPIXEP(l1b, ADDENTRY)
+   BTRKLT3P(l1b, ADDENTRY)
    l1b->Draw();
 
    c1b->SaveAs(Form("figs/merged/merged-%s-bpix.png", label));
@@ -182,11 +182,11 @@ int merge_monads(const char* label) {
    TCanvas* c1f = new TCanvas("c1f", "", 600, 600);
 
    hframe->Draw();
-   FPIX(DRAW)
+   FTRKLT2P(DRAW)
 
    TLegend* l1f = new TLegend(0.36, 0.12, 0.64, 0.36);
    lstyle(l1f, 43, 16);
-   FPIXEP(l1f, ADDENTRY)
+   FTRKLT3P(l1f, ADDENTRY)
    l1f->Draw();
 
    c1f->SaveAs(Form("figs/merged/merged-%s-fpix.png", label));
@@ -206,7 +206,7 @@ int merge_monads(const char* label) {
          nsum++;                                                              \
       }                                                                       \
 
-      TRACKLETS(AVERAGE)
+      TRKLTS2P(AVERAGE)
 
       if (nsum) {
          avg /= nsum;
@@ -218,13 +218,13 @@ int merge_monads(const char* label) {
    }
 
    hframe->Draw();
-   GEN(, DRAWGEN)
+   GEN2P(, DRAWGEN)
    havg->Draw("same");
 
    TLegend* l2 = new TLegend(0.36, 0.16, 0.64, 0.32);
    lstyle(l2, 43, 16);
    l2->AddEntry(havg, "XeXe 5.442 TeV", "p");
-   GEN(l2, ADDENTRYGEN)
+   GEN2P(l2, ADDENTRYGEN)
    l2->Draw();
 
    c2->SaveAs(Form("figs/merged/merged-%s-avg.png", label));
@@ -237,7 +237,7 @@ int merge_monads(const char* label) {
    hformat(hratio##q##w, 0.8f, 1.2f, ";#eta;ratio (w.r.t. average)");         \
    hratio##q##w->Draw("same");                                                \
 
-   TRACKLETS(RATIO)
+   TRKLTS2P(RATIO)
 
    TLine* plusp03 = new TLine(-3, 1.03, 3, 1.03);
    TLine* minusp03 = new TLine(-3, 0.97, 3, 0.97);
@@ -248,7 +248,7 @@ int merge_monads(const char* label) {
 
    TLegend* l3 = new TLegend(0.4, 0.16, 0.64, 0.32);
    lstyle(l3, 43, 16);
-   TLTSEP(l3, ADDENTRY)
+   TRKLTS3P(l3, ADDENTRY)
    l3->Draw();
 
    c3->SaveAs(Form("figs/merged/merged-%s-ratio.png", label));
@@ -263,13 +263,13 @@ int merge_monads(const char* label) {
    }
 
    hframe->Draw();
-   GEN(, DRAWGEN)
+   GEN2P(, DRAWGEN)
    hsym->Draw("same");
 
    TLegend* l4 = new TLegend(0.36, 0.16, 0.64, 0.32);
    lstyle(l4, 43, 16);
    l4->AddEntry(hsym, "XeXe 5.442 TeV", "p");
-   GEN(l4, ADDENTRYGEN)
+   GEN2P(l4, ADDENTRYGEN)
    l4->Draw();
 
    c4->SaveAs(Form("figs/merged/merged-%s-sym.png", label));
@@ -279,7 +279,7 @@ int merge_monads(const char* label) {
 #define WRITE(q, w)                                                           \
    h##q##w->Write("", TObject::kOverwrite);                                   \
 
-   TRACKLETS(WRITE)
+   TRKLTS2P(WRITE)
 
    f->Write("", TObject::kOverwrite);
    f->Close();

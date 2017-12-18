@@ -14,8 +14,8 @@
 #include "include/tracklet.h"
 #include "include/hf.h"
 
-#define NLAYER 7
-#define LAYERS(EXPAND)     \
+#define NPIXELS   7
+#define PIXELS1P(EXPAND)   \
    EXPAND(1)               \
    EXPAND(2)               \
    EXPAND(3)               \
@@ -24,7 +24,7 @@
    EXPAND(6)               \
    EXPAND(7)               \
 
-#define TRACKLETS(EXPAND)  \
+#define TRKLTS2P(EXPAND)   \
    EXPAND(1, 2)            \
    EXPAND(1, 3)            \
    EXPAND(1, 4)            \
@@ -55,7 +55,7 @@ int transmute_trees(const char* input,
                     float split = 0,
                     float drop = 0,
                     bool smear = 0
-                    LAYERS(BKG_ARG))
+                    PIXELS1P(BKG_ARG))
 {
    printf("................................................................\n");
    TTimeStamp myTime;
@@ -89,7 +89,7 @@ int transmute_trees(const char* input,
 
       reweight_vertex = 0;
 #define BKG_RESET(q) add_bkg_l##q = 0;
-      LAYERS(BKG_RESET);
+      PIXELS1P(BKG_RESET);
    }
 
    if (reweight_vertex && (sample < 0 || sample > 3)) {
@@ -115,7 +115,7 @@ int transmute_trees(const char* input,
       t->Project("hl" #q "hits", "phi" #q ":eta" #q ":r" #q);                 \
    }                                                                          \
 
-   LAYERS(PROJECT_BACKGROUND);
+   PIXELS1P(PROJECT_BACKGROUND);
 
    PixelEvent par;
    set_pixel_event(t, par);
@@ -127,7 +127,7 @@ int transmute_trees(const char* input,
    TrackletEvent tdata##q##w;                                                 \
    branch_tracklet_event(trackletTree##q##w, tdata##q##w);                    \
 
-   TRACKLETS(DECLARE_OBJECTS);
+   TRKLTS2P(DECLARE_OBJECTS);
 
    uint64_t nentries = t->GetEntries();
    printf(" # number of events: %lu\n", nentries);
@@ -148,7 +148,7 @@ int transmute_trees(const char* input,
       tdata##q##w.vy[0] = par.vy[0];                                          \
       tdata##q##w.vz[0] = par.vz[0];                                          \
 
-      TRACKLETS(SAVE_VERTICES);
+      TRKLTS2P(SAVE_VERTICES);
 
 #define ADD_BACKGROUND(q)                                                     \
       int bkghits##q = 0;                                                     \
@@ -168,7 +168,7 @@ int transmute_trees(const char* input,
          par.nhits##q += bkghits##q;                                          \
       }                                                                       \
 
-      LAYERS(ADD_BACKGROUND);
+      PIXELS1P(ADD_BACKGROUND);
 
       if (random_vertex) {
          vz = gRandom->Rndm() * 30 - 15 - vz_shift;
@@ -183,7 +183,7 @@ int transmute_trees(const char* input,
 #define SET_VERTEX(q, w)                                                      \
       tdata##q##w.vz[1] = vz;                                                 \
 
-      TRACKLETS(SET_VERTEX);
+      TRKLTS2P(SET_VERTEX);
 
       float event_weight = 1.;
       if (reweight_vertex) {
@@ -200,14 +200,14 @@ int transmute_trees(const char* input,
       std::vector<RecHit> layer##q;                                           \
       prepare_hits(layer##q, par, q, vx, vy, vz, split, drop, smear);         \
 
-      LAYERS(PREPARE_HITS);
+      PIXELS1P(PREPARE_HITS);
 
 #define RECONSTRUCT_TRACKLETS(q, w)                                           \
       std::vector<Tracklet> tracklets##q##w;                                  \
       tracklets##q##w.reserve(layer##q.size());                               \
       reco_tracklets(tracklets##q##w, layer##q, layer##w);                    \
 
-      TRACKLETS(RECONSTRUCT_TRACKLETS);
+      TRKLTS2P(RECONSTRUCT_TRACKLETS);
 
 #define FILL_TREE(q, w)                                                       \
       tdata##q##w.run        = par.run;                                       \
@@ -258,13 +258,13 @@ int transmute_trees(const char* input,
                                                                               \
       trackletTree##q##w->Fill();                                             \
 
-      TRACKLETS(FILL_TREE);
+      TRKLTS2P(FILL_TREE);
    }
 
 #define WRITE_TREE(q, w)                                                      \
    trackletTree##q##w->Write("", TObject::kOverwrite);                        \
 
-   TRACKLETS(WRITE_TREE);
+   TRKLTS2P(WRITE_TREE);
 
    foutput->Close();
    finput->Close();
@@ -287,8 +287,8 @@ int main(int argc, char* argv[]) {
       return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]));
    } else if (argc == 11) {
       return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]), atoi(argv[10]));
-   } else if (argc == 11 + NLAYER) {
-      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]), atoi(argv[10]) LAYERS(BKG_ARGV));
+   } else if (argc == 11 + NPIXELS) {
+      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]), atoi(argv[10]) PIXELS1P(BKG_ARGV));
    } else {
       printf("usage: ./transmute_trees [in out]\n"
              "[start end]\n"

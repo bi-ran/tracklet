@@ -19,22 +19,22 @@
 #define CS(str)   str.c_str()
 #define OS(val)   CS(OPT(val))
 
-#define PIXELS(EXPAND)     \
-   BPIX(EXPAND)            \
-   FPIX(EXPAND)            \
+#define PIXELS1P(EXPAND)   \
+   BPIX1P(EXPAND)          \
+   FPIX1P(EXPAND)          \
 
-#define BPIX(EXPAND)       \
+#define BPIX1P(EXPAND)     \
    EXPAND(1)               \
    EXPAND(2)               \
    EXPAND(3)               \
    EXPAND(4)               \
 
-#define FPIX(EXPAND)       \
+#define FPIX1P(EXPAND)     \
    EXPAND(5)               \
    EXPAND(6)               \
    EXPAND(7)               \
 
-#define TRACKLETS(EXPAND)  \
+#define TRKLTS2P(EXPAND)   \
    EXPAND(1, 2)            \
    EXPAND(1, 3)            \
    EXPAND(1, 4)            \
@@ -125,7 +125,7 @@ int compare_pixels(std::vector<varinfo_t> const& options,
             (int)OPT(bins[0][0]), OPT(bins[0][1]), OPT(bins[0][2]));          \
    }                                                                          \
 
-   PIXELS(SETUP_1D_PIXELS)
+   PIXELS1P(SETUP_1D_PIXELS)
 
 #define DRAW_1D_PIXELS(q)                                                     \
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
@@ -134,7 +134,7 @@ int compare_pixels(std::vector<varinfo_t> const& options,
       h##q[j]->Scale(1. / h##q[j]->Integral());                               \
    }
 
-   PIXELS(DRAW_1D_PIXELS)
+   PIXELS1P(DRAW_1D_PIXELS)
 
 #define PLOT_1D_PIXELS(q)                                                     \
    TCanvas* c##q = new TCanvas("c" #q, "", 600, 600);                         \
@@ -159,7 +159,7 @@ int compare_pixels(std::vector<varinfo_t> const& options,
          OS(id), label));                                                     \
    delete c##q;                                                               \
 
-   PIXELS(PLOT_1D_PIXELS)
+   PIXELS1P(PLOT_1D_PIXELS)
 
    TFile* fout = new TFile(Form("data/%s.root", label), "update");
 
@@ -167,7 +167,7 @@ int compare_pixels(std::vector<varinfo_t> const& options,
    for (std::size_t j = 0; j < nfiles; ++j)                                   \
       h##q[j]->Write("", TObject::kOverwrite);                                \
 
-   PIXELS(SAVE_1D_PIXELS)
+   PIXELS1P(SAVE_1D_PIXELS)
 
    fout->Close();
 
@@ -245,7 +245,7 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
             (int)OPT(bins[0][0]), OPT(bins[0][1]), OPT(bins[0][2]));          \
    }                                                                          \
 
-   TRACKLETS(SETUP_1D_TRACKLETS)
+   TRKLTS2P(SETUP_1D_TRACKLETS)
 
 #define DRAW_1D_TRACKLETS(q, w)                                               \
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
@@ -254,7 +254,7 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
       h##q##w[j]->Scale(1. / h##q##w[j]->Integral());                         \
    }                                                                          \
 
-   TRACKLETS(DRAW_1D_TRACKLETS)
+   TRKLTS2P(DRAW_1D_TRACKLETS)
 
 #define PLOT_1D_TRACKLETS(q, w)                                               \
    TCanvas* c##q##w = new TCanvas("c" #q #w, "", 600, 600);                   \
@@ -279,7 +279,7 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
          OS(id), label));                                                     \
    delete c##q##w;                                                            \
 
-   TRACKLETS(PLOT_1D_TRACKLETS)
+   TRKLTS2P(PLOT_1D_TRACKLETS)
 
    TFile* fout = new TFile(Form("data/%s.root", label), "update");
 
@@ -287,7 +287,7 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
    for (std::size_t j = 0; j < nfiles; ++j)                                   \
       h##q##w[j]->Write("", TObject::kOverwrite);                             \
 
-   TRACKLETS(SAVE_1D_TRACKLETS)
+   TRKLTS2P(SAVE_1D_TRACKLETS)
 
    fout->Close();
 
@@ -350,7 +350,7 @@ int map_pixels(std::vector<varinfo_t> const& options,
    std::replace(sel##q.begin(), sel##q.end(), '@', #q[0]);                    \
    TCut fsel##q = sel##q.c_str();                                             \
 
-   PIXELS(SELECTION)
+   PIXELS1P(SELECTION)
 
    const char* l0str = OS(label[0]);
    const char* l1str = OS(label[1]);
@@ -372,7 +372,7 @@ int map_pixels(std::vector<varinfo_t> const& options,
          (int)OPT(bins[0][0]), OPT(bins[0][1]), OPT(bins[0][2]),              \
          (int)OPT(bins[1][0]), OPT(bins[1][1]), OPT(bins[1][2]));             \
 
-   PIXELS(SETUP_2D_PIXELS)
+   PIXELS1P(SETUP_2D_PIXELS)
 
 #define DRAW_2D_PIXELS(q)                                                     \
    t->Draw(Form("%s:%s>>h" #q "%s", CS(y##q), CS(x##q), idstr),               \
@@ -384,8 +384,8 @@ int map_pixels(std::vector<varinfo_t> const& options,
          OS(id), label));                                                     \
    delete c##q;                                                               \
 
-   if (OPT(custom) & 0x1) { BPIX(DRAW_2D_PIXELS) }
-   if (OPT(custom) & 0x2) { FPIX(DRAW_2D_PIXELS) }
+   if (OPT(custom) & 0x1) { BPIX1P(DRAW_2D_PIXELS) }
+   if (OPT(custom) & 0x2) { FPIX1P(DRAW_2D_PIXELS) }
 
    TH2D* hall = new TH2D(Form("hall%s", idstr), Form(";%s;%s", l0str, l1str),
          (int)OPT(bins[0][0]), OPT(bins[0][1]), OPT(bins[0][2]),
@@ -396,8 +396,8 @@ int map_pixels(std::vector<varinfo_t> const& options,
 #define OVERLAY_2D_PIXELS(q)                                                  \
       hall->Add(h##q);                                                        \
 
-      if (OPT(custom) & 0x10) { BPIX(OVERLAY_2D_PIXELS) }
-      if (OPT(custom) & 0x20) { FPIX(OVERLAY_2D_PIXELS) } 
+      if (OPT(custom) & 0x10) { BPIX1P(OVERLAY_2D_PIXELS) }
+      if (OPT(custom) & 0x20) { FPIX1P(OVERLAY_2D_PIXELS) } 
 
       TCanvas* call = new TCanvas("call", "", OPT(csize[0]), OPT(csize[1]));
       hall->Draw(OS(gopt));
@@ -411,7 +411,7 @@ int map_pixels(std::vector<varinfo_t> const& options,
 #define SAVE_2D_PIXELS(q)                                                     \
    h##q->Write("", TObject::kOverwrite);                                      \
 
-   PIXELS(SAVE_2D_PIXELS)
+   PIXELS1P(SAVE_2D_PIXELS)
 
    hall->Write("", TObject::kOverwrite);
 
@@ -456,7 +456,7 @@ int map_tracklets(std::vector<varinfo_t> const& options,
          OPT(bins[0][0]), OPT(bins[0][1]), OPT(bins[0][2]),                   \
          OPT(bins[1][0]), OPT(bins[1][1]), OPT(bins[1][2]));                  \
 
-   TRACKLETS(SETUP_2D_TRACKLETS)
+   TRKLTS2P(SETUP_2D_TRACKLETS)
 
 #define DRAW_2D_TRACKLETS(q, w)                                               \
    t##q##w->Draw(Form("%s:%s>>h" #q #w "%s", OS(var[1]), OS(var[0]), idstr),  \
@@ -468,14 +468,14 @@ int map_tracklets(std::vector<varinfo_t> const& options,
          OS(id), label));                                                     \
    delete c##q##w;                                                            \
 
-   TRACKLETS(DRAW_2D_TRACKLETS)
+   TRKLTS2P(DRAW_2D_TRACKLETS)
 
    TFile* fout = new TFile(Form("data/%s.root", label), "update");
 
 #define SAVE_2D_TRACKLETS(q, w)                                               \
    h##q##w->Write("", TObject::kOverwrite);                                   \
 
-   TRACKLETS(SAVE_2D_TRACKLETS)
+   TRKLTS2P(SAVE_2D_TRACKLETS)
 
    fout->Close();
 
