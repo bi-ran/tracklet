@@ -83,9 +83,9 @@ int transmute_trees(const char* input,
    } else {
       printf("$ data analysis\n");
 
-      /* run 304906              */
-      vx = 0.082604;
-      vy = -0.030962;
+      /* 94X_dataRun2_Rereco17_ONLYXeXeBS_v1 */
+      vx = 0.0830378;
+      vy = -0.030276;
 
       reweight_vertex = 0;
 #define BKG_RESET(q) add_bkg_l##q = 0;
