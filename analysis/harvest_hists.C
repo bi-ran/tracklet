@@ -127,20 +127,21 @@ int compare_pixels(std::vector<varinfo_t> const& options,
 
    PIXELS1P(SETUP_1D_PIXELS)
 
-#define DRAW_1D_PIXELS(q)                                                     \
+#define PROJECT_1D_PIXELS(q)                                                  \
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
       t[j]->Draw(Form("%s" #q ">>hp" #q "f%zu%s", varstr, j, idstr),          \
             fsel, "goff");                                                    \
       h##q[j]->Scale(1. / h##q[j]->Integral());                               \
    }
 
-   PIXELS1P(DRAW_1D_PIXELS)
+   PIXELS1P(PROJECT_1D_PIXELS)
 
-#define PLOT_1D_PIXELS(q)                                                     \
+#define DRAW_1D_PIXELS(q)                                                     \
    TCanvas* c##q = new TCanvas("c" #q, "", 600, 600);                         \
    if (OPT(custom)) { c##q->SetLogy(); }                                      \
                                                                               \
-   for (std::size_t j = 0; j < nfiles; ++j) {                                 \
+   h##q[0]->Draw("axis");                                                     \
+   for (std::size_t j = 1; j < nfiles; ++j) {                                 \
       h##q[j]->SetLineColor(colour[j % ncolours]);                            \
       h##q[j]->Draw("hist e same");                                           \
    }                                                                          \
@@ -159,7 +160,7 @@ int compare_pixels(std::vector<varinfo_t> const& options,
          OS(id), label));                                                     \
    delete c##q;                                                               \
 
-   PIXELS1P(PLOT_1D_PIXELS)
+   PIXELS1P(DRAW_1D_PIXELS)
 
    TFile* fout = new TFile(Form("data/%s.root", label), "update");
 
@@ -247,20 +248,21 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
 
    TRKLTS2P(SETUP_1D_TRACKLETS)
 
-#define DRAW_1D_TRACKLETS(q, w)                                               \
+#define PROJECT_1D_TRACKLETS(q, w)                                            \
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
       t##q##w[j]->Draw(Form("%s>>ht" #q #w "f%zu%s", varstr, j, idstr),       \
             fsel, "goff");                                                    \
       h##q##w[j]->Scale(1. / h##q##w[j]->Integral());                         \
    }                                                                          \
 
-   TRKLTS2P(DRAW_1D_TRACKLETS)
+   TRKLTS2P(PROJECT_1D_TRACKLETS)
 
-#define PLOT_1D_TRACKLETS(q, w)                                               \
+#define DRAW_1D_TRACKLETS(q, w)                                               \
    TCanvas* c##q##w = new TCanvas("c" #q #w, "", 600, 600);                   \
    if (OPT(custom)) { c##q##w->SetLogy(); }                                   \
                                                                               \
-   for (std::size_t j = 0; j < nfiles; ++j) {                                 \
+   h##q##w[0]->Draw("axis");                                                  \
+   for (std::size_t j = 1; j < nfiles; ++j) {                                 \
       h##q##w[j]->SetLineColor(colour[j % ncolours]);                         \
       h##q##w[j]->Draw("hist e same");                                        \
    }                                                                          \
@@ -279,7 +281,7 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
          OS(id), label));                                                     \
    delete c##q##w;                                                            \
 
-   TRKLTS2P(PLOT_1D_TRACKLETS)
+   TRKLTS2P(DRAW_1D_TRACKLETS)
 
    TFile* fout = new TFile(Form("data/%s.root", label), "update");
 
