@@ -182,7 +182,8 @@ int reap_results(int type,
    tinput->Project("h1WEvz", "vz[1]", "weight" * esel);
    tinput->Project("h1WEvzmult", Form("%s:vz[1]", mult), "weight" * esel);
 
-   const int* amap = ext_accep_map(type);
+   const int* amap = 0;
+   if (apply_ext_accep_map) { amap = ext_accep_map(type); }
 
    for (int i=1; i<=neta; i++) {
       for (int j=1; j<=nvz; j++) {
