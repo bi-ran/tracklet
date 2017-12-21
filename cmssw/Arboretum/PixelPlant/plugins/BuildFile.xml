@@ -1,0 +1,17 @@
+<use name="hepmc"/>
+<use name="heppdt"/>
+<use name="root"/>
+<use name="CommonTools/UtilAlgos"/>
+<use name="DataFormats/BeamSpot"/>
+<use name="DataFormats/CaloTowers"/>
+<use name="DataFormats/TrackerRecHit2D"/>
+<use name="DataFormats/VertexReco"/>
+<use name="Geometry/Records"/>
+<use name="Geometry/TrackerGeometryBuilder"/>
+<use name="FWCore/Framework"/>
+<use name="FWCore/ParameterSet"/>
+<use name="FWCore/PluginManager"/>
+<use name="SimDataFormats/GeneratorProducts"/>
+<use name="SimDataFormats/Vertex"/>
+<use name="SimGeneral/HepPDTRecord"/>
+<flags EDM_PLUGIN="1"/>
