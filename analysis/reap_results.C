@@ -197,8 +197,8 @@ int reap_results(int type,
    h1WEvz->Fit("gaus");
 
    /* generator-level hadrons                                                 */
-   tinput->Project("h3WEhadron", Form("vz[1]:%s:eta", mult), "weight" * (esel && "abs(eta)<3"));
-   tinput->Project("h3WGhadron", Form("vz[1]:%s:eta", mult), "weight" * (gsel && "abs(eta)<3"));
+   tinput->Project("h3WEhadron", Form("vz[1]:%s:eta", mult), "weight" * (esel && "abs(eta)<4"));
+   tinput->Project("h3WGhadron", Form("vz[1]:%s:eta", mult), "weight" * (gsel && "abs(eta)<4"));
 
    h3WEtruth = (TH3F*)h3WEhadron->Clone("h3WEtruth");
 
@@ -335,8 +335,8 @@ int reap_results(int type,
          cfalphavz->SaveAs(Form("figs/fits/alphafit-%s-%i-eta-%i.png", label, type, x));
       }
 
-      TCanvas* cfalphaeta = new TCanvas("cfalphaeta", "", 2000, 2400);
-      cfalphaeta->Divide(5, 6);
+      TCanvas* cfalphaeta = new TCanvas("cfalphaeta", "", 2400, 2400);
+      cfalphaeta->Divide(6, 6);
 
       for (int z=1; z<=nvz; z++) {
          cfalphaeta->Clear("d");

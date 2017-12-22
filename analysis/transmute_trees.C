@@ -111,7 +111,7 @@ int transmute_trees(const char* input,
    if (add_bkg_l##q) {                                                        \
       printf(" # projecting hit distribution of layer " #q "\n");             \
       hl##q##hits = new TH3F("hl" #q "hits", "",                              \
-            200, 0, 20, 300, -3, 3, 320, -3.2, 3.2);                          \
+            200, 0, 20, 400, -4, 4, 320, -3.2, 3.2);                          \
       t->Project("hl" #q "hits", "phi" #q ":eta" #q ":r" #q);                 \
    }                                                                          \
 
@@ -240,8 +240,8 @@ int transmute_trees(const char* input,
       tdata##q##w.process = par.process;                                      \
       tdata##q##w.npart = 0;                                                  \
       for (int j=0; j<par.npart; j++) {                                       \
-         if (fabs(par.eta[j])>3 || par.chg[j]==0 ||                           \
-               fabs(par.pdg[j])==11 || abs(par.pdg[j])==13)                   \
+         if (fabs(par.eta[j])>4 || par.chg[j]==0 ||                           \
+               abs(par.pdg[j])==11 || abs(par.pdg[j])==13)                    \
             continue;                                                         \
          tdata##q##w.pt[tdata##q##w.npart] = par.pt[j];                       \
          tdata##q##w.eta[tdata##q##w.npart] = par.eta[j];                     \

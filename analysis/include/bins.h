@@ -23,13 +23,13 @@
 #if defined INCLUDE_ETA_BINS || defined INCLUDE_ETA_RANGE || defined INCLUDE_ETA_N
 #ifndef DECLARED_ETA_N
 #define DECLARED_ETA_N
-   const int neta = 30;
+   const int neta = 36;
 #endif  /* DECLARED_ETA_N */
 #if defined INCLUDE_ETA_BINS || defined INCLUDE_ETA_RANGE
 #ifndef DECLARED_ETA_RANGE
 #define DECLARED_ETA_RANGE
-   const float etamin = -3.0;
-   const float etamax = 3.0;
+   const float etamin = -3.6;
+   const float etamax = 3.6;
 #endif  /* DECLARED_ETA_RANGE */
 #if defined INCLUDE_ETA_BINS
 #ifndef DECLARED_ETA_BINS
