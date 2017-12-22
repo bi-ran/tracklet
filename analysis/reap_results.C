@@ -58,25 +58,10 @@ int reap_results(int type,
    }
 
    /* binning                                                                 */
-   const int nmult = 15;
-   double multb[nmult + 1] = {
-          0,   25,   50,  100,  200,
-        360,  500,  750, 1200, 1800,
-       2400, 3200, 4000, 5400, 7500,
-      12000
-   };
-
-   const int neta = 30;
-   double etab[neta + 1];
-   for (int i=0; i<=neta; i++)
-      etab[i] = i * 6.0 / neta - 3.0;
-
-   const int nvz = 15;
-   double vzb[nvz+1];
-   double vzmax = 15;
-   double vzmin = -15;
-   for (int i=0; i<=nvz; i++)
-      vzb[i] = i * (vzmax - vzmin) / nvz + vzmin;
+#define INCLUDE_VZ_BINS
+#define INCLUDE_ETA_BINS
+#define INCLUDE_MULT_BINS
+#include "include/bins.h"
 
    /* selections                                                              */
    TCut ssel = Form("(dr2<%f)", maxdr2);
@@ -605,7 +590,7 @@ int reap_results(int type,
    else if (ymax < 1200) { ymax = ((ymax / 200) + 1) * 200; }
    else { ymax = ((ymax / 400) + 1) * 400; }
 
-   TH1F* hframe = new TH1F("hframe", "", 1, -3, 3);
+   TH1F* hframe = new TH1F("hframe", "", 1, etamin, etamax);
    hformat(hframe, 21, 1, 0, ymax, ";#eta;dN/d#eta");
 
    hstyle(h1WGhadron, 1, COLOUR0);

@@ -47,22 +47,26 @@ int assess_acceps(int type, std::string data_list, std::string mc_list, float ma
 
     TFile* fout = new TFile(Form("output/acceptance-%i.root", type), "recreate");
 
-    int netabin = 3000;
-    int nvzbin = 3000;
+#define INCLUDE_VZ_RANGE
+#define INCLUDE_ETA_RANGE
+#include "include/bins.h"
 
-    TH2D* hdata = new TH2D("hdata", "", netabin, -3, 3, nvzbin, -15, 15);
+    int netafine = neta * 200;
+    int nvzfine = nvz * 200;
+
+    TH2D* hdata = new TH2D("hdata", "", netafine, etamin, etamax, nvzfine, vzmin, vzmax);
     tdata->Project("hdata", "vz[1]:eta1", Form("dr2<%f && abs(vz[1])<15", maxdr2));
     convert(hdata);
     TH2D* hdatacoarse = (TH2D*)hdata->Clone("hdatacoarse");
-    hdatacoarse->RebinX(netabin / 30);
-    hdatacoarse->RebinY(nvzbin / 15);
+    hdatacoarse->RebinX(netafine / neta);
+    hdatacoarse->RebinY(nvzfine / nvz);
 
-    TH2D* hmc = new TH2D("hmc", "", netabin, -3, 3, nvzbin, -15, 15);
+    TH2D* hmc = new TH2D("hmc", "", netafine, etamin, etamax, nvzfine, vzmin, vzmax);
     tmc->Project("hmc", "vz[1]:eta1", Form("dr2<%f && abs(vz[1])<15", maxdr2));
     convert(hmc);
     TH2D* hmccoarse = (TH2D*)hmc->Clone("hmccoarse");
-    hmccoarse->RebinX(netabin / 30);
-    hmccoarse->RebinY(nvzbin / 15);
+    hmccoarse->RebinX(netafine / neta);
+    hmccoarse->RebinY(nvzfine / nvz);
 
     TCanvas* c1 = new TCanvas("c1", "", 1200, 600);
     c1->Divide(2, 1);

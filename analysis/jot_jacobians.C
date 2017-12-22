@@ -59,10 +59,8 @@ int jot_jacobians(const char* list) {
 
    TH1::SetDefaultSumw2();
 
-   const int neta = 30;
-   double etab[neta + 1];
-   for (int i=0; i<=neta; i++)
-      etab[i] = i * 6.0 / neta - 3.0;
+#define INCLUDE_ETA_BINS
+#include "include/bins.h"
 
    const char* gsel = "(process!=102 && process!=103 && process!=104) && abs(vz[0])<20";
 
