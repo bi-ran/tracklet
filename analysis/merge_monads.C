@@ -50,6 +50,9 @@
    EXPAND(p, amptnm)          \
    EXPAND(p, amptsm)          \
 
+#define COUNT(q, w)  + 1
+#define NTRKLT2P  (0 TRKLTS2P(COUNT))
+
 #define COLOUR_DPMJET   TColor::GetColor("#2ecc71")
 #define COLOUR_EPOS     TColor::GetColor("#ffcc00")
 #define COLOUR_HYDJET   TColor::GetColor("#3498db")
@@ -64,15 +67,14 @@
 #define INDEX15 6
 #define INDEX16 7
 #define INDEX17 8
-#define NTYPES  9
 
-static const int markers[NTYPES] = {
+static const int markers[NTRKLT2P] = {
    24, 25, 26,
    30, 32, 46,
    48, 49, 43
 };
 
-static const int colours[NTYPES] = {
+static const int colours[NTRKLT2P] = {
    COLOUR1, COLOUR2, COLOUR3,
    COLOUR4, COLOUR5, COLOUR6,
    COLOUR7, COLOUR8, COLOUR9
@@ -81,7 +83,7 @@ static const int colours[NTYPES] = {
 #define INCLUDE_ETA_RANGE
 #include "include/bins.h"
 
-static const int good[9][neta] = {
+static const int good[NTRKLT2P][neta] = {
    { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 },
    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },

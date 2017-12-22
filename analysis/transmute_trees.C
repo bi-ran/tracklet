@@ -14,7 +14,6 @@
 #include "include/tracklet.h"
 #include "include/hf.h"
 
-#define NPIXELS   7
 #define PIXELS1P(EXPAND)   \
    EXPAND(1)               \
    EXPAND(2)               \
@@ -23,6 +22,9 @@
    EXPAND(5)               \
    EXPAND(6)               \
    EXPAND(7)               \
+
+#define COUNT(q)  + 1
+#define NPIXEL1P  (0 PIXELS1P(COUNT))
 
 #define TRKLTS2P(EXPAND)   \
    EXPAND(1, 2)            \
@@ -287,7 +289,7 @@ int main(int argc, char* argv[]) {
       return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]));
    } else if (argc == 11) {
       return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]), atoi(argv[10]));
-   } else if (argc == 11 + NPIXELS) {
+   } else if (argc == 11 + NPIXEL1P) {
       return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]), atoi(argv[10]) PIXELS1P(BKG_ARGV));
    } else {
       printf("usage: ./transmute_trees [in out]\n"
