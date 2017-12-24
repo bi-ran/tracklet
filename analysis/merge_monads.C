@@ -5,6 +5,7 @@
 #include "TLine.h"
 #include "TColor.h"
 
+#include <cassert>
 #include <map>
 
 #include "include/cosmetics.h"
@@ -68,18 +69,6 @@
 #define INDEX16 7
 #define INDEX17 8
 
-static const int markers[NTRKLT2P] = {
-   24, 25, 26,
-   30, 32, 46,
-   48, 49, 43
-};
-
-static const int colours[NTRKLT2P] = {
-   COLOUR1, COLOUR2, COLOUR3,
-   COLOUR4, COLOUR5, COLOUR6,
-   COLOUR7, COLOUR8, COLOUR9
-};
-
 #define INCLUDE_ETA_RANGE
 #include "include/bins.h"
 
@@ -128,6 +117,7 @@ int merge_monads(const char* label) {
    htitle(h##q##w, ";#eta;dN/d#eta");                                         \
    hstyle(h##q##w, markers[INDEX##q##w], colours[INDEX##q##w]);               \
 
+   assert(NTRKLT2P < ncolours + 1);
    TRKLTS2P(STYLE)
 
 #define ZERO(q, w)                                                            \

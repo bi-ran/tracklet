@@ -45,17 +45,6 @@
    EXPAND(1, 6)            \
    EXPAND(1, 7)            \
 
-static const std::vector<int> colour = {
-   TColor::GetColor("#f2777a"),
-   TColor::GetColor("#f99157"),
-   TColor::GetColor("#ffcc66"),
-   TColor::GetColor("#99cc99"),
-   TColor::GetColor("#6699cc"),
-   TColor::GetColor("#9999cc"),
-   TColor::GetColor("#515151")
-};
-static const int ncolours = colour.size();
-
 typedef struct varinfo_t {
    std::string                         id;
    std::vector<std::string>            label;
@@ -142,7 +131,7 @@ int compare_pixels(std::vector<varinfo_t> const& options,
                                                                               \
    h##q[0]->Draw("axis");                                                     \
    for (std::size_t j = 1; j < nfiles; ++j) {                                 \
-      h##q[j]->SetLineColor(colour[j % ncolours]);                            \
+      h##q[j]->SetLineColor(colours[j % ncolours]);                           \
       h##q[j]->Draw("hist e same");                                           \
    }                                                                          \
    h##q[0]->SetMarkerStyle(21);                                               \
@@ -263,7 +252,7 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
                                                                               \
    h##q##w[0]->Draw("axis");                                                  \
    for (std::size_t j = 1; j < nfiles; ++j) {                                 \
-      h##q##w[j]->SetLineColor(colour[j % ncolours]);                         \
+      h##q##w[j]->SetLineColor(colours[j % ncolours]);                        \
       h##q##w[j]->Draw("hist e same");                                        \
    }                                                                          \
    h##q##w[0]->SetMarkerStyle(21);                                            \

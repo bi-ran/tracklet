@@ -10,17 +10,6 @@
 
 #include "include/cosmetics.h"
 
-static const std::vector<int> colours = {
-   TColor::GetColor("#f2777a"),
-   TColor::GetColor("#f99157"),
-   TColor::GetColor("#ffcc66"),
-   TColor::GetColor("#99cc99"),
-   TColor::GetColor("#6699cc"),
-   TColor::GetColor("#9999cc"),
-   TColor::GetColor("#515151")
-};
-static const int ncolours = colours.size();
-
 int jot_jacobians(const char* list) {
    std::vector<std::string> flist;
    std::ifstream fstream(list);

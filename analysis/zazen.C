@@ -13,10 +13,6 @@
 #include "include/cosmetics.h"
 #include "include/errorband.h"
 
-static const std::vector<int> colours = {
-   COLOUR1, COLOUR3, COLOUR4, COLOUR5, COLOUR6, COLOUR2
-};
-
 int zazen(const char* list, const char* hist, const char* label, const char* jacobian) {
    std::vector<std::string> rlist;
    std::ifstream fstream(list);
@@ -82,7 +78,7 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
    hframe->Draw();
 
    for (std::size_t i = 0; i < nres; ++i) {
-      int cindex = (coffset + i) % colours.size();
+      int cindex = (coffset + i) % ncolours;
 
       hres[i]->SetMarkerStyle(20);
       hres[i]->SetMarkerSize(0.64);
@@ -129,7 +125,7 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
          hysys[i]->Multiply(hj);
          hysys[i]->Add(hyjsys[i]);
 
-         int cindex = (coffset + i) % colours.size();
+         int cindex = (coffset + i) % ncolours;
 
          hyres[i]->SetMarkerStyle(20);
          hyres[i]->SetMarkerSize(0.64);

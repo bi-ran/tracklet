@@ -14,6 +14,19 @@
 #define COLOUR8   TColor::GetColor("#01a252")
 #define COLOUR9   TColor::GetColor("#01a0e4")
 
+static const std::vector<int> colours = {
+   COLOUR1, COLOUR2, COLOUR3,
+   COLOUR4, COLOUR5, COLOUR6,
+   COLOUR7, COLOUR8, COLOUR9
+};
+static const std::size_t ncolours = colours.size();
+
+static const std::vector<int> markers = {
+   24, 25, 26,
+   30, 32, 46,
+   48, 49, 43
+};
+
 #include "TLatex.h"
 
 void watermark() {

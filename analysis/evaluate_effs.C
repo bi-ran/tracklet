@@ -12,19 +12,6 @@
 
 #include "include/cosmetics.h"
 
-static const std::vector<int> colour = {
-   TColor::GetColor("#f2777a"),
-   TColor::GetColor("#f99157"),
-   TColor::GetColor("#ffcc66"),
-   TColor::GetColor("#99cc99"),
-   TColor::GetColor("#6699cc"),
-   TColor::GetColor("#9999cc")
-};
-
-static const std::vector<int> marker = {
-   24, 25, 26, 30, 32, 46
-};
-
 int evaluate_effs(const char* list) {
    std::vector<std::string> flist;
    std::ifstream fstream(list);
@@ -56,13 +43,13 @@ int evaluate_effs(const char* list) {
 
       heff[i] = new TProfile(Form("heff_%zu", i), "", 20, 0, 100);
       t[i]->Draw(Form("vz[1]>-99:nhit1>>heff_%zu", i), "nhit1>0 && abs(vz[0])<15", "goff");
-      hstyle(heff[i], marker[i], colour[i]);
+      hstyle(heff[i], markers[i % ncolours], colours[i % ncolours]);
 
       hvznhit1[i] = new TH2D(Form("hvznhit1_%zu", i), "", 10, 0, 100, 100, -2, 2);
       t[i]->Draw(Form("vz[1]-vz[0]:nhit1>>hvznhit1_%zu", i), "nhit1>0 && abs(vz[0])<15", "goff colz");
       hvznhit1[i]->FitSlicesY();
       hres[i] = (TH1D*)gDirectory->Get(Form("hvznhit1_%zu_2", i));
-      hstyle(hres[i], marker[i], colour[i]);
+      hstyle(hres[i], markers[i % ncolours], colours[i % ncolours]);
    }
 
    TCanvas* c1 = new TCanvas("c1", "", 600, 600);
