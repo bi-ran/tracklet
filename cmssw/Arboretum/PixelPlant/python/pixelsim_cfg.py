@@ -38,6 +38,9 @@ process.GlobalTag = GlobalTag(
 )
 
 process.pixel = cms.EDAnalyzer('PixelPlant',
+    fillhlt = cms.bool(True),
+    hlt_tag = cms.InputTag("TriggerResults::HLT"),
+    hlt_paths = cms.vstring('HLT_HIL1MinimumBiasHF_OR_SinglePixelTrack_v1'),
     fillhf = cms.bool(True),
     fillgen = cms.bool(True),
 )

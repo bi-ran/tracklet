@@ -20,6 +20,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -29,6 +30,7 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 
 #include "FWCore/Framework/interface/ESHandle.h"
+#include "FWCore/Framework/interface/TriggerNamesService.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ParameterSet/interface/EmptyGroupDescription.h"
@@ -40,6 +42,7 @@
 
 #include "DataFormats/CaloTowers/interface/CaloTower.h"
 #include "DataFormats/CaloTowers/interface/CaloTowerDefs.h"
+#include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/TrackerCommon/interface/TrackerTopology.h"
 #include "DataFormats/TrackerRecHit2D/interface/SiPixelRecHitCollection.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
@@ -85,6 +88,9 @@ struct PixelEvent {
    float vxerr[MAXVTX];
    float vyerr[MAXVTX];
    float vzerr[MAXVTX];
+
+   // hlt decision
+   int hlt;
 
    // hf information
    int nhfp;
@@ -137,14 +143,19 @@ class PixelPlant : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
       virtual void endJob() override;
 
       // ------------ member data ------------
+      void fill_hlt(const edm::Event&);
       void fill_beamspot(const edm::Event&);
       void fill_vertices(const edm::Event&);
       void fill_hf(const edm::Event&);
       void fill_pixels(const edm::Event&);
       void fill_particles(const edm::Event&);
 
+      bool fillhlt_;
       bool fillgen_;
       bool fillhf_;
+
+      edm::EDGetTokenT<edm::TriggerResults> hlt_;
+      std::vector<std::string> paths_;
 
       edm::EDGetTokenT<reco::BeamSpot> beamspot_;
       edm::EDGetTokenT<edm::SimVertexContainer> genvertex_;
@@ -156,6 +167,8 @@ class PixelPlant : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
       edm::ESHandle<ParticleDataTable> pdt_;
       edm::ESHandle<TrackerGeometry> geo_;
       edm::ESHandle<TrackerTopology> topo_;
+
+      edm::Service<edm::service::TriggerNamesService> nameserv_;
 
       PixelEvent pix_;
 
@@ -184,6 +197,11 @@ PixelPlant::PixelPlant(const edm::ParameterSet& iConfig) {
       vertices_.push_back(consumes<reco::VertexCollection>(tag));
    pixels_ = consumes<SiPixelRecHitCollection>(iConfig.getParameter<edm::InputTag>("pixel_tag"));
 
+   fillhlt_ = iConfig.getParameter<bool>("fillhlt");
+   if (fillhlt_) {
+      hlt_ = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("hlt_tag"));
+      paths_ = iConfig.getParameter<std::vector<std::string>>("hlt_paths");
+   }
 
    fillhf_ = iConfig.getParameter<bool>("fillhf");
    if (fillhf_) {
@@ -205,6 +223,29 @@ PixelPlant::~PixelPlant() {
 //
 // member functions
 //
+
+void PixelPlant::fill_hlt(const edm::Event& iEvent) {
+   edm::Handle<edm::TriggerResults> tr;
+   iEvent.getByToken(hlt_, tr);
+   const edm::TriggerResults* hlt = tr.product();
+
+   if (!hlt->size()) {
+      pix_.hlt = -1;
+      return;
+   }
+
+   std::vector<std::string> allpaths;
+   nameserv_->getTrigPaths(*hlt, allpaths);
+   for (const auto& path : paths_) {
+      const auto it = std::find(allpaths.begin(), allpaths.end(), path);
+      if (hlt->accept(it - allpaths.begin())) {
+         pix_.hlt = 1;
+         return;
+      }
+   }
+
+   pix_.hlt = 0;
+}
 
 void PixelPlant::fill_beamspot(const edm::Event& iEvent) {
    edm::Handle<reco::BeamSpot> bs;
@@ -394,6 +435,7 @@ void PixelPlant::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    fill_vertices(iEvent);
    fill_pixels(iEvent);
 
+   if (fillhlt_) { fill_hlt(iEvent); } else { pix_.hlt = 1; }
    if (fillhf_) { fill_hf(iEvent); } else {
       pix_.nhfp = 0; pix_.nhfn = 0;
       pix_.hft = 0; pix_.hftp = 0; pix_.hftm = 0; }
@@ -419,6 +461,8 @@ void PixelPlant::beginJob() {
    tpix_->Branch("vx", pix_.vx, "vx[nv]/F");
    tpix_->Branch("vy", pix_.vy, "vy[nv]/F");
    tpix_->Branch("vz", pix_.vz, "vz[nv]/F");
+
+   tpix_->Branch("hlt", &pix_.hlt, "hlt/I");
 
    tpix_->Branch("nhfp", &pix_.nhfp, "nhfp/I");
    tpix_->Branch("nhfn", &pix_.nhfn, "nhfn/I");
@@ -459,6 +503,10 @@ void PixelPlant::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
    desc.add<std::vector<edm::InputTag>>("vertex_tags", {});
    desc.add<edm::InputTag>("pixel_tag", edm::InputTag("siPixelRecHits"));
 
+   desc.ifValue(edm::ParameterDescription<bool>("fillhlt", false, true),
+      true >> (edm::ParameterDescription<edm::InputTag>("hlt_tag", edm::InputTag("TriggerResults::HLT"), true) and
+               edm::ParameterDescription<std::vector<std::string>>("hlt_paths", true)) or
+      false >> edm::EmptyGroupDescription());
    desc.ifValue(edm::ParameterDescription<bool>("fillhf", false, true),
       true >> edm::ParameterDescription<edm::InputTag>("tower_tag", edm::InputTag("towerMaker"), true) or
       false >> edm::EmptyGroupDescription());
