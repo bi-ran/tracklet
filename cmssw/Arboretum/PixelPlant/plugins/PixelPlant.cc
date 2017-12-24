@@ -26,8 +26,9 @@
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
 
 #include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
+
+#include "FWCore/Framework/interface/ESHandle.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ParameterSet/interface/EmptyGroupDescription.h"
@@ -178,21 +179,21 @@ PixelPlant::PixelPlant(const edm::ParameterSet& iConfig) {
    // now do what ever initialization is needed
    usesResource("TFileService");
 
+   beamspot_ = consumes<reco::BeamSpot>(iConfig.getParameter<edm::InputTag>("beamspot_tag"));
+   for (const auto& tag : iConfig.getParameter<std::vector<edm::InputTag>>("vertex_tags"))
+      vertices_.push_back(consumes<reco::VertexCollection>(tag));
+   pixels_ = consumes<SiPixelRecHitCollection>(iConfig.getParameter<edm::InputTag>("pixel_tag"));
+
+
    fillhf_ = iConfig.getParameter<bool>("fillhf");
-   fillgen_ = iConfig.getParameter<bool>("fillgen");
-
-   beamspot_ = consumes<reco::BeamSpot>(edm::InputTag(iConfig.getParameter<std::string>("beamspot_tag")));
-   for (const auto& tag : iConfig.getParameter<std::vector<std::string>>("vertex_tags"))
-      vertices_.push_back(consumes<reco::VertexCollection>(edm::InputTag(tag)));
-   pixels_ = consumes<SiPixelRecHitCollection>(edm::InputTag(iConfig.getParameter<std::string>("pixel_tag")));
-
    if (fillhf_) {
-      towers_ = consumes<CaloTowerCollection>(edm::InputTag(iConfig.getParameter<std::string>("tower_tag")));
+      towers_ = consumes<CaloTowerCollection>(iConfig.getParameter<edm::InputTag>("tower_tag"));
    }
 
+   fillgen_ = iConfig.getParameter<bool>("fillgen");
    if (fillgen_) {
-      generator_ = consumes<edm::HepMCProduct>(edm::InputTag(iConfig.getParameter<std::string>("generator_tag")));
-      genvertex_ = consumes<edm::SimVertexContainer>(edm::InputTag(iConfig.getParameter<std::string>("genvertex_tag")));
+      generator_ = consumes<edm::HepMCProduct>(iConfig.getParameter<edm::InputTag>("generator_tag"));
+      genvertex_ = consumes<edm::SimVertexContainer>(iConfig.getParameter<edm::InputTag>("genvertex_tag"));
    }
 }
 
@@ -454,16 +455,16 @@ void PixelPlant::fillDescriptions(edm::ConfigurationDescriptions& descriptions) 
    // Please change this to state exactly what you do use, even if it is no parameters
    edm::ParameterSetDescription desc;
 
-   desc.add<std::string>("beamspot_tag", "offlineBeamSpot");
-   desc.add<std::vector<std::string>>("vertex_tags", {});
-   desc.add<std::string>("pixel_tag", "siPixelRecHits");
+   desc.add<edm::InputTag>("beamspot_tag", edm::InputTag("offlineBeamSpot"));
+   desc.add<std::vector<edm::InputTag>>("vertex_tags", {});
+   desc.add<edm::InputTag>("pixel_tag", edm::InputTag("siPixelRecHits"));
 
    desc.ifValue(edm::ParameterDescription<bool>("fillhf", false, true),
-      true >> edm::ParameterDescription<std::string>("tower_tag", "towerMaker", true) or
+      true >> edm::ParameterDescription<edm::InputTag>("tower_tag", edm::InputTag("towerMaker"), true) or
       false >> edm::EmptyGroupDescription());
    desc.ifValue(edm::ParameterDescription<bool>("fillgen", false, true),
-      true >> (edm::ParameterDescription<std::string>("generator_tag", "generatorSmeared", true) and
-               edm::ParameterDescription<std::string>("genvertex_tag", "g4SimHits", true)) or
+      true >> (edm::ParameterDescription<edm::InputTag>("generator_tag", edm::InputTag("generatorSmeared"), true) and
+               edm::ParameterDescription<edm::InputTag>("genvertex_tag", edm::InputTag("g4SimHits"), true)) or
       false >> edm::EmptyGroupDescription());
 
    descriptions.add("pixelplant", desc);
