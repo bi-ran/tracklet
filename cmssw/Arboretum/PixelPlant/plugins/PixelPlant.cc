@@ -236,7 +236,7 @@ void PixelPlant::fill_vertices(const edm::Event& iEvent) {
       }
    }
 
-   pix_.nv++;
+   pix_.nv = 1;
 
    // fill reconstructed vertices
    for (const auto& vertex_ : vertices_) {
@@ -310,6 +310,9 @@ void PixelPlant::fill_pixels(const edm::Event& iEvent) {
    edm::Handle<SiPixelRecHitCollection> pix;
    iEvent.getByToken(pixels_, pix);
    const SiPixelRecHitCollection* pixdets = pix.product();
+
+#define INIT_HITS(q)    pix_.nhits##q = 0;
+   PIXELS1P(INIT_HITS)
 
    for (const auto& det : *pixdets) {
       DetId detid = det.detId();
@@ -387,17 +390,14 @@ void PixelPlant::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    pix_.event = (int)iEvent.id().event();
    pix_.bx = (int)iEvent.bunchCrossing();
 
-   pix_.nv = 0;
-#define INIT_HITS(q)    pix_.nhits##q = 0;
-   PIXELS1P(INIT_HITS)
-   pix_.npart = 0;
-
    fill_beamspot(iEvent);
    fill_vertices(iEvent);
    fill_pixels(iEvent);
 
-   if (fillhf_) { fill_hf(iEvent); }
-   if (fillgen_) { fill_particles(iEvent); }
+   if (fillhf_) { fill_hf(iEvent); } else {
+      pix_.nhfp = 0; pix_.nhfn = 0;
+      pix_.hft = 0; pix_.hftp = 0; pix_.hftm = 0; }
+   if (fillgen_) { fill_particles(iEvent); } else { pix_.npart = 0; }
 
    tpix_->Fill();
 }
