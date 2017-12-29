@@ -16,7 +16,12 @@ for TYPE in ${TYPES[@]}; do
         if [[ $5 -gt 0 ]]; then
             for (( CMAX=20; CMAX>=$5; CMAX-=$5 )); do
                 CMIN=$(( CMAX - $5 ))
-                sem -j+0 --linebuffer "./reap_results $TYPE $1 $2.a.$CMIN.$CMAX $3.a.$CMIN.$CMAX $4 $CMIN $CMAX ${@:6} > notes/log-rr-$2.a.$CMIN.$CMAX-$TYPE.log; mv correction-$2.a.$CMIN.$CMAX-$TYPE.root output/"
+                sem -j+0 --linebuffer \
+                        "./reap_results $TYPE \
+                        $1 $2.a.$CMIN.$CMAX $3.a.$CMIN.$CMAX $4 \
+                        $CMIN $CMAX ${@:6} \
+                        > notes/log-rr-$2.a.$CMIN.$CMAX-$TYPE.log; \
+                        mv correction-$2.a.$CMIN.$CMAX-$TYPE.root output/"
             done
 
         elif [[ $5 -eq 0 ]]; then
@@ -24,12 +29,22 @@ for TYPE in ${TYPES[@]}; do
                 exit 2
             fi
 
-            sem -j+0 --linebuffer "./reap_results $TYPE $1 $2.s.$6.$7 $3.s.$6.$7 $4 ${@:6} > notes/log-rr-$2.s.$6.$7-$TYPE.log; mv correction-$2.s.$6.$7-$TYPE.root output/"
+            sem -j+0 --linebuffer \
+                    "./reap_results $TYPE $1 $2.s.$6.$7 \
+                    $3.s.$6.$7 $4 ${@:6} \
+                    > notes/log-rr-$2.s.$6.$7-$TYPE.log; \
+                    mv correction-$2.s.$6.$7-$TYPE.root output/"
         else
-            sem -j+0 --linebuffer "./reap_results $TYPE ${@:1:4} 0 20 ${@:6} > notes/log-rr-$2-$TYPE.log; mv correction-$2-$TYPE.root output/"
+            sem -j+0 --linebuffer \
+                    "./reap_results $TYPE ${@:1:4} 0 20 ${@:6} \
+                    > notes/log-rr-$2-$TYPE.log; \
+                    mv correction-$2-$TYPE.root output/"
         fi
     else
-        sem -j+0 --linebuffer "./reap_results $TYPE $@ > notes/log-rr-$2-$TYPE.log; mv correction-$2-$TYPE.root output/"
+        sem -j+0 --linebuffer \
+                "./reap_results $TYPE $@ \
+                > notes/log-rr-$2-$TYPE.log; \
+                mv correction-$2-$TYPE.root output/"
     fi
 done
 sem --wait

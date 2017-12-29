@@ -3,7 +3,7 @@
 make transmute_trees || exit 1
 
 if [[ $# -lt 3 ]]; then
-    echo -e "usage: ./tt [total entries] [arguments to transmute_trees, excluding entry range]\n"
+    echo -e 'usage: ./tt [total entries] ($@)\n'
     ./transmute_trees
     exit 1
 fi
@@ -15,9 +15,13 @@ ENTRIES=$1
 SIZE=1024
 SLICES=$(( ($ENTRIES - 1) / $SIZE ))
 
+BASE=$(basename $3 .root)
 for SLICE in $(seq 0 $SLICES ); do
-    BASE=$(basename $3 .root)
-    sem -j-4 --linebuffer "./transmute_trees $2 ${3}.$SLICE $(( $SLICE * $SIZE )) $(( ($SLICE + 1) * $SIZE )) ${@:4} &> notes/log-tt-$BASE-$ENTRIES-${SLICE}.log; echo \"   done: part $SLICE\""
+    sem -j-4 --linebuffer \
+            "./transmute_trees $2 ${3}.$SLICE \
+            $(( $SLICE * $SIZE )) $(( ($SLICE + 1) * $SIZE )) ${@:4} \
+            &> notes/log-tt-$BASE-$ENTRIES-${SLICE}.log; \
+            echo \"   done: part $SLICE\""
 done
 sem --wait
 
