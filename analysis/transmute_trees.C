@@ -37,7 +37,8 @@
    EXPAND(1, 6)            \
    EXPAND(1, 7)            \
 
-static const float vzpar[4][2] = {
+#define NSAMPLES  4
+static const float vzpar[NSAMPLES][2] = {
    {-0.0338060, 4.75367},  /* hydjet */
    {-0.0195822, 4.80904},  /* ampt, no melt */
    {-0.0601216, 4.80841},  /* ampt, string melt */
@@ -52,17 +53,14 @@ int transmute_trees(const char* input,
                     uint64_t start = 0,
                     uint64_t end = 1000000000,
                     int sample = -1,
-                    bool reweight_vertex = 1,
-                    bool random_vertex = 0,
+                    bool reweight = 1,
+                    bool random = 0,
                     float split = 0,
                     float drop = 0,
                     bool smear = 0
                     PIXELS1P(BKG_ARG))
 {
    printf("................................................................\n");
-   TTimeStamp myTime;
-   gRandom->SetSeed(myTime.GetNanoSec());
-   printf(" # init random: %f\n", gRandom->Rndm());
 
    TFile* finput = TFile::Open(input);
    TTree* t = (TTree*)finput->Get("pixel/PixelTree");
@@ -73,11 +71,11 @@ int transmute_trees(const char* input,
    if (t->GetEntries("run < 10") != 0) {
       printf("$ Monte Carlo analysis\n");
 
-      /* private RealisticXeXeCollision2017  */
+      /* private RealisticXeXeCollision2017 */
       vx = -0.026;
       vy = 0.081;
 
-      /* pixel barycentre        */
+      /* pixel barycentre */
       vz_shift = -0.323346;
       /* x:  0.10882  */
       /* y: -0.110405 */
@@ -89,24 +87,41 @@ int transmute_trees(const char* input,
       vx = 0.0830378;
       vy = -0.030276;
 
-      reweight_vertex = 0;
+      sample = -1;
+      reweight = 0;
 #define BKG_RESET(q) add_bkg_l##q = 0;
       PIXELS1P(BKG_RESET);
    }
 
-   if (reweight_vertex && (sample < 0 || sample > 3)) {
+   if (reweight && (sample < 0 || sample > NSAMPLES - 1)) {
       printf("! invalid sample [%i] for vertex reweighting!\n", sample);
       return 1;
    }
 
-   if (random_vertex) {
+   if (random) {
       printf("$ random vertex\n");
-      reweight_vertex = 0;
-   } else if (reweight_vertex) {
+      reweight = 0;
+   } else if (reweight) {
       printf("$ reweighting vertex\n  > sample: %i\n", sample);
    } else {
       printf("$ tracklet vertex\n");
    }
+
+   PixelEvent par;
+   set_pixel_data(t, par);
+
+   TFile* foutput = new TFile(output, "recreate");
+
+#define DECLARE_OBJECTS(q, w)                                                 \
+   TTree* trackletTree##q##w = new TTree("TrackletTree" #q #w, "tracklets");  \
+   TrackletEvent tdata##q##w;                                                 \
+   branch_tracklet_event(trackletTree##q##w, tdata##q##w);                    \
+
+   TRKLTS2P(DECLARE_OBJECTS);
+
+   TTimeStamp myTime;
+   gRandom->SetSeed(myTime.GetNanoSec());
+   printf(" # init random: %f\n", gRandom->Rndm());
 
 #define PROJECT_BACKGROUND(q)                                                 \
    TH3F* hl##q##hits = 0;                                                     \
@@ -119,23 +134,10 @@ int transmute_trees(const char* input,
 
    PIXELS1P(PROJECT_BACKGROUND);
 
-   PixelEvent par;
-   set_pixel_event(t, par);
-
-   TFile* foutput = new TFile(output, "recreate");
-
-#define DECLARE_OBJECTS(q, w)                                                 \
-   TTree* trackletTree##q##w = new TTree("TrackletTree" #q #w, "tracklets");  \
-   TrackletEvent tdata##q##w;                                                 \
-   branch_tracklet_event(trackletTree##q##w, tdata##q##w);                    \
-
-   TRKLTS2P(DECLARE_OBJECTS);
-
    uint64_t nentries = t->GetEntries();
    printf(" # number of events: %lu\n", nentries);
    printf("................................................................\n");
 
-   /* main routine                                                            */
    for (uint64_t i=start; i<nentries && i<end; i++) {
       t->GetEntry(i);
       if (i % 1000 == 0)
@@ -172,7 +174,7 @@ int transmute_trees(const char* input,
 
       PIXELS1P(ADD_BACKGROUND);
 
-      if (random_vertex) {
+      if (random) {
          vz = gRandom->Rndm() * 30 - 15 - vz_shift;
       } else {
          std::vector<RecHit> layer1raw, layer2raw;
@@ -188,7 +190,7 @@ int transmute_trees(const char* input,
       TRKLTS2P(SET_VERTEX);
 
       float event_weight = 1.;
-      if (reweight_vertex) {
+      if (reweight) {
          float event_vz = (vz < -98 ? par.vz[0] : vz) + vz_shift;
 
          /* run 304906 */
@@ -236,16 +238,16 @@ int transmute_trees(const char* input,
          tdata##q##w.r2[j]   = tracklets##q##w[j].r2;                         \
          tdata##q##w.deta[j] = tracklets##q##w[j].deta;                       \
          tdata##q##w.dphi[j] = tracklets##q##w[j].dphi;                       \
-         tdata##q##w.dr2[j] = tracklets##q##w[j].dr2;                         \
+         tdata##q##w.dr2[j]  = tracklets##q##w[j].dr2;                        \
       }                                                                       \
                                                                               \
       tdata##q##w.process = par.process;                                      \
       tdata##q##w.npart = 0;                                                  \
       for (int j=0; j<par.npart; j++) {                                       \
-         if (fabs(par.eta[j])>4 || par.chg[j]==0 ||                           \
-               abs(par.pdg[j])==11 || abs(par.pdg[j])==13)                    \
+         if (fabs(par.eta[j]) > 4 || par.chg[j] == 0 ||                       \
+               abs(par.pdg[j]) == 11 || abs(par.pdg[j]) == 13)                \
             continue;                                                         \
-         tdata##q##w.pt[tdata##q##w.npart] = par.pt[j];                       \
+         tdata##q##w.pt[tdata##q##w.npart]  = par.pt[j];                      \
          tdata##q##w.eta[tdata##q##w.npart] = par.eta[j];                     \
          tdata##q##w.phi[tdata##q##w.npart] = par.phi[j];                     \
          tdata##q##w.chg[tdata##q##w.npart] = par.chg[j];                     \
@@ -280,17 +282,27 @@ int main(int argc, char* argv[]) {
    } else if (argc == 5) {
       return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]));
    } else if (argc == 7) {
-      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]));
+      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]),
+            atoi(argv[5]), atoi(argv[6]));
    } else if (argc == 8) {
-      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]));
+      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]),
+            atoi(argv[5]), atoi(argv[6]), atoi(argv[7]));
    } else if (argc == 9) {
-      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]));
+      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]),
+            atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
+            atof(argv[8]));
    } else if (argc == 10) {
-      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]));
+      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]),
+            atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
+            atof(argv[8]), atof(argv[9]));
    } else if (argc == 11) {
-      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]), atoi(argv[10]));
+      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]),
+            atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
+            atof(argv[8]), atof(argv[9]), atoi(argv[10]));
    } else if (argc == 11 + NPIXEL1P) {
-      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atof(argv[8]), atof(argv[9]), atoi(argv[10]) PIXELS1P(BKG_ARGV));
+      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]),
+            atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
+            atof(argv[8]), atof(argv[9]), atoi(argv[10]) PIXELS1P(BKG_ARGV));
    } else {
       printf("usage: ./transmute_trees [in out]\n"
              "[start end]\n"

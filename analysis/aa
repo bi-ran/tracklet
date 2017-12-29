@@ -11,5 +11,4 @@ TYPE=(12 13 14 23 24 34 15 16 17)
 for ITYPE in ${!TYPE[@]}; do
     ./assess_acceps ${TYPE[ITYPE]} $@ &
 done
-
 wait

@@ -126,7 +126,7 @@ struct PixelEvent {
    int chg[MAXP], pdg[MAXP];
 };
 
-void set_pixel_event(TTree* t, PixelEvent& par) {
+void set_pixel_data(TTree* t, PixelEvent& par) {
    t->SetBranchAddress("run", &par.run);
    t->SetBranchAddress("event", &par.event);
    t->SetBranchAddress("lumi", &par.lumi);

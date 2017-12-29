@@ -164,8 +164,8 @@ int reap_results(int type,
    if (nWEGentry < 1) { printf("  ! no events selected - stopping\n"); }
 
    /* set acceptance maps                                                     */
-   tinput->Project("h1WEvz", "vz[1]", "weight" * esel);
-   tinput->Project("h1WEvzmult", Form("%s:vz[1]", mult), "weight" * esel);
+   tinput->Project("h1WEvz", "vz[1]", "weight" * (esel));
+   tinput->Project("h1WEvzmult", Form("%s:vz[1]", mult), "weight" * (esel));
 
    const int* amap = 0;
    if (apply_ext_accep_map) { amap = ext_accep_map(type); }
@@ -228,7 +228,7 @@ int reap_results(int type,
 
                   double alpha = truth / raw;
                   double alphaerr = alpha * sqrt(rawerr/raw * rawerr/raw + trutherr/truth * trutherr/truth);
-                  printf("   ^ alpha calculation: eta: %2i, vz: %2i, ntl: %2i, alpha: %8.2f [%8.2f], raw/sig/truth: {%8.2f/%8.2f}\n", x, z, y, alpha, alphaerr, raw, truth);
+                  printf("   ^ alpha calculation: eta: %2i, vz: %2i, ntl: %2i, alpha: %8.2f [%8.2f], raw/truth: {%8.2f/%8.2f}\n", x, z, y, alpha, alphaerr, raw, truth);
 
                   if (alpha > 0 && ((alpha/alphaerr > 5 && alpha < 2.5) || (alpha < 1.5))) {
                      h3alpha->SetBinContent(x, y, z, alpha);
@@ -286,7 +286,7 @@ int reap_results(int type,
 
       /* sd fraction (complement of gen selection)                            */
       tinput->Project("h1WENGsdf", Form("%s", mult), "weight" * (esel && !gsel));
-      tinput->Project("h1WEsdf", Form("%s", mult), "weight" * esel);
+      tinput->Project("h1WEsdf", Form("%s", mult), "weight" * (esel));
 
       h1sdf = (TH1F*)h1WENGsdf->Clone("h1sdf");
       h1sdf->Divide(h1WEsdf);
@@ -608,7 +608,7 @@ int reap_results(int type,
 
    TLegend* l1 = new TLegend(0.32, 0.20, 0.75, 0.40);
    lstyle(l1, 43, 15);
-   l1->AddEntry((TObject*)0, Form("%s", label), "");
+   l1->AddEntry((TObject*)0, label, "");
    l1->AddEntry(h1WGhadron, "Truth", "l");
    l1->AddEntry(h1WEraw, "Raw tracklets", "p");
    l1->AddEntry(h1WEcorr, "Corrected for efficiency", "p");
@@ -633,23 +633,41 @@ int main(int argc, char* argv[]) {
    if (argc == 4) {
       return reap_results(atoi(argv[1]), argv[2], argv[3]);
    } else if (argc == 5) {
-      return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4]);
+      return reap_results(atoi(argv[1]), argv[2], argv[3],
+            argv[4]);
    } else if (argc == 6) {
-      return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]));
+      return reap_results(atoi(argv[1]), argv[2], argv[3],
+            argv[4], atoi(argv[5]));
    } else if (argc == 8) {
-      return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]));
+      return reap_results(atoi(argv[1]), argv[2], argv[3],
+            argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]));
    } else if (argc == 9) {
-      return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]));
+      return reap_results(atoi(argv[1]), argv[2], argv[3],
+            argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
+            atoi(argv[8]));
    } else if (argc == 10) {
-      return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]));
+      return reap_results(atoi(argv[1]), argv[2], argv[3],
+            argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
+            atoi(argv[8]), atoi(argv[9]));
    } else if (argc == 11) {
-      return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]), atoi(argv[10]));
+      return reap_results(atoi(argv[1]), argv[2], argv[3],
+            argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
+            atoi(argv[8]), atoi(argv[9]),
+            atoi(argv[10]));
    } else if (argc == 12) {
-      return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]), atoi(argv[10]), atof(argv[11]));
+      return reap_results(atoi(argv[1]), argv[2], argv[3],
+            argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
+            atoi(argv[8]), atoi(argv[9]),
+            atoi(argv[10]), atof(argv[11]));
    } else if (argc == 13) {
-      return reap_results(atoi(argv[1]), argv[2], argv[3], argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), atoi(argv[8]), atoi(argv[9]), atoi(argv[10]), atof(argv[11]), argv[12]);
+      return reap_results(atoi(argv[1]), argv[2], argv[3],
+            argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
+            atoi(argv[8]), atoi(argv[9]),
+            atoi(argv[10]), atof(argv[11]), argv[12]);
    } else {
-      printf("usage: ./reap_results [type] [input] [label] [clabel] [applyc] [cmin cmax] [applyg] [extacc] [mult] [maxdr2] [accep dir]\n");
+      printf("usage: ./reap_results [type] [input] [label]\n"
+             "[clabel] [applyc] [cmin cmax] [applyg] [extacc]\n"
+             "[mult] [maxdr2] [accep dir]\n");
       return -1;
    }
 }

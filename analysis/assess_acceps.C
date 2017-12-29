@@ -26,26 +26,20 @@ void convert(TH2* h1) {
     delete hvz;
 }
 
-int assess_acceps(int type, std::string data_list, std::string mc_list, const char* path, const char* label, float maxdr2) {
+int assess_acceps(int type, float maxdr2,
+                  const char* data_list, const char* mc_list,
+                  const char* path, const char* label) {
     std::string line;
 
-    std::vector<std::string> datafiles;
+    TChain* tdata = new TChain(Form("TrackletTree%i", type));
     std::ifstream datastream(data_list);
     while (std::getline(datastream, line))
-        datafiles.push_back(line);
-
-    TChain* tdata = new TChain(Form("TrackletTree%i", type));
-    for (std::size_t f=0; f<datafiles.size(); ++f)
-        tdata->Add(datafiles[f].c_str());
-
-    std::vector<std::string> mcfiles;
-    std::ifstream mcstream(mc_list);
-    while (std::getline(mcstream, line))
-        mcfiles.push_back(line);
+        tdata->Add(line.c_str());
 
     TChain* tmc = new TChain(Form("TrackletTree%i", type));
-    for (std::size_t f=0; f<mcfiles.size(); ++f)
-        tmc->Add(mcfiles[f].c_str());
+    std::ifstream mcstream(mc_list);
+    while (std::getline(mcstream, line))
+        tmc->Add(line.c_str());
 
     TFile* fout = new TFile(Form("%s/acceptance-%i.root", path, type), "recreate");
 
@@ -53,24 +47,24 @@ int assess_acceps(int type, std::string data_list, std::string mc_list, const ch
 #define INCLUDE_ETA_RANGE
 #include "include/bins.h"
 
-    int netafine = neta * 200;
-    int nvzfine = nvz * 200;
+    int nfeta = neta * 200;
+    int nfvz = nvz * 200;
 
-    TH2D* hdata = new TH2D("hdata", "", netafine, etamin, etamax, nvzfine, vzmin, vzmax);
+    TH2D* hdata = new TH2D("hdata", "", nfeta, etamin, etamax, nfvz, vzmin, vzmax);
     tdata->Project("hdata", "vz[1]:eta1", Form("dr2<%f && abs(vz[1])<15", maxdr2));
     convert(hdata);
     htitle(hdata, ";#eta;v_{z}");
     TH2D* hdatacoarse = (TH2D*)hdata->Clone("hdatacoarse");
-    hdatacoarse->RebinX(netafine / neta);
-    hdatacoarse->RebinY(nvzfine / nvz);
+    hdatacoarse->RebinX(nfeta / neta);
+    hdatacoarse->RebinY(nfvz / nvz);
 
-    TH2D* hmc = new TH2D("hmc", "", netafine, etamin, etamax, nvzfine, vzmin, vzmax);
+    TH2D* hmc = new TH2D("hmc", "", nfeta, etamin, etamax, nfvz, vzmin, vzmax);
     tmc->Project("hmc", "vz[1]:eta1", Form("dr2<%f && abs(vz[1])<15", maxdr2));
     convert(hmc);
     htitle(hmc, ";#eta;v_{z}");
     TH2D* hmccoarse = (TH2D*)hmc->Clone("hmccoarse");
-    hmccoarse->RebinX(netafine / neta);
-    hmccoarse->RebinY(nvzfine / nvz);
+    hmccoarse->RebinX(nfeta / neta);
+    hmccoarse->RebinY(nfvz / nvz);
 
     TCanvas* c1 = new TCanvas("c1", "", 1200, 600);
     c1->Divide(2, 1);
@@ -100,9 +94,9 @@ int assess_acceps(int type, std::string data_list, std::string mc_list, const ch
 
 int main(int argc, char* argv[]) {
     if (argc == 7) {
-        return assess_acceps(atoi(argv[1]), argv[2], argv[3], argv[4], argv[5], atof(argv[6]));
+        return assess_acceps(atoi(argv[1]), atof(argv[2]), argv[3], argv[4], argv[5], argv[6]);
     } else {
-        printf("usage: ./assess_acceps [type] [data] [mc] [path] [label] [dr2]\n");
+        printf("usage: ./assess_acceps [type] [dr2] [data] [mc] [path] [label]\n");
         return 1;
     }
 }

@@ -6,9 +6,9 @@
 #include "TCanvas.h"
 #include "TLegend.h"
 
-#include <fstream>
 #include <vector>
 #include <string>
+#include <fstream>
 
 #include "include/cosmetics.h"
 
@@ -53,34 +53,25 @@ int evaluate_effs(const char* list) {
    }
 
    TCanvas* c1 = new TCanvas("c1", "", 600, 600);
-
    TLegend* l1 = new TLegend(0.5, 0.56, 0.9, 0.72);
    lstyle(l1, 43, 16);
-
    for (std::size_t i = 0; i < nfiles; ++i) {
       hformat(heff[i], 0.f, 1.2f, ";number of pixel hits (layer 1);efficiency");
       heff[i]->Draw("same");
-
       l1->AddEntry(heff[i], legends[i].c_str(), "pl");
    }
-
    l1->Draw();
-
    c1->SaveAs("figs/vertex/vertex-eff.png");
 
    TCanvas* c2 = new TCanvas("c2", "", 600, 600);
    c2->SetLogy();
-
    TLegend* l2 = new TLegend(0.5, 0.56, 0.9, 0.72);
    lstyle(l2, 43, 16);
-
    for (std::size_t i = 0; i < nfiles; ++i) {
       hformat(hres[i], 0.001f, 1.f, ";number of pixel hits (layer 1);resolution (cm)");
       hres[i]->Draw("same");
-
       l2->AddEntry(hres[i], legends[i].c_str(), "pl");
    }
-
    l2->Draw();
 
    c2->SaveAs("figs/vertex/vertex-res.png");
