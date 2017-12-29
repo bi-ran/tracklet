@@ -16,31 +16,23 @@ for TYPE in ${TYPES[@]}; do
         if [[ $5 -gt 0 ]]; then
             for (( CMAX=20; CMAX>=$5; CMAX-=$5 )); do
                 CMIN=$(( CMAX - $5 ))
-                ./reap_results $TYPE $1 $2.a.$CMIN.$CMAX $3.a.$CMIN.$CMAX $4 $CMIN $CMAX ${@:6} > notes/log-rr-$2.a.$CMIN.$CMAX-$TYPE.log &
+                sem -j+0 --linebuffer "./reap_results $TYPE $1 $2.a.$CMIN.$CMAX $3.a.$CMIN.$CMAX $4 $CMIN $CMAX ${@:6} > notes/log-rr-$2.a.$CMIN.$CMAX-$TYPE.log; mv correction-$2.a.$CMIN.$CMAX-$TYPE.root output/"
             done
-            wait
 
-            mv correction-$2.a.*.*-$TYPE.root output/
         elif [[ $5 -eq 0 ]]; then
             if [[ $# -lt 7 ]]; then
                 exit 2
             fi
 
-            ./reap_results $TYPE $1 $2.s.$6.$7 $3.s.$6.$7 $4 ${@:6} > notes/log-rr-$2.s.$6.$7-$TYPE.log &
+            sem -j+0 --linebuffer "./reap_results $TYPE $1 $2.s.$6.$7 $3.s.$6.$7 $4 ${@:6} > notes/log-rr-$2.s.$6.$7-$TYPE.log; mv correction-$2.s.$6.$7-$TYPE.root output/"
         else
-            ./reap_results $TYPE ${@:1:4} 0 20 ${@:6} > notes/log-rr-$2-$TYPE.log &
+            sem -j+0 --linebuffer "./reap_results $TYPE ${@:1:4} 0 20 ${@:6} > notes/log-rr-$2-$TYPE.log; mv correction-$2-$TYPE.root output/"
         fi
     else
-        ./reap_results $TYPE $@ > notes/log-rr-$2-$TYPE.log &
+        sem -j+0 --linebuffer "./reap_results $TYPE $@ > notes/log-rr-$2-$TYPE.log; mv correction-$2-$TYPE.root output/"
     fi
 done
-wait
-
-if [[ $# -le 4 || $5 -lt 0 ]]; then
-    mv correction-$2-*.root output/
-elif [[ $# -gt 4 && $5 -eq 0 ]]; then
-    mv correction-$2.s.$6.$7-*.root output/
-fi
+sem --wait
 
 make merge_monads || exit 1
 if [[ $# -gt 4 && $5 -ge 0 ]]; then
