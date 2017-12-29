@@ -11,6 +11,8 @@
 #include <vector>
 #include <fstream>
 
+#include "include/cosmetics.h"
+
 void convert(TH2* h1) {
     TH1D* hvz = (TH1D*)h1->ProjectionY("hvz");
 
@@ -24,7 +26,7 @@ void convert(TH2* h1) {
     delete hvz;
 }
 
-int assess_acceps(int type, std::string data_list, std::string mc_list, float maxdr2) {
+int assess_acceps(int type, std::string data_list, std::string mc_list, const char* path, const char* label, float maxdr2) {
     std::string line;
 
     std::vector<std::string> datafiles;
@@ -45,7 +47,7 @@ int assess_acceps(int type, std::string data_list, std::string mc_list, float ma
     for (std::size_t f=0; f<mcfiles.size(); ++f)
         tmc->Add(mcfiles[f].c_str());
 
-    TFile* fout = new TFile(Form("output/acceptance-%i.root", type), "recreate");
+    TFile* fout = new TFile(Form("%s/acceptance-%i.root", path, type), "recreate");
 
 #define INCLUDE_VZ_RANGE
 #define INCLUDE_ETA_RANGE
@@ -57,6 +59,7 @@ int assess_acceps(int type, std::string data_list, std::string mc_list, float ma
     TH2D* hdata = new TH2D("hdata", "", netafine, etamin, etamax, nvzfine, vzmin, vzmax);
     tdata->Project("hdata", "vz[1]:eta1", Form("dr2<%f && abs(vz[1])<15", maxdr2));
     convert(hdata);
+    htitle(hdata, ";#eta;v_{z}");
     TH2D* hdatacoarse = (TH2D*)hdata->Clone("hdatacoarse");
     hdatacoarse->RebinX(netafine / neta);
     hdatacoarse->RebinY(nvzfine / nvz);
@@ -64,6 +67,7 @@ int assess_acceps(int type, std::string data_list, std::string mc_list, float ma
     TH2D* hmc = new TH2D("hmc", "", netafine, etamin, etamax, nvzfine, vzmin, vzmax);
     tmc->Project("hmc", "vz[1]:eta1", Form("dr2<%f && abs(vz[1])<15", maxdr2));
     convert(hmc);
+    htitle(hmc, ";#eta;v_{z}");
     TH2D* hmccoarse = (TH2D*)hmc->Clone("hmccoarse");
     hmccoarse->RebinX(netafine / neta);
     hmccoarse->RebinY(nvzfine / nvz);
@@ -79,7 +83,7 @@ int assess_acceps(int type, std::string data_list, std::string mc_list, float ma
     hmc->SetStats(0);
     hmc->Draw("colz");
 
-    c1->SaveAs(Form("figs/acceptance/geometric-%i-fine.png", type));
+    c1->SaveAs(Form("figs/acceptance/geometric-%s-%i-fine.png", label, type));
 
     TCanvas* c2 = new TCanvas("c2", "", 600, 600);
     TH2D* hratio = (TH2D*)hdatacoarse->Clone("hratio");
@@ -87,7 +91,7 @@ int assess_acceps(int type, std::string data_list, std::string mc_list, float ma
     hratio->SetStats(0);
     hratio->Draw("colz");
 
-    c2->SaveAs(Form("figs/acceptance/geometric-%i.png", type));
+    c2->SaveAs(Form("figs/acceptance/geometric-%s-%i.png", label, type));
 
     fout->Write("", TObject::kOverwrite);
 
@@ -95,12 +99,10 @@ int assess_acceps(int type, std::string data_list, std::string mc_list, float ma
 }
 
 int main(int argc, char* argv[]) {
-    if (argc == 4) {
-        return assess_acceps(atoi(argv[1]), argv[2], argv[3], 0.25);
-    } else if (argc == 5) {
-        return assess_acceps(atoi(argv[1]), argv[2], argv[3], atof(argv[4]));
+    if (argc == 7) {
+        return assess_acceps(atoi(argv[1]), argv[2], argv[3], argv[4], argv[5], atof(argv[6]));
     } else {
-        printf("usage: ./assess_acceps [type] [data] [mc] (max dr2)\n");
+        printf("usage: ./assess_acceps [type] [data] [mc] [path] [label] [dr2]\n");
         return 1;
     }
 }
