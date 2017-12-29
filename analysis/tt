@@ -8,14 +8,17 @@ if [[ $# -lt 3 ]]; then
     exit 1
 fi
 
-PARTS=24
 ENTRIES=$1
-SPLIT=$(( ($ENTRIES + $PARTS - 1) / $PARTS ))
+[ $ENTRIES -le 0 ] && {
+    echo -e "error: negative total entries: $ENTRIES\n"; exit 1; }
 
-for PART in $(seq 0 $(( $PARTS - 1 )) ); do
+SIZE=1024
+SLICES=$(( ($ENTRIES - 1) / $SIZE ))
+
+for SLICE in $(seq 0 $SLICES ); do
     BASE=$(basename $3 .root)
-    ./transmute_trees $2 ${3}.$PART $(( $PART * $SPLIT )) $(( ($PART + 1) * $SPLIT )) ${@:4} &> notes/log-tt-$BASE-$1-${PART}.log &
+    sem -j-4 --linebuffer "./transmute_trees $2 ${3}.$SLICE $(( $SLICE * $SIZE )) $(( ($SLICE + 1) * $SIZE )) ${@:4} &> notes/log-tt-$BASE-$ENTRIES-${SLICE}.log; echo \"   done: part $SLICE\""
 done
+sem --wait
 
-wait
 hadd $3 ${3}.*
