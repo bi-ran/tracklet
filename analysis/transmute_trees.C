@@ -112,12 +112,12 @@ int transmute_trees(const char* input,
 
    TFile* foutput = new TFile(output, "recreate");
 
-#define DECLARE_OBJECTS(q, w)                                                 \
+#define DECLARE_TREES(q, w)                                                   \
    TTree* trackletTree##q##w = new TTree("TrackletTree" #q #w, "tracklets");  \
    TrackletEvent tdata##q##w;                                                 \
    branch_tracklet_event(trackletTree##q##w, tdata##q##w);                    \
 
-   TRKLTS2P(DECLARE_OBJECTS);
+   TRKLTS2P(DECLARE_TREES);
 
    TTimeStamp myTime;
    gRandom->SetSeed(myTime.GetNanoSec());
@@ -200,11 +200,17 @@ int transmute_trees(const char* input,
          event_weight = event_weight * data_pdf / mc_pdf;
       }
 
-#define PREPARE_HITS(q)                                                       \
+#define DECLARE_HITS(q)                                                       \
       std::vector<RecHit> layer##q;                                           \
+
+      PIXELS1P(DECLARE_HITS);
+
+#define PREPARE_HITS(q)                                                       \
       prepare_hits(layer##q, par, q, vx, vy, vz, split, drop, smear);         \
 
-      PIXELS1P(PREPARE_HITS);
+      if (reweight || sample < 0) {
+         PIXELS1P(PREPARE_HITS);
+      }
 
 #define RECONSTRUCT_TRACKLETS(q, w)                                           \
       std::vector<Tracklet> tracklets##q##w;                                  \
