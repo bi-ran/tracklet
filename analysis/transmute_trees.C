@@ -71,9 +71,9 @@ int transmute_trees(const char* input,
    if (t->GetEntries("run < 10") != 0) {
       printf("$ Monte Carlo analysis\n");
 
-      /* private RealisticXeXeCollision2017 */
-      vx = -0.026;
-      vy = 0.081;
+      /* RealisticXeXeCollision2017 */
+      vx = -0.026006;
+      vy = 0.0810894;
 
       /* pixel barycentre */
       vz_shift = -0.323346;
@@ -83,7 +83,7 @@ int transmute_trees(const char* input,
    } else {
       printf("$ data analysis\n");
 
-      /* 94X_dataRun2_Rereco17_ONLYXeXeBS_v1 */
+      /* 94X_dataRun2_ReReco_EOY17_v2 */
       vx = 0.0830378;
       vy = -0.030276;
 
