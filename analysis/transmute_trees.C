@@ -39,10 +39,10 @@
 
 #define NSAMPLES  4
 static const float vzpar[NSAMPLES][2] = {
-   {-0.0338060, 4.75367},  /* hydjet */
-   {-0.0195822, 4.80904},  /* ampt, no melt */
-   {-0.0601216, 4.80841},  /* ampt, string melt */
-   {-0.0635175, 4.83656}   /* epos */
+   {0.277525, 4.65668},    /* hydjet */
+   {0.300284, 4.72910},    /* ampt, no melt */
+   {0.312837, 4.73380},    /* ampt, string melt */
+   {0.246955, 4.70907}     /* epos */
 };
 
 #define BKG_ARG(q)   , float add_bkg_l##q = 0
