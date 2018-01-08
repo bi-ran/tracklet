@@ -2,47 +2,37 @@
 
 make reap_results || exit 1
 
-if [[ $# -eq 0 ]]; then
-    echo -e 'usage: ./rr [input] [label] (clabel) (applyc) (-1) ($@)'
-    echo -e 'usage: ./rr [input] [label] [clabel] [applyc] [0] [cmin cmax] ($@)'
-    echo -e 'usage: ./rr [input] [label] [clabel] [applyc] [interval] ($@)\n'
+if [[ $# -lt 3 ]]; then
+    echo -e 'usage: ./rr [input] [label] (-1) ($@)'
+    echo -e 'usage: ./rr [input] [label] [0] [cmin cmax] ($@)'
+    echo -e 'usage: ./rr [input] [label] [interval] ($@)\n'
     ./reap_results
     exit 1
 fi
 
 TYPES=(12 13 14 23 24 34 15 16 17)
 for TYPE in ${TYPES[@]}; do
-    if [[ $# -gt 4 ]]; then
-        if [[ $5 -gt 0 ]]; then
-            for (( CMAX=20; CMAX>=$5; CMAX-=$5 )); do
-                CMIN=$(( CMAX - $5 ))
-                sem -j+0 --linebuffer \
-                        "./reap_results $TYPE \
-                        $1 $2.a.$CMIN.$CMAX $3.a.$CMIN.$CMAX $4 \
-                        $CMIN $CMAX ${@:6} \
-                        > notes/log-rr-$2.a.$CMIN.$CMAX-$TYPE.log; \
-                        mv correction-$2.a.$CMIN.$CMAX-$TYPE.root output/"
-            done
-
-        elif [[ $5 -eq 0 ]]; then
-            if [[ $# -lt 7 ]]; then
-                exit 2
-            fi
-
+    if [[ $3 -gt 0 ]]; then
+        for (( CMAX=20; CMAX>=$3; CMAX-=$3 )); do
+            CMIN=$(( CMAX - $3 ))
             sem -j+0 --linebuffer \
-                    "./reap_results $TYPE $1 $2.s.$6.$7 \
-                    $3.s.$6.$7 $4 ${@:6} \
-                    > notes/log-rr-$2.s.$6.$7-$TYPE.log; \
-                    mv correction-$2.s.$6.$7-$TYPE.root output/"
-        else
-            sem -j+0 --linebuffer \
-                    "./reap_results $TYPE ${@:1:4} 0 20 ${@:6} \
-                    > notes/log-rr-$2-$TYPE.log; \
-                    mv correction-$2-$TYPE.root output/"
-        fi
+                    "./reap_results $TYPE $1 $2.a.$CMIN.$CMAX \
+                    $CMIN $CMAX $4.a.$CMIN.$CMAX $5 ${@:6} \
+                    > notes/log-rr-$2.a.$CMIN.$CMAX-$TYPE.log; \
+                    mv correction-$2.a.$CMIN.$CMAX-$TYPE.root output/"
+        done
+    elif [[ $3 -eq 0 ]]; then
+        [[ $# -lt 5 ]] && exit 2
+
+        sem -j+0 --linebuffer \
+                "./reap_results $TYPE $1 $2.s.$4.$5 \
+                $4 $5 $6.s.$4.$5 $7 ${@:8} \
+                > notes/log-rr-$2.s.$4.$5-$TYPE.log; \
+                mv correction-$2.s.$4.$5-$TYPE.root output/"
     else
         sem -j+0 --linebuffer \
-                "./reap_results $TYPE $@ \
+                "./reap_results $TYPE ${@:1:2} \
+                0 20 ${@:4} \
                 > notes/log-rr-$2-$TYPE.log; \
                 mv correction-$2-$TYPE.root output/"
     fi
@@ -50,18 +40,16 @@ done
 sem --wait
 
 make merge_monads || exit 1
-if [[ $# -gt 4 && $5 -ge 0 ]]; then
-    if [[ $5 -gt 0 ]]; then
-        for (( CMAX=20; CMAX>=$5; CMAX-=$5 )); do
-            CMIN=$(( CMAX - $5 ))
-            ./merge_monads $2.a.$CMIN.$CMAX
-        done
+if [[ $3 -gt 0 ]]; then
+    for (( CMAX=20; CMAX>=$3; CMAX-=$3 )); do
+        CMIN=$(( CMAX - $3 ))
+        ./merge_monads $2.a.$CMIN.$CMAX
+    done
 
-        make collect_cents || exit 1
-        ./collect_cents $2.a $5
-    else
-        ./merge_monads $2.s.$6.$7
-    fi
+    make collect_cents || exit 1
+    ./collect_cents $2.a $3
+elif [[ $3 -eq 0 ]]; then
+    ./merge_monads $2.s.$4.$5
 else
     ./merge_monads $2
 fi
