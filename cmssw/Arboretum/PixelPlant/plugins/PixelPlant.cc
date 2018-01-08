@@ -404,7 +404,7 @@ void PixelPlant::fill_particles(const edm::Event& iEvent) {
    pix_.npart = 0;
    for (auto it = generator->particles_begin(); it != generator->particles_end(); ++it) {
       if ((*it)->status() != 1) { continue; }
-      if (fabs((*it)->momentum().eta()) > 3) { continue; }
+      if (fabs((*it)->momentum().eta()) > 4) { continue; }
 
       int pdg = (*it)->pdg_id();
       int chg = (int)(pdt_->particle(pdg)->charge());
