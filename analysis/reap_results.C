@@ -23,14 +23,15 @@
 int reap_results(int type,
                  const char* input,
                  const char* label,
+                 int cmin = 0, int cmax = 20,   // centrality selection
                  const char* clabel = 0,        // correction file label
                  bool apply_correction = 0,     // apply external corrections
-                 int cmin = 0, int cmax = 20,   // centrality selection
                  bool apply_geometry_corr = 0,  // apply geometric correction
                  bool apply_ext_accep_map = 1,  // use predefined acceptance map
                  bool multhandle = 0,           // alternate mult handle
                  float maxdr2 = 0.25,           // signal region selection
-                 const char* accepdir = "output/acceptances/rlt0p5")
+                 const char* accepdir =         // acceptance corrections path
+                 "output/acceptances/rlt0p5")
 {
    TFile* finput = new TFile(input, "read");
    TTree* tinput = (TTree*)finput->Get(Form("TrackletTree%i", type));
@@ -635,42 +636,35 @@ int reap_results(int type,
 int main(int argc, char* argv[]) {
    if (argc == 4) {
       return reap_results(atoi(argv[1]), argv[2], argv[3]);
-   } else if (argc == 5) {
-      return reap_results(atoi(argv[1]), argv[2], argv[3],
-            argv[4]);
    } else if (argc == 6) {
       return reap_results(atoi(argv[1]), argv[2], argv[3],
-            argv[4], atoi(argv[5]));
+            atoi(argv[4]), atoi(argv[5]));
    } else if (argc == 8) {
       return reap_results(atoi(argv[1]), argv[2], argv[3],
-            argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]));
+            atoi(argv[4]), atoi(argv[5]), argv[6], atoi(argv[7]));
    } else if (argc == 9) {
       return reap_results(atoi(argv[1]), argv[2], argv[3],
-            argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
+            atoi(argv[4]), atoi(argv[5]), argv[6], atoi(argv[7]),
             atoi(argv[8]));
    } else if (argc == 10) {
       return reap_results(atoi(argv[1]), argv[2], argv[3],
-            argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
+            atoi(argv[4]), atoi(argv[5]), argv[6], atoi(argv[7]),
             atoi(argv[8]), atoi(argv[9]));
    } else if (argc == 11) {
       return reap_results(atoi(argv[1]), argv[2], argv[3],
-            argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
+            atoi(argv[4]), atoi(argv[5]), argv[6], atoi(argv[7]),
             atoi(argv[8]), atoi(argv[9]),
             atoi(argv[10]));
-   } else if (argc == 12) {
-      return reap_results(atoi(argv[1]), argv[2], argv[3],
-            argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
-            atoi(argv[8]), atoi(argv[9]),
-            atoi(argv[10]), atof(argv[11]));
    } else if (argc == 13) {
       return reap_results(atoi(argv[1]), argv[2], argv[3],
-            argv[4], atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
+            atoi(argv[4]), atoi(argv[5]), argv[6], atoi(argv[7]),
             atoi(argv[8]), atoi(argv[9]),
             atoi(argv[10]), atof(argv[11]), argv[12]);
    } else {
       printf("usage: ./reap_results [type] [input] [label]\n"
-             "[clabel] [applyc] [cmin cmax] [applyg] [extacc]\n"
-             "[mult] [maxdr2] [accep dir]\n");
+             "(cmin cmax) (corrections (apply))"
+             "(geometric-correction) (external-acceptance-maps)\n"
+             "(multiplicity-handle) (maxdr2 (gcorr-path))\n");
       return -1;
    }
 }
