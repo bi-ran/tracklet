@@ -440,7 +440,8 @@ void PixelPlant::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    if (fillhf_) { fill_hf(iEvent); } else {
       pix_.nhfp = 0; pix_.nhfn = 0;
       pix_.hft = 0; pix_.hftp = 0; pix_.hftm = 0; }
-   if (fillgen_) { fill_particles(iEvent); } else { pix_.npart = 0; }
+   if (fillgen_) { fill_particles(iEvent); } else {
+      pix_.process = -1; pix_.npart = 0; }
 
    tpix_->Fill();
 }
