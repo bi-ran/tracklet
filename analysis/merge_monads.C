@@ -9,40 +9,15 @@
 #include <map>
 
 #include "include/cosmetics.h"
+#include "include/defines.h"
 
 #define TRKLTS2P(EXPAND)      \
    BTRKLT2P(EXPAND)           \
    FTRKLT2P(EXPAND)           \
 
-#define BTRKLT2P(EXPAND)      \
-   EXPAND(1, 2)               \
-   EXPAND(1, 3)               \
-   EXPAND(1, 4)               \
-   EXPAND(2, 3)               \
-   EXPAND(2, 4)               \
-   EXPAND(3, 4)               \
-
-#define FTRKLT2P(EXPAND)      \
-   EXPAND(1, 5)               \
-   EXPAND(1, 6)               \
-   EXPAND(1, 7)               \
-
 #define TRKLTS3P(p, EXPAND)   \
    BTRKLT3P(p, EXPAND)        \
    FTRKLT3P(p, EXPAND)        \
-
-#define BTRKLT3P(p, EXPAND)   \
-   EXPAND(p, 1, 2)            \
-   EXPAND(p, 1, 3)            \
-   EXPAND(p, 1, 4)            \
-   EXPAND(p, 2, 3)            \
-   EXPAND(p, 2, 4)            \
-   EXPAND(p, 3, 4)            \
-
-#define FTRKLT3P(p, EXPAND)   \
-   EXPAND(p, 1, 5)            \
-   EXPAND(p, 1, 6)            \
-   EXPAND(p, 1, 7)            \
 
 #define GEN2P(p, EXPAND)      \
    EXPAND(p, dpmjet)          \

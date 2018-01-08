@@ -14,6 +14,7 @@
 #include <fstream>
 
 #include "include/cosmetics.h"
+#include "include/defines.h"
 
 #define OPT(val)  options[opt].val
 #define CS(str)   str.c_str()
@@ -23,27 +24,9 @@
    BPIX1P(EXPAND)          \
    FPIX1P(EXPAND)          \
 
-#define BPIX1P(EXPAND)     \
-   EXPAND(1)               \
-   EXPAND(2)               \
-   EXPAND(3)               \
-   EXPAND(4)               \
-
-#define FPIX1P(EXPAND)     \
-   EXPAND(5)               \
-   EXPAND(6)               \
-   EXPAND(7)               \
-
 #define TRKLTS2P(EXPAND)   \
-   EXPAND(1, 2)            \
-   EXPAND(1, 3)            \
-   EXPAND(1, 4)            \
-   EXPAND(2, 3)            \
-   EXPAND(2, 4)            \
-   EXPAND(3, 4)            \
-   EXPAND(1, 5)            \
-   EXPAND(1, 6)            \
-   EXPAND(1, 7)            \
+   BTRKLT2P(EXPAND)        \
+   FTRKLT2P(EXPAND)        \
 
 typedef struct varinfo_t {
    std::string                         id;

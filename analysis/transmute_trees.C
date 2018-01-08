@@ -10,28 +10,17 @@
 #include "TFitResult.h"
 
 #define PIXELS1P(EXPAND)   \
-   EXPAND(1)               \
-   EXPAND(2)               \
-   EXPAND(3)               \
-   EXPAND(4)               \
-   EXPAND(5)               \
-   EXPAND(6)               \
-   EXPAND(7)               \
+   BPIX1P(EXPAND)          \
+   FPIX1P(EXPAND)          \
 
 #define COUNT(q)  + 1
 #define NPIXEL1P  (0 PIXELS1P(COUNT))
 
 #define TRKLTS2P(EXPAND)   \
-   EXPAND(1, 2)            \
-   EXPAND(1, 3)            \
-   EXPAND(1, 4)            \
-   EXPAND(2, 3)            \
-   EXPAND(2, 4)            \
-   EXPAND(3, 4)            \
-   EXPAND(1, 5)            \
-   EXPAND(1, 6)            \
-   EXPAND(1, 7)            \
+   BTRKLT2P(EXPAND)        \
+   FTRKLT2P(EXPAND)        \
 
+#include "include/defines.h"
 #include "include/structs.h"
 #include "include/rechit.h"
 #include "include/tracklet.h"
