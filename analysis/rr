@@ -10,9 +10,12 @@ if [[ $# -lt 3 ]]; then
     exit 1
 fi
 
+make merge_monads || exit 1
+make collect_cents || exit 1
+
 TYPES=(12 13 14 23 24 34 15 16 17)
-for TYPE in ${TYPES[@]}; do
-    if [[ $3 -gt 0 ]]; then
+if [[ $3 -gt 0 ]]; then
+    for TYPE in ${TYPES[@]}; do
         for (( CMAX=20; CMAX>=$3; CMAX-=$3 )); do
             CMIN=$(( CMAX - $3 ))
             sem -j+0 --linebuffer \
@@ -21,35 +24,37 @@ for TYPE in ${TYPES[@]}; do
                     > notes/log-rr-$2.a.$CMIN.$CMAX-$TYPE.log; \
                     mv correction-$2.a.$CMIN.$CMAX-$TYPE.root output/"
         done
-    elif [[ $3 -eq 0 ]]; then
-        [[ $# -lt 5 ]] && exit 2
+    done
+    sem --wait
 
-        sem -j+0 --linebuffer \
-                "./reap_results $TYPE $1 $2.s.$4.$5 \
-                $4 $5 $6.s.$4.$5 $7 ${@:8} \
-                > notes/log-rr-$2.s.$4.$5-$TYPE.log; \
-                mv correction-$2.s.$4.$5-$TYPE.root output/"
-    else
-        sem -j+0 --linebuffer \
-                "./reap_results $TYPE ${@:1:2} \
-                0 20 ${@:4} \
-                > notes/log-rr-$2-$TYPE.log; \
-                mv correction-$2-$TYPE.root output/"
-    fi
-done
-sem --wait
-
-make merge_monads || exit 1
-if [[ $3 -gt 0 ]]; then
     for (( CMAX=20; CMAX>=$3; CMAX-=$3 )); do
         CMIN=$(( CMAX - $3 ))
         ./merge_monads $2.a.$CMIN.$CMAX
     done
 
-    make collect_cents || exit 1
     ./collect_cents $2.a $3
 elif [[ $3 -eq 0 ]]; then
+    [[ $# -lt 5 ]] && exit 2
+
+    for TYPE in ${TYPES[@]}; do
+        sem -j+0 --linebuffer \
+                "./reap_results $TYPE $1 $2.s.$4.$5 \
+                $4 $5 $6.s.$4.$5 $7 ${@:8} \
+                > notes/log-rr-$2.s.$4.$5-$TYPE.log; \
+                mv correction-$2.s.$4.$5-$TYPE.root output/"
+    done
+    sem --wait
+
     ./merge_monads $2.s.$4.$5
 else
+    for TYPE in ${TYPES[@]}; do
+        sem -j+0 --linebuffer \
+                "./reap_results $TYPE ${@:1:2} \
+                0 20 ${@:4} \
+                > notes/log-rr-$2-$TYPE.log; \
+                mv correction-$2-$TYPE.root output/"
+    done
+    sem --wait
+
     ./merge_monads $2
 fi
