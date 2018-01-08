@@ -228,8 +228,13 @@ int merge_monads(const char* label) {
    TH1F* hsym = (TH1F*)havg->Clone("hsym");
    int nbins = hsym->GetNbinsX();
    for (int i=1; i<=nbins; i++) {
-      hsym->SetBinContent(i, (havg->GetBinContent(i) + havg->GetBinContent(nbins - i + 1)) / 2);
-      hsym->SetBinError(i, (havg->GetBinError(i) + havg->GetBinError(nbins - i + 1)) / 2);
+      if (havg->GetBinContent(i) != 0 && havg->GetBinContent(nbins - i + 1) != 0) {
+         hsym->SetBinContent(i, (havg->GetBinContent(i) + havg->GetBinContent(nbins - i + 1)) / 2);
+         hsym->SetBinError(i, (havg->GetBinError(i) + havg->GetBinError(nbins - i + 1)) / 2);
+      } else {
+         hsym->SetBinContent(i, havg->GetBinContent(i) + havg->GetBinContent(nbins - i + 1));
+         hsym->SetBinError(i, havg->GetBinError(i) + havg->GetBinError(nbins - i + 1));
+      }
    }
 
    hframe->Draw();
