@@ -113,14 +113,13 @@ struct PixelEvent {
    float bsx, bsy, bsz;
    int nv; float vx[8], vy[8], vz[8];
    int hlt; int nhfp, nhfn; float hft;
-   int nhits1, nhits2, nhits3, nhits4, nhits5, nhits6, nhits7;
-   float eta1[MAXL1], phi1[MAXL1], r1[MAXL1], cs1[MAXL1];
-   float eta2[MAXL2], phi2[MAXL2], r2[MAXL2], cs2[MAXL2];
-   float eta3[MAXL3], phi3[MAXL3], r3[MAXL3], cs3[MAXL3];
-   float eta4[MAXL4], phi4[MAXL4], r4[MAXL4], cs4[MAXL4];
-   float eta5[MAXL5], phi5[MAXL5], r5[MAXL5], cs5[MAXL5];
-   float eta6[MAXL6], phi6[MAXL6], r6[MAXL6], cs6[MAXL6];
-   float eta7[MAXL7], phi7[MAXL7], r7[MAXL7], cs7[MAXL7];
+
+#define DECLARE_LAYER_VARIABLES(q)                                            \
+   int nhits##q;                                                              \
+   float eta##q[MAXL##q], phi##q[MAXL##q], r##q[MAXL##q], cs##q[MAXL##q];     \
+
+   PIXELS1P(DECLARE_LAYER_VARIABLES)
+
    int process, npart;
    float pt[MAXP], eta[MAXP], phi[MAXP];
    int chg[MAXP], pdg[MAXP];
@@ -145,41 +144,14 @@ void set_pixel_data(TTree* t, PixelEvent& par) {
    t->SetBranchAddress("nhfn", &par.nhfn);
    t->SetBranchAddress("hft", &par.hft);
 
-   t->SetBranchAddress("nhits1", &par.nhits1);
-   t->SetBranchAddress("eta1", par.eta1);
-   t->SetBranchAddress("phi1", par.phi1);
-   t->SetBranchAddress("r1", par.r1);
-   t->SetBranchAddress("cs1", par.cs1);
-   t->SetBranchAddress("nhits2", &par.nhits2);
-   t->SetBranchAddress("eta2", par.eta2);
-   t->SetBranchAddress("phi2", par.phi2);
-   t->SetBranchAddress("r2", par.r2);
-   t->SetBranchAddress("cs2", par.cs2);
-   t->SetBranchAddress("nhits3", &par.nhits3);
-   t->SetBranchAddress("eta3", par.eta3);
-   t->SetBranchAddress("phi3", par.phi3);
-   t->SetBranchAddress("r3", par.r3);
-   t->SetBranchAddress("cs3", par.cs3);
-   t->SetBranchAddress("nhits4", &par.nhits4);
-   t->SetBranchAddress("eta4", par.eta4);
-   t->SetBranchAddress("phi4", par.phi4);
-   t->SetBranchAddress("r4", par.r4);
-   t->SetBranchAddress("cs4", par.cs4);
-   t->SetBranchAddress("nhits5", &par.nhits5);
-   t->SetBranchAddress("eta5", par.eta5);
-   t->SetBranchAddress("phi5", par.phi5);
-   t->SetBranchAddress("r5", par.r5);
-   t->SetBranchAddress("cs5", par.cs5);
-   t->SetBranchAddress("nhits6", &par.nhits6);
-   t->SetBranchAddress("eta6", par.eta6);
-   t->SetBranchAddress("phi6", par.phi6);
-   t->SetBranchAddress("r6", par.r6);
-   t->SetBranchAddress("cs6", par.cs6);
-   t->SetBranchAddress("nhits7", &par.nhits7);
-   t->SetBranchAddress("eta7", par.eta7);
-   t->SetBranchAddress("phi7", par.phi7);
-   t->SetBranchAddress("r7", par.r7);
-   t->SetBranchAddress("cs7", par.cs7);
+#define SET_LAYER_BRANCHES(q)                                                 \
+   t->SetBranchAddress("nhits" #q, &par.nhits##q);                            \
+   t->SetBranchAddress("eta" #q, par.eta##q);                                 \
+   t->SetBranchAddress("phi" #q, par.phi##q);                                 \
+   t->SetBranchAddress("r" #q, par.r##q);                                     \
+   t->SetBranchAddress("cs" #q, par.cs##q);                                   \
+
+   PIXELS1P(SET_LAYER_BRANCHES)
 
    t->SetBranchAddress("process", &par.process);
    t->SetBranchAddress("npart", &par.npart);

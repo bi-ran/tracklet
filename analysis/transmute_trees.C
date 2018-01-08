@@ -9,11 +9,6 @@
 #include "TGraph.h"
 #include "TFitResult.h"
 
-#include "include/structs.h"
-#include "include/rechit.h"
-#include "include/tracklet.h"
-#include "include/hf.h"
-
 #define PIXELS1P(EXPAND)   \
    EXPAND(1)               \
    EXPAND(2)               \
@@ -36,6 +31,11 @@
    EXPAND(1, 5)            \
    EXPAND(1, 6)            \
    EXPAND(1, 7)            \
+
+#include "include/structs.h"
+#include "include/rechit.h"
+#include "include/tracklet.h"
+#include "include/hf.h"
 
 #define NSAMPLES  4
 static const float vzpar[NSAMPLES][2] = {
