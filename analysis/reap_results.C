@@ -35,7 +35,10 @@ int reap_results(int type,
    TFile* finput = new TFile(input, "read");
    TTree* tinput = (TTree*)finput->Get(Form("TrackletTree%i", type));
 
-   bool ismc = !tinput->GetEntries("npart!=0");
+   TTree* ttruth = (TTree*)finput->Get("truth");
+   tinput->AddFriend(ttruth);
+
+   bool ismc = !ttruth->GetEntries("npart!=0");
 
    if (ismc) { printf("$ monte carlo analysis\n"); }
    else { printf("$ data analysis\n"); }

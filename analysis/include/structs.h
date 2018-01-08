@@ -10,102 +10,63 @@
 #define MAXL7  16000
 #define MAXP   15000
 
-struct TrackletEvent {
+struct data_t {
    int run, event, lumi, bx;
-   float weight; int mix;
-   int nv; float vx[8], vy[8], vz[8];
+   int nv; float vx[8], vy[8], vz[8]; float weight;
    int hlt; int nhfp, nhfn; float hft; int cbin;
    float eta1[MAXL7], phi1[MAXL7], r1[MAXL7];
    float eta2[MAXL7], phi2[MAXL7], r2[MAXL7];
    float deta[MAXL7], dphi[MAXL7], dr2[MAXL7];
    int ntracklet, nhits, nhit1, nhit2;
+};
+
+struct truth_t {
    int process, npart;
    float pt[MAXP], eta[MAXP], phi[MAXP];
    int chg[MAXP], pdg[MAXP];
 };
 
-void branch_tracklet_event(TTree* t, TrackletEvent& tdata) {
-   t->Branch("run", &tdata.run, "run/I");
-   t->Branch("lumi", &tdata.lumi, "lumi/I");
-   t->Branch("event", &tdata.event, "event/I");
-   t->Branch("bx", &tdata.bx, "bx/I");
-   t->Branch("weight", &tdata.weight, "weight/F");
-   t->Branch("mix", &tdata.mix, "mix/I");
+void branch_event_data(TTree* t, data_t& data) {
+   t->Branch("run", &data.run, "run/I");
+   t->Branch("lumi", &data.lumi, "lumi/I");
+   t->Branch("event", &data.event, "event/I");
+   t->Branch("bx", &data.bx, "bx/I");
 
-   t->Branch("nv", &tdata.nv, "nv/I");
-   t->Branch("vx", tdata.vx, "vx[nv]/F");
-   t->Branch("vy", tdata.vy, "vy[nv]/F");
-   t->Branch("vz", tdata.vz, "vz[nv]/F");
+   t->Branch("nv", &data.nv, "nv/I");
+   t->Branch("vx", data.vx, "vx[nv]/F");
+   t->Branch("vy", data.vy, "vy[nv]/F");
+   t->Branch("vz", data.vz, "vz[nv]/F");
+   t->Branch("weight", &data.weight, "weight/F");
 
-   t->Branch("hlt", &tdata.hlt, "hlt/I");
-   t->Branch("nhfp", &tdata.nhfp, "nhfp/I");
-   t->Branch("nhfn", &tdata.nhfn, "nhfn/I");
-   t->Branch("hft", &tdata.hft, "hft/F");
-   t->Branch("cbin", &tdata.cbin, "cbin/I");
+   t->Branch("hlt", &data.hlt, "hlt/I");
+   t->Branch("nhfp", &data.nhfp, "nhfp/I");
+   t->Branch("nhfn", &data.nhfn, "nhfn/I");
+   t->Branch("hft", &data.hft, "hft/F");
+   t->Branch("cbin", &data.cbin, "cbin/I");
 
-   t->Branch("ntracklet", &tdata.ntracklet, "ntracklet/I");
-   t->Branch("nhits", &tdata.nhits, "nhits/I");
-   t->Branch("nhit1", &tdata.nhit1, "nhit1/I");
-   t->Branch("nhit2", &tdata.nhit2, "nhit2/I");
-   t->Branch("eta1", tdata.eta1, "eta1[ntracklet]/F");
-   t->Branch("phi1", tdata.phi1, "phi1[ntracklet]/F");
-   t->Branch("r1", tdata.r1, "r1[ntracklet]/F");
-   t->Branch("eta2", tdata.eta2, "eta2[ntracklet]/F");
-   t->Branch("phi2", tdata.phi2, "phi2[ntracklet]/F");
-   t->Branch("r2", tdata.r2, "r2[ntracklet]/F");
-   t->Branch("deta", tdata.deta, "deta[ntracklet]/F");
-   t->Branch("dphi", tdata.dphi, "dphi[ntracklet]/F");
-   t->Branch("dr2", tdata.dr2, "dr2[ntracklet]/F");
-
-   t->Branch("process", &tdata.process, "process/I");
-   t->Branch("npart", &tdata.npart, "npart/I");
-   t->Branch("pt", tdata.pt, "pt[npart]/F");
-   t->Branch("eta", tdata.eta, "eta[npart]/F");
-   t->Branch("phi", tdata.phi, "phi[npart]/F");
-   t->Branch("pdg", tdata.pdg, "pdg[npart]/I");
-   t->Branch("chg", tdata.chg, "chg[npart]/I");
+   t->Branch("nhits", &data.nhits, "nhits/I");
+   t->Branch("nhit1", &data.nhit1, "nhit1/I");
+   t->Branch("nhit2", &data.nhit2, "nhit2/I");
+   t->Branch("ntracklet", &data.ntracklet, "ntracklet/I");
+   t->Branch("eta1", data.eta1, "eta1[ntracklet]/F");
+   t->Branch("phi1", data.phi1, "phi1[ntracklet]/F");
+   t->Branch("r1", data.r1, "r1[ntracklet]/F");
+   t->Branch("eta2", data.eta2, "eta2[ntracklet]/F");
+   t->Branch("phi2", data.phi2, "phi2[ntracklet]/F");
+   t->Branch("r2", data.r2, "r2[ntracklet]/F");
+   t->Branch("deta", data.deta, "deta[ntracklet]/F");
+   t->Branch("dphi", data.dphi, "dphi[ntracklet]/F");
+   t->Branch("dr2", data.dr2, "dr2[ntracklet]/F");
 }
 
-void set_tracklet_event(TTree* t, TrackletEvent& tdata) {
-   t->SetBranchAddress("run", &tdata.run);
-   t->SetBranchAddress("lumi", &tdata.lumi);
-   t->SetBranchAddress("event", &tdata.event);
-   t->SetBranchAddress("bx", &tdata.bx);
-   t->SetBranchAddress("weight", &tdata.weight);
-   t->SetBranchAddress("mix", &tdata.mix);
-
-   t->SetBranchAddress("nv", &tdata.nv);
-   t->SetBranchAddress("vx", tdata.vx);
-   t->SetBranchAddress("vy", tdata.vy);
-   t->SetBranchAddress("vz", tdata.vz);
-
-   t->SetBranchAddress("hlt", &tdata.hlt);
-   t->SetBranchAddress("nhfp", &tdata.nhfp);
-   t->SetBranchAddress("nhfn", &tdata.nhfn);
-   t->SetBranchAddress("hft", &tdata.hft);
-   t->SetBranchAddress("cbin", &tdata.cbin);
-
-   t->SetBranchAddress("ntracklet", &tdata.ntracklet);
-   t->SetBranchAddress("nhits", &tdata.nhits);
-   t->SetBranchAddress("nhit1", &tdata.nhit1);
-   t->SetBranchAddress("nhit2", &tdata.nhit2);
-   t->SetBranchAddress("eta1", tdata.eta1);
-   t->SetBranchAddress("phi1", tdata.phi1);
-   t->SetBranchAddress("r1", tdata.r1);
-   t->SetBranchAddress("eta2", tdata.eta2);
-   t->SetBranchAddress("phi2", tdata.phi2);
-   t->SetBranchAddress("r2", tdata.r2);
-   t->SetBranchAddress("deta", tdata.deta);
-   t->SetBranchAddress("dphi", tdata.dphi);
-   t->SetBranchAddress("dr2", tdata.dr2);
-
-   t->SetBranchAddress("process", &tdata.process);
-   t->SetBranchAddress("npart", &tdata.npart);
-   t->SetBranchAddress("pt", tdata.pt);
-   t->SetBranchAddress("eta", tdata.eta);
-   t->SetBranchAddress("phi", tdata.phi);
-   t->SetBranchAddress("pdg", tdata.pdg);
-   t->SetBranchAddress("chg", tdata.chg);
+void branch_event_truth(TTree* t, truth_t& truth) {
+   t->Branch("process", &truth.process, "process/I");
+   t->Branch("npart", &truth.npart, "npart/I");
+   t->Branch("pt", truth.pt, "pt[npart]/F");
+   t->Branch("eta", truth.eta, "eta[npart]/F");
+   t->Branch("phi", truth.phi, "phi[npart]/F");
+   t->Branch("pdg", truth.pdg, "pdg[npart]/I");
+   t->Branch("chg", truth.chg, "chg[npart]/I");
 }
 
 struct PixelEvent {

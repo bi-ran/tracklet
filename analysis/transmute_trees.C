@@ -102,11 +102,15 @@ int transmute_trees(const char* input,
    TFile* foutput = new TFile(output, "recreate");
 
 #define DECLARE_TREES(q, w)                                                   \
-   TTree* trackletTree##q##w = new TTree("TrackletTree" #q #w, "tracklets");  \
-   TrackletEvent tdata##q##w;                                                 \
-   branch_tracklet_event(trackletTree##q##w, tdata##q##w);                    \
+   TTree* trklttree##q##w = new TTree("TrackletTree" #q #w, "tracklets");     \
+   data_t trkltdata##q##w;                                                    \
+   branch_event_data(trklttree##q##w, trkltdata##q##w);                       \
 
    TRKLTS2P(DECLARE_TREES);
+
+   TTree* ttruth = new TTree("truth", "particles");
+   truth_t truth;
+   branch_event_truth(ttruth, truth);
 
    TTimeStamp myTime;
    gRandom->SetSeed(myTime.GetNanoSec());
@@ -136,10 +140,10 @@ int transmute_trees(const char* input,
       int cbin = hfbin(par.hft);
 
 #define SAVE_VERTICES(q, w)                                                   \
-      tdata##q##w.nv = par.nv + 1;                                            \
-      tdata##q##w.vx[0] = par.vx[0];                                          \
-      tdata##q##w.vy[0] = par.vy[0];                                          \
-      tdata##q##w.vz[0] = par.vz[0];                                          \
+      trkltdata##q##w.nv = par.nv + 1;                                        \
+      trkltdata##q##w.vx[0] = par.vx[0];                                      \
+      trkltdata##q##w.vy[0] = par.vy[0];                                      \
+      trkltdata##q##w.vz[0] = par.vz[0];                                      \
 
       TRKLTS2P(SAVE_VERTICES);
 
@@ -174,7 +178,7 @@ int transmute_trees(const char* input,
       }
 
 #define SET_VERTEX(q, w)                                                      \
-      tdata##q##w.vz[1] = vz;                                                 \
+      trkltdata##q##w.vz[1] = vz;                                             \
 
       TRKLTS2P(SET_VERTEX);
 
@@ -209,61 +213,63 @@ int transmute_trees(const char* input,
       TRKLTS2P(RECONSTRUCT_TRACKLETS);
 
 #define FILL_TREE(q, w)                                                       \
-      tdata##q##w.run        = par.run;                                       \
-      tdata##q##w.lumi       = par.lumi;                                      \
-      tdata##q##w.event      = par.event;                                     \
-      tdata##q##w.bx         = par.bx;                                        \
-      tdata##q##w.hlt        = par.hlt;                                       \
-      tdata##q##w.nhfp       = par.nhfp;                                      \
-      tdata##q##w.nhfn       = par.nhfn;                                      \
-      tdata##q##w.hft        = par.hft;                                       \
-      tdata##q##w.cbin       = cbin;                                          \
+      trkltdata##q##w.run        = par.run;                                   \
+      trkltdata##q##w.lumi       = par.lumi;                                  \
+      trkltdata##q##w.event      = par.event;                                 \
+      trkltdata##q##w.bx         = par.bx;                                    \
+      trkltdata##q##w.hlt        = par.hlt;                                   \
+      trkltdata##q##w.nhfp       = par.nhfp;                                  \
+      trkltdata##q##w.nhfn       = par.nhfn;                                  \
+      trkltdata##q##w.hft        = par.hft;                                   \
+      trkltdata##q##w.cbin       = cbin;                                      \
+      trkltdata##q##w.weight     = event_weight;                              \
                                                                               \
-      tdata##q##w.ntracklet  = tracklets##q##w.size();                        \
-      tdata##q##w.nhits      = layer1.size() + layer2.size();                 \
-      tdata##q##w.nhit1      = layer##q.size();                               \
-      tdata##q##w.nhit2      = layer##w.size();                               \
+      for (int j=0; j<trkltdata##q##w.nv; j++)                                \
+         trkltdata##q##w.vz[j] += vz_shift;                                   \
                                                                               \
-      for (int j=0; j<tdata##q##w.ntracklet; j++) {                           \
-         tdata##q##w.eta1[j] = tracklets##q##w[j].eta1;                       \
-         tdata##q##w.eta2[j] = tracklets##q##w[j].eta2;                       \
-         tdata##q##w.phi1[j] = tracklets##q##w[j].phi1;                       \
-         tdata##q##w.phi2[j] = tracklets##q##w[j].phi2;                       \
-         tdata##q##w.r1[j]   = tracklets##q##w[j].r1;                         \
-         tdata##q##w.r2[j]   = tracklets##q##w[j].r2;                         \
-         tdata##q##w.deta[j] = tracklets##q##w[j].deta;                       \
-         tdata##q##w.dphi[j] = tracklets##q##w[j].dphi;                       \
-         tdata##q##w.dr2[j]  = tracklets##q##w[j].dr2;                        \
+      trkltdata##q##w.nhits      = layer1.size() + layer2.size();             \
+      trkltdata##q##w.nhit1      = layer##q.size();                           \
+      trkltdata##q##w.nhit2      = layer##w.size();                           \
+                                                                              \
+      trkltdata##q##w.ntracklet  = tracklets##q##w.size();                    \
+      for (int j=0; j<trkltdata##q##w.ntracklet; j++) {                       \
+         trkltdata##q##w.eta1[j] = tracklets##q##w[j].eta1;                   \
+         trkltdata##q##w.eta2[j] = tracklets##q##w[j].eta2;                   \
+         trkltdata##q##w.phi1[j] = tracklets##q##w[j].phi1;                   \
+         trkltdata##q##w.phi2[j] = tracklets##q##w[j].phi2;                   \
+         trkltdata##q##w.r1[j]   = tracklets##q##w[j].r1;                     \
+         trkltdata##q##w.r2[j]   = tracklets##q##w[j].r2;                     \
+         trkltdata##q##w.deta[j] = tracklets##q##w[j].deta;                   \
+         trkltdata##q##w.dphi[j] = tracklets##q##w[j].dphi;                   \
+         trkltdata##q##w.dr2[j]  = tracklets##q##w[j].dr2;                    \
       }                                                                       \
                                                                               \
-      tdata##q##w.process = par.process;                                      \
-      tdata##q##w.npart = 0;                                                  \
-      for (int j=0; j<par.npart; j++) {                                       \
-         if (fabs(par.eta[j]) > 4 || par.chg[j] == 0 ||                       \
-               abs(par.pdg[j]) == 11 || abs(par.pdg[j]) == 13)                \
-            continue;                                                         \
-         tdata##q##w.pt[tdata##q##w.npart]  = par.pt[j];                      \
-         tdata##q##w.eta[tdata##q##w.npart] = par.eta[j];                     \
-         tdata##q##w.phi[tdata##q##w.npart] = par.phi[j];                     \
-         tdata##q##w.chg[tdata##q##w.npart] = par.chg[j];                     \
-         tdata##q##w.pdg[tdata##q##w.npart] = par.pdg[j];                     \
-         tdata##q##w.npart++;                                                 \
-      }                                                                       \
-                                                                              \
-      for (int j=0; j<tdata##q##w.nv; j++)                                    \
-         tdata##q##w.vz[j] += vz_shift;                                       \
-                                                                              \
-      tdata##q##w.weight = event_weight;                                      \
-                                                                              \
-      trackletTree##q##w->Fill();                                             \
+      trklttree##q##w->Fill();                                                \
 
       TRKLTS2P(FILL_TREE);
+
+      truth.process = par.process;
+      truth.npart = 0;
+      for (int j=0; j<par.npart; j++) {
+         if (fabs(par.eta[j]) > 4 || par.chg[j] == 0 ||
+               abs(par.pdg[j]) == 11 || abs(par.pdg[j]) == 13)
+            continue;
+         truth.pt[truth.npart]  = par.pt[j];
+         truth.eta[truth.npart] = par.eta[j];
+         truth.phi[truth.npart] = par.phi[j];
+         truth.chg[truth.npart] = par.chg[j];
+         truth.pdg[truth.npart] = par.pdg[j];
+         truth.npart++;
+      }
+
+      ttruth->Fill();
    }
 
 #define WRITE_TREE(q, w)                                                      \
-   trackletTree##q##w->Write("", TObject::kOverwrite);                        \
+   trklttree##q##w->Write("", TObject::kOverwrite);                           \
 
    TRKLTS2P(WRITE_TREE);
+   ttruth->Write("", TObject::kOverwrite);
 
    foutput->Close();
    finput->Close();
