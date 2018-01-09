@@ -25,4 +25,10 @@ for SLICE in $(seq 0 $SLICES ); do
 done
 sem --wait --id sem-grp-tt
 
-hadd $3 ${3}.*
+TSIZE=$(du -c ${3}.* | grep total | awk '{print $1}')
+if [ $TSIZE -lt 90000000 ]; then
+    hadd $3 ${3}.*
+else
+    ls ${3}.* > tt-merge-$BASE-$(date +"%F-%H_%M_%S");
+    ./keep/ladd tt-merge-$BASE-$(date +"%F-%H_%M_%S") $3;
+fi
