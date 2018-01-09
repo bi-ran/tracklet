@@ -250,6 +250,9 @@ int transmute_trees(const char* input,
 
       truth.process = par.process;
       truth.npart = 0;
+
+      if (random) { continue; }
+
       for (int j=0; j<par.npart; j++) {
          if (fabs(par.eta[j]) > 4 || par.chg[j] == 0 ||
                abs(par.pdg[j]) == 11 || abs(par.pdg[j]) == 13)
