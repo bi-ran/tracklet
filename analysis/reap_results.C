@@ -68,13 +68,15 @@ int reap_results(int type,
 #include "include/bins.h"
 
    /* selections                                                              */
+   TCut vsel = "(vz[1]<15 && vz[1]>-15)";
+
    TCut ssel = Form("(dr2<%f)", maxdr2);
    TCut csel = Form("(cbin>=%i && cbin<%i)", cmin, cmax);
-   TCut vsel = "(vz[1]<15 && vz[1]>-15)";
    TCut osel = "(hlt && nhfn>0 && nhfp>0)";
-   TCut gsel = "(process!=102 && process!=103 && process!=104)";
+   TCut psel = "(process!=102 && process!=103 && process!=104)";
 
    TCut esel = vsel && osel && csel;
+   TCut gsel = vsel && psel;
 
    /* output                                                                  */
    TFile* outf = new TFile(Form("correction-%s-%i.root", label, type), "recreate");
@@ -282,8 +284,8 @@ int reap_results(int type,
       stderr = fdopen(stderr_save, "w");
 
       /* offline selection                                                    */
-      tinput->Project("h1WGOXteff", Form("%s", mult), "weight" * (gsel && osel && "vz[1]>-99"));
-      tinput->Project("h1WGXteff", Form("%s", mult), "weight" * (gsel && "vz[1]>-99"));
+      tinput->Project("h1WGOXteff", Form("%s", mult), "weight" * (gsel && osel));
+      tinput->Project("h1WGXteff", Form("%s", mult), "weight" * (gsel));
 
       h1teff = (TH1F*)h1WGOXteff->Clone("h1teff");
       h1teff->Divide(h1WGXteff);
