@@ -1,23 +1,43 @@
 #!/bin/bash
 
+helpmsg() {
+    echo -e 'usage: ./tt [total entries] ($@)\n'
+    echo -e '   -h, --help      show (this) help message'
+    echo -e '   -j, --jobs      jobs relative to number of cores\n'
+}
+
+ARGS=()
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -h|--help)      helpmsg; exit ;;
+        -j)             JOBS="$2"; shift 2 ;;
+        --jobs=*)       JOBS="${1#*=}"; shift ;;
+        -*|--*)         [[ $1 =~ ^-?[0-9]+$ ]] && \
+                            { ARGS+=("$1"); shift; } || \
+                            { echo -e "invalid option: $1\n"; exit 1; } ;;
+        *)              ARGS+=("$1"); shift ;;
+    esac
+done
+
+set -- "${ARGS[@]}"
+
 make transmute_trees || exit 1
 
-if [[ $# -lt 3 ]]; then
-    echo -e 'usage: ./tt [total entries] ($@)\n'
-    ./transmute_trees
-    exit 1
-fi
+[ $# -lt 3 ] && { helpmsg; ./transmute_trees; exit 1; }
 
 ENTRIES=$1
 [ $ENTRIES -le 0 ] && {
     echo -e "error: negative total entries: $ENTRIES\n"; exit 1; }
+
+JOBS=${JOBS:-"-4"}
 
 SIZE=1024
 SLICES=$(( ($ENTRIES - 1) / $SIZE ))
 
 BASE=$(basename $3 .root)
 for SLICE in $(seq 0 $SLICES ); do
-    sem -j-4 --id sem-grp-tt --linebuffer \
+    sem -j$JOBS --id sem-grp-tt --linebuffer \
             "./transmute_trees $2 ${3}.$SLICE \
             $(( $SLICE * $SIZE )) $(( ($SLICE + 1) * $SIZE )) ${@:4} \
             &> notes/log-tt-$BASE-$ENTRIES-${SLICE}.log; \

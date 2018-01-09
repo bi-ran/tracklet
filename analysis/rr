@@ -1,17 +1,37 @@
 #!/bin/bash
 
+helpmsg() {
+    echo -e 'usage: ./rr (-hj) [input] [label] (-1) ($@)'
+    echo -e 'usage: ./rr (-hj) [input] [label] [0] [cmin cmax] ($@)'
+    echo -e 'usage: ./rr (-hj) [input] [label] [interval] ($@)\n'
+    echo -e '   -h, --help        show (this) help message'
+    echo -e '   -j, --jobs        jobs relative to number of cores\n'
+}
+
+ARGS=()
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -h|--help)      helpmsg; exit ;;
+        -j)             JOBS="$2"; shift 2 ;;
+        --jobs=*)       JOBS="${1#*=}"; shift ;;
+        -*|--*)         [[ $1 =~ ^-?[0-9]+$ ]] && \
+                            { ARGS+=("$1"); shift; } || \
+                            { echo -e "invalid option: $1\n"; exit 1; } ;;
+        *)              ARGS+=("$1"); shift ;;
+    esac
+done
+
+set -- "${ARGS[@]}"
+
 make reap_results || exit 1
 
-if [[ $# -lt 3 ]]; then
-    echo -e 'usage: ./rr [input] [label] (-1) ($@)'
-    echo -e 'usage: ./rr [input] [label] [0] [cmin cmax] ($@)'
-    echo -e 'usage: ./rr [input] [label] [interval] ($@)\n'
-    ./reap_results
-    exit 1
-fi
+[[ $# -lt 3 ]] && { helpmsg; ./reap_results; exit 1; }
 
 make merge_monads || exit 1
 make collect_cents || exit 1
+
+JOBS=${JOBS:-"+0"}
 
 TYPES=(12 13 14 23 24 34 15 16 17)
 if [[ $3 -gt 0 ]]; then
@@ -19,7 +39,7 @@ if [[ $3 -gt 0 ]]; then
         CMIN=$(( CMAX - $3 ))
 
         for TYPE in ${TYPES[@]}; do
-            sem -j+0 --id sem_grp_rr_a --linebuffer \
+            sem -j$JOBS --id sem_grp_rr_a --linebuffer \
                     "./reap_results $TYPE $1 $2.a.$CMIN.$CMAX \
                     $CMIN $CMAX $4.a.$CMIN.$CMAX $5 ${@:6} \
                     > notes/log-rr-$2.a.$CMIN.$CMAX-$TYPE.log; \
@@ -31,7 +51,7 @@ if [[ $3 -gt 0 ]]; then
     for (( CMAX=20; CMAX>=$3; CMAX-=$3 )); do
         CMIN=$(( CMAX - $3 ))
 
-        sem -j+0 --id sem_grp_mm --linebuffer \
+        sem -j$JOBS --id sem_grp_mm --linebuffer \
                 "./merge_monads $2.a.$CMIN.$CMAX"
     done
     sem --wait --id sem_grp_mm
@@ -41,7 +61,7 @@ elif [[ $3 -eq 0 ]]; then
     [[ $# -lt 5 ]] && exit 2
 
     for TYPE in ${TYPES[@]}; do
-        sem -j+0 --id sem_grp_rr_s --linebuffer \
+        sem -j$JOBS --id sem_grp_rr_s --linebuffer \
                 "./reap_results $TYPE $1 $2.s.$4.$5 \
                 $4 $5 $6.s.$4.$5 $7 ${@:8} \
                 > notes/log-rr-$2.s.$4.$5-$TYPE.log; \
@@ -52,7 +72,7 @@ elif [[ $3 -eq 0 ]]; then
     ./merge_monads $2.s.$4.$5
 else
     for TYPE in ${TYPES[@]}; do
-        sem -j+0 --id sem_grp_rr --linebuffer \
+        sem -j$JOBS --id sem_grp_rr --linebuffer \
                 "./reap_results $TYPE ${@:1:2} \
                 0 20 ${@:4} \
                 > notes/log-rr-$2-$TYPE.log; \
