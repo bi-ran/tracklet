@@ -249,7 +249,7 @@ int reap_results(int type,
                }
             }
 
-            if (count < nmult / 2) {
+            if (cmax - cmin > 16 && count < nmult / 2) {
                printf("   # ! acceptance map:  eta: %2i, vz: %2i          set to 0 (bad acceptance/statistics)\n", x, z);
                h2amapxev->SetBinContent(x, z, 0);
             }
