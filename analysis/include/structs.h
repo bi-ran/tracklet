@@ -1,22 +1,17 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
-#define MAXL1  17500
-#define MAXL2  14500
-#define MAXL3  12500
-#define MAXL4  11000
-#define MAXL5  14000
-#define MAXL6  15000
-#define MAXL7  16000
-#define MAXP   15000
+#define MAXT   16000
+#define MAXH   20000
+#define MAXP   20000
 
 struct data_t {
    int run, event, lumi, bx;
    int nv; float vx[8], vy[8], vz[8]; float weight;
    int hlt; int nhfp, nhfn; float hft; int cbin;
-   float eta1[MAXL7], phi1[MAXL7], r1[MAXL7];
-   float eta2[MAXL7], phi2[MAXL7], r2[MAXL7];
-   float deta[MAXL7], dphi[MAXL7], dr2[MAXL7];
+   float eta1[MAXT], phi1[MAXT], r1[MAXT];
+   float eta2[MAXT], phi2[MAXT], r2[MAXT];
+   float deta[MAXT], dphi[MAXT], dr2[MAXT];
    int ntracklet, nhits, nhit1, nhit2;
 };
 
@@ -77,7 +72,7 @@ struct PixelEvent {
 
 #define DECLARE_LAYER_VARIABLES(q)                                            \
    int nhits##q;                                                              \
-   float eta##q[MAXL##q], phi##q[MAXL##q], r##q[MAXL##q], cs##q[MAXL##q];     \
+   float eta##q[MAXH], phi##q[MAXH], r##q[MAXH], cs##q[MAXH];                 \
 
    PIXELS1P(DECLARE_LAYER_VARIABLES)
 
