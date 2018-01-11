@@ -377,19 +377,6 @@ int reap_results(int type,
 
             printf("   ^ alpha application: eta: %2i, vz: %2i, ntl: %2i, alpha: %8.2f [%8.2f], raw: {%8.2f}\n", x, z, y, alpha, alphaerr, raw);
 
-            if (apply_geometry_corr) {
-               double gaccepdata = haccepdata->GetBinContent(x, z);
-               double gaccepmc = haccepmc->GetBinContent(x, z);
-
-               if (gaccepdata && gaccepmc) {
-                  alpha = alpha * gaccepmc / gaccepdata;
-                  alphaerr = alphaerr * gaccepmc / gaccepdata;
-                  printf("     & apply geo accep: %.2f\n", gaccepmc / gaccepdata);
-               } else {
-                  printf("     ! geo accep error: eta: %2i, vz: %2i\n", x, z);
-               }
-            }
-
             if (alpha == 0 && falpha[x-1][z-1] != 0) {
                alpha = falpha[x-1][z-1]->Eval(multb[y]);
                printf("     # check fit value: %.2f\n", alpha);
@@ -407,6 +394,19 @@ int reap_results(int type,
             if (alpha <= 0 || alpha > 2.5) {
                printf("     !!! invalid value: %.2f, reset to 1\n", alpha);
                alpha = 1;
+            }
+
+            if (apply_geometry_corr) {
+               double gaccepdata = haccepdata->GetBinContent(x, z);
+               double gaccepmc = haccepmc->GetBinContent(x, z);
+
+               if (gaccepdata && gaccepmc) {
+                  alpha = alpha * gaccepmc / gaccepdata;
+                  alphaerr = alphaerr * gaccepmc / gaccepdata;
+                  printf("     & apply geo accep: %.2f\n", gaccepmc / gaccepdata);
+               } else {
+                  printf("     ! geo accep error: eta: %2i, vz: %2i\n", x, z);
+               }
             }
 
             printf("     ^ alpha applied: [ %.2f ]\n", alpha);
