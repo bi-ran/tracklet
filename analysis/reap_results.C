@@ -236,7 +236,7 @@ int reap_results(int type,
                   double alphaerr = alpha * sqrt(rawerr/raw * rawerr/raw + trutherr/truth * trutherr/truth);
                   printf("   ^ alpha calculation: eta: %2i, vz: %2i, ntl: %2i, alpha: %8.2f [%8.2f], raw/truth: {%8.2f/%8.2f}\n", x, z, y, alpha, alphaerr, raw, truth);
 
-                  if (alpha > 0 && ((alpha/alphaerr > 5 && alpha < 2.5) || (alpha < 1.5))) {
+                  if (alpha > 0 && ((alpha/alphaerr > 5 && alpha < 3) || (alpha < 2))) {
                      h3alpha->SetBinContent(x, y, z, alpha);
                      h3alpha->SetBinError(x, y, z, alphaerr);
                      h1alpha[x-1][z-1]->SetBinContent(y, alpha);
@@ -318,7 +318,7 @@ int reap_results(int type,
       /* draw alpha fits                                                      */
       TH1D* halphaframe = new TH1D("halphaframe", "", 1, 1, 12000);
       htitle(halphaframe, ";number of tracklets;#alpha");
-      haxes(halphaframe, 0.4, 2.0);
+      haxes(halphaframe, 0.0, 3.0);
 
       TLatex* t1 = new TLatex();
       t1->SetTextAlign(23);
@@ -391,7 +391,7 @@ int reap_results(int type,
                }
             }
 
-            if (alpha <= 0 || alpha > 2.5) {
+            if (alpha <= 0 || alpha > 3) {
                printf("     !!! invalid value: %.2f, reset to 1\n", alpha);
                alpha = 1;
             }
