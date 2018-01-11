@@ -234,7 +234,7 @@ int reap_results(int type,
 
                   double alpha = truth / raw;
                   double alphaerr = alpha * sqrt(rawerr/raw * rawerr/raw + trutherr/truth * trutherr/truth);
-                  printf("   ^ alpha calculation: eta: %2i, vz: %2i, ntl: %2i, alpha: %8.2f [%8.2f], raw/truth: {%8.2f/%8.2f}\n", x, z, y, alpha, alphaerr, raw, truth);
+                  printf("   ^ alpha calculation: eta: %2i, vz: %2i, ntl: %2i, alpha: %5.3f [%5.3f], raw/truth: %9.2f/%9.2f\n", x, z, y, alpha, alphaerr, raw, truth);
 
                   if (alpha > 0 && ((alpha/alphaerr > 5 && alpha < 3) || (alpha < 2))) {
                      h3alpha->SetBinContent(x, y, z, alpha);
@@ -375,24 +375,24 @@ int reap_results(int type,
             double alpha = h1alpha[x-1][z-1]->GetBinContent(y);
             double alphaerr = h1alpha[x-1][z-1]->GetBinError(y);
 
-            printf("   ^ alpha application: eta: %2i, vz: %2i, ntl: %2i, alpha: %8.2f [%8.2f], raw: {%8.2f}\n", x, z, y, alpha, alphaerr, raw);
+            printf("   ^ alpha application: eta: %2i, vz: %2i, ntl: %2i, alpha: %5.3f [%5.3f], raw: %9.2f\n", x, z, y, alpha, alphaerr, raw);
 
             if (alpha == 0 && falpha[x-1][z-1] != 0) {
                alpha = falpha[x-1][z-1]->Eval(multb[y]);
-               printf("     # check fit value: %.2f\n", alpha);
+               printf("     # check fit value: %.3f\n", alpha);
             }
 
             if (alpha == 0) {
                for (int k=0; k<y; k++) {
                   alpha = h1alpha[x-1][z-1]->GetBinContent(y-k);
                   alphaerr = h1alpha[x-1][z-1]->GetBinError(y-k);
-                  printf("     # check other bin: %.2f, bin: %2i\n", alpha, y-k);
+                  printf("     # check other bin: %.3f, bin: %2i\n", alpha, y-k);
                   if (alpha != 0) break;
                }
             }
 
             if (alpha <= 0 || alpha > 3) {
-               printf("     !!! invalid value: %.2f, reset to 1\n", alpha);
+               printf("     ! invalid value: %.3f, reset to 1\n", alpha);
                alpha = 1;
             }
 
@@ -403,13 +403,13 @@ int reap_results(int type,
                if (gaccepdata && gaccepmc) {
                   alpha = alpha * gaccepmc / gaccepdata;
                   alphaerr = alphaerr * gaccepmc / gaccepdata;
-                  printf("     & apply geo accep: %.2f\n", gaccepmc / gaccepdata);
+                  printf("     & apply geo accep: %.3f", gaccepmc / gaccepdata);
                } else {
                   printf("     ! geo accep error: eta: %2i, vz: %2i\n", x, z);
                }
             }
 
-            printf("     ^ alpha applied: [ %.2f ]\n", alpha);
+            printf("     + alpha applied: [ %.3f ]\n", alpha);
 
             h3alphafinal->SetBinContent(x, y, z, alpha);
             h3alphafinal->SetBinError(x, y, z, alphaerr);
