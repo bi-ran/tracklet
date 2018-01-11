@@ -1,0 +1,3 @@
+[submodule "analysis/git/config"]
+	path = analysis/git/config
+	url = https://github.com/bi-ran/config
