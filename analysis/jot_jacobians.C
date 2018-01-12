@@ -8,34 +8,22 @@
 #include <string>
 #include <fstream>
 
+#include "git/config/configurer.h"
+
 #include "include/cosmetics.h"
 
-int jot_jacobians(const char* list) {
-   std::vector<std::string> flist;
-   std::ifstream fstream(list);
-   if (fstream) {
-      std::string line;
-      while (std::getline(fstream, line))
-         flist.push_back(line);
-   }
-   std::size_t nfiles = flist.size();
+int jot_jacobians(const char* config) {
+   configurer* conf = new configurer(config);
+
+   std::vector<std::string> files = conf->get<std::vector<std::string>>("files");
+   std::vector<std::string> legends = conf->get<std::vector<std::string>>("legends");
+   std::vector<std::string> tags = conf->get<std::vector<std::string>>("tags");
+
+   std::size_t nfiles = files.size();
 
    if (!nfiles) {
       printf("error: no files provided!\n");
       return 1;
-   }
-
-   std::vector<std::string> files;
-   std::vector<std::string> tags;
-   std::vector<std::string> legends;
-   for (std::size_t i = 0; i < nfiles; ++i) {
-      std::size_t ws1 = flist[i].find(" ");
-      files.push_back(flist[i].substr(0, ws1));
-
-      std::size_t ws2 = flist[i].find(" ", ws1 + 1);
-      tags.push_back(flist[i].substr(ws1 + 1, ws2 - (ws1 + 1)));
-
-      legends.push_back(flist[i].substr(ws2 + 1));
    }
 
    TFile* f[nfiles]; TTree* t[nfiles];
@@ -141,7 +129,7 @@ int main(int argc, char* argv[]) {
    if (argc == 2) {
       return jot_jacobians(argv[1]);
    } else {
-      printf("usage: ./jot_jacobians [list]\n");
+      printf("usage: ./jot_jacobians [config]\n");
       return 1;
    }
 }

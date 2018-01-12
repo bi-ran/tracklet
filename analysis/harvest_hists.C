@@ -13,6 +13,8 @@
 #include <algorithm>
 #include <fstream>
 
+#include "git/config/configurer.h"
+
 #include "include/cosmetics.h"
 #include "include/defines.h"
 
@@ -52,27 +54,17 @@ static const std::vector<varinfo_t> options_pixel_1d = {
 };
 
 int compare_pixels(std::vector<varinfo_t> const& options,
-      const char* list, const char* label, int opt) {
-   std::vector<std::string> flist;
-   std::ifstream fstream(list);
-   if (fstream) {
-      std::string line;
-      while (std::getline(fstream, line))
-         flist.push_back(line);
-   }
-   std::size_t nfiles = flist.size();
+      const char* config, const char* label, int opt) {
+   configurer* conf = new configurer(config);
+
+   std::vector<std::string> files = conf->get<std::vector<std::string>>("files");
+   std::vector<std::string> legends = conf->get<std::vector<std::string>>("legends");
+
+   std::size_t nfiles = files.size();
 
    if (!nfiles) {
       printf("error: no files provided!\n");
       exit(1);
-   }
-
-   std::vector<std::string> files;
-   std::vector<std::string> legends;
-   for (std::size_t f = 0; f < nfiles; ++f) {
-      std::size_t pos = flist[f].find(" ");
-      files.push_back(flist[f].substr(0, pos));
-      legends.push_back(flist[f].substr(pos + 1));
    }
 
    TCut fsel = OS(sel);
@@ -172,27 +164,17 @@ static const std::vector<varinfo_t> options_tracklet_1d = {
 };
 
 int compare_tracklets(std::vector<varinfo_t> const& options,
-      const char* list, const char* label, int opt) {
-   std::vector<std::string> flist;
-   std::ifstream fstream(list);
-   if (fstream) {
-      std::string line;
-      while (std::getline(fstream, line))
-         flist.push_back(line);
-   }
-   std::size_t nfiles = flist.size();
+      const char* config, const char* label, int opt) {
+   configurer* conf = new configurer(config);
+
+   std::vector<std::string> files = conf->get<std::vector<std::string>>("files");
+   std::vector<std::string> legends = conf->get<std::vector<std::string>>("legends");
+
+   std::size_t nfiles = files.size();
 
    if (!nfiles) {
       printf("error: no files provided!\n");
       exit(1);
-   }
-
-   std::vector<std::string> files;
-   std::vector<std::string> legends;
-   for (std::size_t f = 0; f < nfiles; ++f) {
-      std::size_t pos = flist[f].find(" ");
-      files.push_back(flist[f].substr(0, pos));
-      legends.push_back(flist[f].substr(pos + 1));
    }
 
    TCut fsel = OS(sel);
@@ -469,7 +451,7 @@ int main(int argc, char* argv[]) {
    };
 
    std::vector<std::string> usagestrs = {
-      "list", "list",
+      "config", "config",
       "pixel", "tracklet"
    };
 

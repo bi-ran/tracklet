@@ -8,38 +8,24 @@
 #include <string>
 #include <fstream>
 
+#include "git/config/configurer.h"
+
 #include "include/cosmetics.h"
 #include "include/variations.h"
 
-int sum_systematics(const char* list, const char* label) {
-    std::vector<std::string> flist;
-    std::ifstream fstream(list);
-    if (fstream) {
-        std::string line;
-        while (std::getline(fstream, line))
-            flist.push_back(line);
-    }
-    std::size_t nfiles = flist.size();
+int sum_systematics(const char* config, const char* label) {
+    configurer* conf = new configurer(config);
+
+    std::vector<std::string> files = conf->get<std::vector<std::string>>("files");
+    std::vector<std::string> labels = conf->get<std::vector<std::string>>("labels");
+    std::vector<std::string> fits = conf->get<std::vector<std::string>>("fits");
+    std::vector<int> options = conf->get<std::vector<int>>("options");
+
+    std::size_t nfiles = files.size();
 
     if (!nfiles) {
         printf("error: no files provided!\n");
         return 1;
-    }
-
-    std::vector<std::string> files;
-    std::vector<int> options;
-    std::vector<std::string> fdiff;
-    std::vector<std::string> labels;
-    for (std::size_t f = 0; f < nfiles; ++f) {
-        std::size_t ws1 = flist[f].find(" ");
-        files.push_back(flist[f].substr(0, ws1));
-
-        std::size_t ws2 = flist[f].find(" ", ws1 + 1);
-        options.push_back(std::stoi(flist[f].substr(ws1 + 1, ws2)));
-
-        std::size_t ws3 = flist[f].find(" ", ws2 + 1);
-        fdiff.push_back(flist[f].substr(ws2 + 1, ws3 - (ws2 + 1)));
-        labels.push_back(flist[f].substr(ws3 + 1));
     }
 
     std::vector<std::string> hists = {
@@ -73,7 +59,7 @@ int sum_systematics(const char* list, const char* label) {
             h[i][j] = (TH1F*)f[j]->Get(hists[i].c_str())->Clone(Form("%s%s", hists[i].c_str(), labels[j].c_str()));
 
             svars[i][j] = new var_t(hists[i], labels[j], hnominal, h[i][j]);
-            svars[i][j]->fit(fdiff[j].c_str(), "pol2");
+            svars[i][j]->fit(fits[j].c_str(), "pol2");
             svars[i][j]->write();
 
             tvars[i]->add(svars[i][j], options[j]);
@@ -128,7 +114,7 @@ int main(int argc, char* argv[]) {
     if (argc == 3) {
         return sum_systematics(argv[1], argv[2]);
     } else {
-        printf("usage: ./sum_systematics [list] [label]\n");
+        printf("usage: ./sum_systematics [config] [label]\n");
         return 1;
     }
 }

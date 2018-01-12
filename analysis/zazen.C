@@ -10,50 +10,36 @@
 #include <fstream>
 #include <sstream>
 
+#include "git/config/configurer.h"
+
 #include "include/cosmetics.h"
 #include "include/errorband.h"
 
-int zazen(const char* list, const char* hist, const char* label, const char* jacobian) {
-   std::vector<std::string> rlist;
-   std::ifstream fstream(list);
-   if (fstream) {
-      std::string line;
-      while (std::getline(fstream, line))
-         rlist.push_back(line);
-   }
+int zazen(const char* config, const char* label, const char* jacobian) {
+   configurer* conf = new configurer(config);
 
-   if (rlist.empty()) {
-      printf("error: empty list!\n");
-      return 1;
-   }
+   std::vector<std::string> results = conf->get<std::vector<std::string>>("files");
+   std::vector<std::string> systematics = conf->get<std::vector<std::string>>("systematics");
+   std::vector<std::string> legends = conf->get<std::vector<std::string>>("legends");
+   std::vector<std::string> tags = conf->get<std::vector<std::string>>("tags");
 
-   int ymin, ymax; bool logy; int coffset;
-   std::stringstream sstream(rlist.front());
-   sstream >> ymin >> ymax >> logy >> coffset;
-
-   rlist.erase(rlist.begin());
-   std::size_t nres = rlist.size();
+   std::size_t nres = results.size();
 
    if (!nres) {
       printf("error: no files provided!\n");
       return 1;
    }
 
+   std::string hist = conf->get<std::string>("hist");
+   std::vector<float> yrange = conf->get<std::vector<float>>("yrange");
+   bool logy = conf->get<bool>("logy");
+   int coffset = conf->get<int>("coffset");
+
    std::vector<TFile*> fres;
    std::vector<TFile*> fsys;
-   std::vector<std::string> labels;
-   std::vector<std::string> legends;
    for (std::size_t f = 0; f < nres; ++f) {
-      std::size_t ws1 = rlist[f].find(" ");
-      fres.push_back(TFile::Open(rlist[f].substr(0, ws1).c_str(), "read"));
-
-      std::size_t ws2 = rlist[f].find(" ", ws1 + 1);
-      fsys.push_back(TFile::Open(rlist[f].substr(ws1 + 1, ws2 - (ws1 + 1)).c_str(), "read"));
-
-      std::size_t ws3 = rlist[f].find(" ", ws2 + 1);
-      labels.push_back(rlist[f].substr(ws2 + 1, ws3 - (ws2 + 1)));
-
-      legends.push_back(rlist[f].substr(ws3 + 1));
+      fres.push_back(TFile::Open(results[f].c_str(), "read"));
+      fsys.push_back(TFile::Open(systematics[f].c_str(), "read"));
    }
 
    TFile* fout = new TFile(Form("output/results-%s.root", label), "recreate");
@@ -64,8 +50,8 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
 
    TH1F* hres[nres]; TH1F* hsys[nres];
    for (std::size_t i = 0; i < nres; ++i) {
-      hres[i] = (TH1F*)fres[i]->Get(hist)->Clone(Form("%s_%s", hist, labels[i].c_str()));
-      hsys[i] = (TH1F*)fsys[i]->Get(Form("%s_tdiff", hist))->Clone(Form("%s_%s_tdiff", hist, labels[i].c_str()));
+      hres[i] = (TH1F*)fres[i]->Get(hist.c_str())->Clone(Form("%s_%s", hist.c_str(), tags[i].c_str()));
+      hsys[i] = (TH1F*)fsys[i]->Get(Form("%s_tdiff", hist.c_str()))->Clone(Form("%s_%s_tdiff", hist.c_str(), tags[i].c_str()));
    }
 
    TGraph* gr = new TGraph();
@@ -74,7 +60,7 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
    TCanvas* c1 = new TCanvas("c1", "", 400, 400);
    gPad->SetLogy(logy);
 
-   hframe->SetAxisRange(ymin, ymax, "Y");
+   hframe->SetAxisRange(yrange[0], yrange[1], "Y");
    hframe->Draw();
 
    for (std::size_t i = 0; i < nres; ++i) {
@@ -101,7 +87,7 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
       l1->AddEntry(hres[i], legends[i].c_str(), "p");
    l1->Draw();
 
-   c1->SaveAs(Form("figs/results/results-%s-%s.png", hist, label));
+   c1->SaveAs(Form("figs/results/results-%s-%s.png", hist.c_str(), label));
 
    if (jacobian) {
       TFile* fj = new TFile(jacobian, "read");
@@ -111,17 +97,17 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
       TCanvas* c2 = new TCanvas("c2", "", 400, 400);
       gPad->SetLogy(logy);
 
-      hformat(hframe, ymin, ymax, ";y;dN/dy");
+      hformat(hframe, yrange[0], yrange[1], ";y;dN/dy");
       hframe->Draw();
 
       TH1F* hyres[nres]; TH1F* hysys[nres]; TH1F* hyjsys[nres];
       for (std::size_t i = 0; i < nres; ++i) {
-         hyres[i] = (TH1F*)hres[i]->Clone(Form("%sy_%s", hist, labels[i].c_str()));
+         hyres[i] = (TH1F*)hres[i]->Clone(Form("%sy_%s", hist.c_str(), tags[i].c_str()));
          hyres[i]->Multiply(hj);
 
-         hyjsys[i] = (TH1F*)hyres[i]->Clone(Form("%sy_%s_jsys", hist, labels[i].c_str()));
+         hyjsys[i] = (TH1F*)hyres[i]->Clone(Form("%sy_%s_jsys", hist.c_str(), tags[i].c_str()));
          hyjsys[i]->Multiply(hjsys);
-         hysys[i] = (TH1F*)hsys[i]->Clone(Form("%sy_%s_tdiff", hist, labels[i].c_str()));
+         hysys[i] = (TH1F*)hsys[i]->Clone(Form("%sy_%s_tdiff", hist.c_str(), tags[i].c_str()));
          hysys[i]->Multiply(hj);
          hysys[i]->Add(hyjsys[i]);
 
@@ -148,7 +134,7 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
          l2->AddEntry(hyres[i], legends[i].c_str(), "p");
       l2->Draw();
 
-      c2->SaveAs(Form("figs/results/results-%s-%s-y.png", hist, label));
+      c2->SaveAs(Form("figs/results/results-%s-%s-y.png", hist.c_str(), label));
    }
 
    fout->Write("", TObject::kOverwrite);
@@ -158,12 +144,12 @@ int zazen(const char* list, const char* hist, const char* label, const char* jac
 }
 
 int main(int argc, char* argv[]) {
-   if (argc == 4) {
-      return zazen(argv[1], argv[2], argv[3], 0);
-   } else if (argc == 5) {
-      return zazen(argv[1], argv[2], argv[3], argv[4]);
+   if (argc == 3) {
+      return zazen(argv[1], argv[2], 0);
+   } else if (argc == 4) {
+      return zazen(argv[1], argv[2], argv[3]);
    } else {
-      printf("usage: ./zazen [list] [hist] [label]\n");
+      printf("usage: ./zazen [config] [label] (jacobian)\n");
       return 1;
    }
 }

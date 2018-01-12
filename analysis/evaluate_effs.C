@@ -10,29 +10,20 @@
 #include <string>
 #include <fstream>
 
+#include "git/config/configurer.h"
+
 #include "include/cosmetics.h"
 
-int evaluate_effs(const char* list) {
-   std::vector<std::string> flist;
-   std::ifstream fstream(list);
-   if (fstream) {
-      std::string line;
-      while (std::getline(fstream, line))
-         flist.push_back(line);
-   }
-   std::size_t nfiles = flist.size();
+int evaluate_effs(const char* config) {
+   configurer* conf = new configurer(config);
 
+   std::vector<std::string> files = conf->get<std::vector<std::string>>("files");
+   std::vector<std::string> legends = conf->get<std::vector<std::string>>("legends");
+
+   std::size_t nfiles = files.size();
    if (!nfiles) {
       printf("error: no files provided!\n");
       return 1;
-   }
-
-   std::vector<std::string> files;
-   std::vector<std::string> legends;
-   for (std::size_t f = 0; f < nfiles; ++f) {
-      std::size_t pos = flist[f].find(" ");
-      files.push_back(flist[f].substr(0, pos));
-      legends.push_back(flist[f].substr(pos + 1));
    }
 
    TFile* f[nfiles]; TTree* t[nfiles];
@@ -83,7 +74,7 @@ int main(int argc, char* argv[]) {
    if (argc == 2) {
       return evaluate_effs(argv[1]);
    } else {
-      printf("usage: ./evaluate_effs [list]\n");
+      printf("usage: ./evaluate_effs [config]\n");
       return 1;
    }
 }
