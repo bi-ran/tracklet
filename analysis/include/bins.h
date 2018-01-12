@@ -1,7 +1,7 @@
 #if defined INCLUDE_VZ_BINS || defined INCLUDE_VZ_RANGE || defined INCLUDE_VZ_N
 #ifndef DECLARED_VZ_N
 #define DECLARED_VZ_N
-   const int nvz = 15;
+   const int nvz = 30;
 #endif  /* DECLARED_VZ_N */
 #if defined INCLUDE_VZ_BINS || defined INCLUDE_VZ_RANGE
 #ifndef DECLARED_VZ_RANGE

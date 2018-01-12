@@ -323,8 +323,8 @@ int reap_results(int type,
       TLatex* t1 = new TLatex();
       t1->SetTextAlign(23);
 
-      TCanvas* cfalphavz = new TCanvas("cfalphavz", "", 2000, 1200);
-      cfalphavz->Divide(5, 3);
+      TCanvas* cfalphavz = new TCanvas("cfalphavz", "", 2400, 2000);
+      cfalphavz->Divide(6, 5);
 
       for (int x=1; x<=neta; x++) {
          cfalphavz->Clear("d");
