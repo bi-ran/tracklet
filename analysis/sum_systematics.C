@@ -45,6 +45,7 @@ int sum_systematics(const char* list, const char* label) {
     std::vector<std::string> hists = {
         "h12", "h13", "h14",
         "h23", "h24", "h34",
+        "h15", "h16", "h17",
         "havg", "hsym"
     };
     std::size_t nhists = hists.size();
