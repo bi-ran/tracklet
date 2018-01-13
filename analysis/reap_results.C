@@ -75,8 +75,8 @@ int reap_results(int type,
    TCut osel = "(hlt && nhfn>0 && nhfp>0)";
    TCut psel = "(process!=102 && process!=103 && process!=104)";
 
-   TCut esel = vsel && osel && csel;
-   TCut gsel = vsel && psel;
+   TCut esel = vsel && csel && osel;
+   TCut gsel = vsel && csel && psel;
 
    /* output                                                                  */
    TFile* outf = new TFile(Form("correction-%s-%i.root", label, type), "recreate");
