@@ -267,8 +267,8 @@ int reap_results(int type,
             falpha[i][j]->SetParameter(0, 0.84);
             falpha[i][j]->SetParLimits(1, 1, 256);
             falpha[i][j]->SetParLimits(2, 0, 512);
-            falpha[i][j]->SetParLimits(3, -216, 0);
-            falpha[i][j]->SetParLimits(4, -128, -8);
+            falpha[i][j]->SetParLimits(3, -512, 512);
+            falpha[i][j]->SetParLimits(4, -256, -8);
 
             h1alpha[i][j]->Fit(falpha[i][j], "M Q", "", 25, 10000);
             h1alpha[i][j]->Fit(falpha[i][j], "M E Q", "", 25, 10000);
