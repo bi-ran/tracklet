@@ -79,7 +79,7 @@ int reap_results(int type,
    TCut gsel = vsel && csel && psel;
 
    /* output                                                                  */
-   TFile* outf = new TFile(Form("correction-%s-%i.root", label, type), "recreate");
+   TFile* outf = new TFile(Form("output/correction-%s-%i.root", label, type), "recreate");
 
    TH1::SetDefaultSumw2();
 
