@@ -20,11 +20,7 @@ int jot_jacobians(const char* config) {
    std::vector<std::string> tags = conf->get<std::vector<std::string>>("tags");
 
    std::size_t nfiles = files.size();
-
-   if (!nfiles) {
-      printf("error: no files provided!\n");
-      return 1;
-   }
+   if (!nfiles) { printf("error: no files provided!\n"); return 1; }
 
    TFile* f[nfiles]; TTree* t[nfiles];
    for (std::size_t i = 0; i < nfiles; ++i) {
@@ -73,11 +69,9 @@ int jot_jacobians(const char* config) {
 
    TH1F* hjavg = (TH1F*)hj[0]->Clone("hjavg");
    hjavg->Reset("ICES");
-
    for (std::size_t i = 0; i < nfiles; ++i)
       hjavg->Add(hj[i]);
    hjavg->Scale(1. / nfiles);
-
    for (std::size_t i = 0; i < nfiles; ++i) {
       hjr[i] = (TH1F*)hj[i]->Clone(Form("hjr%s", tags[i].c_str()));
       hjr[i]->Divide(hjavg);
@@ -85,7 +79,6 @@ int jot_jacobians(const char* config) {
 
    TH1F* hjsys = (TH1F*)hjavg->Clone("hjsys");
    hjsys->Reset("ICES");
-
    for (int j = 1; j <= hjavg->GetNbinsX(); ++j) {
       double max = 0;
       for (std::size_t i = 0; i < nfiles; ++i)
@@ -95,29 +88,23 @@ int jot_jacobians(const char* config) {
    }
 
    TCanvas* c2 = new TCanvas("c2", "", 600, 600);
-
-   for (std::size_t i = 0; i < nfiles; ++i)
-      hj[i]->Draw("p e x0 same");
-
    TLegend* l2 = new TLegend(0.5, 0.72, 0.84, 0.9);
    lstyle(l2, 43, 15);
-   for (std::size_t i = 0; i < nfiles; ++i)
+   for (std::size_t i = 0; i < nfiles; ++i) {
+      hj[i]->Draw("p e x0 same");
       l2->AddEntry(hj[i], legends[i].c_str(), "p");
+   }
    l2->Draw();
-
    c2->SaveAs("figs/corrections/jacobian.all.png");
 
    TCanvas* c3 = new TCanvas("c3", "", 600, 600);
-
-   for (std::size_t i = 0; i < nfiles; ++i)
-      hjr[i]->Draw("p e x0 same");
-
    TLegend* l3 = new TLegend(0.5, 0.72, 0.84, 0.9);
    lstyle(l3, 43, 15);
-   for (std::size_t i = 0; i < nfiles; ++i)
+   for (std::size_t i = 0; i < nfiles; ++i) {
+      hjr[i]->Draw("p e x0 same");
       l3->AddEntry(hjr[i], legends[i].c_str(), "p");
+   }
    l3->Draw();
-
    c3->SaveAs("figs/corrections/jacobian.all-var.png");
 
    fout->Write("", TObject::kOverwrite);

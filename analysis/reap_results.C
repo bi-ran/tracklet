@@ -24,10 +24,10 @@ int reap_results(int type,
                  const char* input,
                  const char* label,
                  int cmin = 0, int cmax = 20,   // centrality selection
-                 const char* clabel = 0,        // correction file label
-                 bool apply_correction = 0,     // apply external corrections
-                 bool apply_geometry_corr = 0,  // apply geometric correction
-                 bool apply_ext_accep_map = 1,  // use predefined acceptance map
+                 const char* ctag = 0,          // correction file label
+                 bool applyc = 0,               // apply external corrections
+                 bool applyg = 0,               // apply geometric correction
+                 bool applym = 1,               // apply external acceptance map
                  bool multhandle = 0,           // alternate mult handle
                  float maxdr2 = 0.25,           // signal region selection
                  const char* accepdir =         // acceptance corrections path
@@ -44,22 +44,23 @@ int reap_results(int type,
    if (ismc) { printf("$ monte carlo analysis\n"); }
    else { printf("$ data analysis\n"); }
 
-   const char* mult = multhandle ? "nhit2" : "ntracklet";
-   printf("$ event multiplicity handle: number of tracklets\n");
-
-   if (apply_geometry_corr)
-      printf("$ applying geometric correction\n");
-   if (apply_ext_accep_map)
-      printf("$ applying external acceptance maps\n");
-
    TFile* fcorr = 0;
    TFile* faccep = 0;
-   if (apply_correction) {
-      fcorr = new TFile(Form("output/correction-%s-%i.root", clabel, type));
+   if (applyc) {
+      fcorr = new TFile(Form("output/correction-%s-%i.root", ctag, type));
+      printf("$ applying correction factors: %s\n", ctag);
 
-      if (apply_geometry_corr)
+      if (applyg) {
          faccep = new TFile(Form("%s/acceptance-%i.root", accepdir, type));
+         printf("$ applying geometric correction\n");
+      }
    }
+
+   if (applym)
+      printf("$ applying external acceptance maps\n");
+
+   const char* mult = multhandle ? "nhit2" : "ntracklet";
+   printf("$ event multiplicity handle: number of tracklets\n");
 
    /* binning                                                                 */
 #define INCLUDE_VZ_BINS
@@ -120,7 +121,7 @@ int reap_results(int type,
       }
    }
 
-   if (apply_correction) {
+   if (applyc) {
       delete h2amapxev;
       delete h1teff;
       delete h1sdf;
@@ -145,7 +146,7 @@ int reap_results(int type,
    TH2F* haccepmc = 0;
    TH2F* haccepdata = 0;
 
-   if (apply_geometry_corr) {
+   if (applyg) {
       haccepmc = (TH2F*)faccep->Get("hmccoarse");
       haccepdata = (TH2F*)faccep->Get("hdatacoarse");
    }
@@ -174,12 +175,12 @@ int reap_results(int type,
    tinput->Project("h1WEvzmult", Form("%s:vz[1]", mult), "weight" * (esel));
 
    const int* amap = 0;
-   if (apply_ext_accep_map) { amap = ext_accep_map(type); }
+   if (applym) { amap = ext_accep_map(type); }
 
    for (int i=1; i<=neta; i++) {
       for (int j=1; j<=nvz; j++) {
-         if (!apply_correction || h2amapxev->GetBinContent(i, j) != 0) {
-            if (apply_ext_accep_map && !amap[(nvz-j)*neta+i-1]) {
+         if (!applyc || h2amapxev->GetBinContent(i, j) != 0) {
+            if (applym && !amap[(nvz-j)*neta+i-1]) {
                h2amapxev->SetBinContent(i, j, 0);
                h2amapxev->SetBinError(i, j, 0);
                continue;
@@ -212,7 +213,7 @@ int reap_results(int type,
    tinput->Project("h3WEraw", Form("vz[1]:%s:eta1", mult), "weight" * (ssel && esel));
 
    /* calculate corrections                                                   */
-   if (!apply_correction) {
+   if (!applyc) {
       for (int x=1; x<=neta; x++) {
          for (int z=1; z<=nvz; z++) {
             if (h2amapxev->GetBinContent(x, z) == 0) {
@@ -396,7 +397,7 @@ int reap_results(int type,
                alpha = 1;
             }
 
-            if (apply_geometry_corr) {
+            if (applyg) {
                double gaccepdata = haccepdata->GetBinContent(x, z);
                double gaccepmc = haccepmc->GetBinContent(x, z);
 
@@ -571,7 +572,7 @@ int reap_results(int type,
    h1WEttruth->Divide(h1accep3xe);
 
    /* calculate/apply empty correction                                        */
-   if (!apply_correction) {
+   if (!applyc) {
       h1empty = (TH1F*)h1WGhadron->Clone("h1empty");
       h1empty->Divide(h1WEtcorr);
 

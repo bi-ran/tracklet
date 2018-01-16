@@ -24,11 +24,7 @@ int zazen(const char* config, const char* label, const char* jacobian) {
    std::vector<std::string> tags = conf->get<std::vector<std::string>>("tags");
 
    std::size_t nres = results.size();
-
-   if (!nres) {
-      printf("error: no files provided!\n");
-      return 1;
-   }
+   if (!nres) { printf("error: no files provided!\n"); return 1; }
 
    std::string hist = conf->get<std::string>("hist");
    std::vector<float> yrange = conf->get<std::vector<float>>("yrange");

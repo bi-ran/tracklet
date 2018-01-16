@@ -36,7 +36,7 @@ typedef struct varinfo_t {
    std::vector<std::string>            var;
    std::vector<std::array<float, 3>>   bins;
    int                                 csize[2];
-   int                                 custom;
+   int                                 flags;
    std::string                         sel;
    std::string                         gopt;
 } varinfo_t;
@@ -45,11 +45,11 @@ static const std::vector<varinfo_t> options_pixel_1d = {
    {
       "cs", {"cluster size"}, {"cs"},
       {{50, 0, 50}},
-      {600, 600}, 1, "(1)", ""
+      {600, 600}, 0x1, "(1)", ""
    }, {
       "nhits", {"number of pixel hits"}, {"nhits"},
       {{100, 0, 15000}},
-      {600, 600}, 1, "(1)", ""
+      {600, 600}, 0x1, "(1)", ""
    }
 };
 
@@ -61,11 +61,7 @@ int compare_pixels(std::vector<varinfo_t> const& options,
    std::vector<std::string> legends = conf->get<std::vector<std::string>>("legends");
 
    std::size_t nfiles = files.size();
-
-   if (!nfiles) {
-      printf("error: no files provided!\n");
-      exit(1);
-   }
+   if (!nfiles) { printf("error: no files provided!\n"); exit(1); }
 
    TCut fsel = OS(sel);
 
@@ -102,7 +98,7 @@ int compare_pixels(std::vector<varinfo_t> const& options,
 
 #define DRAW_1D_PIXELS(q)                                                     \
    TCanvas* c##q = new TCanvas("c" #q, "", 600, 600);                         \
-   if (OPT(custom)) { c##q->SetLogy(); }                                      \
+   if (OPT(flags) & 0x1) { c##q->SetLogy(); }                                 \
                                                                               \
    h##q[0]->Draw("axis");                                                     \
    for (std::size_t j = 1; j < nfiles; ++j) {                                 \
@@ -143,23 +139,23 @@ static const std::vector<varinfo_t> options_tracklet_1d = {
    {
       "deta", {"#Delta#eta"}, {"deta"},
       {{100, -0.5, 0.5}},
-      {600, 600}, 1, "abs(deta)<0.5", ""
+      {600, 600}, 0x1, "abs(deta)<0.5", ""
    }, {
       "dphi", {"#Delta#phi"}, {"dphi"},
       {{100, 0, 0.5}},
-      {600, 600}, 1, "abs(dphi)<0.5", ""
+      {600, 600}, 0x1, "abs(dphi)<0.5", ""
    }, {
       "dr", {"#Deltar"}, {"sqrt(dr2)"},
       {{100, 0, 0.5}},
-      {600, 600}, 1, "abs(dr2)<0.25", ""
+      {600, 600}, 0x1, "abs(dr2)<0.25", ""
    }, {
       "vz", {"v_{z}"}, {"vz[1]"},
       {{100, -15, 15}},
-      {600, 600}, 0, "(1)", ""
+      {600, 600}, 0x0, "(1)", ""
    }, {
       "ntracklet", {"number of tracklets"}, {"ntracklet"},
       {{100, 0, 10000}},
-      {600, 600}, 1, "(1)", ""
+      {600, 600}, 0x1, "(1)", ""
    }
 };
 
@@ -171,11 +167,7 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
    std::vector<std::string> legends = conf->get<std::vector<std::string>>("legends");
 
    std::size_t nfiles = files.size();
-
-   if (!nfiles) {
-      printf("error: no files provided!\n");
-      exit(1);
-   }
+   if (!nfiles) { printf("error: no files provided!\n"); exit(1); }
 
    TCut fsel = OS(sel);
    fsel = fsel && "abs(vz[1])<15 && hlt";
@@ -213,7 +205,7 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
 
 #define DRAW_1D_TRACKLETS(q, w)                                               \
    TCanvas* c##q##w = new TCanvas("c" #q #w, "", 600, 600);                   \
-   if (OPT(custom)) { c##q##w->SetLogy(); }                                   \
+   if (OPT(flags) & 0x1) { c##q##w->SetLogy(); }                              \
                                                                               \
    h##q##w[0]->Draw("axis");                                                  \
    for (std::size_t j = 1; j < nfiles; ++j) {                                 \
@@ -340,20 +332,20 @@ int map_pixels(std::vector<varinfo_t> const& options,
          OS(id), label));                                                     \
    delete c##q;                                                               \
 
-   if (OPT(custom) & 0x1) { BPIX1P(DRAW_2D_PIXELS) }
-   if (OPT(custom) & 0x2) { FPIX1P(DRAW_2D_PIXELS) }
+   if (OPT(flags) & 0x1) { BPIX1P(DRAW_2D_PIXELS) }
+   if (OPT(flags) & 0x2) { FPIX1P(DRAW_2D_PIXELS) }
 
    TH2D* hall = new TH2D(Form("hall%s", idstr), Form(";%s;%s", l0str, l1str),
          (int)OPT(bins[0][0]), OPT(bins[0][1]), OPT(bins[0][2]),
          (int)OPT(bins[1][0]), OPT(bins[1][1]), OPT(bins[1][2]));
 
-   if (OPT(custom) >> 4) {
+   if (OPT(flags) >> 4) {
 
 #define OVERLAY_2D_PIXELS(q)                                                  \
       hall->Add(h##q);                                                        \
 
-      if (OPT(custom) & 0x10) { BPIX1P(OVERLAY_2D_PIXELS) }
-      if (OPT(custom) & 0x20) { FPIX1P(OVERLAY_2D_PIXELS) } 
+      if (OPT(flags) & 0x10) { BPIX1P(OVERLAY_2D_PIXELS) }
+      if (OPT(flags) & 0x20) { FPIX1P(OVERLAY_2D_PIXELS) }
 
       TCanvas* call = new TCanvas("call", "", OPT(csize[0]), OPT(csize[1]));
       hall->Draw(OS(gopt));

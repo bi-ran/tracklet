@@ -117,12 +117,11 @@ int transmute_trees(const char* input,
    printf(" # init random: %f\n", gRandom->Rndm());
 
 #define PROJECT_BACKGROUND(q)                                                 \
-   TH3F* hl##q##hits = 0;                                                     \
+   TH3F* hl##q = 0;                                                           \
    if (add_bkg_l##q) {                                                        \
       printf(" # projecting hit distribution of layer " #q "\n");             \
-      hl##q##hits = new TH3F("hl" #q "hits", "",                              \
-            200, 0, 20, 400, -4, 4, 320, -3.2, 3.2);                          \
-      t->Project("hl" #q "hits", "phi" #q ":eta" #q ":r" #q);                 \
+      hl##q = new TH3F("hl" #q, "", 200, 0, 20, 400, -4, 4, 320, -3.2, 3.2);  \
+      t->Project("hl" #q, "phi" #q ":eta" #q ":r" #q);                        \
    }                                                                          \
 
    PIXELS1P(PROJECT_BACKGROUND);
@@ -157,7 +156,7 @@ int transmute_trees(const char* input,
       if (bkghits##q != 0) {                                                  \
          for (int j=par.nhits##q; j<par.nhits##q + bkghits##q; ++j) {         \
             double eta, phi, r;                                               \
-            hl##q##hits->GetRandom3(r, eta, phi);                             \
+            hl##q->GetRandom3(r, eta, phi);                                   \
             par.eta##q[j] = eta;                                              \
             par.phi##q[j] = phi;                                              \
             par.r##q[j] = r;                                                  \

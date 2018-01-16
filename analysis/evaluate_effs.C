@@ -21,10 +21,7 @@ int evaluate_effs(const char* config) {
    std::vector<std::string> legends = conf->get<std::vector<std::string>>("legends");
 
    std::size_t nfiles = files.size();
-   if (!nfiles) {
-      printf("error: no files provided!\n");
-      return 1;
-   }
+   if (!nfiles) { printf("error: no files provided!\n"); return 1; }
 
    TFile* f[nfiles]; TTree* t[nfiles];
    TProfile* heff[nfiles]; TH2D* hvznhit1[nfiles]; TH1D* hres[nfiles];

@@ -17,16 +17,12 @@ int sum_systematics(const char* config, const char* label) {
     configurer* conf = new configurer(config);
 
     std::vector<std::string> files = conf->get<std::vector<std::string>>("files");
-    std::vector<std::string> labels = conf->get<std::vector<std::string>>("labels");
+    std::vector<std::string> tags = conf->get<std::vector<std::string>>("tags");
     std::vector<std::string> fits = conf->get<std::vector<std::string>>("fits");
     std::vector<int> options = conf->get<std::vector<int>>("options");
 
     std::size_t nfiles = files.size();
-
-    if (!nfiles) {
-        printf("error: no files provided!\n");
-        return 1;
-    }
+    if (!nfiles) { printf("error: no files provided!\n"); return 1; }
 
     std::vector<std::string> hists = {
         "h12", "h13", "h14",
@@ -51,14 +47,14 @@ int sum_systematics(const char* config, const char* label) {
 
     TH1F* h[nhists][nfiles];
     for (std::size_t i = 0; i < nhists; ++i) {
-        TH1F* hnominal = (TH1F*)f[0]->Get(hists[i].c_str())->Clone(Form("%s%s", hists[i].c_str(), labels[0].c_str()));
+        TH1F* hnominal = (TH1F*)f[0]->Get(hists[i].c_str())->Clone(Form("%s%s", hists[i].c_str(), tags[0].c_str()));
 
         tvars[i] = new sumvar_t(hists[i].c_str(), hnominal);
 
         for (std::size_t j = 1; j < nfiles; ++j) {
-            h[i][j] = (TH1F*)f[j]->Get(hists[i].c_str())->Clone(Form("%s%s", hists[i].c_str(), labels[j].c_str()));
+            h[i][j] = (TH1F*)f[j]->Get(hists[i].c_str())->Clone(Form("%s%s", hists[i].c_str(), tags[j].c_str()));
 
-            svars[i][j] = new var_t(hists[i], labels[j], hnominal, h[i][j]);
+            svars[i][j] = new var_t(hists[i], tags[j], hnominal, h[i][j]);
             svars[i][j]->fit(fits[j].c_str(), "pol2");
             svars[i][j]->write();
 
@@ -77,12 +73,12 @@ int sum_systematics(const char* config, const char* label) {
             h = svars[i][j]->adiff(0);
             htitle(h, ";#eta;absolute difference");
             h->Draw();
-            c1->SaveAs(Form("%s-%s-diff.png", path.c_str(), labels[j].c_str()));
+            c1->SaveAs(Form("%s-%s-diff.png", path.c_str(), tags[j].c_str()));
 
             h = svars[i][j]->aratio(0);
             htitle(h, ";#eta;ratio");
             h->Draw();
-            c1->SaveAs(Form("%s-%s-ratio.png", path.c_str(), labels[j].c_str()));
+            c1->SaveAs(Form("%s-%s-ratio.png", path.c_str(), tags[j].c_str()));
 
             delete c1;
             delete svars[i][j];
