@@ -84,7 +84,11 @@ int merge_monads(const char* label) {
 #define OPEN(q, w)                                                            \
    TFile* f##q##w = new TFile(Form("output/correction-%s-" #q #w ".root",     \
          label));                                                             \
-   TH1F* h##q##w = (TH1F*)f##q##w->Get("h1WEfinal")->Clone("h" #q #w);        \
+   TH1F* h##q##w;                                                             \
+   if (f##q##w && f##q##w->IsOpen())                                          \
+      h##q##w = (TH1F*)f##q##w->Get("h1WEfinal")->Clone("h" #q #w);           \
+   else                                                                       \
+      h##q##w = new TH1F("hnull" #q #w, "", neta, etamin, etamax);            \
 
    TRKLTS2P(OPEN)
 
@@ -170,7 +174,7 @@ int merge_monads(const char* label) {
       int nsum = 0;
 
 #define AVERAGE(q, w)                                                         \
-      if (good[INDEX##q##w][i - 1]) {                                         \
+      if (good[INDEX##q##w][i - 1] && h##q##w->GetBinContent(i) != 0) {       \
          avg += h##q##w->GetBinContent(i);                                    \
          avg_err += h##q##w->GetBinError(i) * h##q##w->GetBinError(i);        \
          nsum++;                                                              \
