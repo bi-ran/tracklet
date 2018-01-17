@@ -1,9 +1,10 @@
 #!/bin/bash
 
 helpmsg() {
-    echo -e 'usage: ./rr (-hj) [input] [label] (-1) ($@)'
-    echo -e 'usage: ./rr (-hj) [input] [label] [0] [cmin cmax] ($@)'
-    echo -e 'usage: ./rr (-hj) [input] [label] [interval] ($@)\n'
+    echo -e 'usage: ./rr (-bhj) [input] [label] (-1) ($@)'
+    echo -e 'usage: ./rr (-bhj) [input] [label] [0] [cmin cmax] ($@)'
+    echo -e 'usage: ./rr (-bhj) [input] [label] [interval] ($@)\n'
+    echo -e '   -b, --bpix        evaluate bpix tracklets only'
     echo -e '   -h, --help        show (this) help message'
     echo -e '   -j, --jobs        jobs relative to number of cores\n'
 }
@@ -12,6 +13,7 @@ ARGS=()
 
 while [ $# -gt 0 ]; do
     case "$1" in
+        -b|--bpix)      BPIX=1; shift ;;
         -h|--help)      helpmsg; exit ;;
         -j)             JOBS="$2"; shift 2 ;;
         --jobs=*)       JOBS="${1#*=}"; shift ;;
@@ -33,7 +35,12 @@ make collect_cents || exit 1
 
 JOBS=${JOBS:-"+0"}
 
-TYPES=(12 13 14 23 24 34 15 16 17)
+BTYPES=(12 13 14 23 24 34)
+FTYPES=(15 16 17)
+
+TYPES=( "${BTYPES[@]}" )
+[ -n "$BPIX" ] || TYPES+=( "${FTYPES[@]}" )
+
 if [[ $3 -gt 0 ]]; then
     for (( CMAX=20; CMAX>=$3; CMAX-=$3 )); do
         CMIN=$(( CMAX - $3 ))
