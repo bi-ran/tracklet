@@ -247,7 +247,7 @@ static const std::vector<varinfo_t> options_pixel_2d = {
       "eta-phi", {"#eta", "#phi"},
       {"eta@", "phi@"},
       {{1000, -4, 4}, {1000, -4, 4}},
-      {600, 600}, 0x23, "(1)", "colz"
+      {600, 600}, 0x03, "(1)", "colz"
    }, {
       "eta-r", {"#eta", "r"},
       {"eta@", "r@"},
@@ -271,8 +271,8 @@ static const std::vector<varinfo_t> options_pixel_2d = {
    }, {
       "z-r", {"z", "r"},
       {"r@/tan(2*atan(exp(-eta@)))", "r@"},
-      {{1000, -30, 30}, {1000, 0, 20}},
-      {600, 600}, 0x33, "(1)", "colz"
+      {{1000, -60, 60}, {1000, 0, 20}},
+      {1200, 600}, 0x33, "(1)", "colz"
    }, {
       "fpix-x-y-plus", {"x", "y"},
       {"r@*cos(phi@)", "r@*sin(phi@)"},
