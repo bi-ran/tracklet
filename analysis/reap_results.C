@@ -117,7 +117,7 @@ int reap_results(int type,
    for (int i=0; i<neta; i++) {
       for (int j=0; j<nvz; j++) {
          h1alpha[i][j] = new TH1F(Form("alpha_%i_%i", i, j), "", nmult, multb);
-         falpha[i][j] = new TF1(Form("falpha_%i_%i", i, j), "[0]+[1]/(x+[2])+[3]/(x*x)+exp([4])*x", 25, 10000);
+         falpha[i][j] = new TF1(Form("falpha_%i_%i", i, j), "[0]+[1]/(x+[2])+[3]/(x*x)", 1, 12000);
       }
    }
 
@@ -268,11 +268,10 @@ int reap_results(int type,
             falpha[i][j]->SetParameter(0, 0.84);
             falpha[i][j]->SetParLimits(1, 1, 256);
             falpha[i][j]->SetParLimits(2, 0, 512);
-            falpha[i][j]->SetParLimits(3, -512, 512);
-            falpha[i][j]->SetParLimits(4, -256, -8);
+            falpha[i][j]->SetParLimits(3, -64, 128);
 
-            h1alpha[i][j]->Fit(falpha[i][j], "M Q", "", 25, 10000);
-            h1alpha[i][j]->Fit(falpha[i][j], "M E Q", "", 25, 10000);
+            h1alpha[i][j]->Fit(falpha[i][j], "M Q", "", 8, 7000);
+            h1alpha[i][j]->Fit(falpha[i][j], "M E Q", "", 8, 7000);
 
             falpha[i][j] = h1alpha[i][j]->GetFunction(Form("falpha_%i_%i", i, j));
          }
