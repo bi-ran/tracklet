@@ -78,8 +78,6 @@ int transmute_trees(const char* input,
 
       sample = -1;
       reweight = 0;
-#define BKG_RESET(q) add_bkg_l##q = 0;
-      PIXELS1P(BKG_RESET);
    }
 
    if (reweight && (sample < 0 || sample > NSAMPLES - 1)) {
