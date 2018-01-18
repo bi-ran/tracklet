@@ -1,6 +1,3 @@
-#define VTX_DPHI 0.03
-#define VTX_DZ 0.09
-
 #include "TFile.h"
 #include "TTree.h"
 #include "TTimeStamp.h"
@@ -33,6 +30,10 @@ static const float vzpar[NSAMPLES][2] = {
    {0.312837, 4.73380},    /* ampt, string melt */
    {0.246955, 4.70907}     /* epos */
 };
+
+#define NREGIONS  2
+static const int vtxrgns[NREGIONS] = {0, 6};
+static const float vtxpar[NREGIONS][2] = {{0.09, 0.12}, {0.03, 0.09}};
 
 #define BKG_ARG(q)   , float add_bkg_l##q = 0
 #define BKG_ARGV(q)  , atof(argv[10 + q])
@@ -171,7 +172,8 @@ int transmute_trees(const char* input,
          prepare_hits(layer1raw, par, 1, vx, vy, 0, split, drop, smear);
          prepare_hits(layer2raw, par, 2, vx, vy, 0, split, drop, smear);
 
-         vz = reco_vertex(layer1raw, layer2raw, VTX_DPHI, VTX_DZ);
+         int rgn = 0; for (; cbin < vtxrgns[rgn]; ++rgn);
+         vz = reco_vertex(layer1raw, layer2raw, vtxpar[rgn][0], vtxpar[rgn][1]);
       }
 
 #define SET_VERTEX(q, w)                                                      \
