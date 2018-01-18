@@ -378,7 +378,7 @@ int reap_results(int type,
             printf("   ^ alpha application: eta: %2i, vz: %2i, ntl: %2i, alpha: %5.3f [%5.3f], raw: %9.2f\n", x, z, y, alpha, alphaerr, raw);
 
             if (alpha == 0 && falpha[x-1][z-1] != 0) {
-               alpha = falpha[x-1][z-1]->Eval(multb[y]);
+               alpha = falpha[x-1][z-1]->Eval((multb[y] + multb[y-1]) / 2);
                printf("     # check fit value: %.3f\n", alpha);
             }
 
