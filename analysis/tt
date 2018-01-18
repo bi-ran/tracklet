@@ -2,17 +2,28 @@
 
 helpmsg() {
     echo -e 'usage: ./tt [total entries] ($@)\n'
+    echo -e '   -b, --begin     first job index'
+    echo -e '   -d, --dryrun    debug commands without execution'
+    echo -e '   -g, --group     group identifier'
     echo -e '   -h, --help      show (this) help message'
-    echo -e '   -j, --jobs      jobs relative to number of cores\n'
+    echo -e '   -j, --jobs      jobs relative to number of cores'
+    echo -e '   -s, --size      size of each slice\n'
 }
 
 ARGS=()
 
 while [ $# -gt 0 ]; do
     case "$1" in
+        -b)             BEGIN="$2"; shift 2 ;;
+        --begin=*)      BEGIN="${1#*=}"; shift ;;
+        -d|--dryrun)    dryrun=1; shift ;;
+        -g)             GROUP="$2"; shift 2 ;;
+        --group=*)      GROUP="${1#*=}"; shift ;;
         -h|--help)      helpmsg; exit ;;
         -j)             JOBS="$2"; shift 2 ;;
         --jobs=*)       JOBS="${1#*=}"; shift ;;
+        -s)             SIZE="$2"; shift 2 ;;
+        --size=*)       SIZE="${1#*=}"; shift ;;
         -*|--*)         [[ $1 =~ ^-?[0-9]+$ ]] && \
                             { ARGS+=("$1"); shift; } || \
                             { echo -e "invalid option: $1\n"; exit 1; } ;;
@@ -30,20 +41,26 @@ ENTRIES=$1
 [ $ENTRIES -le 0 ] && {
     echo -e "error: negative total entries: $ENTRIES\n"; exit 1; }
 
-JOBS=${JOBS:-"-4"}
+[ $dryrun ] && SEMFLAGS="--dryrun"
 
-SIZE=1024
+BEGIN=${BEGIN:-0}
+GROUP=${GROUP:-"tt"}
+JOBS=${JOBS:-"-4"}
+SIZE=${SIZE:-1024}
+
 SLICES=$(( ($ENTRIES - 1) / $SIZE ))
 
 BASE=$(basename $3 .root)
-for SLICE in $(seq 0 $SLICES ); do
-    sem -j$JOBS --id sem-grp-tt --linebuffer \
+for SLICE in $(seq $BEGIN $SLICES ); do
+    sem -j$JOBS --id sem-grp-$GROUP --linebuffer $SEMFLAGS \
             "./transmute_trees $2 ${3}.$SLICE \
             $(( $SLICE * $SIZE )) $(( ($SLICE + 1) * $SIZE )) ${@:4} \
             &> notes/log-tt-$BASE-$ENTRIES-${SLICE}.log; \
             echo \"   done: part $SLICE\""
 done
-sem --wait --id sem-grp-tt
+sem --wait --id sem-grp-$GROUP
+
+[ $dryrun ] && exit 0
 
 TSIZE=$(du -c ${3}.* | grep total | awk '{print $1}')
 if [ $TSIZE -lt 90000000 ]; then
