@@ -392,7 +392,7 @@ int reap_results(int type,
                }
             }
 
-            if (alpha <= 0 || alpha > 3) {
+            if (alpha <= 0 || alpha > 3.6) {
                printf("     ! invalid value: %.3f, reset to 1\n", alpha);
                alpha = 1;
             }
