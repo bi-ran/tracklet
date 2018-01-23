@@ -7,6 +7,7 @@ helpmsg() {
     echo -e '   -g, --group     group identifier'
     echo -e '   -h, --help      show (this) help message'
     echo -e '   -j, --jobs      jobs relative to number of cores'
+    echo -e '   -n, --nice      be nice'
     echo -e '   -s, --size      size of each slice\n'
 }
 
@@ -22,6 +23,8 @@ while [ $# -gt 0 ]; do
         -h|--help)      helpmsg; exit ;;
         -j)             JOBS="$2"; shift 2 ;;
         --jobs=*)       JOBS="${1#*=}"; shift ;;
+        -n)             NICE="$2"; shift 2 ;;
+        --nice=*)       NICE="${1#*=}"; shift ;;
         -s)             SIZE="$2"; shift 2 ;;
         --size=*)       SIZE="${1#*=}"; shift ;;
         -*|--*)         [[ $1 =~ ^-?[0-9]+$ ]] && \
@@ -46,6 +49,7 @@ ENTRIES=$1
 BEGIN=${BEGIN:-0}
 GROUP=${GROUP:-"tt"}
 JOBS=${JOBS:-"-4"}
+NICE=${NICE:-10}
 SIZE=${SIZE:-1024}
 
 SLICES=$(( ($ENTRIES - 1) / $SIZE ))
@@ -53,7 +57,8 @@ SLICES=$(( ($ENTRIES - 1) / $SIZE ))
 BASE=$(basename $3 .root)
 for SLICE in $(seq $BEGIN $SLICES ); do
     sem -j$JOBS --id sem-grp-$GROUP --linebuffer $SEMFLAGS \
-            "./transmute_trees $2 ${3}.$SLICE \
+            "nice -n $NICE \
+            ./transmute_trees $2 ${3}.$SLICE \
             $(( $SLICE * $SIZE )) $(( ($SLICE + 1) * $SIZE )) ${@:4} \
             &> notes/log-tt-$BASE-$ENTRIES-${SLICE}.log; \
             echo \"   done: part $SLICE\""
