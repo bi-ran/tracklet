@@ -16,10 +16,10 @@
 int sum_systematics(const char* config, const char* label) {
     configurer* conf = new configurer(config);
 
-    std::vector<std::string> files = conf->get<std::vector<std::string>>("files");
-    std::vector<std::string> tags = conf->get<std::vector<std::string>>("tags");
-    std::vector<std::string> fits = conf->get<std::vector<std::string>>("fits");
-    std::vector<int> options = conf->get<std::vector<int>>("options");
+    auto files = conf->get<std::vector<std::string>>("files");
+    auto tags = conf->get<std::vector<std::string>>("tags");
+    auto fits = conf->get<std::vector<std::string>>("fits");
+    auto options = conf->get<std::vector<int>>("options");
 
     std::size_t nfiles = files.size();
     if (!nfiles) { printf("error: no files provided!\n"); return 1; }

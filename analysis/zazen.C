@@ -18,18 +18,18 @@
 int zazen(const char* config, const char* label, const char* jacobian) {
    configurer* conf = new configurer(config);
 
-   std::vector<std::string> results = conf->get<std::vector<std::string>>("files");
-   std::vector<std::string> systematics = conf->get<std::vector<std::string>>("systematics");
-   std::vector<std::string> legends = conf->get<std::vector<std::string>>("legends");
-   std::vector<std::string> tags = conf->get<std::vector<std::string>>("tags");
+   auto results = conf->get<std::vector<std::string>>("files");
+   auto systematics = conf->get<std::vector<std::string>>("systematics");
+   auto legends = conf->get<std::vector<std::string>>("legends");
+   auto tags = conf->get<std::vector<std::string>>("tags");
 
    std::size_t nres = results.size();
    if (!nres) { printf("error: no files provided!\n"); return 1; }
 
-   std::string hist = conf->get<std::string>("hist");
-   std::vector<float> yrange = conf->get<std::vector<float>>("yrange");
-   bool logy = conf->get<bool>("logy");
-   int coffset = conf->get<int>("coffset");
+   auto hist = conf->get<std::string>("hist");
+   auto yrange = conf->get<std::vector<float>>("yrange");
+   auto logy = conf->get<bool>("logy");
+   auto coffset = conf->get<int>("coffset");
 
    std::vector<TFile*> fres;
    std::vector<TFile*> fsys;

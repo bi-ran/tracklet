@@ -15,9 +15,9 @@
 int jot_jacobians(const char* config) {
    configurer* conf = new configurer(config);
 
-   std::vector<std::string> files = conf->get<std::vector<std::string>>("files");
-   std::vector<std::string> legends = conf->get<std::vector<std::string>>("legends");
-   std::vector<std::string> tags = conf->get<std::vector<std::string>>("tags");
+   auto files = conf->get<std::vector<std::string>>("files");
+   auto legends = conf->get<std::vector<std::string>>("legends");
+   auto tags = conf->get<std::vector<std::string>>("tags");
 
    std::size_t nfiles = files.size();
    if (!nfiles) { printf("error: no files provided!\n"); return 1; }

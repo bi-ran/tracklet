@@ -58,8 +58,8 @@ int compare_pixels(std::vector<varinfo_t> const& options,
       const char* config, const char* label, int opt) {
    configurer* conf = new configurer(config);
 
-   std::vector<std::string> files = conf->get<std::vector<std::string>>("files");
-   std::vector<std::string> legends = conf->get<std::vector<std::string>>("legends");
+   auto files = conf->get<std::vector<std::string>>("files");
+   auto legends = conf->get<std::vector<std::string>>("legends");
 
    std::size_t nfiles = files.size();
    if (!nfiles) { printf("error: no files provided!\n"); exit(1); }
@@ -197,8 +197,8 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
       const char* config, const char* label, int opt) {
    configurer* conf = new configurer(config);
 
-   std::vector<std::string> files = conf->get<std::vector<std::string>>("files");
-   std::vector<std::string> legends = conf->get<std::vector<std::string>>("legends");
+   auto files = conf->get<std::vector<std::string>>("files");
+   auto legends = conf->get<std::vector<std::string>>("legends");
 
    std::size_t nfiles = files.size();
    if (!nfiles) { printf("error: no files provided!\n"); exit(1); }

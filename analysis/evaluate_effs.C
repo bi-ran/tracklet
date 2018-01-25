@@ -17,8 +17,8 @@
 int evaluate_effs(const char* config, const char* label) {
    configurer* conf = new configurer(config);
 
-   std::vector<std::string> files = conf->get<std::vector<std::string>>("files");
-   std::vector<std::string> legends = conf->get<std::vector<std::string>>("legends");
+   auto files = conf->get<std::vector<std::string>>("files");
+   auto legends = conf->get<std::vector<std::string>>("legends");
 
    std::size_t nfiles = files.size();
    if (!nfiles) { printf("error: no files provided!\n"); return 1; }
