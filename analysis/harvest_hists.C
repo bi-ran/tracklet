@@ -6,6 +6,7 @@
 #include "TColor.h"
 #include "TStyle.h"
 #include "TCanvas.h"
+#include "TPad.h"
 #include "TLegend.h"
 
 #include <vector>
@@ -45,11 +46,11 @@ static const std::vector<varinfo_t> options_pixel_1d = {
    {
       "cs", {"cluster size"}, {"cs"},
       {{50, 0, 50}},
-      {600, 600}, 0x1, "(1)", ""
+      {600, 600}, 0x01, "(1)", ""
    }, {
       "nhits", {"number of pixel hits"}, {"nhits"},
       {{100, 0, 15000}},
-      {600, 600}, 0x1, "(1)", ""
+      {600, 600}, 0x01, "(1)", ""
    }
 };
 
@@ -78,7 +79,7 @@ int compare_pixels(std::vector<varinfo_t> const& options,
    }
 
 #define SETUP_1D_PIXELS(q)                                                    \
-   TH1D* h##q[nfiles];                                                        \
+   TH1D* h##q[nfiles]; TH1D* hr##q[nfiles] = {0};                             \
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
       h##q[j] = new TH1D(Form("hp" #q "f%zu%s", j, idstr),                    \
             Form(";%s (layer " #q ");", OS(label[0])),                        \
@@ -96,9 +97,24 @@ int compare_pixels(std::vector<varinfo_t> const& options,
 
    PIXELS1P(PROJECT_1D_PIXELS)
 
+   int cheight = OPT(flags) & 0x10 ? OPT(csize[1]) * 1.2 : OPT(csize[1]);
+
 #define DRAW_1D_PIXELS(q)                                                     \
-   TCanvas* c##q = new TCanvas("c" #q, "", 600, 600);                         \
-   if (OPT(flags) & 0x1) { c##q->SetLogy(); }                                 \
+   TCanvas* c##q = new TCanvas("c" #q, "", OPT(csize[0]), cheight);           \
+   if (OPT(flags) & 0x10) {                                                   \
+      TPad* t1 = new TPad("t" #q "1", "", 0, 0.25, 1, 1);                     \
+      t1->SetTopMargin(0.11111); t1->SetBottomMargin(0);                      \
+      t1->Draw(); t1->SetNumber(1);                                           \
+      TPad* t2 = new TPad("t" #q "2", "", 0, 0, 1, 0.25);                     \
+      t2->SetTopMargin(0); t2->SetBottomMargin(0.32);                         \
+      t2->Draw(); t2->SetNumber(2);                                           \
+      c##q->cd(1);                                                            \
+                                                                              \
+      h##q[0]->GetXaxis()->SetLabelOffset(99);                                \
+      h##q[0]->GetXaxis()->SetTitleOffset(99);                                \
+   }                                                                          \
+                                                                              \
+   if (OPT(flags) & 0x1) { gPad->SetLogy(); }                                 \
                                                                               \
    h##q[0]->Draw("axis");                                                     \
    for (std::size_t j = 1; j < nfiles; ++j) {                                 \
@@ -115,6 +131,24 @@ int compare_pixels(std::vector<varinfo_t> const& options,
    for (std::size_t j = 1; j < nfiles; ++j)                                   \
       l##q->AddEntry(h##q[j], CS(legends[j]), "l");                           \
    l##q->Draw();                                                              \
+                                                                              \
+   if (OPT(flags) & 0x10) {                                                   \
+      c##q->cd(2);                                                            \
+      for (std::size_t j = 1; j < nfiles; ++j) {                              \
+         hr##q[j] = (TH1D*)h##q[j]->Clone(Form("hpr" #q "f%zu%s", j, idstr)); \
+         hr##q[j]->Divide(h##q[0]);                                           \
+         hr##q[j]->SetAxisRange(0.5, 1.5, "Y");                               \
+         hr##q[j]->GetXaxis()->SetLabelSize(0.08);                            \
+         hr##q[j]->GetXaxis()->SetTitleSize(0.1);                             \
+         hr##q[j]->GetYaxis()->SetLabelSize(0.08);                            \
+         hr##q[j]->GetYaxis()->SetTitleSize(0.08);                            \
+         hr##q[j]->GetYaxis()->CenterTitle();                                 \
+         hr##q[j]->GetYaxis()->SetTitleOffset(0.5);                           \
+         hr##q[j]->SetNdivisions(205, "Y");                                   \
+         hr##q[j]->SetYTitle("ratio");                                        \
+         hr##q[j]->Draw("p e same");                                          \
+      }                                                                       \
+   }                                                                          \
                                                                               \
    c##q->SaveAs(Form("figs/pixel/pixel-%s-l" #q "-%s.png",                    \
          OS(id), label));                                                     \
@@ -139,23 +173,23 @@ static const std::vector<varinfo_t> options_tracklet_1d = {
    {
       "deta", {"#Delta#eta"}, {"deta"},
       {{100, -0.5, 0.5}},
-      {600, 600}, 0x1, "abs(deta)<0.5", ""
+      {600, 600}, 0x11, "abs(deta)<0.5", ""
    }, {
       "dphi", {"#Delta#phi"}, {"dphi"},
       {{100, 0, 0.5}},
-      {600, 600}, 0x1, "abs(dphi)<0.5", ""
+      {600, 600}, 0x11, "abs(dphi)<0.5", ""
    }, {
       "dr", {"#Deltar"}, {"sqrt(dr2)"},
       {{100, 0, 0.5}},
-      {600, 600}, 0x1, "abs(dr2)<0.25", ""
+      {600, 600}, 0x11, "abs(dr2)<0.25", ""
    }, {
       "vz", {"v_{z}"}, {"vz[1]"},
       {{100, -15, 15}},
-      {600, 600}, 0x0, "(1)", ""
+      {600, 600}, 0x10, "(1)", ""
    }, {
       "ntracklet", {"number of tracklets"}, {"ntracklet"},
       {{100, 0, 10000}},
-      {600, 600}, 0x1, "(1)", ""
+      {600, 600}, 0x01, "(1)", ""
    }
 };
 
@@ -184,7 +218,8 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
       f[j] = new TFile(files[j].c_str(), "read");
 
 #define SETUP_1D_TRACKLETS(q, w)                                              \
-   TTree* t##q##w[nfiles]; TH1D* h##q##w[nfiles];                             \
+   TTree* t##q##w[nfiles];                                                    \
+   TH1D* h##q##w[nfiles]; TH1D* hr##q##w[nfiles] = {0};                       \
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
       t##q##w[j] = (TTree*)f[j]->Get("TrackletTree" #q #w);                   \
       h##q##w[j] = new TH1D(Form("ht" #q #w "f%zu%s", j, idstr),              \
@@ -203,9 +238,24 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
 
    TRKLTS2P(PROJECT_1D_TRACKLETS)
 
+   int cheight = OPT(flags) & 0x10 ? OPT(csize[1]) * 1.2 : OPT(csize[1]);
+
 #define DRAW_1D_TRACKLETS(q, w)                                               \
-   TCanvas* c##q##w = new TCanvas("c" #q #w, "", 600, 600);                   \
-   if (OPT(flags) & 0x1) { c##q##w->SetLogy(); }                              \
+   TCanvas* c##q##w = new TCanvas("c" #q #w, "", OPT(csize[0]), cheight);     \
+   if (OPT(flags) & 0x10) {                                                   \
+      TPad* t1 = new TPad("t" #q #w "1", "", 0, 0.25, 1, 1);                  \
+      t1->SetTopMargin(0.11111); t1->SetBottomMargin(0);                      \
+      t1->Draw(); t1->SetNumber(1);                                           \
+      TPad* t2 = new TPad("t" #q #w "2", "", 0, 0, 1, 0.25);                  \
+      t2->SetTopMargin(0); t2->SetBottomMargin(0.32);                         \
+      t2->Draw(); t2->SetNumber(2);                                           \
+      c##q##w->cd(1);                                                         \
+                                                                              \
+      h##q##w[0]->GetXaxis()->SetLabelOffset(99);                             \
+      h##q##w[0]->GetXaxis()->SetTitleOffset(99);                             \
+   }                                                                          \
+                                                                              \
+   if (OPT(flags) & 0x1) { gPad->SetLogy(); }                                 \
                                                                               \
    h##q##w[0]->Draw("axis");                                                  \
    for (std::size_t j = 1; j < nfiles; ++j) {                                 \
@@ -222,6 +272,25 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
    for (std::size_t j = 1; j < nfiles; ++j)                                   \
       l##q##w->AddEntry(h##q##w[j], CS(legends[j]), "l");                     \
    l##q##w->Draw();                                                           \
+                                                                              \
+   if (OPT(flags) & 0x10) {                                                   \
+      c##q##w->cd(2);                                                         \
+      for (std::size_t j = 1; j < nfiles; ++j) {                              \
+         hr##q##w[j] = (TH1D*)h##q##w[j]->Clone(                              \
+               Form("htr" #q "f%zu%s", j, idstr));                            \
+         hr##q##w[j]->Divide(h##q##w[0]);                                     \
+         hr##q##w[j]->SetAxisRange(0.5, 1.5, "Y");                            \
+         hr##q##w[j]->GetXaxis()->SetLabelSize(0.08);                         \
+         hr##q##w[j]->GetXaxis()->SetTitleSize(0.1);                          \
+         hr##q##w[j]->GetYaxis()->SetLabelSize(0.08);                         \
+         hr##q##w[j]->GetYaxis()->SetTitleSize(0.08);                         \
+         hr##q##w[j]->GetYaxis()->CenterTitle();                              \
+         hr##q##w[j]->GetYaxis()->SetTitleOffset(0.5);                        \
+         hr##q##w[j]->SetNdivisions(205, "Y");                                \
+         hr##q##w[j]->SetYTitle("ratio");                                     \
+         hr##q##w[j]->Draw("p e same");                                       \
+      }                                                                       \
+   }                                                                          \
                                                                               \
    c##q##w->SaveAs(Form("figs/tracklet/tracklet-%s-t" #q #w "-%s.png",        \
          OS(id), label));                                                     \
