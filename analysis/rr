@@ -1,13 +1,15 @@
 #!/bin/bash
 
 helpmsg() {
-    echo -e 'usage: ./rr (-bghj) [input] [label] (-1) ($@)'
-    echo -e 'usage: ./rr (-bghj) [input] [label] [0] [cmin cmax] ($@)'
-    echo -e 'usage: ./rr (-bghj) [input] [label] [interval] ($@)\n'
+    echo -e 'usage: ./rr [input] [label] (-1) ($@)'
+    echo -e 'usage: ./rr [input] [label] [0] [cmin cmax] ($@)'
+    echo -e 'usage: ./rr [input] [label] [interval] ($@)\n'
     echo -e '   -b, --bpix        evaluate bpix tracklets only'
+    echo -e '   -f, --file        output commands'
     echo -e '   -g, --group       semaphore group id'
     echo -e '   -h, --help        show (this) help message'
-    echo -e '   -j, --jobs        jobs relative to number of cores\n'
+    echo -e '   -j, --jobs        jobs relative to number of cores'
+    echo -e '   -n, --nice        nice\n'
 }
 
 ARGS=()
@@ -15,11 +17,15 @@ ARGS=()
 while [ $# -gt 0 ]; do
     case "$1" in
         -b|--bpix)      BPIX=1; shift ;;
+        -f)             FILE="$2"; shift 2 ;;
+        --file=*)       FILE="${1#*=}"; shift ;;
         -g)             GROUP="$2"; shift 2 ;;
         --group=*)      GROUP="${1#*=}"; shift ;;
         -h|--help)      helpmsg; exit ;;
         -j)             JOBS="$2"; shift 2 ;;
         --jobs=*)       JOBS="${1#*=}"; shift ;;
+        -n)             NICE="$2"; shift 2 ;;
+        --nice=*)       NICE="${1#*=}"; shift ;;
         -*|--*)         [[ $1 =~ ^-?[0-9]+$ ]] && \
                             { ARGS+=("$1"); shift; } || \
                             { echo -e "invalid option: $1\n"; exit 1; } ;;
@@ -39,54 +45,67 @@ make collect_cents || exit 1
 GROUP=${GROUP:-"def"}
 JOBS=${JOBS:-"+0"}
 
+FLAGS="--linebuffer"
+
 BTYPES=(12 13 14 23 24 34)
 FTYPES=(15 16 17)
 
 TYPES=( "${BTYPES[@]}" )
 [ -n "$BPIX" ] || TYPES+=( "${FTYPES[@]}" )
 
+[ -n "$NICE" ] && PREFIX+="nice -n $NICE "
+[ -n "$FILE" ] && { PREFIX+="echo "; exec &>> $FILE; }
+
 if [[ $3 -gt 0 ]]; then
     for (( CMAX=20; CMAX>=$3; CMAX-=$3 )); do
         CMIN=$(( CMAX - $3 ))
 
         for TYPE in ${TYPES[@]}; do
-            sem -j$JOBS --id sem-grp-rr-$GROUP --linebuffer \
+            $PREFIX sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
                     "./reap_results $TYPE $1 $2.a.$CMIN.$CMAX \
                     $CMIN $CMAX $4.a.$CMIN.$CMAX $5 ${@:6} \
                     > notes/log-rr-$2.a.$CMIN.$CMAX-$TYPE.log"
         done
     done
-    sem --wait --id sem-grp-rr-$GROUP
+    $PREFIX sem --id sem-grp-rr-$GROUP --wait
 
     for (( CMAX=20; CMAX>=$3; CMAX-=$3 )); do
         CMIN=$(( CMAX - $3 ))
 
-        sem -j$JOBS --id sem-grp-mm-$GROUP --linebuffer \
+        $PREFIX sem -j$JOBS --id sem-grp-mm-$GROUP $FLAGS \
                 "./merge_monads $2.a.$CMIN.$CMAX"
     done
-    sem --wait --id sem-grp-mm-$GROUP
+    $PREFIX sem --id sem-grp-mm-$GROUP --wait
 
-    ./collect_cents $2.a $3
+    $PREFIX ./collect_cents $2.a $3
 elif [[ $3 -eq 0 ]]; then
     [[ $# -lt 5 ]] && exit 2
 
     for TYPE in ${TYPES[@]}; do
-        sem -j$JOBS --id sem-grp-rr-$GROUP --linebuffer \
+        $PREFIX sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
                 "./reap_results $TYPE $1 $2.s.$4.$5 \
                 $4 $5 $6.s.$4.$5 $7 ${@:8} \
                 > notes/log-rr-$2.s.$4.$5-$TYPE.log"
     done
-    sem --wait --id sem-grp-rr-$GROUP
+    $PREFIX sem --id sem-grp-rr-$GROUP --wait
 
-    ./merge_monads $2.s.$4.$5
+    $PREFIX ./merge_monads $2.s.$4.$5
 else
     for TYPE in ${TYPES[@]}; do
-        sem -j$JOBS --id sem-grp-rr-$GROUP --linebuffer \
+        $PREFIX sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
                 "./reap_results $TYPE ${@:1:2} \
                 0 20 ${@:4} \
                 > notes/log-rr-$2-$TYPE.log"
     done
-    sem --wait --id sem-grp-rr-$GROUP
+    $PREFIX sem --id sem-grp-rr-$GROUP --wait
 
-    ./merge_monads $2
+    $PREFIX ./merge_monads $2
 fi
+
+[ -n "$FILE" ] && {
+    sort $FILE -u -o $FILE.tmp;
+    grep reap_results $FILE.tmp > $FILE;
+    grep wait $FILE.tmp >> $FILE;
+    grep merge_monads $FILE.tmp >> $FILE;
+    rm $FILE.tmp
+}
