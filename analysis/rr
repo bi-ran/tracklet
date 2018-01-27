@@ -1,10 +1,11 @@
 #!/bin/bash
 
 helpmsg() {
-    echo -e 'usage: ./rr (-bhj) [input] [label] (-1) ($@)'
-    echo -e 'usage: ./rr (-bhj) [input] [label] [0] [cmin cmax] ($@)'
-    echo -e 'usage: ./rr (-bhj) [input] [label] [interval] ($@)\n'
+    echo -e 'usage: ./rr (-bghj) [input] [label] (-1) ($@)'
+    echo -e 'usage: ./rr (-bghj) [input] [label] [0] [cmin cmax] ($@)'
+    echo -e 'usage: ./rr (-bghj) [input] [label] [interval] ($@)\n'
     echo -e '   -b, --bpix        evaluate bpix tracklets only'
+    echo -e '   -g, --group       semaphore group id'
     echo -e '   -h, --help        show (this) help message'
     echo -e '   -j, --jobs        jobs relative to number of cores\n'
 }
@@ -14,6 +15,8 @@ ARGS=()
 while [ $# -gt 0 ]; do
     case "$1" in
         -b|--bpix)      BPIX=1; shift ;;
+        -g)             GROUP="$2"; shift 2 ;;
+        --group=*)      GROUP="${1#*=}"; shift ;;
         -h|--help)      helpmsg; exit ;;
         -j)             JOBS="$2"; shift 2 ;;
         --jobs=*)       JOBS="${1#*=}"; shift ;;
@@ -33,6 +36,7 @@ make reap_results || exit 1
 make merge_monads || exit 1
 make collect_cents || exit 1
 
+GROUP=${GROUP:-"def"}
 JOBS=${JOBS:-"+0"}
 
 BTYPES=(12 13 14 23 24 34)
@@ -46,43 +50,43 @@ if [[ $3 -gt 0 ]]; then
         CMIN=$(( CMAX - $3 ))
 
         for TYPE in ${TYPES[@]}; do
-            sem -j$JOBS --id sem_grp_rr_a --linebuffer \
+            sem -j$JOBS --id sem-grp-rr-$GROUP --linebuffer \
                     "./reap_results $TYPE $1 $2.a.$CMIN.$CMAX \
                     $CMIN $CMAX $4.a.$CMIN.$CMAX $5 ${@:6} \
                     > notes/log-rr-$2.a.$CMIN.$CMAX-$TYPE.log"
         done
     done
-    sem --wait --id sem_grp_rr_a
+    sem --wait --id sem-grp-rr-$GROUP
 
     for (( CMAX=20; CMAX>=$3; CMAX-=$3 )); do
         CMIN=$(( CMAX - $3 ))
 
-        sem -j$JOBS --id sem_grp_mm --linebuffer \
+        sem -j$JOBS --id sem-grp-mm-$GROUP --linebuffer \
                 "./merge_monads $2.a.$CMIN.$CMAX"
     done
-    sem --wait --id sem_grp_mm
+    sem --wait --id sem-grp-mm-$GROUP
 
     ./collect_cents $2.a $3
 elif [[ $3 -eq 0 ]]; then
     [[ $# -lt 5 ]] && exit 2
 
     for TYPE in ${TYPES[@]}; do
-        sem -j$JOBS --id sem_grp_rr_s --linebuffer \
+        sem -j$JOBS --id sem-grp-rr-$GROUP --linebuffer \
                 "./reap_results $TYPE $1 $2.s.$4.$5 \
                 $4 $5 $6.s.$4.$5 $7 ${@:8} \
                 > notes/log-rr-$2.s.$4.$5-$TYPE.log"
     done
-    sem --wait --id sem_grp_rr_s
+    sem --wait --id sem-grp-rr-$GROUP
 
     ./merge_monads $2.s.$4.$5
 else
     for TYPE in ${TYPES[@]}; do
-        sem -j$JOBS --id sem_grp_rr --linebuffer \
+        sem -j$JOBS --id sem-grp-rr-$GROUP --linebuffer \
                 "./reap_results $TYPE ${@:1:2} \
                 0 20 ${@:4} \
                 > notes/log-rr-$2-$TYPE.log"
     done
-    sem --wait --id sem_grp_rr
+    sem --wait --id sem-grp-rr-$GROUP
 
     ./merge_monads $2
 fi
