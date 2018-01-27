@@ -662,6 +662,11 @@ int main(int argc, char* argv[]) {
             atoi(argv[4]), atoi(argv[5]), argv[6], atoi(argv[7]),
             atoi(argv[8]), atoi(argv[9]),
             atoi(argv[10]));
+   } else if (argc == 12) {
+      return reap_results(atoi(argv[1]), argv[2], argv[3],
+            atoi(argv[4]), atoi(argv[5]), argv[6], atoi(argv[7]),
+            atoi(argv[8]), atoi(argv[9]),
+            atoi(argv[10]), atof(argv[11]));
    } else if (argc == 13) {
       return reap_results(atoi(argv[1]), argv[2], argv[3],
             atoi(argv[4]), atoi(argv[5]), argv[6], atoi(argv[7]),
@@ -671,7 +676,7 @@ int main(int argc, char* argv[]) {
       printf("usage: ./reap_results [type] [input] [label]\n"
              "(cmin cmax) (corrections (apply))"
              "(geometric-correction) (external-acceptance-maps)\n"
-             "(multiplicity-handle) (maxdr2 (gcorr-path))\n");
+             "(multiplicity-handle) (maxdr2) (gcorr-path)\n");
       return -1;
    }
 }
