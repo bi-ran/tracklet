@@ -54,52 +54,55 @@ TYPES=( "${BTYPES[@]}" )
 [ -n "$BPIX" ] || TYPES+=( "${FTYPES[@]}" )
 
 [ -n "$NICE" ] && PREFIX+="nice -n $NICE "
-[ -n "$FILE" ] && { PREFIX+="echo "; exec &>> $FILE; }
+
+EXEC=eval
+[ -n "$FILE" ] && { EXEC=echo; exec &>> $FILE; }
 
 if [[ $3 -gt 0 ]]; then
     for (( CMAX=20; CMAX>=$3; CMAX-=$3 )); do
         CMIN=$(( CMAX - $3 ))
 
         for TYPE in ${TYPES[@]}; do
-            $PREFIX sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
+            CMD='$PREFIX sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
                     "./reap_results $TYPE $1 $2.a.$CMIN.$CMAX \
                     $CMIN $CMAX $4.a.$CMIN.$CMAX $5 ${@:6} \
-                    > notes/log-rr-$2.a.$CMIN.$CMAX-$TYPE.log"
+                    > notes/log-rr-$2.a.$CMIN.$CMAX-$TYPE.log"'
+            $EXEC `eval echo $CMD`
         done
     done
-    $PREFIX sem --id sem-grp-rr-$GROUP --wait
+    $EXEC sem --id sem-grp-rr-$GROUP --wait
 
     for (( CMAX=20; CMAX>=$3; CMAX-=$3 )); do
         CMIN=$(( CMAX - $3 ))
 
-        $PREFIX sem -j$JOBS --id sem-grp-mm-$GROUP $FLAGS \
-                "./merge_monads $2.a.$CMIN.$CMAX"
+        $EXEC ./merge_monads $2.a.$CMIN.$CMAX
     done
-    $PREFIX sem --id sem-grp-mm-$GROUP --wait
 
-    $PREFIX ./collect_cents $2.a $3
+    $EXEC ./collect_cents $2.a $3
 elif [[ $3 -eq 0 ]]; then
     [[ $# -lt 5 ]] && exit 2
 
     for TYPE in ${TYPES[@]}; do
-        $PREFIX sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
+        CMD='$PREFIX sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
                 "./reap_results $TYPE $1 $2.s.$4.$5 \
                 $4 $5 $6.s.$4.$5 $7 ${@:8} \
-                > notes/log-rr-$2.s.$4.$5-$TYPE.log"
+                > notes/log-rr-$2.s.$4.$5-$TYPE.log"'
+        $EXEC `eval echo $CMD`
     done
-    $PREFIX sem --id sem-grp-rr-$GROUP --wait
+    $EXEC sem --id sem-grp-rr-$GROUP --wait
 
-    $PREFIX ./merge_monads $2.s.$4.$5
+    $EXEC ./merge_monads $2.s.$4.$5
 else
     for TYPE in ${TYPES[@]}; do
-        $PREFIX sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
+        CMD='$PREFIX sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
                 "./reap_results $TYPE ${@:1:2} \
                 0 20 ${@:4} \
-                > notes/log-rr-$2-$TYPE.log"
+                > notes/log-rr-$2-$TYPE.log"'
+        $EXEC `eval echo $CMD`
     done
-    $PREFIX sem --id sem-grp-rr-$GROUP --wait
+    $EXEC sem --id sem-grp-rr-$GROUP --wait
 
-    $PREFIX ./merge_monads $2
+    $EXEC ./merge_monads $2
 fi
 
 [ -n "$FILE" ] && {
