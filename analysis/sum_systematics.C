@@ -67,37 +67,58 @@ int sum_systematics(const char* config, const char* label) {
         std::string path = Form("figs/uncertainties/systematics-%s-%s",
                 label, hists[i].c_str());
 
-        for (std::size_t j = 1; j < nfiles; ++j) {
-            TCanvas* c1 = new TCanvas("c1", "", 600, 600);
+        TCanvas* c0 = new TCanvas("scratch", "", 600, 600);
 
+        int nrows = (nfiles + 2) / 3;
+        TCanvas* c1 = new TCanvas("diff", "", 1200, nrows * 400);
+        c1->Divide(3, nrows);
+        TCanvas* c2 = new TCanvas("ratio", "", 1200, nrows * 400);
+        c2->Divide(3, nrows);
+
+        for (std::size_t j = 1; j < nfiles; ++j) {
+            c0->cd();
             h = svars[i][j]->adiff(0);
             htitle(h, ";#eta;absolute difference");
             h->Draw();
-            c1->SaveAs(Form("%s-%s-diff.png", path.c_str(), tags[j].c_str()));
+            c0->SaveAs(Form("%s-%s-diff.png", path.c_str(), tags[j].c_str()));
 
+            c1->cd(j);
+            h->Draw();
+
+            c0->cd();
             h = svars[i][j]->aratio(0);
             htitle(h, ";#eta;ratio");
             h->Draw();
-            c1->SaveAs(Form("%s-%s-ratio.png", path.c_str(), tags[j].c_str()));
+            c0->SaveAs(Form("%s-%s-ratio.png", path.c_str(), tags[j].c_str()));
 
-            delete c1;
-            delete svars[i][j];
+            c2->cd(j);
+            h->Draw();
         }
 
-        TCanvas* c2 = new TCanvas("c2", "", 600, 600);
-
+        c0->cd();
         h = tvars[i]->diff();
         htitle(h, ";#eta;absolute difference");
-        h->Draw("p hist");
-        c2->SaveAs(Form("%s.total-diff.png", path.c_str()));
+        h->Draw("p hist e");
+        c0->SaveAs(Form("%s.total-diff.png", path.c_str()));
 
+        c1->cd(nfiles);
+        h->Draw("p hist e");
+        c1->SaveAs(Form("%s.all-diff.png", path.c_str()));
+
+        c0->cd();
         h = tvars[i]->ratio();
         htitle(h, ";#eta;ratio");
-        h->Draw("p hist");
-        c2->SaveAs(Form("%s.total-ratio.png", path.c_str()));
+        h->Draw("p hist e");
+        c0->SaveAs(Form("%s.total-ratio.png", path.c_str()));
 
-        delete c2;
+        c2->cd(nfiles);
+        h->Draw("p hist e");
+        c2->SaveAs(Form("%s.all-ratio.png", path.c_str()));
+
+        delete c0; delete c1; delete c2;
         delete tvars[i];
+        for (std::size_t j = 1; j < nfiles; ++j)
+            delete svars[i][j];
     }
 
     fout->Write("", TObject::kOverwrite);
