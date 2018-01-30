@@ -28,6 +28,7 @@ int reap_results(int type,
                  bool applyc = 0,               // apply external corrections
                  bool applyg = 0,               // apply geometric correction
                  bool applym = 1,               // apply external acceptance map
+                 const char* sdfile = "null",   // apply external sd fraction
                  bool multhandle = 0,           // alternate mult handle
                  float maxdr2 = 0.25,           // signal region selection
                  const char* accepdir =         // acceptance corrections path
@@ -58,6 +59,12 @@ int reap_results(int type,
 
    if (applym)
       printf("$ applying external acceptance maps\n");
+
+   TFile* fsdf = 0;
+   if (strcmp(sdfile, "null")) {
+      fsdf = new TFile(Form("output/correction-%s-%i.root", sdfile, type));
+      printf("$ applying external single-diffractive fractions\n");
+   }
 
    const char* mult = multhandle ? "nhit2" : "ntracklet";
    printf("$ event multiplicity handle: number of tracklets\n");
@@ -360,6 +367,12 @@ int reap_results(int type,
       }
    }
 
+   /* external single-diffractive fraction                                    */
+   if (fsdf) {
+      delete h1sdf;
+      h1sdf = (TH1F*)fsdf->Get("h1sdf")->Clone();
+   }
+
    printf("-------------------------------------------------------------\n");
 
    /* apply correction                                                        */
@@ -660,22 +673,27 @@ int main(int argc, char* argv[]) {
    } else if (argc == 11) {
       return reap_results(atoi(argv[1]), argv[2], argv[3],
             atoi(argv[4]), atoi(argv[5]), argv[6], atoi(argv[7]),
-            atoi(argv[8]), atoi(argv[9]),
-            atoi(argv[10]));
+            atoi(argv[8]), atoi(argv[9]), argv[10]);
    } else if (argc == 12) {
       return reap_results(atoi(argv[1]), argv[2], argv[3],
             atoi(argv[4]), atoi(argv[5]), argv[6], atoi(argv[7]),
-            atoi(argv[8]), atoi(argv[9]),
-            atoi(argv[10]), atof(argv[11]));
+            atoi(argv[8]), atoi(argv[9]), argv[10],
+            atoi(argv[11]));
    } else if (argc == 13) {
       return reap_results(atoi(argv[1]), argv[2], argv[3],
             atoi(argv[4]), atoi(argv[5]), argv[6], atoi(argv[7]),
-            atoi(argv[8]), atoi(argv[9]),
-            atoi(argv[10]), atof(argv[11]), argv[12]);
+            atoi(argv[8]), atoi(argv[9]), argv[10],
+            atoi(argv[11]), atof(argv[12]));
+   } else if (argc == 14) {
+      return reap_results(atoi(argv[1]), argv[2], argv[3],
+            atoi(argv[4]), atoi(argv[5]), argv[6], atoi(argv[7]),
+            atoi(argv[8]), atoi(argv[9]), argv[10],
+            atoi(argv[11]), atof(argv[12]), argv[13]);
    } else {
       printf("usage: ./reap_results [type] [input] [label]\n"
              "(cmin cmax) (corrections (apply))"
              "(geometric-correction) (external-acceptance-maps)\n"
+             "(single-diffractive-fraction)\n"
              "(multiplicity-handle) (maxdr2) (gcorr-path)\n");
       return -1;
    }
