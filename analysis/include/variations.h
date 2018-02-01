@@ -8,57 +8,8 @@
 #include <string>
 #include <algorithm>
 
-void th1_abs(TH1F* h) {
-   for (int i=1; i<=h->GetNbinsX(); ++i)
-      h->SetBinContent(i, TMath::Abs(h->GetBinContent(i)));
-}
-
-void th1_ratio_abs(TH1F* h) {
-   for (int i=1; i<=h->GetNbinsX(); ++i) {
-      if (h->GetBinContent(i) != 0) {
-         h->SetBinContent(i, TMath::Abs(h->GetBinContent(i) - 1));
-         h->SetBinError(i, h->GetBinError(i));
-      } else {
-         h->SetBinContent(i, 0);
-         h->SetBinError(i, 0);
-      }
-   }
-}
-
-void th1_max(TH1F* h1, TH1F* h2) {
-   for (int i=1; i<=h1->GetNbinsX(); ++i) {
-      double s1 = h1->GetBinContent(i);
-      double s2 = h2->GetBinContent(i);
-      h1->SetBinContent(i, std::max(s1, s2));
-
-      if (s1 > s2) { h1->SetBinError(i, h1->GetBinError(i)); }
-      else { h1->SetBinError(i, h2->GetBinError(i)); }
-   }
-}
-
-void th1_sqrt_sum_squares(TH1F* h1, TH1F* h2) {
-   for (int i=1; i<=h1->GetNbinsX(); ++i) {
-      double s1 = h1->GetBinContent(i);
-      double s2 = h2->GetBinContent(i);
-      double stotal = TMath::Sqrt(s1 * s1 + s2 * s2);
-
-      double e1 = h1->GetBinError(i);
-      double e2 = h2->GetBinError(i);
-      double etotal = TMath::Sqrt(e1 * e1 + e2 * e2);
-
-      h1->SetBinContent(i, stotal);
-      h1->SetBinError(i, etotal);
-   }
-}
-
-void th1_from_tf1(TH1F* h, TF1* f) {
-   for (int i=1; i<=h->GetNbinsX(); ++i)
-      if (h->GetBinContent(i) != 0)
-         h->SetBinContent(i, f->Eval(h->GetBinCenter(i)));
-}
-
-class var_t {
-   friend class sumvar_t;
+class varone {
+   friend class varsum;
 
    private:
       std::string label = ""; /* histogram label               */
@@ -85,9 +36,13 @@ class var_t {
 
       void calculate();
 
+      void abs(TH1F* h);
+      void absratio(TH1F* h);
+      void tf1toth1f(TH1F* h, TF1* f);
+
    public:
-      var_t(std::string label, std::string stype, TH1F* hnominal, TH1F* hvar);
-      ~var_t();
+      varone(std::string label, std::string stype, TH1F* hnominal, TH1F* hvar);
+      ~varone();
 
       void fit(std::string ffdiff, std::string ffratio);
       void write();
@@ -96,10 +51,9 @@ class var_t {
       TH1F* aratio(int option);
 };
 
-var_t::var_t(std::string label_, std::string stype_, TH1F* hnominal_, TH1F* hvar_) {
-   label = label_;
-   stype = stype_;
-
+varone::varone(std::string label_, std::string stype_,
+               TH1F* hnominal_, TH1F* hvar_) {
+   label = label_; stype = stype_;
    tag = label + "_" + stype;
 
    hnominal = (TH1F*)hnominal_->Clone(Form("%s_nominal", tag.c_str()));
@@ -108,18 +62,18 @@ var_t::var_t(std::string label_, std::string stype_, TH1F* hnominal_, TH1F* hvar
    calculate();
 }
 
-var_t::~var_t() {};
+varone::~varone() {};
 
-void var_t::calculate() {
+void varone::calculate() {
    hdiff = (TH1F*)hvar->Clone(Form("%s_diff", tag.c_str()));
    hdiff->Add(hnominal, -1);
    hadiff = (TH1F*)hdiff->Clone(Form("%s_adiff", tag.c_str()));
-   th1_abs(hadiff);
+   abs(hadiff);
 
    hratio = (TH1F*)hvar->Clone(Form("%s_ratio", tag.c_str()));
    hratio->Divide(hnominal);
    haratio = (TH1F*)hratio->Clone(Form("%s_aratio", tag.c_str()));
-   th1_ratio_abs(haratio);
+   absratio(haratio);
 
    hardiff = (TH1F*)haratio->Clone(Form("%s_ardiff", tag.c_str()));
    hardiff->Multiply(hnominal);
@@ -127,7 +81,7 @@ void var_t::calculate() {
    hadratio->Divide(hnominal);
 }
 
-void var_t::fit(std::string ffdiff, std::string ffratio) {
+void varone::fit(std::string ffdiff, std::string ffratio) {
    double min = hnominal->GetBinLowEdge(hnominal->FindFirstBinAbove(0.1));
    double max = hnominal->GetBinLowEdge(hnominal->FindLastBinAbove(0.1) + 1);
 
@@ -139,7 +93,7 @@ void var_t::fit(std::string ffdiff, std::string ffratio) {
 
    fdiff = (TF1*)hadiff->GetFunction(Form("%s_fdiff", tag.c_str()));
    hfadiff = (TH1F*)hadiff->Clone(Form("%s_fadiff", tag.c_str()));
-   th1_from_tf1(hfadiff, fdiff);
+   tf1toth1f(hfadiff, fdiff);
 
    fratio = new TF1(Form("%s_fratio", tag.c_str()), ffratio.c_str());
    fratio->SetRange(min, max);
@@ -149,7 +103,7 @@ void var_t::fit(std::string ffdiff, std::string ffratio) {
 
    fratio = (TF1*)haratio->GetFunction(Form("%s_fratio", tag.c_str()));
    hfaratio = (TH1F*)haratio->Clone(Form("%s_faratio", tag.c_str()));
-   th1_from_tf1(hfaratio, fratio);
+   tf1toth1f(hfaratio, fratio);
 
    hfardiff = (TH1F*)hfaratio->Clone(Form("%s_fardiff", tag.c_str()));
    hfardiff->Multiply(hnominal);
@@ -157,7 +111,7 @@ void var_t::fit(std::string ffdiff, std::string ffratio) {
    hfadratio->Divide(hnominal);
 }
 
-TH1F* var_t::adiff(int option) {
+TH1F* varone::adiff(int option) {
    switch (option) {
       case 0: return hadiff;
       case 1: return hardiff;
@@ -167,7 +121,7 @@ TH1F* var_t::adiff(int option) {
    }
 }
 
-TH1F* var_t::aratio(int option) {
+TH1F* varone::aratio(int option) {
    switch (option) {
       case 0: return hadratio;
       case 1: return haratio;
@@ -177,7 +131,7 @@ TH1F* var_t::aratio(int option) {
    }
 }
 
-void var_t::write() {
+void varone::write() {
    hnominal->Write("", TObject::kOverwrite);
    hvar->Write("", TObject::kOverwrite);
 
@@ -192,7 +146,30 @@ void var_t::write() {
    hfardiff->Write("", TObject::kOverwrite);
 }
 
-class sumvar_t {
+void varone::abs(TH1F* h) {
+   for (int i=1; i<=h->GetNbinsX(); ++i)
+      h->SetBinContent(i, TMath::Abs(h->GetBinContent(i)));
+}
+
+void varone::absratio(TH1F* h) {
+   for (int i=1; i<=h->GetNbinsX(); ++i) {
+      if (h->GetBinContent(i) != 0) {
+         h->SetBinContent(i, TMath::Abs(h->GetBinContent(i) - 1));
+         h->SetBinError(i, h->GetBinError(i));
+      } else {
+         h->SetBinContent(i, 0);
+         h->SetBinError(i, 0);
+      }
+   }
+}
+
+void varone::tf1toth1f(TH1F* h, TF1* f) {
+   for (int i=1; i<=h->GetNbinsX(); ++i)
+      if (h->GetBinContent(i) != 0)
+         h->SetBinContent(i, f->Eval(h->GetBinCenter(i)));
+}
+
+class varsum {
    private:
       std::string label = "";
 
@@ -200,25 +177,26 @@ class sumvar_t {
       TH1F* htdiff = 0;
       TH1F* htratio = 0;
 
-   public:
-      sumvar_t(std::string label, TH1F* hnominal);
-      ~sumvar_t();
+      void sqrtsumsquares(TH1F* h);
+      void maxvalues(TH1F* h);
 
-      void add(sumvar_t* sumvar);
-      void add(var_t* var, int option);
-      void max(var_t* var, int option);
+   public:
+      varsum(std::string label, TH1F* hnominal);
+      ~varsum();
+
+      void add(varsum* var);
+      void add(varone* var, int option);
+      void max(varone* var, int option);
       void write();
 
-      TH1F* diff() {
-         return htdiff;
-      }
+      TH1F* diff() { return htdiff; }
       TH1F* ratio() {
          htratio->Divide(htdiff, hnominal);
          return htratio;
       }
 };
 
-sumvar_t::sumvar_t(std::string label_, TH1F* hnominal_) {
+varsum::varsum(std::string label_, TH1F* hnominal_) {
    label = label_;
 
    hnominal = (TH1F*)hnominal_->Clone(Form("%s_nominal", label.c_str()));
@@ -229,62 +207,66 @@ sumvar_t::sumvar_t(std::string label_, TH1F* hnominal_) {
    htratio->Reset("ICES");
 }
 
-sumvar_t::~sumvar_t() {};
+varsum::~varsum() {};
 
-void sumvar_t::add(var_t* var, int option) {
+void varsum::add(varsum* var) {
+   sqrtsumsquares(var->htdiff);
+}
+
+void varsum::add(varone* var, int option) {
    switch (option) {
-      case 0:
-         th1_sqrt_sum_squares(htdiff, var->hadiff);
-         break;
-      case 1:
-         th1_sqrt_sum_squares(htdiff, var->hardiff);
-         break;
-      case 2:
-         if (!var->hfadiff) { printf("error: no fit found!\n"); return; }
-         th1_sqrt_sum_squares(htdiff, var->hfadiff);
-         break;
-      case 3:
-         if (!var->hfaratio) { printf("error: no fit found!\n"); return; }
-         th1_sqrt_sum_squares(htdiff, var->hfardiff);
-         break;
-      case 4:
-         break;
-      default:
-         return;
+      case 0: sqrtsumsquares(var->hadiff); break;
+      case 1: sqrtsumsquares(var->hardiff); break;
+      case 2: sqrtsumsquares(var->hfadiff); break;
+      case 3: sqrtsumsquares(var->hfardiff); break;
+      case 4: break;
+      default: return;
    }
 }
 
-void sumvar_t::add(sumvar_t* sumvar) {
-   th1_sqrt_sum_squares(htdiff, sumvar->htdiff);
-}
-
-void sumvar_t::max(var_t* var, int option) {
+void varsum::max(varone* var, int option) {
    switch (option) {
-      case 0:
-         th1_max(htdiff, var->hadiff);
-         break;
-      case 1:
-         th1_max(htdiff, var->hardiff);
-         break;
-      case 2:
-         if (!var->hfadiff) { printf("error: no fit found!\n"); return; }
-         th1_max(htdiff, var->hfadiff);
-         break;
-      case 3:
-         if (!var->hfaratio) { printf("error: no fit found!\n"); return; }
-         th1_max(htdiff, var->hfardiff);
-         break;
-      case 4:
-         break;
-      default:
-         return;
+      case 0: maxvalues(var->hadiff); break;
+      case 1: maxvalues(var->hardiff); break;
+      case 2: maxvalues(var->hfadiff); break;
+      case 3: maxvalues(var->hfardiff); break;
+      case 4: break;
+      default: return;
    }
 }
 
-void sumvar_t::write() {
+void varsum::write() {
    hnominal->Write("", TObject::kOverwrite);
    htdiff->Write("", TObject::kOverwrite);
    htratio->Write("", TObject::kOverwrite);
+}
+
+void varsum::maxvalues(TH1F* h) {
+   if (!h) { printf("warning: null histogram!\n"); return; }
+
+   for (int i=1; i<=htdiff->GetNbinsX(); ++i) {
+      double s1 = htdiff->GetBinContent(i);
+      double s2 = h->GetBinContent(i);
+      if (s1 < s2) {
+         htdiff->SetBinContent(i, s2);
+         htdiff->SetBinError(i, h->GetBinError(i));
+      }
+   }
+}
+
+void varsum::sqrtsumsquares(TH1F* h) {
+   if (!h) { printf("warning: null histogram!\n"); return; }
+
+   for (int i=1; i<=htdiff->GetNbinsX(); ++i) {
+      double s1 = htdiff->GetBinContent(i);
+      double e1 = htdiff->GetBinError(i);
+      double s2 = h->GetBinContent(i);
+      double e2 = h->GetBinError(i);
+      double stotal = TMath::Sqrt(s1 * s1 + s2 * s2);
+      double etotal = TMath::Sqrt(e1 * e1 + e2 * e2);
+      htdiff->SetBinContent(i, stotal);
+      htdiff->SetBinError(i, etotal);
+   }
 }
 
 #endif  /* VARIATIONS_H */
