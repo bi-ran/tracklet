@@ -18,19 +18,15 @@ int sum_systematics(const char* config, const char* label) {
 
     auto files = conf->get<std::vector<std::string>>("files");
     auto tags = conf->get<std::vector<std::string>>("tags");
-    auto fits = conf->get<std::vector<std::string>>("fits");
+    auto dffs = conf->get<std::vector<std::string>>("diff-fit-funcs");
+    auto rffs = conf->get<std::vector<std::string>>("ratio-fit-funcs");
     auto options = conf->get<std::vector<int>>("options");
+    auto hists = conf->get<std::vector<std::string>>("hists");
 
     std::size_t nfiles = files.size();
     if (!nfiles) { printf("error: no files provided!\n"); return 1; }
-
-    std::vector<std::string> hists = {
-        "h12", "h13", "h14",
-        "h23", "h24", "h34",
-        "h15", "h16", "h17",
-        "havg", "hsym"
-    };
     std::size_t nhists = hists.size();
+    if (!nhists) { printf("error: no hists listed!\n"); return 1; }
 
     TFile* f[nfiles];
     for (std::size_t i = 0; i < nfiles; ++i)
@@ -55,7 +51,7 @@ int sum_systematics(const char* config, const char* label) {
             h[i][j] = (TH1F*)f[j]->Get(hists[i].c_str())->Clone(Form("%s%s", hists[i].c_str(), tags[j].c_str()));
 
             svars[i][j] = new var_t(hists[i], tags[j], hnominal, h[i][j]);
-            svars[i][j]->fit(fits[j].c_str(), "pol2");
+            svars[i][j]->fit(dffs[j].c_str(), rffs[j].c_str());
             svars[i][j]->write();
 
             tvars[i]->add(svars[i][j], options[j]);
