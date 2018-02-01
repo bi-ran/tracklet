@@ -6,6 +6,7 @@
 #include "TMath.h"
 
 #include <string>
+#include <algorithm>
 
 void th1_abs(TH1F* h) {
    for (int i=1; i<=h->GetNbinsX(); ++i)
@@ -21,6 +22,17 @@ void th1_ratio_abs(TH1F* h) {
          h->SetBinContent(i, 0);
          h->SetBinError(i, 0);
       }
+   }
+}
+
+void th1_max(TH1F* h1, TH1F* h2) {
+   for (int i=1; i<=h1->GetNbinsX(); ++i) {
+      double s1 = h1->GetBinContent(i);
+      double s2 = h2->GetBinContent(i);
+      h1->SetBinContent(i, std::max(s1, s2));
+
+      if (s1 > s2) { h1->SetBinError(i, h1->GetBinError(i)); }
+      else { h1->SetBinError(i, h2->GetBinError(i)); }
    }
 }
 
@@ -192,7 +204,9 @@ class sumvar_t {
       sumvar_t(std::string label, TH1F* hnominal);
       ~sumvar_t();
 
+      void add(sumvar_t* sumvar);
       void add(var_t* var, int option);
+      void max(var_t* var, int option);
       void write();
 
       TH1F* diff() {
@@ -232,6 +246,33 @@ void sumvar_t::add(var_t* var, int option) {
       case 3:
          if (!var->hfaratio) { printf("error: no fit found!\n"); return; }
          th1_sqrt_sum_squares(htdiff, var->hfardiff);
+         break;
+      case 4:
+         break;
+      default:
+         return;
+   }
+}
+
+void sumvar_t::add(sumvar_t* sumvar) {
+   th1_sqrt_sum_squares(htdiff, sumvar->htdiff);
+}
+
+void sumvar_t::max(var_t* var, int option) {
+   switch (option) {
+      case 0:
+         th1_max(htdiff, var->hadiff);
+         break;
+      case 1:
+         th1_max(htdiff, var->hardiff);
+         break;
+      case 2:
+         if (!var->hfadiff) { printf("error: no fit found!\n"); return; }
+         th1_max(htdiff, var->hfadiff);
+         break;
+      case 3:
+         if (!var->hfaratio) { printf("error: no fit found!\n"); return; }
+         th1_max(htdiff, var->hfardiff);
          break;
       case 4:
          break;
