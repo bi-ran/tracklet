@@ -44,7 +44,8 @@ class varone {
       varone(std::string label, std::string stype, TH1F* hnominal, TH1F* hvar);
       ~varone();
 
-      void fit(std::string ffdiff, std::string ffratio);
+      void fit(std::string ffdiff, std::string ffratio, float val);
+      void fit(std::string ffdiff, std::string ffratio, float min, float max);
       void write();
 
       TH1F* adiff(int option);
@@ -81,34 +82,43 @@ void varone::calculate() {
    hadratio->Divide(hnominal);
 }
 
-void varone::fit(std::string ffdiff, std::string ffratio) {
-   double min = hnominal->GetBinLowEdge(hnominal->FindFirstBinAbove(0.1));
-   double max = hnominal->GetBinLowEdge(hnominal->FindLastBinAbove(0.1) + 1);
+void varone::fit(std::string ffdiff, std::string ffratio, float val) {
+   float min = hnominal->GetBinLowEdge(hnominal->FindFirstBinAbove(val));
+   float max = hnominal->GetBinLowEdge(hnominal->FindLastBinAbove(val) + 1);
 
-   fdiff = new TF1(Form("%s_fdiff", tag.c_str()), ffdiff.c_str());
-   fdiff->SetRange(min, max);
-   hadiff->Fit(Form("%s_fdiff", tag.c_str()), "F Q", "", min, max);
-   hadiff->Fit(Form("%s_fdiff", tag.c_str()), "F Q", "", min, max);
-   hadiff->Fit(Form("%s_fdiff", tag.c_str()), "F M Q", "", min, max);
+   fit(ffdiff, ffratio, min, max);
+}
 
-   fdiff = (TF1*)hadiff->GetFunction(Form("%s_fdiff", tag.c_str()));
-   hfadiff = (TH1F*)hadiff->Clone(Form("%s_fadiff", tag.c_str()));
-   tf1toth1f(hfadiff, fdiff);
+void varone::fit(std::string ffdiff, std::string ffratio, float min, float max) {
+   if (ffdiff != "null") {
+      fdiff = new TF1(Form("%s_fdiff", tag.c_str()), ffdiff.c_str());
+      fdiff->SetRange(min, max);
+      hadiff->Fit(Form("%s_fdiff", tag.c_str()), "F Q", "", min, max);
+      hadiff->Fit(Form("%s_fdiff", tag.c_str()), "F Q", "", min, max);
+      hadiff->Fit(Form("%s_fdiff", tag.c_str()), "F M Q", "", min, max);
 
-   fratio = new TF1(Form("%s_fratio", tag.c_str()), ffratio.c_str());
-   fratio->SetRange(min, max);
-   haratio->Fit(Form("%s_fratio", tag.c_str()), "F Q", "", min, max);
-   haratio->Fit(Form("%s_fratio", tag.c_str()), "F Q", "", min, max);
-   haratio->Fit(Form("%s_fratio", tag.c_str()), "F M Q", "", min, max);
+      fdiff = (TF1*)hadiff->GetFunction(Form("%s_fdiff", tag.c_str()));
+      hfadiff = (TH1F*)hadiff->Clone(Form("%s_fadiff", tag.c_str()));
+      tf1toth1f(hfadiff, fdiff);
 
-   fratio = (TF1*)haratio->GetFunction(Form("%s_fratio", tag.c_str()));
-   hfaratio = (TH1F*)haratio->Clone(Form("%s_faratio", tag.c_str()));
-   tf1toth1f(hfaratio, fratio);
+      hfadratio = (TH1F*)hfadiff->Clone(Form("%s_fadratio", tag.c_str()));
+      hfadratio->Divide(hnominal);
+   }
 
-   hfardiff = (TH1F*)hfaratio->Clone(Form("%s_fardiff", tag.c_str()));
-   hfardiff->Multiply(hnominal);
-   hfadratio = (TH1F*)hfadiff->Clone(Form("%s_fadratio", tag.c_str()));
-   hfadratio->Divide(hnominal);
+   if (ffratio != "null") {
+      fratio = new TF1(Form("%s_fratio", tag.c_str()), ffratio.c_str());
+      fratio->SetRange(min, max);
+      haratio->Fit(Form("%s_fratio", tag.c_str()), "F Q", "", min, max);
+      haratio->Fit(Form("%s_fratio", tag.c_str()), "F Q", "", min, max);
+      haratio->Fit(Form("%s_fratio", tag.c_str()), "F M Q", "", min, max);
+
+      fratio = (TF1*)haratio->GetFunction(Form("%s_fratio", tag.c_str()));
+      hfaratio = (TH1F*)haratio->Clone(Form("%s_faratio", tag.c_str()));
+      tf1toth1f(hfaratio, fratio);
+
+      hfardiff = (TH1F*)hfaratio->Clone(Form("%s_fardiff", tag.c_str()));
+      hfardiff->Multiply(hnominal);
+   }
 }
 
 TH1F* varone::adiff(int option) {

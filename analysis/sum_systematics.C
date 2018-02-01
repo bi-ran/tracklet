@@ -52,7 +52,7 @@ int sum_systematics(const char* config, const char* label) {
                     Form("%s%s", histograms[i].c_str(), tags[j].c_str()));
 
             svars[i][j] = new varone(histograms[i], tags[j], hnominal, h[i][j]);
-            svars[i][j]->fit(dffs[j].c_str(), rffs[j].c_str());
+            svars[i][j]->fit(dffs[j].c_str(), rffs[j].c_str(), 0.1);
             svars[i][j]->write();
 
             tvars[i]->add(svars[i][j], options[j]);
