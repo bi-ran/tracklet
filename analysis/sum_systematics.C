@@ -23,6 +23,7 @@ int sum_systematics(const char* config, const char* label) {
     auto dffs = conf->get<std::vector<std::string>>("diff-fit-funcs");
     auto rffs = conf->get<std::vector<std::string>>("ratio-fit-funcs");
     auto options = conf->get<std::vector<int>>("options");
+    auto groups = conf->get<std::vector<uint32_t>>("groups");
 
     std::size_t nfiles = files.size(); std::size_t nhists = histograms.size();
     if (!nfiles) { printf("error: no files provided!\n"); return 1; }
@@ -46,6 +47,7 @@ int sum_systematics(const char* config, const char* label) {
                 Form("%s%s", histograms[i].c_str(), tags[0].c_str()));
 
         tvars[i] = new varsum(histograms[i].c_str(), hnominal);
+        std::vector<varsum*> vargroups;
 
         for (std::size_t j = 1; j < nfiles; ++j) {
             h[i][j] = (TH1F*)f[j]->Get(histograms[i].c_str())->Clone(
@@ -55,8 +57,15 @@ int sum_systematics(const char* config, const char* label) {
             svars[i][j]->fit(dffs[j].c_str(), rffs[j].c_str(), 0.1);
             svars[i][j]->write();
 
-            tvars[i]->add(svars[i][j], options[j]);
+            if (groups[j] > vargroups.size())
+                vargroups.push_back(new varsum(histograms[i].c_str(), hnominal));
+
+            if (!groups[j]) { tvars[i]->add(svars[i][j], options[j]); }
+            else { vargroups[groups[j] - 1]->max(svars[i][j], options[j]); }
         }
+
+        for (const auto& vargroup : vargroups)
+            tvars[i]->add(vargroup);
 
         tvars[i]->write();
 
@@ -93,6 +102,8 @@ int sum_systematics(const char* config, const char* label) {
         delete c0; delete c1; delete c2;
         for (std::size_t j = 1; j < nfiles; ++j)
             delete svars[i][j];
+        for (const auto& vargroup : vargroups)
+            delete vargroup;
         delete tvars[i];
     }
 
