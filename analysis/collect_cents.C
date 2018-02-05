@@ -32,7 +32,9 @@ TGraphErrors* cms_pbpb_2p76();
 TGraphErrors* cms_pbpb_2p76_norm();
 TGraphErrors* alice_pbpb_5p02();
 TGraphErrors* alice_pbpb_5p02_norm();
+TGraphErrors* phobos_auau_0p2();
 TGraphErrors* phobos_auau_0p2_norm();
+TGraphErrors* phobos_cucu_0p2();
 TGraphErrors* phobos_cucu_0p2_norm();
 TGraphErrors* cms_pp_13p0_norm();
 TGraphErrors* cms_ppb_8p16_norm();
@@ -47,6 +49,8 @@ int collect_cents(const char* label, int interval) {
             n -= NEXCLUDE / (NCENT % interval);
             break;
     }
+
+    TFile* fout = new TFile(Form("output/centrality-%s.root", label), "recreate");
 
     TGraphErrors* g = new TGraphErrors(n);
     g->SetName("g");
@@ -88,8 +92,12 @@ int collect_cents(const char* label, int interval) {
         gsnorm->SetPointError(cindex, 0, midy * 0.03 / avgnpart);
     }
 
+    fout->cd();
+
     TGraphErrors* gcms_pbpb_2p76 = cms_pbpb_2p76();
     TGraphErrors* galice_pbpb_5p02 = alice_pbpb_5p02();
+    TGraphErrors* gphobos_auau_0p2 = phobos_auau_0p2();
+    TGraphErrors* gphobos_cucu_0p2 = phobos_cucu_0p2();
 
     TCanvas* c2 = new TCanvas("c2", "", 600, 600);
     gPad->SetLogy();
@@ -187,6 +195,16 @@ int collect_cents(const char* label, int interval) {
     l5->Draw();
 
     c3->SaveAs(Form("figs/merged/merged-%s-midynorm-int%i.png", label, interval));
+
+    g->Write("", TObject::kOverwrite);
+    gs->Write("", TObject::kOverwrite);
+    gcms_pbpb_2p76->Write("", TObject::kOverwrite);
+    galice_pbpb_5p02->Write("", TObject::kOverwrite);
+    gphobos_cucu_0p2->Write("", TObject::kOverwrite);
+    gphobos_auau_0p2->Write("", TObject::kOverwrite);
+
+    fout->Write("", TObject::kOverwrite);
+    fout->Close();
 
     return 0;
 }
