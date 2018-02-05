@@ -297,6 +297,33 @@ TGraphErrors* alice_pbpb_5p02_norm() {
     return galice_pbpb_5p02_norm;
 }
 
+TGraphErrors* phobos_auau_0p2() {
+    TGraphErrors* gphobos_auau_0p2 = new TGraphErrors(15);
+    gphobos_auau_0p2->SetName("gphobos_auau_0p2");
+
+    gphobos_auau_0p2->SetPoint(0, 32.5, 27);    gphobos_auau_0p2->SetPointError(0, 0, 2);
+    gphobos_auau_0p2->SetPoint(1, 37.5, 38);    gphobos_auau_0p2->SetPointError(1, 0, 3);
+    gphobos_auau_0p2->SetPoint(2, 42.5, 54);    gphobos_auau_0p2->SetPointError(2, 0, 4);
+    gphobos_auau_0p2->SetPoint(3, 47.5, 73);    gphobos_auau_0p2->SetPointError(3, 0, 5);
+    gphobos_auau_0p2->SetPoint(4, 52.5, 100);   gphobos_auau_0p2->SetPointError(4, 0, 8);
+    gphobos_auau_0p2->SetPoint(5, 57.5, 133);   gphobos_auau_0p2->SetPointError(5, 0, 10);
+    gphobos_auau_0p2->SetPoint(6, 62.5, 165);   gphobos_auau_0p2->SetPointError(6, 0, 12);
+    gphobos_auau_0p2->SetPoint(7, 67.5, 208);   gphobos_auau_0p2->SetPointError(7, 0, 16);
+    gphobos_auau_0p2->SetPoint(8, 72.5, 257);   gphobos_auau_0p2->SetPointError(8, 0, 19);
+    gphobos_auau_0p2->SetPoint(9, 77.5, 313);   gphobos_auau_0p2->SetPointError(9, 0, 24);
+    gphobos_auau_0p2->SetPoint(10, 82.5, 384);  gphobos_auau_0p2->SetPointError(10, 0, 29);
+    gphobos_auau_0p2->SetPoint(11, 87.5, 465);  gphobos_auau_0p2->SetPointError(11, 0, 35);
+    gphobos_auau_0p2->SetPoint(12, 92, 540);     gphobos_auau_0p2->SetPointError(12, 0, 41);
+    gphobos_auau_0p2->SetPoint(13, 95.5, 619);   gphobos_auau_0p2->SetPointError(13, 0, 46);
+    gphobos_auau_0p2->SetPoint(14, 98.5, 691);   gphobos_auau_0p2->SetPointError(14, 0, 52);
+
+    gphobos_auau_0p2->SetMarkerStyle(36);
+    gphobos_auau_0p2->SetMarkerColor(COLOUR2);
+    gphobos_auau_0p2->SetLineColor(COLOUR2);
+
+    return gphobos_auau_0p2;
+}
+
 TGraphErrors* phobos_auau_0p2_norm() {
     TGraphErrors* gphobos_auau_0p2_norm = new TGraphErrors(15);
     gphobos_auau_0p2_norm->SetName("gphobos_auau_0p2_norm");
@@ -322,6 +349,29 @@ TGraphErrors* phobos_auau_0p2_norm() {
     gphobos_auau_0p2_norm->SetLineColor(COLOUR2);
 
     return gphobos_auau_0p2_norm;
+}
+
+TGraphErrors* phobos_cucu_0p2() {
+    TGraphErrors* gphobos_cucu_0p2 = new TGraphErrors(11);
+    gphobos_cucu_0p2->SetName("gphobos_cucu_0p2");
+
+    gphobos_cucu_0p2->SetPoint(0, 52.5, 32);    gphobos_cucu_0p2->SetPointError(0, 0, 2);
+    gphobos_cucu_0p2->SetPoint(1, 57.5, 40);    gphobos_cucu_0p2->SetPointError(1, 0, 3);
+    gphobos_cucu_0p2->SetPoint(2, 62.5, 50);    gphobos_cucu_0p2->SetPointError(2, 0, 4);
+    gphobos_cucu_0p2->SetPoint(3, 67.5, 62);    gphobos_cucu_0p2->SetPointError(3, 0, 5);
+    gphobos_cucu_0p2->SetPoint(4, 72.5, 75);    gphobos_cucu_0p2->SetPointError(4, 0, 6);
+    gphobos_cucu_0p2->SetPoint(5, 77.5, 91);    gphobos_cucu_0p2->SetPointError(5, 0, 7);
+    gphobos_cucu_0p2->SetPoint(6, 82.5, 109);   gphobos_cucu_0p2->SetPointError(6, 0, 8);
+    gphobos_cucu_0p2->SetPoint(7, 87.5, 132);   gphobos_cucu_0p2->SetPointError(7, 0, 10);
+    gphobos_cucu_0p2->SetPoint(8, 92, 155);      gphobos_cucu_0p2->SetPointError(8, 0, 12);
+    gphobos_cucu_0p2->SetPoint(9, 95.5, 175);    gphobos_cucu_0p2->SetPointError(9, 0, 13);
+    gphobos_cucu_0p2->SetPoint(10, 98.5, 198);   gphobos_cucu_0p2->SetPointError(10, 0, 15);
+
+    gphobos_cucu_0p2->SetMarkerStyle(42);
+    gphobos_cucu_0p2->SetMarkerColor(COLOUR3);
+    gphobos_cucu_0p2->SetLineColor(COLOUR3);
+
+    return gphobos_cucu_0p2;
 }
 
 TGraphErrors* phobos_cucu_0p2_norm() {
