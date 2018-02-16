@@ -8,7 +8,7 @@
 struct data_t {
    int run, event, lumi, bx;
    int nv; float vx[8], vy[8], vz[8]; float weight;
-   int hlt; int nhfp, nhfn; float hft; int cbin;
+   int hlt; int nhfp, nhfn; float hft;
    float eta1[MAXT], phi1[MAXT], r1[MAXT];
    float eta2[MAXT], phi2[MAXT], r2[MAXT];
    float deta[MAXT], dphi[MAXT], dr2[MAXT];
@@ -37,7 +37,6 @@ void branch_event_data(TTree* t, data_t& data) {
    t->Branch("nhfp", &data.nhfp, "nhfp/I");
    t->Branch("nhfn", &data.nhfn, "nhfn/I");
    t->Branch("hft", &data.hft, "hft/F");
-   t->Branch("cbin", &data.cbin, "cbin/I");
 
    t->Branch("nhits", &data.nhits, "nhits/I");
    t->Branch("nhit1", &data.nhit1, "nhit1/I");

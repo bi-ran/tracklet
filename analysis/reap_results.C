@@ -19,6 +19,7 @@
 
 #include "include/acceptance.h"
 #include "include/cosmetics.h"
+#include "include/hf.h"
 
 int reap_results(int type,
                  const char* input,
@@ -76,11 +77,14 @@ int reap_results(int type,
 #include "include/bins.h"
 
    /* selections                                                              */
+   float hftmin = hfofficial[cmin];
+   float hftmax = hfofficial[cmax];
+
    TCut vsel = "(vz[1]<15 && vz[1]>-15)";
 
    TCut ssel = Form("(dr2<%f)", maxdr2);
-   TCut csel = Form("(cbin>=%i && cbin<%i)", cmin, cmax);
-   TCut osel = "(hlt && nhfn>0 && nhfp>0)";
+   TCut csel = Form("(hft>=%f && hft<%f)", hftmin, hftmax);
+   TCut osel = "(hlt && nhfn>2 && nhfp>2)";
    TCut psel = "(process!=102 && process!=103 && process!=104)";
 
    TCut esel = vsel && csel && osel;

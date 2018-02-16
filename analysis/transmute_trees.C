@@ -220,7 +220,6 @@ int transmute_trees(const char* input,
       trkltdata##q##w.nhfp       = par.nhfp;                                  \
       trkltdata##q##w.nhfn       = par.nhfn;                                  \
       trkltdata##q##w.hft        = par.hft;                                   \
-      trkltdata##q##w.cbin       = cbin;                                      \
       trkltdata##q##w.weight     = event_weight;                              \
                                                                               \
       for (int j=0; j<trkltdata##q##w.nv; j++)                                \
