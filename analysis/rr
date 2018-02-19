@@ -8,6 +8,7 @@ helpmsg() {
     echo -e '   -f, --file        output commands'
     echo -e '   -g, --group       semaphore group id'
     echo -e '   -h, --help        show (this) help message'
+    echo -e '   -i, --incl        apply inclusive corrections'
     echo -e '   -j, --jobs        jobs relative to number of cores'
     echo -e '   -n, --nice        nice\n'
 }
@@ -22,6 +23,7 @@ while [ $# -gt 0 ]; do
         -g)             GROUP="$2"; shift 2 ;;
         --group=*)      GROUP="${1#*=}"; shift ;;
         -h|--help)      helpmsg; exit ;;
+        -i|--incl)      INCL=1; shift ;;
         -j)             JOBS="$2"; shift 2 ;;
         --jobs=*)       JOBS="${1#*=}"; shift ;;
         -n)             NICE="$2"; shift 2 ;;
@@ -62,10 +64,11 @@ if [[ $3 -gt 0 ]]; then
     for (( CMAX=20; CMAX>=$3; CMAX-=$3 )); do
         CMIN=$(( CMAX - $3 ))
 
+        [ -n "$INCL" ] || CTAG=.a.$CMIN.$CMAX
         for TYPE in ${TYPES[@]}; do
             CMD='$PREFIX sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
                     "./reap_results $TYPE $1 $2.a.$CMIN.$CMAX \
-                    $CMIN $CMAX $4.a.$CMIN.$CMAX $5 ${@:6} \
+                    $CMIN $CMAX $4$CTAG $5 ${@:6} \
                     > notes/log-rr-$2.a.$CMIN.$CMAX-$TYPE.log"'
             $EXEC `eval echo $CMD`
         done
@@ -82,10 +85,11 @@ if [[ $3 -gt 0 ]]; then
 elif [[ $3 -eq 0 ]]; then
     [[ $# -lt 5 ]] && exit 2
 
+    [ -n "$INCL" ] || CTAG=.s.$4.$5
     for TYPE in ${TYPES[@]}; do
         CMD='$PREFIX sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
                 "./reap_results $TYPE $1 $2.s.$4.$5 \
-                $4 $5 $6.s.$4.$5 $7 ${@:8} \
+                $4 $5 $6$CTAG $7 ${@:8} \
                 > notes/log-rr-$2.s.$4.$5-$TYPE.log"'
         $EXEC `eval echo $CMD`
     done
