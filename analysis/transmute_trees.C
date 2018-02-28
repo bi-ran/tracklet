@@ -32,11 +32,11 @@ static const float vzpar[NSAMPLES][2] = {
 };
 
 #define NREGIONS  2
-static const int vtxrgns[NREGIONS] = {0, 6};
+static const int vtxrgns[NREGIONS] = {6, 20};
 static const float vtxpar[NREGIONS][2] = {{0.09, 0.12}, {0.03, 0.09}};
 
 #define BKG_ARG(q)   , float add_bkg_l##q = 0
-#define BKG_ARGV(q)  , atof(argv[10 + q])
+#define BKG_ARGV(q)  , atof(argv[11 + q])
 
 int transmute_trees(const char* input,
                     const char* output,
@@ -44,6 +44,7 @@ int transmute_trees(const char* input,
                     uint64_t end = 1000000000,
                     int sample = -1,
                     bool reweight = 1,
+                    float pileup = 0.0f,
                     bool random = 0,
                     float split = 0,
                     float drop = 0,
@@ -77,8 +78,13 @@ int transmute_trees(const char* input,
       vx = 0.0830378;
       vy = -0.030276;
 
+      pileup = 0.0f;
       sample = -1;
       reweight = 0;
+   }
+
+   if (pileup) {
+      printf("$ mixing events\n  > pileup: %f\n", pileup);
    }
 
    if (reweight && (sample < 0 || sample > NSAMPLES - 1)) {
@@ -88,6 +94,7 @@ int transmute_trees(const char* input,
 
    if (random) {
       printf("$ random vertex\n");
+      pileup = 0.0f;
       reweight = 0;
    } else if (reweight) {
       printf("$ reweighting vertex\n  > sample: %i\n", sample);
@@ -130,57 +137,81 @@ int transmute_trees(const char* input,
    printf(" # number of events: %lu\n", nentries);
    printf("................................................................\n");
 
-      t->GetEntry(i);
-      if (i % 1000 == 0)
-         printf("   run: %i, event: %lu\n", par.run, i);
-   for (uint64_t i=start; i<end; i++) {
+   std::vector<uint64_t> events;
+   for (uint64_t i=start; i<end; i=i+events.size()) {
+      events.clear();
 
-      /* hlt filter applied at production */
-      int cbin = hfbin(par.hft);
+      uint32_t npileup = 1;
+      if (pileup != 0) {
+         do {
+            npileup = gRandom->Poisson(pileup);
+         } while (!npileup);
+      }
+
+      for (uint32_t e=0; e<npileup && i+e<end; ++e)
+         events.push_back(i+e);
+
+      bool hltor = 0;
+      int nhfpsum = 0; int nhfnsum = 0;
+      float hftsum = 0;
+
+      /* vertex reconstruction */ {
+      std::vector<RecHit> layer1raw, layer2raw;
+
+      for (const auto& event : events) {
+         t->GetEntry(event);
+         if (event % 1000 == 0)
+            printf("   run: %i, entry: %lu\n", par.run, event);
 
 #define SAVE_VERTICES(q, w)                                                   \
-      trkltdata##q##w.nv = par.nv + 1;                                        \
-      trkltdata##q##w.vx[0] = par.vx[0];                                      \
-      trkltdata##q##w.vy[0] = par.vy[0];                                      \
-      trkltdata##q##w.vz[0] = par.vz[0];                                      \
+         trkltdata##q##w.nv = par.nv + 1;                                     \
+         trkltdata##q##w.vx[0] = par.vx[0];                                   \
+         trkltdata##q##w.vy[0] = par.vy[0];                                   \
+         trkltdata##q##w.vz[0] = par.vz[0];                                   \
 
-      TRKLTS2P(SAVE_VERTICES);
+         TRKLTS2P(SAVE_VERTICES);
 
 #define ADD_BACKGROUND(q)                                                     \
-      int bkghits##q = 0;                                                     \
-      if (add_bkg_l##q)                                                       \
-         for (int h=0; h<par.nhits##q; ++h)                                   \
-            if (gRandom->Rndm() < add_bkg_l##q)                               \
-               ++bkghits##q;                                                  \
+         int bkghits##q = 0;                                                  \
+         if (add_bkg_l##q)                                                    \
+            for (int h=0; h<par.nhits##q; ++h)                                \
+               if (gRandom->Rndm() < add_bkg_l##q)                            \
+                  ++bkghits##q;                                               \
                                                                               \
-      if (bkghits##q != 0) {                                                  \
-         for (int j=par.nhits##q; j<par.nhits##q + bkghits##q; ++j) {         \
-            double eta, phi, r;                                               \
-            hl##q->GetRandom3(r, eta, phi);                                   \
-            par.eta##q[j] = eta;                                              \
-            par.phi##q[j] = phi;                                              \
-            par.r##q[j] = r;                                                  \
+         if (bkghits##q != 0) {                                               \
+            for (int j=par.nhits##q; j<par.nhits##q + bkghits##q; ++j) {      \
+               double eta, phi, r;                                            \
+               hl##q->GetRandom3(r, eta, phi);                                \
+               par.eta##q[j] = eta;                                           \
+               par.phi##q[j] = phi;                                           \
+               par.r##q[j] = r;                                               \
+            }                                                                 \
+            par.nhits##q += bkghits##q;                                       \
          }                                                                    \
-         par.nhits##q += bkghits##q;                                          \
-      }                                                                       \
 
-      PIXELS1P(ADD_BACKGROUND);
+         PIXELS1P(ADD_BACKGROUND);
+
+         if (!random) {
+            prepare_hits(layer1raw, par, 1, vx, vy, 0, split, drop, smear);
+            prepare_hits(layer2raw, par, 2, vx, vy, 0, split, drop, smear);
+
+            hltor |= par.hlt;
+            nhfpsum += par.nhfp; nhfnsum += par.nhfn;
+            hftsum += par.hft;
+         }
+      }
 
       if (random) {
          vz = gRandom->Rndm() * 30 - 15 - vz_shift;
       } else {
-         std::vector<RecHit> layer1raw, layer2raw;
-         prepare_hits(layer1raw, par, 1, vx, vy, 0, split, drop, smear);
-         prepare_hits(layer2raw, par, 2, vx, vy, 0, split, drop, smear);
-
-         int rgn = 0; for (; cbin < vtxrgns[rgn]; ++rgn);
+         int rgn = 0; for (; hftsum > hfofficial[vtxrgns[rgn]]; ++rgn);
          vz = reco_vertex(layer1raw, layer2raw, vtxpar[rgn][0], vtxpar[rgn][1]);
       }
 
 #define SET_VERTEX(q, w)                                                      \
       trkltdata##q##w.vz[1] = vz;                                             \
 
-      TRKLTS2P(SET_VERTEX);
+      TRKLTS2P(SET_VERTEX); }
 
       float event_weight = 1.;
       if (reweight) {
@@ -202,7 +233,11 @@ int transmute_trees(const char* input,
       prepare_hits(layer##q, par, q, vx, vy, vz, split, drop, smear);         \
 
       if (reweight || sample < 0) {
-         PIXELS1P(PREPARE_HITS);
+         for (const auto& event : events) {
+            t->GetEntry(event);
+            PIXELS1P(ADD_BACKGROUND);
+            PIXELS1P(PREPARE_HITS);
+         }
       }
 
 #define RECONSTRUCT_TRACKLETS(q, w)                                           \
@@ -217,10 +252,10 @@ int transmute_trees(const char* input,
       trkltdata##q##w.lumi       = par.lumi;                                  \
       trkltdata##q##w.event      = par.event;                                 \
       trkltdata##q##w.bx         = par.bx;                                    \
-      trkltdata##q##w.hlt        = par.hlt;                                   \
-      trkltdata##q##w.nhfp       = par.nhfp;                                  \
-      trkltdata##q##w.nhfn       = par.nhfn;                                  \
-      trkltdata##q##w.hft        = par.hft;                                   \
+      trkltdata##q##w.hlt        = hltor;                                     \
+      trkltdata##q##w.nhfp       = nhfpsum;                                   \
+      trkltdata##q##w.nhfn       = nhfnsum;                                   \
+      trkltdata##q##w.hft        = hftsum;                                    \
       trkltdata##q##w.weight     = event_weight;                              \
                                                                               \
       for (int j=0; j<trkltdata##q##w.nv; j++)                                \
@@ -289,28 +324,30 @@ int main(int argc, char* argv[]) {
             atoi(argv[5]), atoi(argv[6]));
    } else if (argc == 8) {
       return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]),
-            atoi(argv[5]), atoi(argv[6]), atoi(argv[7]));
+            atoi(argv[5]), atoi(argv[6]), atof(argv[7]));
    } else if (argc == 9) {
       return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]),
-            atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
-            atof(argv[8]));
+            atoi(argv[5]), atoi(argv[6]), atof(argv[7]), atoi(argv[8]));
    } else if (argc == 10) {
       return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]),
-            atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
-            atof(argv[8]), atof(argv[9]));
+            atoi(argv[5]), atoi(argv[6]), atof(argv[7]), atoi(argv[8]),
+            atof(argv[9]));
    } else if (argc == 11) {
       return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]),
-            atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
-            atof(argv[8]), atof(argv[9]), atoi(argv[10]));
-   } else if (argc == 11 + NPIXEL1P) {
+            atoi(argv[5]), atoi(argv[6]), atof(argv[7]), atoi(argv[8]),
+            atof(argv[9]), atof(argv[10]));
+   } else if (argc == 12) {
       return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]),
-            atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
-            atof(argv[8]), atof(argv[9]), atoi(argv[10]) PIXELS1P(BKG_ARGV));
+            atoi(argv[5]), atoi(argv[6]), atof(argv[7]), atoi(argv[8]),
+            atof(argv[9]), atof(argv[10]), atoi(argv[11]));
+   } else if (argc == 12 + NPIXEL1P) {
+      return transmute_trees(argv[1], argv[2], atoi(argv[3]), atoi(argv[4]),
+            atoi(argv[5]), atoi(argv[6]), atof(argv[7]), atoi(argv[8]),
+            atof(argv[9]), atof(argv[10]), atoi(argv[11]) PIXELS1P(BKG_ARGV));
    } else {
-      printf("usage: ./transmute_trees [in out]\n"
-             "[start end]\n"
-             "[sample reweight] [random vertex]\n"
-             "[split] [drop] [smear] [hits * %i]\n", NPIXEL1P);
+      printf("usage: ./transmute_trees [in out] [start end]\n"
+             "  [sample reweight] [pileup] [random]\n"
+             "  [split] [drop] [smear] [hits * %i]\n", NPIXEL1P);
       return 1;
    }
 }
