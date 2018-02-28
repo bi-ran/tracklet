@@ -29,7 +29,7 @@ int reap_results(int type,
                  bool applyc = 0,               // apply external corrections
                  bool applyg = 0,               // apply geometric correction
                  bool applym = 1,               // apply external acceptance map
-                 const char* sdfile = "null",   // apply external sd fraction
+                 const char* estag = "null",    // event selection corrections
                  bool multhandle = 0,           // alternate mult handle
                  float maxdr2 = 0.25,           // signal region selection
                  const char* accepdir =         // acceptance corrections path
@@ -61,9 +61,9 @@ int reap_results(int type,
    if (applym)
       printf("$ applying external acceptance maps\n");
 
-   TFile* fsdf = 0;
-   if (strcmp(sdfile, "null")) {
-      fsdf = new TFile(Form("output/correction-%s-%i.root", sdfile, type));
+   TFile* fes = 0;
+   if (strcmp(estag, "null")) {
+      fes = new TFile(Form("output/correction-%s-%i.root", estag, type));
       printf("$ applying external single-diffractive fractions\n");
    }
 
@@ -372,9 +372,11 @@ int reap_results(int type,
    }
 
    /* external single-diffractive fraction                                    */
-   if (fsdf) {
-      delete h1sdf;
-      h1sdf = (TH1F*)fsdf->Get("h1sdf")->Clone();
+   if (fes) {
+      delete h1sdf; delete h1teff; delete h1empty;
+      h1sdf = (TH1F*)fes->Get("h1sdf")->Clone();
+      h1teff = (TH1F*)fes->Get("h1teff")->Clone();
+      h1empty = (TH1F*)fes->Get("h1empty")->Clone();
    }
 
    printf("-------------------------------------------------------------\n");
@@ -588,7 +590,7 @@ int reap_results(int type,
    h1WEttruth->Divide(h1accep3xe);
 
    /* calculate/apply empty correction                                        */
-   if (!applyc) {
+   if (!applyc && !fes) {
       h1empty = (TH1F*)h1WGhadron->Clone("h1empty");
       h1empty->Divide(h1WEtcorr);
 
@@ -697,7 +699,7 @@ int main(int argc, char* argv[]) {
       printf("usage: ./reap_results [type] [input] [label]\n"
              "(cmin cmax) (corrections (apply))"
              "(geometric-correction) (external-acceptance-maps)\n"
-             "(single-diffractive-fraction)\n"
+             "(event-selection-corrections)\n"
              "(multiplicity-handle) (maxdr2) (gcorr-path)\n");
       return -1;
    }
