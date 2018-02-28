@@ -3,7 +3,6 @@
 
 #include <vector>
 
-#include "TTree.h"
 #include "TRandom.h"
 #include "TMath.h"
 #include "Math/Vector3D.h"

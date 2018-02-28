@@ -2,9 +2,6 @@
 #include "TTree.h"
 #include "TTimeStamp.h"
 #include "TH3.h"
-#include "TF1.h"
-#include "TGraph.h"
-#include "TFitResult.h"
 
 #define PIXELS1P(EXPAND)   \
    BPIX1P(EXPAND)          \

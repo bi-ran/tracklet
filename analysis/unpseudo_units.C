@@ -3,8 +3,6 @@
 #include "TBranch.h"
 #include "TDatabasePDG.h"
 #include "TLorentzVector.h"
-#include "TH1.h"
-#include "TCanvas.h"
 
 #define BRANCHVAR(type, var, tree)                                            \
    type var;                                                                  \

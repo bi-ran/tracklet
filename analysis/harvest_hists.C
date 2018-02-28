@@ -12,7 +12,6 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <fstream>
 
 #include "git/config/configurer.h"
 

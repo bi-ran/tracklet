@@ -7,8 +7,6 @@
 
 #include <vector>
 #include <string>
-#include <fstream>
-#include <sstream>
 
 #include "git/config/configurer.h"
 
