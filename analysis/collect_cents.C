@@ -40,19 +40,9 @@ TGraphErrors* cms_pp_13p0_norm();
 TGraphErrors* cms_ppb_8p16_norm();
 
 int collect_cents(const char* label, int interval) {
-    int n = NCENT / interval;
-    switch (interval) {
-        case 1:
-            n -= NEXCLUDE;
-            break;
-        default:
-            n -= NEXCLUDE / (NCENT % interval);
-            break;
-    }
-
     TFile* fout = new TFile(Form("output/centrality-%s.root", label), "recreate");
 
-    TGraphErrors* g = new TGraphErrors(n);
+    TGraphErrors* g = new TGraphErrors((NCENT - NEXCLUDE) / interval);
     g->SetName("g");
     g->SetMarkerStyle(21);
     g->SetMarkerColor(COLOUR1);
@@ -81,7 +71,7 @@ int collect_cents(const char* label, int interval) {
         gs->SetPointError(cindex, 0, midy * 0.03);
 
         float avgnpart = 0;
-        for (int s = c - interval; s < c && s < NCENT; ++s)
+        for (int s = c - interval; s < c; ++s)
             avgnpart += npart[s];
         avgnpart /= interval;
 

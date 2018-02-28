@@ -126,13 +126,14 @@ int transmute_trees(const char* input,
    PIXELS1P(PROJECT_BACKGROUND);
 
    uint64_t nentries = t->GetEntries();
+   if (end > nentries) end = nentries;
    printf(" # number of events: %lu\n", nentries);
    printf("................................................................\n");
 
-   for (uint64_t i=start; i<nentries && i<end; i++) {
       t->GetEntry(i);
       if (i % 1000 == 0)
          printf("   run: %i, event: %lu\n", par.run, i);
+   for (uint64_t i=start; i<end; i++) {
 
       /* hlt filter applied at production */
       int cbin = hfbin(par.hft);
@@ -309,7 +310,7 @@ int main(int argc, char* argv[]) {
       printf("usage: ./transmute_trees [in out]\n"
              "[start end]\n"
              "[sample reweight] [random vertex]\n"
-             "[split] [drop] [smear] [hits * 7]\n");
+             "[split] [drop] [smear] [hits * %i]\n", NPIXEL1P);
       return 1;
    }
 }

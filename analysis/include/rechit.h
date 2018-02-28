@@ -46,10 +46,10 @@ void prepare_hits(std::vector<RecHit>& hits, PixelEvent& par, Int_t layer,
       case 7: MANIPULATE_PIXELS(7) break;
    }
 
-   for (std::size_t i = 0; i < rawhits.size(); ++i) {
-      float x = rawhits[i].r * cos(rawhits[i].phi);
-      float y = rawhits[i].r * sin(rawhits[i].phi);
-      float z = rawhits[i].r / tan(atan(exp(-rawhits[i].eta)) * 2);
+   for (const auto& hit : rawhits) {
+      float x = hit.r * cos(hit.phi);
+      float y = hit.r * sin(hit.phi);
+      float z = hit.r / tan(atan(exp(-hit.eta)) * 2);
 
       if (smear) {
          x += gRandom->Gaus(0, 0.002);
