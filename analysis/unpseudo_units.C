@@ -11,7 +11,7 @@
    tree->SetBranchAddress(#var, &var);                                        \
 
 #define BRANCHARR(type, var, tree)                                            \
-   type var[15000];                                                           \
+   type var[20000];                                                           \
    tree->SetBranchAddress(#var, var);                                         \
 
 int unpseudo_units(const char* pixel) {
@@ -24,7 +24,7 @@ int unpseudo_units(const char* pixel) {
    BRANCHARR(float, phi, t);
    BRANCHARR(int, pdg, t);
 
-   float y[15000];
+   float y[20000];
    TBranch* by = t->Branch("y", y, "y[npart]/F");
 
    TDatabasePDG* pdgdb = new TDatabasePDG();
