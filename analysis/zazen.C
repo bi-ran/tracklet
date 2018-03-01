@@ -13,13 +13,15 @@
 #include "include/cosmetics.h"
 #include "include/errorband.h"
 
-int zazen(const char* config, const char* label, const char* jacobian) {
+int zazen(const char* config, const char* label) {
    configurer* conf = new configurer(config);
 
    auto results = conf->get<std::vector<std::string>>("files");
    auto systematics = conf->get<std::vector<std::string>>("systematics");
    auto legends = conf->get<std::vector<std::string>>("legends");
    auto tags = conf->get<std::vector<std::string>>("tags");
+
+   auto jacobian = conf->get<std::string>("jacobian");
 
    std::size_t nres = results.size();
    if (!nres) { printf("error: no files provided!\n"); return 1; }
@@ -83,8 +85,8 @@ int zazen(const char* config, const char* label, const char* jacobian) {
 
    c1->SaveAs(Form("figs/results/results-%s-%s.png", hist.c_str(), label));
 
-   if (jacobian) {
-      TFile* fj = new TFile(jacobian, "read");
+   if (!jacobian.empty()) {
+      TFile* fj = new TFile(jacobian.c_str(), "read");
       TH1F* hj = (TH1F*)fj->Get("hjavg")->Clone();
       TH1F* hjsys = (TH1F*)fj->Get("hjsys")->Clone();
 
@@ -139,11 +141,9 @@ int zazen(const char* config, const char* label, const char* jacobian) {
 
 int main(int argc, char* argv[]) {
    if (argc == 3) {
-      return zazen(argv[1], argv[2], 0);
-   } else if (argc == 4) {
-      return zazen(argv[1], argv[2], argv[3]);
+      return zazen(argv[1], argv[2]);
    } else {
-      printf("usage: ./zazen [config] [label] (jacobian)\n");
+      printf("usage: ./zazen [config] [label]\n");
       return 1;
    }
 }

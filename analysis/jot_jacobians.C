@@ -11,7 +11,7 @@
 
 #include "include/cosmetics.h"
 
-int jot_jacobians(const char* config) {
+int jot_jacobians(const char* config, const char* label) {
    configurer* conf = new configurer(config);
 
    auto files = conf->get<std::vector<std::string>>("files");
@@ -27,7 +27,7 @@ int jot_jacobians(const char* config) {
       t[i] = (TTree*)f[i]->Get("pixel/PixelTree");
    }
 
-   TFile* fout = new TFile("data/jacobian.root", "recreate");
+   TFile* fout = new TFile(Form("data/jacobian-%s.root", label), "recreate");
 
    TH1::SetDefaultSumw2();
 
@@ -112,10 +112,10 @@ int jot_jacobians(const char* config) {
 }
 
 int main(int argc, char* argv[]) {
-   if (argc == 2) {
-      return jot_jacobians(argv[1]);
+   if (argc == 3) {
+      return jot_jacobians(argv[1], argv[2]);
    } else {
-      printf("usage: ./jot_jacobians [config]\n");
+      printf("usage: ./jot_jacobians [config] [label]\n");
       return 1;
    }
 }
