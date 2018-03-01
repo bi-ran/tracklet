@@ -121,8 +121,8 @@ int transmute_trees(const char* input,
    TH3F* hl##q = 0;                                                           \
    if (add_bkg_l##q) {                                                        \
       printf(" # projecting hit distribution of layer " #q "\n");             \
-      hl##q = new TH3F("hl" #q, "", 200, 0, 20, 400, -4, 4, 320, -3.2, 3.2);  \
-      t->Project("hl" #q, "phi" #q ":eta" #q ":r" #q);                        \
+      hl##q = new TH3F("hl" #q, "", 80, 2, 18, 200, -4, 4, 160, -3.2, 3.2);   \
+      t->Project("hl" #q, "phi" #q ":eta" #q ":r" #q, "", "", 8192, start);   \
    }                                                                          \
 
    PIXELS1P(PROJECT_BACKGROUND);
