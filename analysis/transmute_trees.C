@@ -196,6 +196,9 @@ int transmute_trees(const char* input,
          }
       }
 
+      if (layer1raw.size() > MAXH)
+         continue;
+
       if (random) {
          vz = gRandom->Rndm() * 30 - 15 - vz_shift;
       } else {
