@@ -1,6 +1,5 @@
 #include "TFile.h"
 #include "TTree.h"
-#include "TTimeStamp.h"
 #include "TH3.h"
 
 #define PIXELS1P(EXPAND)   \
@@ -115,8 +114,7 @@ int transmute_trees(const char* input,
    truth_t truth;
    branch_event_truth(ttruth, truth);
 
-   TTimeStamp myTime;
-   gRandom->SetSeed(myTime.GetNanoSec());
+   gRandom->SetSeed(144);
    printf(" # init random: %f\n", gRandom->Rndm());
 
 #define PROJECT_BACKGROUND(q)                                                 \
