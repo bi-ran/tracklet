@@ -71,15 +71,19 @@ int collect_cents(const char* label, int interval) {
         gs->SetPointError(cindex, 0, midy * 0.03);
 
         float avgnpart = 0;
-        for (int s = c - interval; s < c; ++s)
+        float avgnparterr = 0;
+        for (int s = c - interval; s < c; ++s) {
             avgnpart += npart[s];
+            avgnparterr += nparterr[s];
+        }
         avgnpart /= interval;
+        avgnparterr /= interval;
 
         gnorm->SetPoint(cindex, avgnpart, midy / avgnpart);
-        gnorm->SetPointError(cindex, 0, midyerr / avgnpart);
+        gnorm->SetPointError(cindex, avgnparterr, midyerr / avgnpart);
 
         gsnorm->SetPoint(cindex, avgnpart, midy / avgnpart);
-        gsnorm->SetPointError(cindex, 0, midy * 0.03 / avgnpart);
+        gsnorm->SetPointError(cindex, avgnparterr, midy * 0.03 / avgnpart);
     }
 
     fout->cd();
