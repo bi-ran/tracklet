@@ -22,7 +22,11 @@ int evaluate_effs(const char* config, const char* label) {
    std::size_t nfiles = files.size();
    if (!nfiles) { printf("error: no files provided!\n"); return 1; }
 
-   TFile* foutput = new TFile(Form("output/vertex-perf-%s.root", label), "recreate");
+   TFile* foutput = new TFile(Form("output/vertex-%s.root", label), "recreate");
+
+   const int nresbins = 8;
+   const double resbins[nresbins + 1] = {
+      0, 20, 40, 60, 100, 150, 200, 300, 500};
 
    TFile* f[nfiles]; TTree* t[nfiles];
    TProfile* heff[nfiles]; TH2D* hvznhit1[nfiles]; TH1D* hres[nfiles];
@@ -33,11 +37,14 @@ int evaluate_effs(const char* config, const char* label) {
       foutput->cd();
 
       heff[i] = new TProfile(Form("heff_%zu", i), "", 20, 0, 100);
-      t[i]->Draw(Form("vz[1]>-99:nhit1>>heff_%zu", i), "ntracklet>0 && ntracklet<100 && abs(vz[0])<15", "goff");
+      t[i]->Draw(Form("vz[1]>-98:nhit1>>heff_%zu", i),
+            "ntracklet>0 && abs(vz[0])<15", "goff", 16384);
       hstyle(heff[i], markers[i % ncolours], colours[i % ncolours]);
 
-      hvznhit1[i] = new TH2D(Form("hvznhit1_%zu", i), "", 10, 0, 100, 100, -2, 2);
-      t[i]->Draw(Form("vz[1]-vz[0]:nhit1>>hvznhit1_%zu", i), "ntracklet>0 && ntracklet<100 && abs(vz[0])<15", "goff colz");
+      hvznhit1[i] = new TH2D(Form("hvznhit1_%zu", i), "",
+            nresbins, resbins, 100, -0.5, 0.5);
+      t[i]->Draw(Form("vz[1]-vz[0]:nhit1>>hvznhit1_%zu", i),
+            "ntracklet>0 && abs(vz[0])<15", "goff colz", 16384);
       hvznhit1[i]->FitSlicesY();
       hres[i] = (TH1D*)gDirectory->Get(Form("hvznhit1_%zu_2", i));
       hstyle(hres[i], markers[i % ncolours], colours[i % ncolours]);
@@ -47,7 +54,8 @@ int evaluate_effs(const char* config, const char* label) {
    TLegend* l1 = new TLegend(0.5, 0.56, 0.9, 0.72);
    lstyle(l1, 43, 16);
    for (std::size_t i = 0; i < nfiles; ++i) {
-      hformat(heff[i], 0.f, 1.2f, ";number of pixel hits (layer 1);efficiency");
+      hformat(heff[i], 0.f, 1.2f,
+            ";number of pixel hits (layer 1);efficiency");
       heff[i]->Draw("p e same");
       l1->AddEntry(heff[i], legends[i].c_str(), "pl");
    }
@@ -59,7 +67,8 @@ int evaluate_effs(const char* config, const char* label) {
    TLegend* l2 = new TLegend(0.5, 0.56, 0.9, 0.72);
    lstyle(l2, 43, 16);
    for (std::size_t i = 0; i < nfiles; ++i) {
-      hformat(hres[i], 0.001f, 1.f, ";number of pixel hits (layer 1);resolution (cm)");
+      hformat(hres[i], 0.001f, 0.5f,
+            ";number of pixel hits (layer 1);resolution (cm)");
       hres[i]->Draw("p e same");
       l2->AddEntry(hres[i], legends[i].c_str(), "pl");
    }
