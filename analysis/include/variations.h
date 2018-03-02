@@ -147,13 +147,19 @@ void varone::write() {
 
    hdiff->Write("", TObject::kOverwrite);
    hadiff->Write("", TObject::kOverwrite);
-   hfadiff->Write("", TObject::kOverwrite);
+
+   if (hfadiff) {
+      hfadiff->Write("", TObject::kOverwrite);
+   }
 
    hratio->Write("", TObject::kOverwrite);
    haratio->Write("", TObject::kOverwrite);
    hardiff->Write("", TObject::kOverwrite);
-   hfaratio->Write("", TObject::kOverwrite);
-   hfardiff->Write("", TObject::kOverwrite);
+
+   if (hfaratio) {
+      hfaratio->Write("", TObject::kOverwrite);
+      hfardiff->Write("", TObject::kOverwrite);
+   }
 }
 
 void varone::abs(TH1F* h) {
