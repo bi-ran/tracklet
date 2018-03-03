@@ -150,8 +150,10 @@ int transmute_trees(const char* input,
       int nhfpsum = 0; int nhfnsum = 0;
       float hftsum = 0;
 
-      /* vertex reconstruction */ {
-      std::vector<RecHit> layer1raw, layer2raw;
+#define DECLARE_HITS(q)                                                       \
+      std::vector<rechit> layer##q;                                           \
+
+      PIXELS1P(DECLARE_HITS);
 
       for (const auto& event : events) {
          t->GetEntry(event);
@@ -186,30 +188,36 @@ int transmute_trees(const char* input,
 
          PIXELS1P(ADD_BACKGROUND);
 
-         if (!random) {
-            prepare_hits(layer1raw, par, 1, vx, vy, 0, split, drop, smear);
-            prepare_hits(layer2raw, par, 2, vx, vy, 0, split, drop, smear);
+#define POPULATE_HITS(q)                                                      \
+         populate(layer##q, par, q, split, drop);                             \
 
-            hltor |= par.hlt;
-            nhfpsum += par.nhfp; nhfnsum += par.nhfn;
-            hftsum += par.hft;
-         }
+         PIXELS1P(POPULATE_HITS);
+
+         hltor |= par.hlt;
+         nhfpsum += par.nhfp; nhfnsum += par.nhfn;
+         hftsum += par.hft;
       }
 
-      if (layer1raw.size() > MAXH)
+      if (layer1.size() > MAXH)
          continue;
 
       if (random) {
          vz = gRandom->Rndm() * 30 - 15 - vz_shift;
       } else {
+         std::vector<rechit> layer1v(layer1);
+         std::vector<rechit> layer2v(layer2);
+
+         project(layer1v, vx, vy, 0, smear);
+         project(layer2v, vx, vy, 0, smear);
+
          int rgn = 0; for (; hftsum > hfofficial[vtxrgns[rgn]]; ++rgn);
-         vz = reco_vertex(layer1raw, layer2raw, vtxpar[rgn][0], vtxpar[rgn][1]);
+         vz = reco_vertex(layer1v, layer2v, vtxpar[rgn][0], vtxpar[rgn][1]);
       }
 
 #define SET_VERTEX(q, w)                                                      \
       trkltdata##q##w.vz[1] = vz;                                             \
 
-      TRKLTS2P(SET_VERTEX); }
+      TRKLTS2P(SET_VERTEX);
 
       float event_weight = 1.;
       if (reweight) {
@@ -222,21 +230,10 @@ int transmute_trees(const char* input,
          event_weight = event_weight * data_pdf / mc_pdf;
       }
 
-#define DECLARE_HITS(q)                                                       \
-      std::vector<RecHit> layer##q;                                           \
+#define PROJECT_HITS(q)                                                       \
+      project(layer##q, vx, vy, vz, smear);                                   \
 
-      PIXELS1P(DECLARE_HITS);
-
-#define PREPARE_HITS(q)                                                       \
-      prepare_hits(layer##q, par, q, vx, vy, vz, split, drop, smear);         \
-
-      if (reweight || sample < 0) {
-         for (const auto& event : events) {
-            t->GetEntry(event);
-            PIXELS1P(ADD_BACKGROUND);
-            PIXELS1P(PREPARE_HITS);
-         }
-      }
+      PIXELS1P(PROJECT_HITS);
 
 #define RECONSTRUCT_TRACKLETS(q, w)                                           \
       std::vector<Tracklet> tracklets##q##w;                                  \

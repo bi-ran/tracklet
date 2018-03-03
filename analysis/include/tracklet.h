@@ -48,7 +48,7 @@ bool sortdr2(Candidate a, Candidate b) { return (a.dr2 < b.dr2); }
 
 class Tracklet {
    public:
-      Tracklet(RecHit h1, RecHit h2) {
+      Tracklet(rechit h1, rechit h2) {
          eta1 = h1.eta;
          phi1 = h1.phi;
          r1 = h1.r;
@@ -75,7 +75,7 @@ class Tracklet {
       float dr2;
 };
 
-float reco_vertex(std::vector<RecHit>& l1, std::vector<RecHit>& l2, float vtx_dphi, float vtx_dz) {
+float reco_vertex(std::vector<rechit>& l1, std::vector<rechit>& l2, float vtx_dphi, float vtx_dz) {
    float trackletVertex = -99.;
 
    std::vector<float> vertices;
@@ -138,7 +138,7 @@ float reco_vertex(std::vector<RecHit>& l1, std::vector<RecHit>& l2, float vtx_dp
    return trackletVertex;
 }
 
-void reco_tracklets(std::vector<Tracklet>& tracklets, std::vector<RecHit>& l1, std::vector<RecHit>& l2) {
+void reco_tracklets(std::vector<Tracklet>& tracklets, std::vector<rechit>& l1, std::vector<rechit>& l2) {
    std::vector<Candidate> candidates;
    candidates.reserve(l1.size());
 
