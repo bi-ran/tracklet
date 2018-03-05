@@ -1,5 +1,7 @@
 #include "TFile.h"
 #include "TTree.h"
+#include "TRandom.h"
+#include "TMath.h"
 #include "TH3.h"
 
 #define PIXELS1P(EXPAND)   \
