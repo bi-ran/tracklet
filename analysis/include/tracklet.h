@@ -1,6 +1,8 @@
 #ifndef TRACKLET_H
 #define TRACKLET_H
 
+#include <algorithm>
+
 #include "rechit.h"
 #include "structs.h"
 
@@ -27,9 +29,6 @@ class Vertex {
       float sigma2;
 };
 
-bool sortnz(Vertex v1, Vertex v2) { return v1.nz > v2.nz; }
-bool sortsigma2(Vertex v1, Vertex v2) { return v1.sigma2 < v2.sigma2; }
-
 static const int niter = 4;
 static const float limits[niter] = {0.075, 1.2, 4, 100};
 
@@ -43,8 +42,6 @@ class Candidate {
       uint32_t index;
       float dr2;
 };
-
-bool sortdr2(Candidate a, Candidate b) { return (a.dr2 < b.dr2); }
 
 class Tracklet {
    public:
@@ -106,7 +103,10 @@ float reco_vertex(std::vector<rechit>& l1, std::vector<rechit>& l2, float vtx_dp
          vclusters.push_back(vcluster);
       }
 
-      std::sort(vclusters.begin(), vclusters.end(), sortnz);
+      std::sort(vclusters.begin(), vclusters.end(),
+            [](const Vertex& a, const Vertex& b) -> bool {
+               return a.nz > b.nz;
+            });
 
       std::size_t v = 0;
       for (; v < vclusters.size(); v++)
@@ -131,7 +131,11 @@ float reco_vertex(std::vector<rechit>& l1, std::vector<rechit>& l2, float vtx_dp
          candidates.push_back(vclusters[c]);
       }
 
-      std::sort(vclusters.begin(), vclusters.end(), sortsigma2);
+      std::sort(vclusters.begin(), vclusters.end(),
+            [](const Vertex& a, const Vertex& b) -> bool {
+               return a.sigma2 < b.sigma2;
+            });
+
       trackletVertex = candidates[0].vzmean;
    }
 
@@ -162,7 +166,10 @@ void reco_tracklets(std::vector<Tracklet>& tracklets, std::vector<rechit>& l1, s
          }
       }
 
-      std::sort(candidates.begin(), candidates.end(), sortdr2);
+      std::sort(candidates.begin(), candidates.end(),
+            [](const Candidate& a, const Candidate& b) -> bool {
+               return a.dr2 < b.dr2;
+            });
 
       for (std::size_t t = 0; t < candidates.size(); ++t) {
          uint32_t h1 = candidates[t].index >> 16;
