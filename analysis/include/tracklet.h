@@ -138,8 +138,11 @@ void reco_tracklets(std::vector<Tracklet>& tracklets, std::vector<rechit>& l1, s
    std::vector<Candidate> candidates;
    candidates.reserve(l1.size());
 
-   std::vector<bool> l1flags(l1.size(), 0);
-   std::vector<bool> l2flags(l2.size(), 0);
+   std::vector<uint8_t> l1flags(l1.size(), 0);
+   std::vector<uint8_t> l2flags(l2.size(), 0);
+
+   __builtin_prefetch(&l1flags[0], 1, 3);
+   __builtin_prefetch(&l2flags[0], 1, 3);
 
    auto sorteta = [](const rechit& a, const rechit& b) -> bool {
       return a.eta < b.eta;
@@ -178,8 +181,8 @@ void reco_tracklets(std::vector<Tracklet>& tracklets, std::vector<rechit>& l1, s
          if (!l1flags[h1] && !l2flags[h2]) {
             tracklets.emplace_back(l1[h1], l2[h2]);
 
-            l1flags[h1] = true;
-            l2flags[h2] = true;
+            ++l1flags[h1];
+            ++l2flags[h2];
          }
       }
 
