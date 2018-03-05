@@ -2,10 +2,9 @@
 #define RECHIT_H
 
 #include <vector>
+#include <cmath>
 
 #include "TRandom.h"
-#include "TMath.h"
-#include "Math/Vector3D.h"
 
 #include "defines.h"
 #include "structs.h"
@@ -49,10 +48,17 @@ void project(std::vector<rechit>& hits, float vx, float vy, float vz,
          z += gRandom->Gaus(0, 0.005);
       }
 
-      ROOT::Math::XYZVector rel(x - vx, y - vy, z - vz);
-      hit.eta = rel.eta();
-      hit.phi = rel.phi();
-      hit.r = rel.rho();
+      float rx = x - vx;
+      float ry = y - vy;
+      float rz = z - vz;
+
+      float r2t = rx * rx + ry * ry;
+      float r2 = r2t + rz * rz;
+      float costheta = rz / sqrt(r2);
+
+      hit.r = sqrt(r2t);
+      hit.phi = atan2(ry, rx);
+      hit.eta = -0.5 * log((1 - costheta) / (1 + costheta));
    }
 }
 
