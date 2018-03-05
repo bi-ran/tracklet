@@ -16,60 +16,51 @@ inline float dphi_2s1f1b(float phi1, float phi2) {
    return dphi;
 }
 
-class Vertex {
-   public:
-      Vertex(uint32_t index, uint32_t nz) :
-         index(index), nz(nz) {};
+struct Vertex {
+   Vertex(uint32_t index, uint32_t nz) :
+      index(index), nz(nz) {};
 
-      ~Vertex() {};
-
-      uint32_t index;
-      uint32_t nz;
-      float vzmean;
-      float sigma2;
+   uint32_t index;
+   uint32_t nz;
+   float vzmean;
+   float sigma2;
 };
 
 static const int niter = 4;
 static const float limits[niter] = {0.075, 1.2, 4, 100};
 
-class Candidate {
-   public:
-      Candidate(uint32_t index, float dr2) :
-         index(index), dr2(dr2) {};
+struct Candidate {
+   Candidate(uint32_t index, float dr2) :
+      index(index), dr2(dr2) {};
 
-      ~Candidate() {};
-
-      uint32_t index;
-      float dr2;
+   uint32_t index;
+   float dr2;
 };
 
-class Tracklet {
-   public:
-      Tracklet(rechit h1, rechit h2) {
-         eta1 = h1.eta;
-         phi1 = h1.phi;
-         r1 = h1.r;
+struct Tracklet {
+   Tracklet(rechit h1, rechit h2) {
+      eta1 = h1.eta;
+      phi1 = h1.phi;
+      r1 = h1.r;
 
-         eta2 = h2.eta;
-         phi2 = h2.phi;
-         r2 = h2.r;
+      eta2 = h2.eta;
+      phi2 = h2.phi;
+      r2 = h2.r;
 
-         deta = eta1 - eta2;
-         dphi = dphi_2s1f1b(phi1, phi2);
-         dr2 = deta * deta + dphi * dphi;
-      };
+      deta = eta1 - eta2;
+      dphi = dphi_2s1f1b(phi1, phi2);
+      dr2 = deta * deta + dphi * dphi;
+   };
 
-      ~Tracklet() {};
-
-      float eta1;
-      float phi1;
-      float r1;
-      float eta2;
-      float phi2;
-      float r2;
-      float deta;
-      float dphi;
-      float dr2;
+   float eta1;
+   float phi1;
+   float r1;
+   float eta2;
+   float phi2;
+   float r2;
+   float deta;
+   float dphi;
+   float dr2;
 };
 
 float reco_vertex(std::vector<rechit>& l1, std::vector<rechit>& l2, float vtx_dphi, float vtx_dz) {
