@@ -33,7 +33,8 @@ struct Vertex {
 };
 
 static const int niter = 4;
-static const float limits[niter] = {0.075, 1.2, 4, 100};
+static const float limits[niter] = {0.25, 1, 2, 10};
+static const float sqlimits[niter] = {0.0625, 1, 4, 100};
 
 struct Candidate {
    Candidate(uint32_t index, float dr2) :
@@ -140,17 +141,28 @@ void reco_tracklets(std::vector<Tracklet>& tracklets, std::vector<rechit>& l1, s
    std::vector<bool> l1flags(l1.size(), 0);
    std::vector<bool> l2flags(l2.size(), 0);
 
+   auto sorteta = [](const rechit& a, const rechit& b) -> bool {
+      return a.eta < b.eta;
+   };
+
+   std::sort(l1.begin(), l1.end(), sorteta);
+   std::sort(l2.begin(), l2.end(), sorteta);
+
    for (uint32_t l = 0; l < niter; ++l) {
+      uint32_t bmin = 0; uint32_t bmax = 0;
       for (uint32_t a = 0; a < l1.size(); ++a) {
          if (l1flags[a]) continue;
 
-         for (uint32_t b = 0; b < l2.size(); ++b) {
+         for (; bmin < l2.size() && l1[a].eta - l2[bmin].eta > limits[l]; ++bmin);
+         for (; bmax < l2.size() && l2[bmax].eta - l1[a].eta < limits[l]; ++bmax);
+
+         for (uint32_t b = bmin; b < bmax; ++b) {
             if (l2flags[b]) continue;
 
             float deta = l1[a].eta - l2[b].eta;
             float dphi = dphi_2s1f1b(l1[a].phi, l2[b].phi);
             float dr2 = deta * deta + dphi * dphi;
-            if (dr2 < limits[l])
+            if (dr2 < sqlimits[l])
                candidates.emplace_back((a << 16) | b, dr2);
          }
       }
