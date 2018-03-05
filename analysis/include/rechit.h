@@ -25,10 +25,9 @@ void populate(std::vector<rechit>& hits, PixelEvent& par, int layer,
       case q:                                                                 \
          for (int i = 0; i < par.nhits##q; ++i) {                             \
             if (gRandom->Rndm() < drop) { continue; }                         \
-            rechit tmp(par.eta##q[i], par.phi##q[i], par.r##q[i]);            \
-            hits.push_back(tmp);                                              \
+            hits.emplace_back(par.eta##q[i], par.phi##q[i], par.r##q[i]);     \
             if (gRandom->Rndm() < split)                                      \
-               hits.push_back(tmp);                                           \
+               hits.emplace_back(par.eta##q[i], par.phi##q[i], par.r##q[i]);  \
          }                                                                    \
          break;                                                               \
 

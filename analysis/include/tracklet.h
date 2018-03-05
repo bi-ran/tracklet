@@ -150,10 +150,8 @@ void reco_tracklets(std::vector<Tracklet>& tracklets, std::vector<rechit>& l1, s
             float deta = l1[a].eta - l2[b].eta;
             float dphi = dphi_2s1f1b(l1[a].phi, l2[b].phi);
             float dr2 = deta * deta + dphi * dphi;
-            if (dr2 < limits[l]) {
-               Candidate candidate((a << 16) | b, dr2);
-               candidates.push_back(candidate);
-            }
+            if (dr2 < limits[l])
+               candidates.emplace_back((a << 16) | b, dr2);
          }
       }
 
@@ -166,8 +164,7 @@ void reco_tracklets(std::vector<Tracklet>& tracklets, std::vector<rechit>& l1, s
          uint32_t h1 = candidates[t].index >> 16;
          uint32_t h2 = candidates[t].index & 0xffff;
          if (!l1flags[h1] && !l2flags[h2]) {
-            Tracklet tracklet(l1[h1], l2[h2]);
-            tracklets.push_back(tracklet);
+            tracklets.emplace_back(l1[h1], l2[h2]);
 
             l1flags[h1] = true;
             l2flags[h2] = true;
