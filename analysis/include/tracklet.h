@@ -16,13 +16,19 @@ inline float dphi_2s1f1b(float phi1, float phi2) {
    return dphi;
 }
 
-struct Vertex {
-   Vertex(uint32_t index, uint32_t nz) :
+struct Cluster {
+   Cluster(uint32_t index, uint32_t nz) :
       index(index), nz(nz) {};
 
    uint32_t index;
    uint32_t nz;
-   float vzmean;
+};
+
+struct Vertex {
+   Vertex(float vz, float sigma2) :
+      vz(vz), sigma2(sigma2) {};
+
+   float vz;
    float sigma2;
 };
 
@@ -63,19 +69,19 @@ struct Tracklet {
    float dr2;
 };
 
-float reco_vertex(std::vector<rechit>& l1, std::vector<rechit>& l2, float vtx_dphi, float vtx_dz) {
-   float trackletVertex = -99.;
+float reco_vertex(std::vector<rechit>& l1, std::vector<rechit>& l2, float dphi, float dz) {
+   float vertex = -99.;
 
    std::vector<float> vertices;
-   for (std::size_t a=0; a<l1.size(); a++) {
-      for (std::size_t b=0; b<l2.size(); b++) {
-         if (dphi_2s1f1b(l1[a].phi, l2[b].phi) < vtx_dphi) {
-            float r1 = l1[a].r;
-            float z1 = r1/tan(2*atan(exp(-l1[a].eta)));
-            float r2 = l2[b].r;
-            float z2 = r2/tan(2*atan(exp(-l2[b].eta)));
-            float vertex = z1 - (z2 - z1) / (r2 - r1) * r1;
-            vertices.push_back(vertex);
+   for (const auto& a : l1) {
+      for (const auto& b : l2) {
+         if (dphi_2s1f1b(a.phi, b.phi) < dphi) {
+            float r1 = a.r;
+            float z1 = r1/tan(2*atan(exp(-a.eta)));
+            float r2 = b.r;
+            float z2 = r2/tan(2*atan(exp(-b.eta)));
+
+            vertices.push_back(z1 - (z2 - z1) / (r2 - r1) * r1);
          }
       }
    }
@@ -84,53 +90,47 @@ float reco_vertex(std::vector<rechit>& l1, std::vector<rechit>& l2, float vtx_dp
    if (vertices.size()) {
       std::sort(vertices.begin(), vertices.end());
 
-      std::vector<Vertex> vclusters;
-      for (std::size_t z = 0; z < vertices.size(); z++) {
-         uint32_t nz = 0;
-         for (std::size_t y = z; y < vertices.size() && vertices[y] - vertices[z] < vtx_dz; y++)
-            nz++;
+      std::vector<Cluster> clusters;
+      std::size_t z = 0; std::size_t y = 0;
+      for (; z < vertices.size(); ++z) {
+         for (; y < vertices.size() && vertices[y] - vertices[z] < dz; ++y);
 
-         Vertex vcluster(z, nz);
-         vclusters.push_back(vcluster);
+         clusters.emplace_back(z, y - z);
       }
 
-      std::sort(vclusters.begin(), vclusters.end(),
-            [](const Vertex& a, const Vertex& b) -> bool {
+      std::sort(clusters.begin(), clusters.end(),
+            [](const Cluster& a, const Cluster& b) -> bool {
                return a.nz > b.nz;
             });
 
-      std::size_t v = 0;
-      for (; v < vclusters.size(); v++)
-         if (vclusters[v].nz + NZALLOWANCE < vclusters[0].nz) break;
-
       std::vector<Vertex> candidates;
-      for (std::size_t c = 0; c < v; c++) {
-         uint32_t index = vclusters[c].index;
-         uint32_t nz = vclusters[c].nz;
+      uint32_t maxnz = clusters[0].nz;
+      for (auto& cluster : clusters) {
+         uint32_t nz = cluster.nz;
+         if (nz + NZALLOWANCE < maxnz) { break; }
 
-         vclusters[c].vzmean = 0;
-         for (std::size_t y = 0; y < nz; y++)
-            vclusters[c].vzmean += vertices[index + y];
-         vclusters[c].vzmean /= nz;
+         uint32_t index = cluster.index;
 
-         vclusters[c].sigma2 = 0;
-         for (std::size_t y = 0; y < nz; y++)
-            vclusters[c].sigma2 += (vertices[index + y] - vclusters[c].vzmean) *
-                                   (vertices[index + y] - vclusters[c].vzmean);
-         vclusters[c].sigma2 /= nz;
+         float vz = 0;
+         for (uint32_t y = 0; y < nz; ++y)
+            vz += vertices[index + y];
+         vz /= nz;
 
-         candidates.push_back(vclusters[c]);
+         float sigma2 = 0;
+         for (uint32_t y = 0; y < nz; ++y)
+            sigma2 += (vertices[index + y] - vz) * (vertices[index + y] - vz);
+         sigma2 /= nz;
+
+         candidates.emplace_back(vz, sigma2);
       }
 
-      std::sort(vclusters.begin(), vclusters.end(),
+      vertex = std::min_element(candidates.begin(), candidates.end(),
             [](const Vertex& a, const Vertex& b) -> bool {
                return a.sigma2 < b.sigma2;
-            });
-
-      trackletVertex = candidates[0].vzmean;
+            })->vz;
    }
 
-   return trackletVertex;
+   return vertex;
 }
 
 void reco_tracklets(std::vector<Tracklet>& tracklets, std::vector<rechit>& l1, std::vector<rechit>& l2) {
