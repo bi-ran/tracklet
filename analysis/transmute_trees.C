@@ -23,10 +23,10 @@
 
 #define NSAMPLES  4
 static const float vzpar[NSAMPLES][2] = {
-   {0.306589, 4.62756},    /* hydjet */
-   {0.336550, 4.63926},    /* ampt, no melt */
-   {0.352545, 4.63407},    /* ampt, string melt */
-   {0.289075, 4.59105}     /* epos */
+   {0.307252, 4.62656},    /* hydjet */
+   {0.336693, 4.63967},    /* ampt, no melt */
+   {0.352702, 4.63594},    /* ampt, string melt */
+   {0.291463, 4.58802}     /* epos */
 };
 
 #define NREGIONS  2
@@ -233,7 +233,7 @@ int transmute_trees(const char* input,
          float event_vz = (vz < -98 ? par.vz[0] : vz) + vz_shift;
 
          /* run 304906 */
-         double data_pdf = TMath::Gaus(event_vz, -0.0184150, 4.67526, 1);
+         double data_pdf = TMath::Gaus(event_vz, -0.0063239, 4.67374, 1);
          double mc_pdf = TMath::Gaus(event_vz, vzpar[sample][0], vzpar[sample][1], 1);
 
          event_weight = event_weight * data_pdf / mc_pdf;
