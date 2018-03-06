@@ -32,9 +32,9 @@ struct Vertex {
    float sigma2;
 };
 
-static const int niter = 4;
-static const float limits[niter] = {0.25, 1, 2, 10};
-static const float sqlimits[niter] = {0.0625, 1, 4, 100};
+static const int niter = 5;
+static const float limits[niter] = {0.16, 0.4, 1, 2, 10};
+static const float sqlimits[niter] = {0.0256, 0.16, 1, 4, 100};
 
 struct Candidate {
    Candidate(uint32_t index, float dr2) :
