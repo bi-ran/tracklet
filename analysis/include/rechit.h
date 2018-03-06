@@ -19,14 +19,19 @@ struct rechit {
 };
 
 void populate(std::vector<rechit>& hits, PixelEvent& par, int layer,
-      float split, float drop) {
+      float split, float drop, bool smear) {
 #define FILL(q)                                                               \
       case q:                                                                 \
          for (int i = 0; i < par.nhits##q; ++i) {                             \
-            if (gRandom->Rndm() < drop) { continue; }                         \
-            hits.emplace_back(par.eta##q[i], par.phi##q[i], par.r##q[i]);     \
-            if (gRandom->Rndm() < split)                                      \
+            if (drop && gRandom->Rndm() < drop) {                             \
+               continue;                                                      \
+            } else if (split && gRandom->Rndm() < split) {                    \
                hits.emplace_back(par.eta##q[i], par.phi##q[i], par.r##q[i]);  \
+            } else if (smear) {                                               \
+               par.eta##q[i] += gRandom->Gaus(0, 0.000177);                   \
+               par.phi##q[i] += gRandom->Gaus(0, 0.000177);                   \
+            }                                                                 \
+            hits.emplace_back(par.eta##q[i], par.phi##q[i], par.r##q[i]);     \
          }                                                                    \
          break;                                                               \
 
@@ -35,18 +40,11 @@ void populate(std::vector<rechit>& hits, PixelEvent& par, int layer,
    }
 }
 
-void project(std::vector<rechit>& hits, float vx, float vy, float vz,
-      bool smear) {
+void project(std::vector<rechit>& hits, float vx, float vy, float vz) {
    for (auto& hit : hits) {
       float x = hit.r * cos(hit.phi);
       float y = hit.r * sin(hit.phi);
       float z = hit.r / tan(atan(exp(-hit.eta)) * 2);
-
-      if (smear) {
-         x += gRandom->Gaus(0, 0.002);
-         y += gRandom->Gaus(0, 0.002);
-         z += gRandom->Gaus(0, 0.005);
-      }
 
       float rx = x - vx;
       float ry = y - vy;

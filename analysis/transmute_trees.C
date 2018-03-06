@@ -191,7 +191,7 @@ int transmute_trees(const char* input,
          PIXELS1P(ADD_BACKGROUND);
 
 #define POPULATE_HITS(q)                                                      \
-         populate(layer##q, par, q, split, drop);                             \
+         populate(layer##q, par, q, split, drop, smear);                      \
 
          PIXELS1P(POPULATE_HITS);
 
@@ -209,8 +209,8 @@ int transmute_trees(const char* input,
          std::vector<rechit> layer1v(layer1);
          std::vector<rechit> layer2v(layer2);
 
-         project(layer1v, vx, vy, 0, smear);
-         project(layer2v, vx, vy, 0, smear);
+         project(layer1v, vx, vy, 0);
+         project(layer2v, vx, vy, 0);
 
          int rgn = 0; for (; hftsum > hfofficial[vtxrgns[rgn]]; ++rgn);
          vz = reco_vertex(layer1v, layer2v, vtxpar[rgn][0], vtxpar[rgn][1]);
@@ -240,7 +240,7 @@ int transmute_trees(const char* input,
       }
 
 #define PROJECT_HITS(q)                                                       \
-      project(layer##q, vx, vy, vz, smear);                                   \
+      project(layer##q, vx, vy, vz);                                          \
 
       PIXELS1P(PROJECT_HITS);
 
