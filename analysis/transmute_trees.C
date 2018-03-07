@@ -239,8 +239,13 @@ int transmute_trees(const char* input,
          event_weight = event_weight * data_pdf / mc_pdf;
       }
 
+      auto sorteta = [](const rechit& a, const rechit& b) -> bool {
+         return a.eta < b.eta;
+      };
+
 #define PROJECT_HITS(q)                                                       \
       project(layer##q, vx, vy, vz);                                          \
+      std::sort(layer##q.begin(), layer##q.end(), sorteta);                   \
 
       PIXELS1P(PROJECT_HITS);
 

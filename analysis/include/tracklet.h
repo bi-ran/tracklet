@@ -153,23 +153,15 @@ float reco_vertex(std::vector<rechit>& l1, std::vector<rechit>& l2, float dphi, 
 }
 
 void reco_tracklets(std::vector<Tracklet>& tracklets, std::vector<rechit>& l1, std::vector<rechit>& l2) {
-   std::vector<Candidate> candidates;
-   candidates.reserve(l1.size());
-
    std::vector<uint8_t> l1flags(l1.size(), 0);
    std::vector<uint8_t> l2flags(l2.size(), 0);
 
    __builtin_prefetch(&l1flags[0], 1, 3);
    __builtin_prefetch(&l2flags[0], 1, 3);
 
-   auto sorteta = [](const rechit& a, const rechit& b) -> bool {
-      return a.eta < b.eta;
-   };
-
-   std::sort(l1.begin(), l1.end(), sorteta);
-   std::sort(l2.begin(), l2.end(), sorteta);
-
    for (uint32_t l = 0; l < niter; ++l) {
+      std::vector<Candidate> candidates;
+
       uint32_t bmin = 0; uint32_t bmax = 0;
       for (uint32_t a = 0; a < l1.size(); ++a) {
          if (l1flags[a]) continue;
@@ -203,8 +195,6 @@ void reco_tracklets(std::vector<Tracklet>& tracklets, std::vector<rechit>& l1, s
             ++l2flags[h2];
          }
       }
-
-      candidates.clear();
    }
 }
 
