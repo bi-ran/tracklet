@@ -219,6 +219,13 @@ int transmute_trees(const char* input,
 
       TRKLTS2P(SET_VERTEX);
 
+      if (!reweight && sample != -1) {
+#define CLEAR_HITS(q)                                                         \
+         std::vector<rechit>().swap(layer##q);                                \
+
+         PIXELS1P(CLEAR_HITS);
+      }
+
       float event_weight = 1.;
       if (reweight) {
          float event_vz = (vz < -98 ? par.vz[0] : vz) + vz_shift;
