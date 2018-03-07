@@ -2,6 +2,7 @@
 #define TRACKLET_H
 
 #include <algorithm>
+#include <array>
 
 #include "rechit.h"
 #include "structs.h"
@@ -32,9 +33,26 @@ struct Vertex {
    float sigma2;
 };
 
-static const int niter = 5;
-static const float limits[niter] = {0.16, 0.4, 1, 2, 10};
-static const float sqlimits[niter] = {0.0256, 0.16, 1, 4, 100};
+template<int... I>
+struct pack {};
+
+template<int N, int... I>
+struct expand : expand<N-1, N-1, I...> {};
+
+template<int... I>
+struct expand<0, I...> : pack<I...> {};
+
+static constexpr int niter = 5;
+static constexpr std::array<float, niter> limits = {0.16, 0.4, 1, 2, 10};
+
+constexpr float sq(int x) { return limits[x] * limits[x]; };
+
+template<int... I>
+constexpr auto square_limits(pack<I...>) -> std::array<float, niter> {
+   return {{ sq(I)... }};
+}
+
+static constexpr std::array<float, niter> sqlimits = square_limits(expand<niter>{});
 
 struct Candidate {
    Candidate(uint32_t index, float dr2) :
