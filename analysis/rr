@@ -37,28 +37,21 @@ done
 
 set -- "${ARGS[@]}"
 
-make reap_results || exit 1
-
-[[ $# -lt 3 ]] && { helpmsg; ./reap_results; exit 1; }
-
-make merge_monads || exit 1
-make collect_cents || exit 1
-
-GROUP=${GROUP:-"def"}
-JOBS=${JOBS:-"+0"}
+[[ $# -lt 3 ]] && { helpmsg; exit 1; }
 
 FLAGS="--linebuffer"
+GROUP=${GROUP:-"def"}
+JOBS=${JOBS:-"+0"}
+NICE=${NICE:-10}
 
-BTYPES=(12 13 14 23 24 34)
-FTYPES=(15 16 17)
-
+BTYPES=(12 13 14 23 24 34); FTYPES=(15 16 17)
 TYPES=( "${BTYPES[@]}" )
 [ -n "$BPIX" ] || TYPES+=( "${FTYPES[@]}" )
 
-[ -n "$NICE" ] && PREFIX+="nice -n $NICE "
-
 EXEC=eval
 [ -n "$FILE" ] && { EXEC=echo; exec &>> $FILE; }
+
+$EXEC 'make reap_results merge_monads collect_cents || exit 1';
 
 if [[ $3 -gt 0 ]]; then
     for (( CMAX=20; CMAX>=$3; CMAX-=$3 )); do
@@ -66,7 +59,7 @@ if [[ $3 -gt 0 ]]; then
 
         [ -n "$INCL" ] || CTAG=.a.$CMIN.$CMAX
         for TYPE in ${TYPES[@]}; do
-            CMD='$PREFIX sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
+            CMD='nice -n $NICE sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
                     "./reap_results $TYPE $1 $2.a.$CMIN.$CMAX \
                     $CMIN $CMAX $4$CTAG $5 ${@:6} \
                     > notes/log-rr-$2.a.$CMIN.$CMAX-$TYPE.log"'
@@ -87,7 +80,7 @@ elif [[ $3 -eq 0 ]]; then
 
     [ -n "$INCL" ] || CTAG=.s.$4.$5
     for TYPE in ${TYPES[@]}; do
-        CMD='$PREFIX sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
+        CMD='nice -n $NICE sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
                 "./reap_results $TYPE $1 $2.s.$4.$5 \
                 $4 $5 $6$CTAG $7 ${@:8} \
                 > notes/log-rr-$2.s.$4.$5-$TYPE.log"'
@@ -98,9 +91,8 @@ elif [[ $3 -eq 0 ]]; then
     $EXEC ./merge_monads $2.s.$4.$5
 else
     for TYPE in ${TYPES[@]}; do
-        CMD='$PREFIX sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
-                "./reap_results $TYPE ${@:1:2} \
-                0 20 ${@:4} \
+        CMD='nice -n $NICE sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
+                "./reap_results $TYPE ${@:1:2} 0 20 ${@:4} \
                 > notes/log-rr-$2-$TYPE.log"'
         $EXEC `eval echo $CMD`
     done
@@ -111,8 +103,9 @@ fi
 
 [ -n "$FILE" ] && {
     sort $FILE -u -o $FILE.tmp;
-    grep reap_results $FILE.tmp > $FILE;
-    grep wait $FILE.tmp >> $FILE;
-    grep merge_monads $FILE.tmp >> $FILE;
+    grep make $FILE.tmp > $FILE;
+    grep reap_results $FILE.tmp | grep -v make >> $FILE;
+    grep -- '--wait' $FILE.tmp >> $FILE;
+    grep merge_monads $FILE.tmp | grep -v make >> $FILE;
     rm $FILE.tmp
 }

@@ -38,32 +38,30 @@ set -- "${ARGS[@]}"
 
 make transmute_trees || exit 1
 
-[ $# -lt 3 ] && { helpmsg; ./transmute_trees; exit 1; }
+[ $# -lt 3 ] && { helpmsg; exit 1; }
 
 ENTRIES=$1
 [ $ENTRIES -le 0 ] && {
     echo -e "error: negative total entries: $ENTRIES\n"; exit 1; }
 
-[ $dryrun ] && SEMFLAGS="--dryrun"
-
 BEGIN=${BEGIN:-0}
-GROUP=${GROUP:-"tt"}
+FLAGS="--linebuffer"
+[ $dryrun ] && FLAGS+=" --dryrun"
+GROUP=${GROUP:-"def"}
 JOBS=${JOBS:-"-4"}
 NICE=${NICE:-10}
 SIZE=${SIZE:-1024}
-
 SLICES=$(( ($ENTRIES - 1) / $SIZE ))
 
 BASE=$(basename $3 .root)
 for SLICE in $(seq $BEGIN $SLICES ); do
-    sem -j$JOBS --id sem-grp-$GROUP --linebuffer $SEMFLAGS \
-            "nice -n $NICE \
-            ./transmute_trees $2 ${3}.$SLICE \
+    nice -n $NICE sem -j$JOBS --id sem-grp-tt-$GROUP $FLAGS \
+            "./transmute_trees $2 ${3}.$SLICE \
             $(( $SLICE * $SIZE )) $(( ($SLICE + 1) * $SIZE )) ${@:4} \
             &> notes/log-tt-$BASE-$ENTRIES-${SLICE}.log; \
             echo \"   done: part $SLICE\""
 done
-sem --wait --id sem-grp-$GROUP
+sem --wait --id sem-grp-tt-$GROUP
 
 [ $dryrun ] && exit 0
 
@@ -71,6 +69,6 @@ TSIZE=$(du -c ${3}.* | grep total | awk '{print $1}')
 if [ $TSIZE -lt 90000000 ]; then
     hadd $3 ${3}.*
 else
-    ls ${3}.* > tt-merge-$BASE-$(date +"%F-%H_%M_%S");
-    ./keep/ladd tt-merge-$BASE-$(date +"%F-%H_%M_%S") $3;
+    ls ${3}.* > notes/tt-merge-$BASE-$(date +"%F-%H_%M_%S");
+    ./keep/ladd notes/tt-merge-$BASE-$(date +"%F-%H_%M_%S") $3;
 fi
