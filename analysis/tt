@@ -4,6 +4,7 @@ helpmsg() {
     echo -e 'usage: ./tt [total entries] ($@)\n'
     echo -e '   -b, --begin     first job index'
     echo -e '   -d, --dryrun    debug commands without execution'
+    echo -e '   -f, --file      output commands'
     echo -e '   -g, --group     group identifier'
     echo -e '   -h, --help      show (this) help message'
     echo -e '   -j, --jobs      jobs relative to number of cores'
@@ -18,6 +19,8 @@ while [ $# -gt 0 ]; do
         -b)             BEGIN="$2"; shift 2 ;;
         --begin=*)      BEGIN="${1#*=}"; shift ;;
         -d|--dryrun)    dryrun=1; shift ;;
+        -f)             FILE="$2"; shift 2 ;;
+        --file=*)       FILE="${1#*=}"; shift ;;
         -g)             GROUP="$2"; shift 2 ;;
         --group=*)      GROUP="${1#*=}"; shift ;;
         -h|--help)      helpmsg; exit ;;
@@ -36,8 +39,6 @@ done
 
 set -- "${ARGS[@]}"
 
-make transmute_trees || exit 1
-
 [ $# -lt 3 ] && { helpmsg; exit 1; }
 
 ENTRIES=$1
@@ -53,22 +54,34 @@ NICE=${NICE:-10}
 SIZE=${SIZE:-1024}
 SLICES=$(( ($ENTRIES - 1) / $SIZE ))
 
+EXEC=eval
+[ -n "$FILE" ] && { EXEC=echo; exec &>> $FILE; }
+
+$EXEC 'make transmute_trees || exit 1';
+
 BASE=$(basename $3 .root)
 for SLICE in $(seq $BEGIN $SLICES ); do
-    nice -n $NICE sem -j$JOBS --id sem-grp-tt-$GROUP $FLAGS \
-            "./transmute_trees $2 ${3}.$SLICE \
-            $(( $SLICE * $SIZE )) $(( ($SLICE + 1) * $SIZE )) ${@:4} \
-            &> notes/log-tt-$BASE-$ENTRIES-${SLICE}.log; \
-            echo \"   done: part $SLICE\""
+    START=$(( $SLICE * $SIZE ))
+    END=$(( ($SLICE + 1) * $SIZE ))
+    CMD='nice -n $NICE sem -j$JOBS --id sem-grp-tt-$GROUP $FLAGS \
+            "./transmute_trees $2 ${3}.$SLICE $START $END ${@:4} \
+            &> notes/log-tt-$BASE-$ENTRIES-${SLICE}.log"'
+    $EXEC `eval echo $CMD`
 done
-sem --wait --id sem-grp-tt-$GROUP
+$EXEC sem --wait --id sem-grp-tt-$GROUP
 
 [ $dryrun ] && exit 0
 
-TSIZE=$(du -c ${3}.* | grep total | awk '{print $1}')
-if [ $TSIZE -lt 90000000 ]; then
-    hadd $3 ${3}.*
-else
-    ls ${3}.* > notes/tt-merge-$BASE-$(date +"%F-%H_%M_%S");
-    ./keep/ladd notes/tt-merge-$BASE-$(date +"%F-%H_%M_%S") $3;
-fi
+TIMESTAMP=$(date +"%F-%H_%M_%S")
+$EXEC `eval echo 'ls ${3}."*" ">" notes/tt-merge-$BASE-$TIMESTAMP'`;
+$EXEC `eval echo ./keep/ladd notes/tt-merge-$BASE-$TIMESTAMP $3`;
+
+[ -n "$FILE" ] && {
+    sort $FILE -u -o $FILE.tmp;
+    grep make $FILE.tmp > $FILE;
+    grep transmute_trees $FILE.tmp | grep -v make >> $FILE;
+    grep -- '--wait' $FILE.tmp >> $FILE;
+    grep ls $FILE.tmp >> $FILE;
+    grep ladd $FILE.tmp >> $FILE;
+    rm $FILE.tmp
+}
