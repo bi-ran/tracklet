@@ -187,6 +187,10 @@ static const std::vector<varinfo_t> options_tracklet_1d = {
       {{100, -15, 15}},
       {600, 600}, 0x10, "(1)", ""
    }, {
+      "vz-unw", {"v_{z}"}, {"vz[1]"},
+      {{100, -15, 15}},
+      {600, 600}, 0x110, "(1)", ""
+   }, {
       "ntracklet", {"number of tracklets"}, {"ntracklet"},
       {{100, 0, 10000}},
       {600, 600}, 0x01, "(1)", ""
@@ -205,7 +209,7 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
 
    TCut fsel = OS(sel);
    fsel = fsel && "abs(vz[1])<15 && hlt";
-   fsel *= "weight";
+   if (!(OPT(flags) & 0x100)) { fsel *= "weight"; }
 
    const char* idstr = OS(id);
    const char* varstr = OS(var[0]);
