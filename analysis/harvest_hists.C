@@ -8,6 +8,7 @@
 #include "TCanvas.h"
 #include "TPad.h"
 #include "TLegend.h"
+#include "TLine.h"
 
 #include <vector>
 #include <string>
@@ -289,6 +290,9 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
          hr##q##w[j]->SetYTitle("ratio");                                     \
          hr##q##w[j]->Draw("p e same");                                       \
       }                                                                       \
+                                                                              \
+      TLine* line1 = new TLine(OPT(bins[0][1]), 1, OPT(bins[0][2]), 1);       \
+      line1->Draw();                                                          \
    }                                                                          \
                                                                               \
    c##q##w->SaveAs(Form("figs/tracklet/tracklet-%s-t" #q #w "-%s.png",        \
