@@ -26,7 +26,9 @@ void populate(std::vector<rechit>& hits, PixelEvent& par, int layer,
             if (drop && gRandom->Rndm() < drop) {                             \
                continue;                                                      \
             } else if (split && gRandom->Rndm() < split) {                    \
-               hits.emplace_back(par.eta##q[i], par.phi##q[i], par.r##q[i]);  \
+               hits.emplace_back(par.eta##q[i] + gRandom->Gaus(0, 0.006),     \
+                                 par.phi##q[i] + gRandom->Gaus(0, 0.006),     \
+                                 par.r##q[i]);                                \
             } else if (smear) {                                               \
                par.eta##q[i] += gRandom->Gaus(0, 0.000177);                   \
                par.phi##q[i] += gRandom->Gaus(0, 0.000177);                   \
