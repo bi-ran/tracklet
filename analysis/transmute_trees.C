@@ -29,10 +29,6 @@ static const float vzpar[NSAMPLES][2] = {
    {0.291463, 4.58802}     /* epos */
 };
 
-#define NREGIONS  2
-static const int vtxrgns[NREGIONS] = {6, 20};
-static const float vtxpar[NREGIONS][2] = {{0.09, 0.12}, {0.03, 0.09}};
-
 #define BKG_ARG(q)   , float add_bkg_l##q = 0
 #define BKG_ARGV(q)  , atof(argv[11 + q])
 
@@ -212,8 +208,7 @@ int transmute_trees(const char* input,
          project(layer1v, vx, vy, 0);
          project(layer2v, vx, vy, 0);
 
-         int rgn = 0; for (; hftsum > hfofficial[vtxrgns[rgn]]; ++rgn);
-         vz = reco_vertex(layer1v, layer2v, vtxpar[rgn][0], vtxpar[rgn][1]);
+         vz = reco_vertex(layer1v, layer2v, 0.09, 0.12);
       }
 
 #define SET_VERTEX(q, w)                                                      \
