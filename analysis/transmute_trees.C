@@ -158,6 +158,11 @@ int transmute_trees(const char* input,
          if (event % 1000 == 0)
             printf("   run: %i, entry: %lu\n", par.run, event);
 
+#ifdef  CENTRALITY
+         if (hfbin(par.hft) != CENTRALITY)
+            continue;
+#endif  /* CENTRALITY */
+
 #define SAVE_VERTICES(q, w)                                                   \
          trkltdata##q##w.nv = par.nv + 1;                                     \
          trkltdata##q##w.vx[0] = par.vx[0];                                   \
@@ -195,6 +200,10 @@ int transmute_trees(const char* input,
          nhfpsum += par.nhfp; nhfnsum += par.nhfn;
          hftsum += par.hft;
       }
+
+#ifdef  CENTRALITY
+      if (hftsum == 0) { continue; }
+#endif  /* CENTRALITY */
 
       if (layer1.size() > MAXH)
          continue;
