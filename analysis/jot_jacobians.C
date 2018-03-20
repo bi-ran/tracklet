@@ -58,10 +58,10 @@ int jot_jacobians(const char* config, const char* label) {
 
       hh[i]->Draw("hist e x0");
       hy[i]->Draw("hist e x0 same");
-      c1->SaveAs(Form("figs/corrections/jacobian-%s-eta-y.png", tags[i].c_str()));
+      c1->SaveAs(Form("figs/corrections/jacobian-%s-eta-y-%s.png", tags[i].c_str(), label));
 
       hj[i]->Draw("p e x0");
-      c1->SaveAs(Form("figs/corrections/jacobian-%s.png", tags[i].c_str()));
+      c1->SaveAs(Form("figs/corrections/jacobian-%s-%s.png", tags[i].c_str(), label));
 
       delete c1;
    }
@@ -94,7 +94,7 @@ int jot_jacobians(const char* config, const char* label) {
       l2->AddEntry(hj[i], legends[i].c_str(), "p");
    }
    l2->Draw();
-   c2->SaveAs("figs/corrections/jacobian.all.png");
+   c2->SaveAs(Form("figs/corrections/jacobian.all-%s.png", label));
 
    TCanvas* c3 = new TCanvas("c3", "", 600, 600);
    TLegend* l3 = new TLegend(0.5, 0.72, 0.84, 0.9);
@@ -104,7 +104,7 @@ int jot_jacobians(const char* config, const char* label) {
       l3->AddEntry(hjr[i], legends[i].c_str(), "p");
    }
    l3->Draw();
-   c3->SaveAs("figs/corrections/jacobian.all-var.png");
+   c3->SaveAs(Form("figs/corrections/jacobian.all-var-%s.png", label));
 
    fout->Write("", TObject::kOverwrite);
 
