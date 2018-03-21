@@ -468,6 +468,12 @@ int reap_results(int type,
       }
    }
 
+   /* 2d corrected, raw tracklets                                             */
+   TH2D* h2WEcorr = (TH2D*)h3WEcorr->Project3D("zx");
+   h2WEcorr->SetName("h2WEcorr");
+   TH2D* h2WEraw = (TH2D*)h3WEraw->Project3D("zx");
+   h2WEraw->SetName("h2WEraw");
+
    /* draw acceptance                                                         */
    TCanvas* caccep = new TCanvas("caccep", "", CANVASW, CANVASH);
    h2amapxev->Draw("colz");
@@ -475,9 +481,8 @@ int reap_results(int type,
 
    /* draw alpha                                                              */
    TCanvas* calpha = new TCanvas("calpha", "", CANVASW, CANVASH);
-   TH2D* h2alphafinal = (TH2D*)h3alphafinal->Project3D("zx");
-   h2alphafinal->SetName("h2alphafinal");
-   h2alphafinal->Scale(1. / nmult);
+   TH2D* h2alphafinal = (TH2D*)h2WEcorr->Clone("h2alphafinal");
+   h2alphafinal->Divide(h2WEraw);
    htitle(h2alphafinal, ";#eta;v_{z}");
    h2alphafinal->Draw("colz");
    calpha->SaveAs(Form("figs/corrections/alpha-%s-%i.png", label, type));
