@@ -130,15 +130,13 @@ float reco_vertex(std::vector<rechit>& l1, std::vector<rechit>& l2, float dphi, 
 
          uint32_t index = cluster.index;
 
-         float vz = 0;
-         for (uint32_t y = 0; y < nz; ++y)
+         float vz = 0; float vz2 = 0; float sigma2 = 0;
+         for (uint32_t y = 0; y < nz; ++y) {
             vz += vertices[index + y];
+            vz2 += vertices[index + y] * vertices[index + y];
+         }
          vz /= nz;
-
-         float sigma2 = 0;
-         for (uint32_t y = 0; y < nz; ++y)
-            sigma2 += (vertices[index + y] - vz) * (vertices[index + y] - vz);
-         sigma2 /= nz;
+         sigma2 = vz2 / nz - (vz * vz);
 
          candidates.emplace_back(vz, sigma2);
       }
