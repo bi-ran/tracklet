@@ -10,6 +10,7 @@ helpmsg() {
     echo -e '   -h, --help        show (this) help message'
     echo -e '   -i, --incl        apply inclusive corrections'
     echo -e '   -j, --jobs        jobs relative to number of cores'
+    echo -e '   -m, --mm          mm option'
     echo -e '   -n, --nice        nice\n'
 }
 
@@ -26,6 +27,8 @@ while [ $# -gt 0 ]; do
         -i|--incl)      INCL=1; shift ;;
         -j)             JOBS="$2"; shift 2 ;;
         --jobs=*)       JOBS="${1#*=}"; shift ;;
+        -m)             MMOPT="$2"; shift 2 ;;
+        --mm=*)         MMOPT="${1#*=}"; shift ;;
         -n)             NICE="$2"; shift 2 ;;
         --nice=*)       NICE="${1#*=}"; shift ;;
         -*|--*)         [[ $1 =~ ^-?[0-9]+$ ]] && \
@@ -71,7 +74,7 @@ if [[ $3 -gt 0 ]]; then
     for (( CMAX=20; CMAX>=$3; CMAX-=$3 )); do
         CMIN=$(( CMAX - $3 ))
 
-        $EXEC ./merge_monads $2.a.$CMIN.$CMAX
+        $EXEC ./merge_monads $2.a.$CMIN.$CMAX $MMOPT
     done
 
     $EXEC ./collect_cents $2.a $3
@@ -88,7 +91,7 @@ elif [[ $3 -eq 0 ]]; then
     done
     $EXEC sem --id sem-grp-rr-$GROUP --wait
 
-    $EXEC ./merge_monads $2.s.$4.$5
+    $EXEC ./merge_monads $2.s.$4.$5 $MMOPT
 else
     for TYPE in ${TYPES[@]}; do
         CMD='nice -n $NICE sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
@@ -98,7 +101,7 @@ else
     done
     $EXEC sem --id sem-grp-rr-$GROUP --wait
 
-    $EXEC ./merge_monads $2
+    $EXEC ./merge_monads $2 $MMOPT
 fi
 
 [ -n "$FILE" ] && {
