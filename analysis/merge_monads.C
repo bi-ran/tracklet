@@ -1,5 +1,6 @@
 #include "TFile.h"
 #include "TCanvas.h"
+#include "TPad.h"
 #include "TLegend.h"
 #include "TH1F.h"
 #include "TLine.h"
@@ -19,20 +20,8 @@
    BTRKLT3P(p, EXPAND)        \
    FTRKLT3P(p, EXPAND)        \
 
-#define GEN2P(p, EXPAND)      \
-   EXPAND(p, dpmjet)          \
-   EXPAND(p, epos)            \
-   EXPAND(p, hydjet)          \
-   EXPAND(p, amptnm)          \
-   EXPAND(p, amptsm)          \
-
 #define COUNT(q, w)  + 1
 #define NTRKLT2P  (0 TRKLTS2P(COUNT))
-
-#define COLOUR_DPMJET   TColor::GetColor("#2ecc71")
-#define COLOUR_EPOS     TColor::GetColor("#ffcc00")
-#define COLOUR_HYDJET   TColor::GetColor("#3498db")
-#define COLOUR_AMPT     TColor::GetColor("#ec5f67")
 
 #define INDEX12 0
 #define INDEX13 1
@@ -60,26 +49,41 @@ static const int good[NTRKLT2P][neta] = {
 };
 
 typedef struct gen_t {
+   const char* hist;
    const char* label;
    int lstyle; int lcolour;
 } gen_t;
 
-static const std::map<std::string, gen_t> geninfo = {
-   {"dpmjet", {"DPMJET-III", 1, COLOUR_DPMJET}},
-   {"epos", {"EPOS LHC", 1, COLOUR_EPOS}},
-   {"hydjet", {"HYDJET", 1, COLOUR_HYDJET}},
-   {"amptnm", {"AMPT (w/o string melting)", 7, COLOUR_AMPT}},
-   {"amptsm", {"AMPT (w. string melting)", 1, COLOUR_AMPT}}
+static const std::vector<gen_t> geninfo = {
+   {"hdpmjet", "DPMJET-III", 1, TColor::GetColor("#2ecc71")},
+   {"hepos", "EPOS LHC", 1, TColor::GetColor("#ffcc00")},
+   {"hhydjet", "HYDJET", 1, TColor::GetColor("#3498db")},
+   {"hamptnm", "AMPT (w/o string melting)", 7, TColor::GetColor("#ec5f67")},
+   {"hamptsm", "AMPT (w. string melting)", 1, TColor::GetColor("#ec5f67")}
 };
 
-int merge_monads(const char* label) {
+static const std::vector<const char*> datalabels = {
+   "", "", "", "", "", "averaged", "symmetrised"
+};
+
+int merge_monads(const char* label, uint32_t opts) {
    TFile* fgen = new TFile("data/gen.root");
 
-#define OPENGEN(f, g)                                                         \
-   TH1F* h##g = (TH1F*)f->Get("h" #g)->Clone();                               \
-   gformat(h##g, geninfo.at(#g).lstyle, geninfo.at(#g).lcolour);              \
+   std::vector<TH1F*> hgen;
+   for (const auto& gen : geninfo) {
+      hgen.push_back((TH1F*)fgen->Get(gen.hist));
+      gformat(hgen.back(), gen.lstyle, gen.lcolour);
+   }
 
-   GEN2P(fgen, OPENGEN)
+   int denom = -1;
+   std::vector<uint32_t> opt;
+   for (std::size_t i=0; i<geninfo.size()+2; ++i) {
+      if (opts & 0x2) { denom = opt.size(); }
+      opt.push_back(opts & 0x1); opts >>= 4;
+   }
+
+#define INCLUDE_ETA_BINS
+#include "include/bins.h"
 
 #define OPEN(q, w)                                                            \
    TFile* f##q##w = new TFile(Form("output/correction-%s-" #q #w ".root",     \
@@ -88,16 +92,11 @@ int merge_monads(const char* label) {
    if (f##q##w && f##q##w->IsOpen())                                          \
       h##q##w = (TH1F*)f##q##w->Get("h1WEfinal")->Clone("h" #q #w);           \
    else                                                                       \
-      h##q##w = new TH1F("hnull" #q #w, "", neta, etamin, etamax);            \
-
-   TRKLTS2P(OPEN)
+      h##q##w = new TH1F("hnull" #q #w, "", neta, etab);                      \
 
 #define STYLE(q, w)                                                           \
    htitle(h##q##w, ";#eta;dN/d#eta");                                         \
    hstyle(h##q##w, markers[INDEX##q##w], colours[INDEX##q##w]);               \
-
-   assert(NTRKLT2P < ncolours + 1);
-   TRKLTS2P(STYLE)
 
 #define ZERO(q, w)                                                            \
    for (int j=1; j<=h##q##w->GetNbinsX(); ++j) {                              \
@@ -107,6 +106,9 @@ int merge_monads(const char* label) {
       }                                                                       \
    }                                                                          \
 
+   TRKLTS2P(OPEN)
+   assert(NTRKLT2P < ncolours + 1);
+   TRKLTS2P(STYLE)
    TRKLTS2P(ZERO)
 
    TH1F* hframe = (TH1F*)f12->Get("hframe")->Clone();
@@ -115,63 +117,9 @@ int merge_monads(const char* label) {
 
    TFile* f = new TFile(Form("output/merged-%s.root", label), "recreate");
 
-#define DRAW(q, w)                                                            \
-   h##q##w->Draw("same");                                                     \
-
-#define ADDENTRY(l, q, w)                                                     \
-   l->AddEntry(h##q##w, "layers " #q "+" #w, "p");                            \
-
-#define DRAWGEN(z, g)                                                         \
-   h##g->Draw("c hist same");                                                 \
-
-#define ADDENTRYGEN(l, g)                                                     \
-   l->AddEntry(h##g, geninfo.at(#g).label, "l");                              \
-
-   TCanvas* c1 = new TCanvas("c1", "", 600, 600);
-
-   hframe->Draw();
-   GEN2P(, DRAWGEN);
-   TRKLTS2P(DRAW)
-
-   TLegend* l1 = new TLegend(0.36, 0.12, 0.64, 0.36);
-   lstyle(l1, 43, 16);
-   GEN2P(l1, ADDENTRYGEN)
-   TRKLTS3P(l1, ADDENTRY)
-   l1->Draw();
-
-   c1->SaveAs(Form("figs/merged/merged-%s-all.png", label));
-
-   TCanvas* c1b = new TCanvas("c1b", "", 600, 600);
-
-   hframe->Draw();
-   BTRKLT2P(DRAW)
-
-   TLegend* l1b = new TLegend(0.36, 0.12, 0.64, 0.36);
-   lstyle(l1b, 43, 16);
-   BTRKLT3P(l1b, ADDENTRY)
-   l1b->Draw();
-
-   c1b->SaveAs(Form("figs/merged/merged-%s-bpix.png", label));
-
-   TCanvas* c1f = new TCanvas("c1f", "", 600, 600);
-
-   hframe->Draw();
-   FTRKLT2P(DRAW)
-
-   TLegend* l1f = new TLegend(0.36, 0.12, 0.64, 0.36);
-   lstyle(l1f, 43, 16);
-   FTRKLT3P(l1f, ADDENTRY)
-   l1f->Draw();
-
-   c1f->SaveAs(Form("figs/merged/merged-%s-fpix.png", label));
-
-   TCanvas* c2 = new TCanvas("c2", "", 600, 600);
-
    TH1F* havg = (TH1F*)h12->Clone("havg");
    for (int i=1; i<=havg->GetNbinsX(); i++) {
-      float avg = 0;
-      float avg_err = 0;
-      int nsum = 0;
+      float avg = 0; float avg_err = 0; int nsum = 0;
 
 #define AVERAGE(q, w)                                                         \
       if (good[INDEX##q##w][i - 1] && h##q##w->GetBinContent(i) != 0) {       \
@@ -182,52 +130,17 @@ int merge_monads(const char* label) {
 
       TRKLTS2P(AVERAGE)
 
-      if (nsum) {
-         avg /= nsum;
-         avg_err = sqrt(avg_err) / nsum;
-      }
-
+      if (nsum) { avg /= nsum; avg_err = sqrt(avg_err) / nsum; }
       havg->SetBinContent(i, avg);
       havg->SetBinError(i, avg_err);
    }
 
-   hframe->Draw();
-   GEN2P(, DRAWGEN)
-   havg->Draw("same");
-
-   TLegend* l2 = new TLegend(0.36, 0.16, 0.64, 0.32);
-   lstyle(l2, 43, 16);
-   l2->AddEntry(havg, "XeXe 5.442 TeV", "p");
-   GEN2P(l2, ADDENTRYGEN)
-   l2->Draw();
-
-   c2->SaveAs(Form("figs/merged/merged-%s-avg.png", label));
-
-   TCanvas* c3 = new TCanvas("c3", "", 600, 600);
-
 #define RATIO(q, w)                                                           \
-   TH1D* hratio##q##w = (TH1D*)h##q##w->Clone("hratio" #q #w);                \
-   hratio##q##w->Divide(havg);                                                \
-   hformat(hratio##q##w, 0.8f, 1.2f, ";#eta;ratio (w.r.t. average)");         \
-   hratio##q##w->Draw("same");                                                \
+   TH1D* hr##q##w = (TH1D*)h##q##w->Clone("hr" #q #w);                        \
+   hr##q##w->Divide(havg);                                                    \
+   hformat(hr##q##w, 0.8f, 1.2f, ";#eta;ratio (w.r.t. average)");             \
 
    TRKLTS2P(RATIO)
-
-   TLine* plusp03 = new TLine(-3, 1.03, 3, 1.03);
-   TLine* minusp03 = new TLine(-3, 0.97, 3, 0.97);
-   plusp03->SetLineStyle(7);
-   minusp03->SetLineStyle(7);
-   plusp03->Draw();
-   minusp03->Draw();
-
-   TLegend* l3 = new TLegend(0.4, 0.16, 0.64, 0.32);
-   lstyle(l3, 43, 16);
-   TRKLTS3P(l3, ADDENTRY)
-   l3->Draw();
-
-   c3->SaveAs(Form("figs/merged/merged-%s-ratio.png", label));
-
-   TCanvas* c4 = new TCanvas("c4", "", 600, 600);
 
    TH1F* hsym = (TH1F*)havg->Clone("hsym");
    int nbins = hsym->GetNbinsX();
@@ -241,24 +154,100 @@ int merge_monads(const char* label) {
       }
    }
 
-   hframe->Draw();
-   GEN2P(, DRAWGEN)
-   hsym->Draw("same");
+   hgen.push_back(havg);
+   hgen.push_back(hsym);
 
+#define GENRATIO(q, w)                                                        \
+   TH1D* hgr##q##w = (TH1D*)h##q##w->Clone("hgr" #q #w);                      \
+   if (denom > -1) {                                                          \
+      hgr##q##w->Divide(hgen[denom]);                                         \
+      rformat(hgr##q##w, 0.95, 1.05);                                         \
+   }                                                                          \
+
+   TRKLTS2P(GENRATIO)
+
+#define DRAW(q, w) h##q##w->Draw("same");
+#define DRAWRATIO(q, w) hr##q##w->Draw("same");
+#define DRAWGENRATIO(q, w) hgr##q##w->Draw("same");
+#define ADDENTRY(l, q, w) l->AddEntry(h##q##w, "layers " #q "+" #w, "p");
+
+#define DRAWGEN                                                               \
+   { std::size_t i = 0; for (; i<geninfo.size(); ++i)                         \
+      if (opt[i]) hgen[i]->Draw("hist c same");                               \
+   for (; i<opt.size(); ++i)                                                  \
+      if (opt[i]) hgen[i]->Draw("same"); }                                    \
+
+#define ADDGENENTRY(l)                                                        \
+   { std::size_t i = 0; for (; i<geninfo.size(); ++i)                         \
+      if (opt[i]) l->AddEntry(hgen[i], geninfo[i].label, "l");                \
+   for (; i<opt.size(); ++i)                                                  \
+      if (opt[i]) l->AddEntry(hgen[i], datalabels[i], "pl"); }                \
+
+   int cheight = denom > -1 ? 600 * 1.2 : 600;
+   TCanvas* c1 = new TCanvas("c1", "", 600, cheight);
+   if (denom != -1) {
+      TPad* t1 = new TPad("t1", "", 0, 0.25, 1, 1);
+      t1->SetTopMargin(0.11111); t1->SetBottomMargin(0);
+      t1->Draw(); t1->SetNumber(1);
+      TPad* t2 = new TPad("t2", "", 0, 0, 1, 0.25);
+      t2->SetTopMargin(0); t2->SetBottomMargin(0.32);
+      t2->Draw(); t2->SetNumber(2);
+      c1->cd(1);
+
+      hframe->GetXaxis()->SetLabelOffset(99);
+      hframe->GetXaxis()->SetTitleOffset(99);
+   }
+
+   hframe->Draw(); DRAWGEN TRKLTS2P(DRAW)
+   TLegend* l1 = new TLegend(0.36, 0.12, 0.64, 0.36);
+   ADDGENENTRY(l1) TRKLTS3P(l1, ADDENTRY)
+   lstyle(l1, 43, 16); l1->Draw();
+   if (denom != -1) { c1->cd(2); TRKLTS2P(DRAWGENRATIO) }
+   c1->SaveAs(Form("figs/merged/merged-%s-all.png", label));
+
+   TCanvas* c1b = new TCanvas("c1b", "", 600, 600);
+   hframe->Draw(); DRAWGEN BTRKLT2P(DRAW)
+   TLegend* l1b = new TLegend(0.36, 0.12, 0.64, 0.36);
+   ADDGENENTRY(l1b) BTRKLT3P(l1b, ADDENTRY)
+   lstyle(l1b, 43, 16); l1b->Draw();
+   c1b->SaveAs(Form("figs/merged/merged-%s-bpix.png", label));
+
+   TCanvas* c1f = new TCanvas("c1f", "", 600, 600);
+   hframe->Draw(); DRAWGEN FTRKLT2P(DRAW)
+   TLegend* l1f = new TLegend(0.36, 0.12, 0.64, 0.36);
+   ADDGENENTRY(l1f) FTRKLT3P(l1f, ADDENTRY)
+   lstyle(l1f, 43, 16); l1f->Draw();
+   c1f->SaveAs(Form("figs/merged/merged-%s-fpix.png", label));
+
+   TCanvas* c2 = new TCanvas("c2", "", 600, 600);
+   hframe->Draw(); DRAWGEN havg->Draw("same");
+   TLegend* l2 = new TLegend(0.36, 0.16, 0.64, 0.32);
+   l2->AddEntry(havg, "XeXe 5.442 TeV", "p");
+   ADDGENENTRY(l2) lstyle(l2, 43, 16); l2->Draw();
+   c2->SaveAs(Form("figs/merged/merged-%s-avg.png", label));
+
+   TCanvas* c3 = new TCanvas("c3", "", 600, 600);
+   TRKLTS2P(DRAWRATIO)
+   TLine* plusp03 = new TLine(-3, 1.03, 3, 1.03);
+   TLine* minusp03 = new TLine(-3, 0.97, 3, 0.97);
+   plusp03->SetLineStyle(7); plusp03->Draw();
+   minusp03->SetLineStyle(7); minusp03->Draw();
+   TLegend* l3 = new TLegend(0.4, 0.16, 0.64, 0.32);
+   TRKLTS3P(l3, ADDENTRY)
+   lstyle(l3, 43, 16); l3->Draw();
+   c3->SaveAs(Form("figs/merged/merged-%s-ratio.png", label));
+
+   TCanvas* c4 = new TCanvas("c4", "", 600, 600);
+   hframe->Draw(); DRAWGEN hsym->Draw("same");
    TLegend* l4 = new TLegend(0.36, 0.16, 0.64, 0.32);
-   lstyle(l4, 43, 16);
    l4->AddEntry(hsym, "XeXe 5.442 TeV", "p");
-   GEN2P(l4, ADDENTRYGEN)
-   l4->Draw();
-
+   ADDGENENTRY(l4) lstyle(l4, 43, 16); l4->Draw();
    c4->SaveAs(Form("figs/merged/merged-%s-sym.png", label));
 
-   hframe->Write("", TObject::kOverwrite);
-
-#define WRITE(q, w)                                                           \
-   h##q##w->Write("", TObject::kOverwrite);                                   \
+#define WRITE(q, w) h##q##w->Write("", TObject::kOverwrite);
 
    TRKLTS2P(WRITE)
+   hframe->Write("", TObject::kOverwrite);
 
    f->Write("", TObject::kOverwrite);
    f->Close();
@@ -268,7 +257,9 @@ int merge_monads(const char* label) {
 
 int main(int argc, char* argv[]) {
    if (argc == 2) {
-      return merge_monads(argv[1]);
+      return merge_monads(argv[1], 0);
+   } else if (argc == 3) {
+      return merge_monads(argv[1], atoi(argv[2]));
    } else {
       printf("usage: ./merge_monads [label]\n");
       return 1;
