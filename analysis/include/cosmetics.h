@@ -106,6 +106,24 @@ void gformat(TH1* h, int style, int colour) {
    gstyle(h, style, colour);
 }
 
+void rstyle(TH1* h) {
+   h->GetXaxis()->SetLabelSize(0.09);
+   h->GetXaxis()->SetTitleSize(0.1);
+   h->GetYaxis()->SetLabelSize(0.09);
+   h->GetYaxis()->SetTitleSize(0.09);
+   h->GetYaxis()->CenterTitle();
+   h->GetYaxis()->SetTitleOffset(0.5);
+   h->SetNdivisions(205, "Y");
+}
+
+void rformat(TH1* h, float ymin, float ymax) {
+   h->SetStats(0);
+   h->SetYTitle("ratio");
+   h->SetAxisRange(ymin, ymax, "Y");
+
+   rstyle(h);
+}
+
 #include "TLegend.h"
 
 void lstyle(TLegend* l, int font, float size) {

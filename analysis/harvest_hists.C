@@ -137,15 +137,7 @@ int compare_pixels(std::vector<varinfo_t> const& options,
       for (std::size_t j = 1; j < nfiles; ++j) {                              \
          hr##q[j] = (TH1D*)h##q[j]->Clone(Form("hpr" #q "f%zu%s", j, idstr)); \
          hr##q[j]->Divide(h##q[0]);                                           \
-         hr##q[j]->SetAxisRange(0.5, 1.5, "Y");                               \
-         hr##q[j]->GetXaxis()->SetLabelSize(0.08);                            \
-         hr##q[j]->GetXaxis()->SetTitleSize(0.1);                             \
-         hr##q[j]->GetYaxis()->SetLabelSize(0.08);                            \
-         hr##q[j]->GetYaxis()->SetTitleSize(0.08);                            \
-         hr##q[j]->GetYaxis()->CenterTitle();                                 \
-         hr##q[j]->GetYaxis()->SetTitleOffset(0.5);                           \
-         hr##q[j]->SetNdivisions(205, "Y");                                   \
-         hr##q[j]->SetYTitle("ratio");                                        \
+         rformat(hr##q[j], 0.5, 1.5);                                         \
          hr##q[j]->Draw("p e same");                                          \
       }                                                                       \
    }                                                                          \
