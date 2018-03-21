@@ -7,7 +7,7 @@
 #include "rechit.h"
 #include "structs.h"
 
-#define NZALLOWANCE 0
+#define NZGAP 0
 
 #define PI 3.141593f
 
@@ -126,7 +126,7 @@ float reco_vertex(std::vector<rechit>& l1, std::vector<rechit>& l2, float dphi, 
       uint32_t maxnz = clusters[0].nz;
       for (auto& cluster : clusters) {
          uint32_t nz = cluster.nz;
-         if (nz + NZALLOWANCE < maxnz) { break; }
+         if (nz + NZGAP < maxnz) { break; }
 
          uint32_t index = cluster.index;
 

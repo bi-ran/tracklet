@@ -148,9 +148,7 @@ int transmute_trees(const char* input,
       int nhfpsum = 0; int nhfnsum = 0;
       float hftsum = 0;
 
-#define DECLARE_HITS(q)                                                       \
-      std::vector<rechit> layer##q;                                           \
-
+#define DECLARE_HITS(q) std::vector<rechit> layer##q;
       PIXELS1P(DECLARE_HITS);
 
       for (const auto& event : events) {
@@ -191,9 +189,7 @@ int transmute_trees(const char* input,
 
          PIXELS1P(ADD_BACKGROUND);
 
-#define POPULATE_HITS(q)                                                      \
-         populate(layer##q, par, q, split, drop, smear);                      \
-
+#define POPULATE_HITS(q) populate(layer##q, par, q, split, drop, smear);
          PIXELS1P(POPULATE_HITS);
 
          hltor |= par.hlt;
@@ -220,15 +216,11 @@ int transmute_trees(const char* input,
          vz = reco_vertex(layer1v, layer2v, 0.09, 0.12);
       }
 
-#define SET_VERTEX(q, w)                                                      \
-      trkltdata##q##w.vz[1] = vz;                                             \
-
+#define SET_VERTEX(q, w) trkltdata##q##w.vz[1] = vz;
       TRKLTS2P(SET_VERTEX);
 
       if (!reweight && sample != -1) {
-#define CLEAR_HITS(q)                                                         \
-         std::vector<rechit>().swap(layer##q);                                \
-
+#define CLEAR_HITS(q) std::vector<rechit>().swap(layer##q);
          PIXELS1P(CLEAR_HITS);
       }
 
@@ -315,9 +307,7 @@ int transmute_trees(const char* input,
       ttruth->Fill();
    }
 
-#define WRITE_TREE(q, w)                                                      \
-   trklttree##q##w->Write("", TObject::kOverwrite);                           \
-
+#define WRITE_TREE(q, w) trklttree##q##w->Write("", TObject::kOverwrite);
    TRKLTS2P(WRITE_TREE);
    ttruth->Write("", TObject::kOverwrite);
 

@@ -149,13 +149,10 @@ int compare_pixels(std::vector<varinfo_t> const& options,
    PIXELS1P(DRAW_1D_PIXELS)
 
    TFile* fout = new TFile(Form("data/%s.root", label), "update");
-
 #define SAVE_1D_PIXELS(q)                                                     \
    for (std::size_t j = 0; j < nfiles; ++j)                                   \
-      h##q[j]->Write("", TObject::kOverwrite);                                \
-
+      h##q[j]->Write("", TObject::kOverwrite);
    PIXELS1P(SAVE_1D_PIXELS)
-
    fout->Close();
 
    return 0;
@@ -296,15 +293,11 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
    delete c##q##w;                                                            \
 
    TRKLTS2P(DRAW_1D_TRACKLETS)
-
    TFile* fout = new TFile(Form("data/%s.root", label), "update");
-
 #define SAVE_1D_TRACKLETS(q, w)                                               \
    for (std::size_t j = 0; j < nfiles; ++j)                                   \
-      h##q##w[j]->Write("", TObject::kOverwrite);                             \
-
+      h##q##w[j]->Write("", TObject::kOverwrite);
    TRKLTS2P(SAVE_1D_TRACKLETS)
-
    fout->Close();
 
    return 0;
@@ -408,10 +401,7 @@ int map_pixels(std::vector<varinfo_t> const& options,
          (int)OPT(bins[1][0]), OPT(bins[1][1]), OPT(bins[1][2]));
 
    if (OPT(flags) >> 4) {
-
-#define OVERLAY_2D_PIXELS(q)                                                  \
-      hall->Add(h##q);                                                        \
-
+#define OVERLAY_2D_PIXELS(q) hall->Add(h##q);
       if (OPT(flags) & 0x10) { BPIX1P(OVERLAY_2D_PIXELS) }
       if (OPT(flags) & 0x20) { FPIX1P(OVERLAY_2D_PIXELS) }
 
@@ -423,14 +413,9 @@ int map_pixels(std::vector<varinfo_t> const& options,
    }
 
    TFile* fout = new TFile(Form("data/%s.root", label), "update");
-
-#define SAVE_2D_PIXELS(q)                                                     \
-   h##q->Write("", TObject::kOverwrite);                                      \
-
+#define SAVE_2D_PIXELS(q) h##q->Write("", TObject::kOverwrite);
    PIXELS1P(SAVE_2D_PIXELS)
-
    hall->Write("", TObject::kOverwrite);
-
    fout->Close();
 
    return 0;
@@ -487,12 +472,8 @@ int map_tracklets(std::vector<varinfo_t> const& options,
    TRKLTS2P(DRAW_2D_TRACKLETS)
 
    TFile* fout = new TFile(Form("data/%s.root", label), "update");
-
-#define SAVE_2D_TRACKLETS(q, w)                                               \
-   h##q##w->Write("", TObject::kOverwrite);                                   \
-
+#define SAVE_2D_TRACKLETS(q, w) h##q##w->Write("", TObject::kOverwrite);
    TRKLTS2P(SAVE_2D_TRACKLETS)
-
    fout->Close();
 
    return 0;
