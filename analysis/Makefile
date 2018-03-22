@@ -14,7 +14,7 @@ all: $(EXES)
 
 %: %.C
 	@mkdir -p $(BUILDDIR)/$(@D)
-	$(CXX) $(CXXFLAGS) $(ROOTFLAGS) -MMD -MF $(BUILDDIR)/$(@D)/$(*F).d $< -o $@
+	$(CXX) $(ROOTFLAGS) $(CXXFLAGS) -MMD -MF $(BUILDDIR)/$(@D)/$(*F).d $< -o $@
 
 clean:
 	@$(RM) $(EXES) $(DEPS)
