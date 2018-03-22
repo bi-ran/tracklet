@@ -183,9 +183,9 @@ void reco_tracklets(std::vector<Tracklet>& tracklets, std::vector<rechit>& l1, s
                return a.dr2 < b.dr2;
             });
 
-      for (std::size_t t = 0; t < candidates.size(); ++t) {
-         uint32_t h1 = candidates[t].index >> 16;
-         uint32_t h2 = candidates[t].index & 0xffff;
+      for (const auto& cand : candidates) {
+         uint32_t h1 = cand.index >> 16;
+         uint32_t h2 = cand.index & 0xffff;
          if (!l1flags[h1] && !l2flags[h2]) {
             tracklets.emplace_back(l1[h1], l2[h2]);
 
