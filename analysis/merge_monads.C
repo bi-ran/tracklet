@@ -1,4 +1,5 @@
 #include "TFile.h"
+#include "TDirectory.h"
 #include "TCanvas.h"
 #include "TPad.h"
 #include "TLegend.h"
@@ -48,38 +49,41 @@ static const int good[NTRKLT2P][neta] = {
    { 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0 }
 };
 
-typedef struct gen_t {
+struct info_t {
    const char* hist;
    const char* label;
-   int lstyle; int lcolour;
-} gen_t;
+   int style;
+   int colour;
+};
 
-static const std::vector<gen_t> geninfo = {
-   {"hdpmjet", "DPMJET-III", 1, TColor::GetColor("#2ecc71")},
-   {"hepos", "EPOS LHC", 1, TColor::GetColor("#ffcc00")},
+struct hist_t {
+   hist_t(TH1F* hist, const char* label, const char* dopts) :
+      hist(hist), label(label), dopts(dopts) {};
+
+   TH1F* hist;
+   const char* label;
+   const char* dopts;
+};
+
+static const std::vector<info_t> geninfo = {
+   {"hepos", "EPOS LHC", 1, TColor::GetColor("#2ecc71")},
    {"hhydjet", "HYDJET", 1, TColor::GetColor("#3498db")},
    {"hamptnm", "AMPT (w/o string melting)", 7, TColor::GetColor("#ec5f67")},
    {"hamptsm", "AMPT (w. string melting)", 1, TColor::GetColor("#ec5f67")}
 };
 
-static const std::vector<const char*> datalabels = {
-   "", "", "", "", "", "averaged", "symmetrised"
+static const std::vector<info_t> datainfo = {
+   {"havg", "averaged", 20, TColor::GetColor("#515151")},
+   {"hsym", "symmetrised", 21, TColor::GetColor("#515151")}
 };
 
 int merge_monads(const char* label, uint32_t opts) {
    TFile* fgen = new TFile("data/gen.root");
 
-   std::vector<TH1F*> hgen;
+   std::vector<hist_t> histc;
    for (const auto& gen : geninfo) {
-      hgen.push_back((TH1F*)fgen->Get(gen.hist));
-      gformat(hgen.back(), gen.lstyle, gen.lcolour);
-   }
-
-   int denom = -1;
-   std::vector<uint32_t> opt;
-   for (std::size_t i=0; i<geninfo.size()+2; ++i) {
-      if (opts & 0x2) { denom = opt.size(); }
-      opt.push_back(opts & 0x1); opts >>= 4;
+      histc.emplace_back((TH1F*)fgen->Get(gen.hist), gen.label, "hist c same");
+      gformat(histc.back().hist, gen.style, gen.colour);
    }
 
 #define INCLUDE_ETA_BINS
@@ -154,13 +158,25 @@ int merge_monads(const char* label, uint32_t opts) {
       }
    }
 
-   hgen.push_back(havg);
-   hgen.push_back(hsym);
+   for (const auto& data : datainfo) {
+      histc.emplace_back(
+         (TH1F*)TDirectory::CurrentDirectory()->Get(data.hist),
+         data.label, "same");
+      hstyle(histc.back().hist, data.style, data.colour);
+   }
+
+   std::vector<uint32_t> opt;
+   int denom = opts & 0xF; opts >>= 4;
+   if ((uint32_t)(--denom) > histc.size()) { denom = -1; }
+   for (std::size_t i=0; i<histc.size(); ++i) {
+      opt.push_back(opts & 0x1);
+      opts >>= 1;
+   }
 
 #define GENRATIO(q, w)                                                        \
    TH1D* hgr##q##w = (TH1D*)h##q##w->Clone("hgr" #q #w);                      \
    if (denom > -1) {                                                          \
-      hgr##q##w->Divide(hgen[denom]);                                         \
+      hgr##q##w->Divide(histc[denom].hist);                                   \
       rformat(hgr##q##w, 0.95, 1.05);                                         \
    }                                                                          \
 
@@ -172,16 +188,12 @@ int merge_monads(const char* label, uint32_t opts) {
 #define ADDENTRY(l, q, w) l->AddEntry(h##q##w, "layers " #q "+" #w, "p");
 
 #define DRAWGEN                                                               \
-   { std::size_t i = 0; for (; i<geninfo.size(); ++i)                         \
-      if (opt[i]) hgen[i]->Draw("hist c same");                               \
-   for (; i<opt.size(); ++i)                                                  \
-      if (opt[i]) hgen[i]->Draw("same"); }                                    \
+      for (std::size_t i=0; i<histc.size(); ++i)                              \
+         if (opt[i]) histc[i].hist->Draw(histc[i].dopts);                     \
 
 #define ADDGENENTRY(l)                                                        \
-   { std::size_t i = 0; for (; i<geninfo.size(); ++i)                         \
-      if (opt[i]) l->AddEntry(hgen[i], geninfo[i].label, "l");                \
-   for (; i<opt.size(); ++i)                                                  \
-      if (opt[i]) l->AddEntry(hgen[i], datalabels[i], "pl"); }                \
+      for (std::size_t i=0; i<histc.size(); ++i)                              \
+         if (opt[i]) l->AddEntry(histc[i].hist, histc[i].label, "pl");        \
 
    int cheight = denom > -1 ? 600 * 1.2 : 600;
    TCanvas* c1 = new TCanvas("c1", "", 600, cheight);
