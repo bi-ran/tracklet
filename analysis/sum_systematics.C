@@ -3,6 +3,7 @@
 #include "TStyle.h"
 #include "TCanvas.h"
 #include "TLegend.h"
+#include "TLatex.h"
 
 #include <vector>
 #include <string>
@@ -26,13 +27,13 @@ int sum_systematics(const char* config, const char* label) {
     auto options = conf->get<std::vector<int>>("options");
     auto groups = conf->get<std::vector<uint32_t>>("groups");
 
-    std::size_t nfiles = files.size(); std::size_t nhists = histograms.size();
-    if (!nfiles) { printf("error: no files provided!\n"); return 1; }
+    std::size_t nf = files.size(); std::size_t nhists = histograms.size();
+    if (!nf) { printf("error: no files provided!\n"); return 1; }
     if (!nhists) { printf("error: no histograms listed!\n"); return 1; }
 
     TFile* f0 = new TFile(nominal.data(), "read");
-    TFile* f[nfiles];
-    for (std::size_t i = 0; i < nfiles; ++i)
+    TFile* f[nf];
+    for (std::size_t i = 0; i < nf; ++i)
         f[i] = new TFile(files[i].data(), "read");
 
     TFile* fout = new TFile(Form("output/systematics-%s.root", label), "recreate");
@@ -47,7 +48,7 @@ int sum_systematics(const char* config, const char* label) {
         std::vector<varone*> svars;
         std::map<int, varsum*> vargroups;
 
-        for (std::size_t j = 0; j < nfiles; ++j) {
+        for (std::size_t j = 0; j < nf; ++j) {
             TH1F* h1 = (TH1F*)f[j]->Get(histograms[i].data())->Clone(
                     Form("%s%s", histograms[i].data(), tags[j].data()));
 
@@ -80,41 +81,50 @@ int sum_systematics(const char* config, const char* label) {
         std::string path = Form("figs/uncertainties/systematics-%s-%s",
                 label, histograms[i].data());
 
-        int nrows = nfiles / 3 + 1;
-        TCanvas* c0 = new TCanvas("scratch", "", 600, 600);
+        int nrows = nf / 3 + 1;
+        TCanvas* c0 = new TCanvas("scratch", "", 400, 400);
         TCanvas* c1 = new TCanvas("diff", "", 1200, nrows * 400);
         TCanvas* c2 = new TCanvas("ratio", "", 1200, nrows * 400);
-        c1->Divide(3, nrows); c2->Divide(3, nrows);
+        TCanvas* c4 = new TCanvas("comp", "", 400, 400);
+        TLegend* l4 = new TLegend(0.1, 0.70, 0.9, 0.875);
+        c1->Divide(3, nrows); c2->Divide(3, nrows); l4->SetNColumns(2);
 
-        for (std::size_t j = 0; j < nfiles; ++j) {
-            h = svars[j]->adiff(0); htitle(h, ";#eta;difference");
+        h = tvars->diff();
+        hformat(h, 21, COLOUR0, ";#eta;difference"); h->SetMarkerSize(0.75);
+        c0->cd(); h->Draw("p hist e"); l->DrawLatexNDC(0.4, 0.8, "total");
+        c0->SaveAs(Form("%s.total-diff.png", path.data()));
+        c1->cd(nf+1); h->Draw("p hist e"); l->DrawLatexNDC(0.4, 0.8, "total");
+
+        h = tvars->ratio();
+        hformat(h, 21, COLOUR0, ";#eta;ratio"); h->SetMarkerSize(0.75);
+        c0->cd(); h->Draw("p hist e"); l->DrawLatexNDC(0.4, 0.8, "total");
+        c0->SaveAs(Form("%s.total-ratio.png", path.data()));
+        c2->cd(nf+1); h->Draw("p hist e"); l->DrawLatexNDC(0.4, 0.8, "total");
+        c4->cd(); h->SetAxisRange(-0.005, 0.08, "Y"); h->Draw("p hist e");
+        l4->AddEntry(h, "total uncertainty", "p");
+
+        for (std::size_t j = 0; j < nf; ++j) {
+            h = svars[j]->adiff(0); hstyle(h, 20, colours[j%ncolours]);
+            htitle(h, ";#eta;difference"); h->SetMarkerSize(0.64);
             c0->cd(); h->Draw(); l->DrawLatexNDC(0.4, 0.8, labels[j].data());
-            c1->cd(j+1); h->Draw(); l->DrawLatexNDC(0.4, 0.8, labels[j].data());
             c0->SaveAs(Form("%s-%s-diff.png", path.data(), tags[j].data()));
+            c1->cd(j+1); h->Draw(); l->DrawLatexNDC(0.4, 0.8, labels[j].data());
 
-            h = svars[j]->aratio(0); htitle(h, ";#eta;ratio");
+            h = svars[j]->aratio(0); hstyle(h, 20, colours[j%ncolours]);
+            htitle(h, ";#eta;ratio"); h->SetMarkerSize(0.64);
             c0->cd(); h->Draw(); l->DrawLatexNDC(0.4, 0.8, labels[j].data());
-            c2->cd(j+1); h->Draw(); l->DrawLatexNDC(0.4, 0.8, labels[j].data());
             c0->SaveAs(Form("%s-%s-ratio.png", path.data(), tags[j].data()));
+            c2->cd(j+1); h->Draw(); l->DrawLatexNDC(0.4, 0.8, labels[j].data());
+            c4->cd(); h->Draw("same"); l4->AddEntry(h, labels[j].data(), "p");
         }
 
-        h = tvars->diff(); htitle(h, ";#eta;difference");
-        c0->cd(); h->Draw("p hist e");
-        l->DrawLatexNDC(0.4, 0.8, "total uncertainty");
-        c1->cd(nfiles+1); h->Draw("p hist e");
-        l->DrawLatexNDC(0.4, 0.8, "total uncertainty");
-        c0->SaveAs(Form("%s.total-diff.png", path.data()));
+        c4->cd(); lstyle(l4, 43, 12); l4->Draw();
+
         c1->SaveAs(Form("%s.all-diff.png", path.data()));
-
-        h = tvars->ratio(); htitle(h, ";#eta;ratio");
-        c0->cd(); h->Draw("p hist e");
-        l->DrawLatexNDC(0.4, 0.8, "total");
-        c2->cd(nfiles+1); h->Draw("p hist e");
-        l->DrawLatexNDC(0.4, 0.8, "total");
-        c0->SaveAs(Form("%s.total-ratio.png", path.data()));
         c2->SaveAs(Form("%s.all-ratio.png", path.data()));
+        c4->SaveAs(Form("%s.comp.png", path.data()));
 
-        delete c0; delete c1; delete c2;
+        delete c0; delete c1; delete c2; delete c4;
         for (const auto& svar : svars) { delete svar; }
         for (const auto& vargroup : vargroups) { delete vargroup.second; }
         delete tvars;
