@@ -197,6 +197,15 @@ int collect_cents(const char* label, int interval) {
     gphobos_cucu_0p2->Write("", TObject::kOverwrite);
     gphobos_auau_0p2->Write("", TObject::kOverwrite);
 
+    gnorm->Write("", TObject::kOverwrite);
+    gsnorm->Write("", TObject::kOverwrite);
+    gcms_pbpb_2p76_norm->Write("", TObject::kOverwrite);
+    galice_pbpb_5p02_norm->Write("", TObject::kOverwrite);
+    gphobos_auau_0p2_norm->Write("", TObject::kOverwrite);
+    gphobos_cucu_0p2_norm->Write("", TObject::kOverwrite);
+    gcms_pp_13p0_norm->Write("", TObject::kOverwrite);
+    gcms_ppb_8p16_norm->Write("", TObject::kOverwrite);
+
     fout->Write("", TObject::kOverwrite);
     fout->Close();
 

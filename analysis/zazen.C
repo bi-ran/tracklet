@@ -38,6 +38,9 @@ int zazen(const char* config, const char* label) {
       fsys.push_back(TFile::Open(systematics[f].c_str(), "read"));
    }
 
+   TFile* fj = 0;
+   if (!jacobian.empty()) { fj = new TFile(jacobian.data(), "read"); }
+
    TFile* fout = new TFile(Form("output/results-%s.root", label), "recreate");
 
    TH1::SetDefaultSumw2();
@@ -85,8 +88,7 @@ int zazen(const char* config, const char* label) {
 
    c1->SaveAs(Form("figs/results/results-%s-%s.png", hist.c_str(), label));
 
-   if (!jacobian.empty()) {
-      TFile* fj = new TFile(jacobian.c_str(), "read");
+   if (fj && fj->IsOpen()) {
       TH1F* hj = (TH1F*)fj->Get("hjavg")->Clone();
       TH1F* hjsys = (TH1F*)fj->Get("hjsys")->Clone();
 
