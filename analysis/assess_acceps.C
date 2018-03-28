@@ -34,12 +34,12 @@ int assess_acceps(int type, float maxdr2,
     TChain* tdata = new TChain(Form("TrackletTree%i", type));
     std::ifstream datastream(data_list);
     while (std::getline(datastream, line))
-        tdata->Add(line.c_str());
+        tdata->Add(line.data());
 
     TChain* tmc = new TChain(Form("TrackletTree%i", type));
     std::ifstream mcstream(mc_list);
     while (std::getline(mcstream, line))
-        tmc->Add(line.c_str());
+        tmc->Add(line.data());
 
     TFile* fout = new TFile(Form("%s/acceptance-%i.root", path, type), "recreate");
 

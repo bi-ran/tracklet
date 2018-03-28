@@ -99,10 +99,8 @@ int collect_cents(const char* label, int interval) {
     TH1F* gframe = new TH1F("gframe", "", 1, 0, 100);
     hformat(gframe, 1.f, 4000.f,
             ";Centrality [%];#frac{dN}{d#eta}#lbar_{#eta=0}");
+    gframe->SetLabelOffset(999, "X"); gframe->SetTickLength(0, "X");
     gframe->Draw();
-
-    gframe->GetXaxis()->SetLabelOffset(999);
-    gframe->GetXaxis()->SetTickLength(0);
 
     TGaxis* axis = new TGaxis(100, 1, 0, 1, 0, 100, 510, "-");
     axis->SetLabelOffset(-0.032);
@@ -118,17 +116,14 @@ int collect_cents(const char* label, int interval) {
     watermark();
 
     TLegend* l2 = new TLegend(0.54, 0.24, 0.9, 0.48);
-    lstyle(l2, 43, 15);
     TLegendEntry* hcms = l2->AddEntry((TObject*)0, "CMS", "");
-    hcms->SetTextFont(63);
-    hcms->SetTextSize(17);
+    hcms->SetTextFont(63); hcms->SetTextSize(17);
     l2->AddEntry(g, "XeXe 5.44 TeV", "p");
     l2->AddEntry(gcms_pbpb_2p76, "PbPb 2.76 TeV", "p");
     TLegendEntry* halice = l2->AddEntry((TObject*)0, "ALICE", "");
-    halice->SetTextFont(63);
-    halice->SetTextSize(17);
+    halice->SetTextFont(63); halice->SetTextSize(17);
     l2->AddEntry(galice_pbpb_5p02, "PbPb 5.02 TeV", "p");
-    l2->Draw();
+    lstyle(l2, 43, 15); l2->Draw();
 
     c2->SaveAs(Form("figs/merged/merged-%s-midy-int%i.png", label, interval));
 
@@ -158,35 +153,28 @@ int collect_cents(const char* label, int interval) {
     watermark();
 
     TLegend* l3 = new TLegend(0.6, 0.38, 0.9, 0.58);
-    lstyle(l3, 43, 15);
     TLegendEntry* h2cms = l3->AddEntry((TObject*)0, "CMS", "");
-    h2cms->SetTextFont(63);
-    h2cms->SetTextSize(17);
+    h2cms->SetTextFont(63); h2cms->SetTextSize(17);
     l3->AddEntry(gnorm, "XeXe 5.44 TeV", "p");
     l3->AddEntry(gcms_pbpb_2p76_norm, "PbPb 2.76 TeV", "p");
     TLegendEntry* h2alice = l3->AddEntry((TObject*)0, "ALICE", "");
-    h2alice->SetTextFont(63);
-    h2alice->SetTextSize(17);
+    h2alice->SetTextFont(63); h2alice->SetTextSize(17);
     l3->AddEntry(galice_pbpb_5p02_norm, "PbPb 5.02 TeV", "p");
-    l3->Draw();
+    lstyle(l3, 43, 15); l3->Draw();
 
     TLegend* l4 = new TLegend(0.6, 0.18, 0.9, 0.30);
-    lstyle(l4, 43, 15);
     TLegendEntry* hphobos = l4->AddEntry((TObject*)0, "PHOBOS", "");
-    hphobos->SetTextFont(63);
-    hphobos->SetTextSize(17);
+    hphobos->SetTextFont(63); hphobos->SetTextSize(17);
     l4->AddEntry(gphobos_auau_0p2_norm, "AuAu 200 GeV", "p");
     l4->AddEntry(gphobos_cucu_0p2_norm, "CuCu 200 GeV", "p");
-    l4->Draw();
+    lstyle(l4, 43, 15); l4->Draw();
 
     TLegend* l5 = new TLegend(0.35, 0.18, 0.65, 0.30);
-    lstyle(l5, 43, 15);
     TLegendEntry* h3cms = l5->AddEntry((TObject*)0, "CMS", "");
-    h3cms->SetTextFont(63);
-    h3cms->SetTextSize(17);
+    h3cms->SetTextFont(63); h3cms->SetTextSize(17);
     l5->AddEntry(gcms_pp_13p0_norm, "pp 13 TeV", "p");
     l5->AddEntry(gcms_ppb_8p16_norm, "pPb 8.16 TeV", "p");
-    l5->Draw();
+    lstyle(l5, 43, 15); l5->Draw();
 
     c3->SaveAs(Form("figs/merged/merged-%s-midynorm-int%i.png", label, interval));
 

@@ -206,8 +206,8 @@ int merge_monads(const char* label, uint32_t opts) {
       t2->Draw(); t2->SetNumber(2);
       c1->cd(1);
 
-      hframe->GetXaxis()->SetLabelOffset(99);
-      hframe->GetXaxis()->SetTitleOffset(99);
+      hframe->SetLabelOffset(99, "X");
+      hframe->SetTitleOffset(99, "X");
    }
 
    hframe->Draw(); DRAWGEN TRKLTS2P(DRAW)

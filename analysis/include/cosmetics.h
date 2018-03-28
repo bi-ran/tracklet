@@ -61,9 +61,9 @@ void hstyle(TH1* h, int style, int colour) {
 void htitle(TH1* h, const char* title) {
    h->SetTitle(title);
    h->GetXaxis()->CenterTitle();
-   h->GetXaxis()->SetTitleOffset(1.44);
+   h->SetTitleOffset(1.44, "X");
    h->GetYaxis()->CenterTitle();
-   h->GetYaxis()->SetTitleOffset(1.44);
+   h->SetTitleOffset(1.44, "Y");
 }
 
 void haxes(TH1* h, float ymin, float ymax) {
@@ -107,13 +107,13 @@ void gformat(TH1* h, int style, int colour) {
 }
 
 void rstyle(TH1* h) {
-   h->GetXaxis()->SetLabelSize(0.09);
-   h->GetXaxis()->SetTitleSize(0.1);
-   h->GetYaxis()->SetLabelSize(0.09);
-   h->GetYaxis()->SetTitleSize(0.09);
-   h->GetYaxis()->CenterTitle();
-   h->GetYaxis()->SetTitleOffset(0.5);
+   h->SetLabelSize(0.09, "X");
+   h->SetTitleSize(0.1, "X");
+   h->SetLabelSize(0.09, "Y");
+   h->SetTitleSize(0.09, "Y");
+   h->SetTitleOffset(0.5, "Y");
    h->SetNdivisions(205, "Y");
+   h->GetYaxis()->CenterTitle();
 }
 
 void rformat(TH1* h, float ymin, float ymax) {

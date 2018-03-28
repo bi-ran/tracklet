@@ -642,14 +642,13 @@ int reap_results(int type,
    h1WEfinal->Draw("e x0 same");
 
    TLegend* l1 = new TLegend(0.32, 0.20, 0.75, 0.40);
-   lstyle(l1, 43, 15);
    l1->AddEntry((TObject*)0, label, "");
    l1->AddEntry(h1WGhadron, "Truth", "l");
    l1->AddEntry(h1WEraw, "Raw tracklets", "p");
    l1->AddEntry(h1WEcorr, "Corrected for efficiency", "p");
    l1->AddEntry(h1WEtcorr, "Corrected for trigger eff", "p");
    l1->AddEntry(h1WEfinal, "Final result", "p");
-   l1->Draw();
+   lstyle(l1, 43, 15); l1->Draw();
 
    cstage->Draw();
    cstage->SaveAs(Form("figs/stages/stage-%s-%i.png", label, type));

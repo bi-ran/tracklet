@@ -57,8 +57,8 @@ varone::varone(std::string label_, std::string stype_,
    label = label_; stype = stype_;
    tag = label + "_" + stype;
 
-   hnominal = (TH1F*)hnominal_->Clone(Form("%s_nominal", tag.c_str()));
-   hvar = (TH1F*)hvar_->Clone(Form("%s_var", tag.c_str()));
+   hnominal = (TH1F*)hnominal_->Clone(Form("%s_nominal", tag.data()));
+   hvar = (TH1F*)hvar_->Clone(Form("%s_var", tag.data()));
 
    calculate();
 }
@@ -66,19 +66,19 @@ varone::varone(std::string label_, std::string stype_,
 varone::~varone() {};
 
 void varone::calculate() {
-   hdiff = (TH1F*)hvar->Clone(Form("%s_diff", tag.c_str()));
+   hdiff = (TH1F*)hvar->Clone(Form("%s_diff", tag.data()));
    hdiff->Add(hnominal, -1);
-   hadiff = (TH1F*)hdiff->Clone(Form("%s_adiff", tag.c_str()));
+   hadiff = (TH1F*)hdiff->Clone(Form("%s_adiff", tag.data()));
    abs(hadiff);
 
-   hratio = (TH1F*)hvar->Clone(Form("%s_ratio", tag.c_str()));
+   hratio = (TH1F*)hvar->Clone(Form("%s_ratio", tag.data()));
    hratio->Divide(hnominal);
-   haratio = (TH1F*)hratio->Clone(Form("%s_aratio", tag.c_str()));
+   haratio = (TH1F*)hratio->Clone(Form("%s_aratio", tag.data()));
    absratio(haratio);
 
-   hardiff = (TH1F*)haratio->Clone(Form("%s_ardiff", tag.c_str()));
+   hardiff = (TH1F*)haratio->Clone(Form("%s_ardiff", tag.data()));
    hardiff->Multiply(hnominal);
-   hadratio = (TH1F*)hadiff->Clone(Form("%s_adratio", tag.c_str()));
+   hadratio = (TH1F*)hadiff->Clone(Form("%s_adratio", tag.data()));
    hadratio->Divide(hnominal);
 }
 
@@ -91,32 +91,32 @@ void varone::fit(std::string ffdiff, std::string ffratio, float val) {
 
 void varone::fit(std::string ffdiff, std::string ffratio, float min, float max) {
    if (ffdiff != "null") {
-      fdiff = new TF1(Form("%s_fdiff", tag.c_str()), ffdiff.c_str());
+      fdiff = new TF1(Form("%s_fdiff", tag.data()), ffdiff.data());
       fdiff->SetRange(min, max);
-      hadiff->Fit(Form("%s_fdiff", tag.c_str()), "F Q", "", min, max);
-      hadiff->Fit(Form("%s_fdiff", tag.c_str()), "F Q", "", min, max);
-      hadiff->Fit(Form("%s_fdiff", tag.c_str()), "F M Q", "", min, max);
+      hadiff->Fit(Form("%s_fdiff", tag.data()), "F Q", "", min, max);
+      hadiff->Fit(Form("%s_fdiff", tag.data()), "F Q", "", min, max);
+      hadiff->Fit(Form("%s_fdiff", tag.data()), "F M Q", "", min, max);
 
-      fdiff = (TF1*)hadiff->GetFunction(Form("%s_fdiff", tag.c_str()));
-      hfadiff = (TH1F*)hadiff->Clone(Form("%s_fadiff", tag.c_str()));
+      fdiff = (TF1*)hadiff->GetFunction(Form("%s_fdiff", tag.data()));
+      hfadiff = (TH1F*)hadiff->Clone(Form("%s_fadiff", tag.data()));
       tf1toth1f(hfadiff, fdiff);
 
-      hfadratio = (TH1F*)hfadiff->Clone(Form("%s_fadratio", tag.c_str()));
+      hfadratio = (TH1F*)hfadiff->Clone(Form("%s_fadratio", tag.data()));
       hfadratio->Divide(hnominal);
    }
 
    if (ffratio != "null") {
-      fratio = new TF1(Form("%s_fratio", tag.c_str()), ffratio.c_str());
+      fratio = new TF1(Form("%s_fratio", tag.data()), ffratio.data());
       fratio->SetRange(min, max);
-      haratio->Fit(Form("%s_fratio", tag.c_str()), "F Q", "", min, max);
-      haratio->Fit(Form("%s_fratio", tag.c_str()), "F Q", "", min, max);
-      haratio->Fit(Form("%s_fratio", tag.c_str()), "F M Q", "", min, max);
+      haratio->Fit(Form("%s_fratio", tag.data()), "F Q", "", min, max);
+      haratio->Fit(Form("%s_fratio", tag.data()), "F Q", "", min, max);
+      haratio->Fit(Form("%s_fratio", tag.data()), "F M Q", "", min, max);
 
-      fratio = (TF1*)haratio->GetFunction(Form("%s_fratio", tag.c_str()));
-      hfaratio = (TH1F*)haratio->Clone(Form("%s_faratio", tag.c_str()));
+      fratio = (TF1*)haratio->GetFunction(Form("%s_fratio", tag.data()));
+      hfaratio = (TH1F*)haratio->Clone(Form("%s_faratio", tag.data()));
       tf1toth1f(hfaratio, fratio);
 
-      hfardiff = (TH1F*)hfaratio->Clone(Form("%s_fardiff", tag.c_str()));
+      hfardiff = (TH1F*)hfaratio->Clone(Form("%s_fardiff", tag.data()));
       hfardiff->Multiply(hnominal);
    }
 }
@@ -215,9 +215,9 @@ class varsum {
 varsum::varsum(std::string label_, TH1F* hnominal_) {
    label = label_;
 
-   hnominal = (TH1F*)hnominal_->Clone(Form("%s_nominal", label.c_str()));
-   htdiff = (TH1F*)hnominal_->Clone(Form("%s_tdiff", label.c_str()));
-   htratio = (TH1F*)hnominal_->Clone(Form("%s_tratio", label.c_str()));
+   hnominal = (TH1F*)hnominal_->Clone(Form("%s_nominal", label.data()));
+   htdiff = (TH1F*)hnominal_->Clone(Form("%s_tdiff", label.data()));
+   htratio = (TH1F*)hnominal_->Clone(Form("%s_tratio", label.data()));
 
    htdiff->Reset("ICES");
    htratio->Reset("ICES");

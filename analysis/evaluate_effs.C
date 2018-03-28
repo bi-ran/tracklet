@@ -31,7 +31,7 @@ int evaluate_effs(const char* config, const char* label) {
    TFile* f[nfiles]; TTree* t[nfiles];
    TProfile* heff[nfiles]; TH2D* hvznhit1[nfiles]; TH1D* hres[nfiles];
    for (std::size_t i = 0; i < nfiles; ++i) {
-      f[i] = new TFile(files[i].c_str(), "read");
+      f[i] = new TFile(files[i].data(), "read");
       t[i] = (TTree*)f[i]->Get("TrackletTree12");
 
       foutput->cd();
@@ -52,27 +52,25 @@ int evaluate_effs(const char* config, const char* label) {
 
    TCanvas* c1 = new TCanvas("c1", "", 600, 600);
    TLegend* l1 = new TLegend(0.5, 0.56, 0.9, 0.72);
-   lstyle(l1, 43, 16);
    for (std::size_t i = 0; i < nfiles; ++i) {
       hformat(heff[i], 0.f, 1.2f,
             ";number of pixel hits (layer 1);efficiency");
       heff[i]->Draw("p e same");
-      l1->AddEntry(heff[i], legends[i].c_str(), "pl");
+      l1->AddEntry(heff[i], legends[i].data(), "pl");
    }
-   l1->Draw();
+   lstyle(l1, 43, 16); l1->Draw();
    c1->SaveAs(Form("figs/vertex/vertex-eff-%s.png", label));
 
    TCanvas* c2 = new TCanvas("c2", "", 600, 600);
    c2->SetLogy();
    TLegend* l2 = new TLegend(0.5, 0.56, 0.9, 0.72);
-   lstyle(l2, 43, 16);
    for (std::size_t i = 0; i < nfiles; ++i) {
       hformat(hres[i], 0.001f, 0.5f,
             ";number of pixel hits (layer 1);resolution (cm)");
       hres[i]->Draw("p e same");
-      l2->AddEntry(hres[i], legends[i].c_str(), "pl");
+      l2->AddEntry(hres[i], legends[i].data(), "pl");
    }
-   l2->Draw();
+   lstyle(l2, 43, 16); l2->Draw();
    c2->SaveAs(Form("figs/vertex/vertex-res-%s.png", label));
 
    foutput->Write("", TObject::kOverwrite);

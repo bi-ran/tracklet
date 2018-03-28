@@ -20,7 +20,7 @@
 #include "include/defines.h"
 
 #define OPT(val)  options[opt].val
-#define CS(str)   str.c_str()
+#define CS(str)   str.data()
 #define OS(val)   CS(OPT(val))
 
 #define PIXELS1P(EXPAND)   \
@@ -74,7 +74,7 @@ int compare_pixels(std::vector<varinfo_t> const& options,
 
    TFile* f[nfiles]; TTree* t[nfiles];
    for (std::size_t j = 0; j < nfiles; ++j) {
-      f[j] = new TFile(files[j].c_str(), "read");
+      f[j] = new TFile(files[j].data(), "read");
       t[j] = (TTree*)f[j]->Get("pixel/PixelTree");
    }
 
@@ -110,8 +110,8 @@ int compare_pixels(std::vector<varinfo_t> const& options,
       t2->Draw(); t2->SetNumber(2);                                           \
       c##q->cd(1);                                                            \
                                                                               \
-      h##q[0]->GetXaxis()->SetLabelOffset(99);                                \
-      h##q[0]->GetXaxis()->SetTitleOffset(99);                                \
+      h##q[0]->SetLabelOffset(99, "X");                                       \
+      h##q[0]->SetTitleOffset(99, "X");                                       \
    }                                                                          \
                                                                               \
    if (OPT(flags) & 0x1) { gPad->SetLogy(); }                                 \
@@ -126,11 +126,10 @@ int compare_pixels(std::vector<varinfo_t> const& options,
    h##q[0]->Draw("p e same");                                                 \
                                                                               \
    TLegend* l##q = new TLegend(0.57, 0.725, 0.93, 0.875);                     \
-   lstyle(l##q, 43, 16);                                                      \
    l##q->AddEntry(h##q[0], CS(legends[0]), "p");                              \
    for (std::size_t j = 1; j < nfiles; ++j)                                   \
       l##q->AddEntry(h##q[j], CS(legends[j]), "l");                           \
-   l##q->Draw();                                                              \
+   lstyle(l##q, 43, 16); l##q->Draw();                                        \
                                                                               \
    if (OPT(flags) & 0x10) {                                                   \
       c##q->cd(2);                                                            \
@@ -208,7 +207,7 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
 
    TFile* f[nfiles];
    for (std::size_t j = 0; j < nfiles; ++j)
-      f[j] = new TFile(files[j].c_str(), "read");
+      f[j] = new TFile(files[j].data(), "read");
 
 #define SETUP_1D_TRACKLETS(q, w)                                              \
    TTree* t##q##w[nfiles];                                                    \
@@ -244,8 +243,8 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
       t2->Draw(); t2->SetNumber(2);                                           \
       c##q##w->cd(1);                                                         \
                                                                               \
-      h##q##w[0]->GetXaxis()->SetLabelOffset(99);                             \
-      h##q##w[0]->GetXaxis()->SetTitleOffset(99);                             \
+      h##q##w[0]->SetLabelOffset(99, "X");                                    \
+      h##q##w[0]->SetTitleOffset(99, "X");                                    \
    }                                                                          \
                                                                               \
    if (OPT(flags) & 0x1) { gPad->SetLogy(); }                                 \
@@ -260,11 +259,10 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
    h##q##w[0]->Draw("p e same");                                              \
                                                                               \
    TLegend* l##q##w = new TLegend(0.57, 0.725, 0.93, 0.875);                  \
-   lstyle(l##q##w, 43, 16);                                                   \
    l##q##w->AddEntry(h##q##w[0], CS(legends[0]), "p");                        \
    for (std::size_t j = 1; j < nfiles; ++j)                                   \
       l##q##w->AddEntry(h##q##w[j], CS(legends[j]), "l");                     \
-   l##q##w->Draw();                                                           \
+   lstyle(l##q##w, 43, 16); l##q##w->Draw();                                  \
                                                                               \
    if (OPT(flags) & 0x10) {                                                   \
       c##q##w->cd(2);                                                         \
@@ -273,14 +271,14 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
                Form("htr" #q "f%zu%s", j, idstr));                            \
          hr##q##w[j]->Divide(h##q##w[0]);                                     \
          hr##q##w[j]->SetAxisRange(0.5, 1.5, "Y");                            \
-         hr##q##w[j]->GetXaxis()->SetLabelSize(0.08);                         \
-         hr##q##w[j]->GetXaxis()->SetTitleSize(0.1);                          \
-         hr##q##w[j]->GetYaxis()->SetLabelSize(0.08);                         \
-         hr##q##w[j]->GetYaxis()->SetTitleSize(0.08);                         \
-         hr##q##w[j]->GetYaxis()->CenterTitle();                              \
-         hr##q##w[j]->GetYaxis()->SetTitleOffset(0.5);                        \
+         hr##q##w[j]->SetLabelSize(0.08, "X");                                \
+         hr##q##w[j]->SetTitleSize(0.1, "X");                                 \
+         hr##q##w[j]->SetLabelSize(0.08, "Y");                                \
+         hr##q##w[j]->SetTitleSize(0.08, "Y");                                \
+         hr##q##w[j]->SetTitleOffset(0.5, "Y");                               \
          hr##q##w[j]->SetNdivisions(205, "Y");                                \
          hr##q##w[j]->SetYTitle("ratio");                                     \
+         hr##q##w[j]->GetYaxis()->CenterTitle();                              \
          hr##q##w[j]->Draw("p e same");                                       \
       }                                                                       \
                                                                               \
@@ -357,7 +355,7 @@ int map_pixels(std::vector<varinfo_t> const& options,
 #define SELECTION(q)                                                          \
    std::string sel##q = OPT(sel);                                             \
    std::replace(sel##q.begin(), sel##q.end(), '@', #q[0]);                    \
-   TCut fsel##q = sel##q.c_str();                                             \
+   TCut fsel##q = sel##q.data();                                              \
 
    PIXELS1P(SELECTION)
 
@@ -507,7 +505,7 @@ int main(int argc, char* argv[]) {
             (*delegates[mode])(*options[mode], argv[2], argv[3], atoi(argv[i]));
       } else {
          printf("usage: ./harvest_hists [%i] [%s] [label] (opt)\n",
-               mode, usagestrs[mode].c_str());
+               mode, usagestrs[mode].data());
          return 1;
       }
    } else {

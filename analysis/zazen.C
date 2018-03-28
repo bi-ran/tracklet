@@ -31,11 +31,10 @@ int zazen(const char* config, const char* label) {
    auto logy = conf->get<bool>("logy");
    auto coffset = conf->get<int>("coffset");
 
-   std::vector<TFile*> fres;
-   std::vector<TFile*> fsys;
+   std::vector<TFile*> fres; std::vector<TFile*> fsys;
    for (std::size_t f = 0; f < nres; ++f) {
-      fres.push_back(TFile::Open(results[f].c_str(), "read"));
-      fsys.push_back(TFile::Open(systematics[f].c_str(), "read"));
+      fres.push_back(TFile::Open(results[f].data(), "read"));
+      fsys.push_back(TFile::Open(systematics[f].data(), "read"));
    }
 
    TFile* fj = 0;
@@ -49,8 +48,10 @@ int zazen(const char* config, const char* label) {
 
    TH1F* hres[nres]; TH1F* hsys[nres];
    for (std::size_t i = 0; i < nres; ++i) {
-      hres[i] = (TH1F*)fres[i]->Get(hist.c_str())->Clone(Form("%s_%s", hist.c_str(), tags[i].c_str()));
-      hsys[i] = (TH1F*)fsys[i]->Get(Form("%s_tdiff", hist.c_str()))->Clone(Form("%s_%s_tdiff", hist.c_str(), tags[i].c_str()));
+      hres[i] = (TH1F*)fres[i]->Get(hist.data())->Clone(
+            Form("%s_%s", hist.data(), tags[i].data()));
+      hsys[i] = (TH1F*)fsys[i]->Get(Form("%s_tdiff", hist.data()))->Clone(
+            Form("%s_%s_tdiff", hist.data(), tags[i].data()));
    }
 
    TGraph* gr = new TGraph();
@@ -78,15 +79,13 @@ int zazen(const char* config, const char* label) {
    watermark();
 
    TLegend* l1 = new TLegend(0.415, 0.3, 0.6, 0.475);
-   lstyle(l1, 43, 12);
    TLegendEntry* hxx = l1->AddEntry((TObject*)0, "XeXe", "");
-   hxx->SetTextFont(63);
-   hxx->SetTextSize(13);
+   hxx->SetTextFont(63); hxx->SetTextSize(13);
    for (std::size_t i = 0; i < nres; ++i)
-      l1->AddEntry(hres[i], legends[i].c_str(), "p");
-   l1->Draw();
+      l1->AddEntry(hres[i], legends[i].data(), "p");
+   lstyle(l1, 43, 12); l1->Draw();
 
-   c1->SaveAs(Form("figs/results/results-%s-%s.png", hist.c_str(), label));
+   c1->SaveAs(Form("figs/results/results-%s-%s.png", hist.data(), label));
 
    if (fj && fj->IsOpen()) {
       TH1F* hj = (TH1F*)fj->Get("hjavg")->Clone();
@@ -100,12 +99,15 @@ int zazen(const char* config, const char* label) {
 
       TH1F* hyres[nres]; TH1F* hysys[nres]; TH1F* hyjsys[nres];
       for (std::size_t i = 0; i < nres; ++i) {
-         hyres[i] = (TH1F*)hres[i]->Clone(Form("%sy_%s", hist.c_str(), tags[i].c_str()));
+         hyres[i] = (TH1F*)hres[i]->Clone(Form("%sy_%s",
+               hist.data(), tags[i].data()));
          hyres[i]->Multiply(hj);
 
-         hyjsys[i] = (TH1F*)hyres[i]->Clone(Form("%sy_%s_jsys", hist.c_str(), tags[i].c_str()));
+         hyjsys[i] = (TH1F*)hyres[i]->Clone(Form("%sy_%s_jsys",
+               hist.data(), tags[i].data()));
          hyjsys[i]->Multiply(hjsys);
-         hysys[i] = (TH1F*)hsys[i]->Clone(Form("%sy_%s_tdiff", hist.c_str(), tags[i].c_str()));
+         hysys[i] = (TH1F*)hsys[i]->Clone(Form("%sy_%s_tdiff",
+               hist.data(), tags[i].data()));
          hysys[i]->Multiply(hj);
          hysys[i]->Add(hyjsys[i]);
 
@@ -124,15 +126,13 @@ int zazen(const char* config, const char* label) {
       watermark();
 
       TLegend* l2 = new TLegend(0.415, 0.3, 0.6, 0.475);
-      lstyle(l2, 43, 12);
       TLegendEntry* h2xx = l2->AddEntry((TObject*)0, "XeXe", "");
-      h2xx->SetTextFont(63);
-      h2xx->SetTextSize(13);
+      h2xx->SetTextFont(63); h2xx->SetTextSize(13);
       for (std::size_t i = 0; i < nres; ++i)
-         l2->AddEntry(hyres[i], legends[i].c_str(), "p");
-      l2->Draw();
+         l2->AddEntry(hyres[i], legends[i].data(), "p");
+      lstyle(l2, 43, 12); l2->Draw();
 
-      c2->SaveAs(Form("figs/results/results-%s-%s-y.png", hist.c_str(), label));
+      c2->SaveAs(Form("figs/results/results-%s-%s-y.png", hist.data(), label));
    }
 
    fout->Write("", TObject::kOverwrite);

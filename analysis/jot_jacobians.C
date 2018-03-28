@@ -23,7 +23,7 @@ int jot_jacobians(const char* config, const char* label) {
 
    TFile* f[nfiles]; TTree* t[nfiles];
    for (std::size_t i = 0; i < nfiles; ++i) {
-      f[i] = new TFile(files[i].c_str(), "read");
+      f[i] = new TFile(files[i].data(), "read");
       t[i] = (TTree*)f[i]->Get("pixel/PixelTree");
    }
 
@@ -34,23 +34,24 @@ int jot_jacobians(const char* config, const char* label) {
 #define INCLUDE_ETA_BINS
 #include "include/bins.h"
 
-   const char* gsel = "(process!=102 && process!=103 && process!=104) && abs(vz[0])<20";
+   const char* gsel = "(process!=102 && process!=103 && process!=104)"
+         " && abs(vz[0])<20";
 
    TH1F* hh[nfiles]; TH1F* hy[nfiles]; TH1F* hj[nfiles]; TH1F* hjr[nfiles];
    for (std::size_t i = 0; i < nfiles; ++i) {
       uint64_t nevent = t[i]->GetEntries("abs(vz[0])<20");
 
-      hh[i] = new TH1F(Form("hh%s", tags[i].c_str()), "", neta, etab);
-      t[i]->Project(Form("hh%s", tags[i].c_str()), "eta", gsel, "", 32768);
+      hh[i] = new TH1F(Form("hh%s", tags[i].data()), "", neta, etab);
+      t[i]->Project(Form("hh%s", tags[i].data()), "eta", gsel, "", 32768);
       hh[i]->Scale(1./nevent, "width");
       hformat(hh[i], 21, colours[i % ncolours], 0, 600, ";#eta;dN/d#eta");
 
-      hy[i] = new TH1F(Form("hy%s", tags[i].c_str()), "", neta, etab);
-      t[i]->Project(Form("hy%s", tags[i].c_str()), "y", gsel, "", 32768);
+      hy[i] = new TH1F(Form("hy%s", tags[i].data()), "", neta, etab);
+      t[i]->Project(Form("hy%s", tags[i].data()), "y", gsel, "", 32768);
       hy[i]->Scale(1./nevent, "width");
       hformat(hy[i], 20, colours[(i + 1) % ncolours], 0, 600, ";y;dN/dy");
 
-      hj[i] = (TH1F*)hy[i]->Clone(Form("hj%s", tags[i].c_str()));
+      hj[i] = (TH1F*)hy[i]->Clone(Form("hj%s", tags[i].data()));
       hj[i]->Divide(hh[i]);
       hformat(hj[i], 45, colours[(i + 2) % ncolours], 0.5, 1.5, ";#eta;");
 
@@ -58,10 +59,12 @@ int jot_jacobians(const char* config, const char* label) {
 
       hh[i]->Draw("hist e x0");
       hy[i]->Draw("hist e x0 same");
-      c1->SaveAs(Form("figs/corrections/jacobian-%s-eta-y-%s.png", tags[i].c_str(), label));
+      c1->SaveAs(Form("figs/corrections/jacobian-%s-eta-y-%s.png",
+            tags[i].data(), label));
 
       hj[i]->Draw("p e x0");
-      c1->SaveAs(Form("figs/corrections/jacobian-%s-%s.png", tags[i].c_str(), label));
+      c1->SaveAs(Form("figs/corrections/jacobian-%s-%s.png",
+            tags[i].data(), label));
 
       delete c1;
    }
@@ -72,7 +75,7 @@ int jot_jacobians(const char* config, const char* label) {
       hjavg->Add(hj[i]);
    hjavg->Scale(1. / nfiles);
    for (std::size_t i = 0; i < nfiles; ++i) {
-      hjr[i] = (TH1F*)hj[i]->Clone(Form("hjr%s", tags[i].c_str()));
+      hjr[i] = (TH1F*)hj[i]->Clone(Form("hjr%s", tags[i].data()));
       hjr[i]->Divide(hjavg);
    }
 
@@ -88,22 +91,20 @@ int jot_jacobians(const char* config, const char* label) {
 
    TCanvas* c2 = new TCanvas("c2", "", 600, 600);
    TLegend* l2 = new TLegend(0.5, 0.72, 0.84, 0.9);
-   lstyle(l2, 43, 15);
    for (std::size_t i = 0; i < nfiles; ++i) {
       hj[i]->Draw("p e x0 same");
-      l2->AddEntry(hj[i], legends[i].c_str(), "p");
+      l2->AddEntry(hj[i], legends[i].data(), "p");
    }
-   l2->Draw();
+   lstyle(l2, 43, 15); l2->Draw();
    c2->SaveAs(Form("figs/corrections/jacobian.all-%s.png", label));
 
    TCanvas* c3 = new TCanvas("c3", "", 600, 600);
    TLegend* l3 = new TLegend(0.5, 0.72, 0.84, 0.9);
-   lstyle(l3, 43, 15);
    for (std::size_t i = 0; i < nfiles; ++i) {
       hjr[i]->Draw("p e x0 same");
-      l3->AddEntry(hjr[i], legends[i].c_str(), "p");
+      l3->AddEntry(hjr[i], legends[i].data(), "p");
    }
-   l3->Draw();
+   lstyle(l3, 43, 15); l3->Draw();
    c3->SaveAs(Form("figs/corrections/jacobian.all-var-%s.png", label));
 
    fout->Write("", TObject::kOverwrite);
