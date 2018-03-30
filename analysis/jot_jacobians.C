@@ -34,12 +34,11 @@ int jot_jacobians(const char* config, const char* label) {
 #define INCLUDE_ETA_BINS
 #include "include/bins.h"
 
-   const char* gsel = "(process!=102 && process!=103 && process!=104)"
-         " && abs(vz[0])<20";
+   const char* gsel = "(process!=102 && process!=103 && process!=104)";
 
    TH1F* hh[nfiles]; TH1F* hy[nfiles]; TH1F* hj[nfiles]; TH1F* hjr[nfiles];
    for (std::size_t i = 0; i < nfiles; ++i) {
-      uint64_t nevent = t[i]->GetEntries("abs(vz[0])<20");
+      uint64_t nevent = t[i]->GetEntries();
 
       hh[i] = new TH1F(Form("hh%s", tags[i].data()), "", neta, etab);
       t[i]->Project(Form("hh%s", tags[i].data()), "eta", gsel, "", 32768);
