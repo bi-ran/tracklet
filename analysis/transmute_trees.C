@@ -145,7 +145,6 @@ int transmute_trees(const char* input,
          events.push_back(i+e);
 
       bool hltor = 0;
-      int nhfpsum = 0; int nhfnsum = 0;
       float hftsum = 0;
 
 #define DECLARE_HITS(q) std::vector<rechit> layer##q;
@@ -164,14 +163,6 @@ int transmute_trees(const char* input,
          if (par.nhits1 > 200 + 1.9 * par.nhits5 ||
              par.nhits1 < -144 + 1.9/1.5 * par.nhits5)
             continue;
-
-#define SAVE_VERTICES(q, w)                                                   \
-         trkltdata##q##w.nv = par.nv + 1;                                     \
-         trkltdata##q##w.vx[0] = par.vx[0];                                   \
-         trkltdata##q##w.vy[0] = par.vy[0];                                   \
-         trkltdata##q##w.vz[0] = par.vz[0];                                   \
-
-         TRKLTS2P(SAVE_VERTICES);
 
 #define ADD_BACKGROUND(q)                                                     \
          int bkghits##q = 0;                                                  \
@@ -197,7 +188,6 @@ int transmute_trees(const char* input,
          PIXELS1P(POPULATE_HITS);
 
          hltor |= par.hlt;
-         nhfpsum += par.nhfp; nhfnsum += par.nhfn;
          hftsum += par.hft;
       }
 
@@ -207,6 +197,14 @@ int transmute_trees(const char* input,
 
       if (layer1.size() > MAXH)
          continue;
+
+#define SAVE_VERTICES(q, w)                                                   \
+      trkltdata##q##w.nv = par.nv + 1;                                        \
+      trkltdata##q##w.vx[0] = par.vx[0];                                      \
+      trkltdata##q##w.vy[0] = par.vy[0];                                      \
+      trkltdata##q##w.vz[0] = par.vz[0];                                      \
+
+      TRKLTS2P(SAVE_VERTICES);
 
       if (random) {
          vz = gRandom->Rndm() * 30 - 15 - vz_shift;
@@ -262,8 +260,8 @@ int transmute_trees(const char* input,
       trkltdata##q##w.event      = par.event;                                 \
       trkltdata##q##w.bx         = par.bx;                                    \
       trkltdata##q##w.hlt        = hltor;                                     \
-      trkltdata##q##w.nhfp       = nhfpsum;                                   \
-      trkltdata##q##w.nhfn       = nhfnsum;                                   \
+      trkltdata##q##w.nhfp       = par.nhfp;                                  \
+      trkltdata##q##w.nhfn       = par.nhfn;                                  \
       trkltdata##q##w.hft        = hftsum;                                    \
       trkltdata##q##w.weight     = event_weight;                              \
                                                                               \
