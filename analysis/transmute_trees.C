@@ -161,6 +161,10 @@ int transmute_trees(const char* input,
             continue;
 #endif  /* CENTRALITY */
 
+         if (par.nhits1 > 200 + 1.9 * par.nhits5 ||
+             par.nhits1 < -144 + 1.9/1.5 * par.nhits5)
+            continue;
+
 #define SAVE_VERTICES(q, w)                                                   \
          trkltdata##q##w.nv = par.nv + 1;                                     \
          trkltdata##q##w.vx[0] = par.vx[0];                                   \
