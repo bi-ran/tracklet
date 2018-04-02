@@ -33,7 +33,8 @@ int reap_results(int type,
                  bool multhandle = 0,           // alternate mult handle
                  float maxdr2 = 0.25,           // signal region selection
                  const char* accepdir =         // acceptance corrections path
-                 "output/acceptances/rlt0p5")
+                 "output/acceptances/rlt0p5",
+                 const char* asel = "(1)")      // additional selection
 {
    TFile* finput = new TFile(input, "read");
    TTree* tinput = (TTree*)finput->Get(Form("TrackletTree%i", type));
@@ -70,6 +71,8 @@ int reap_results(int type,
    const char* mult = multhandle ? "nhit2" : "ntracklet";
    printf("$ event multiplicity handle: number of tracklets\n");
 
+   printf("$ additinal selection: %s\n", asel);
+
    /* binning                                                                 */
 #define INCLUDE_VZ_BINS
 #define INCLUDE_ETA_BINS
@@ -81,14 +84,15 @@ int reap_results(int type,
    float hftmax = hfofficial[cmax];
 
    TCut vsel = "(vz[1]<15 && vz[1]>-15)";
+   TCut fsel = vsel && asel;
 
    TCut ssel = Form("(dr2<%f)", maxdr2);
    TCut csel = Form("(hft>=%f && hft<%f)", hftmin, hftmax);
    TCut osel = "(hlt && nhfn>2 && nhfp>2)";
    TCut psel = "(process!=102 && process!=103 && process!=104)";
 
-   TCut esel = vsel && csel && osel;
-   TCut gsel = vsel && csel && psel;
+   TCut esel = fsel && csel && osel;
+   TCut gsel = fsel && csel && psel;
 
    /* output                                                                  */
    TFile* outf = new TFile(Form("output/correction-%s-%i.root", label, type), "recreate");
@@ -699,6 +703,11 @@ int main(int argc, char* argv[]) {
             atoi(argv[4]), atoi(argv[5]), argv[6], atoi(argv[7]),
             atoi(argv[8]), atoi(argv[9]), argv[10],
             atoi(argv[11]), atof(argv[12]), argv[13]);
+   } else if (argc == 15) {
+      return reap_results(atoi(argv[1]), argv[2], argv[3],
+            atoi(argv[4]), atoi(argv[5]), argv[6], atoi(argv[7]),
+            atoi(argv[8]), atoi(argv[9]), argv[10],
+            atoi(argv[11]), atof(argv[12]), argv[13], argv[14]);
    } else {
       printf("usage: ./reap_results [type] [input] [label]\n"
              "(cmin cmax) (corrections (apply))"
