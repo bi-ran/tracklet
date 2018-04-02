@@ -34,6 +34,7 @@ int reap_results(int type,
                  float maxdr2 = 0.25,           // signal region selection
                  const char* accepdir =         // acceptance corrections path
                  "output/acceptances/rlt0p5",
+                 const char* putag = "null",    // pileup correction
                  const char* asel = "(1)")      // additional selection
 {
    TFile* finput = new TFile(input, "read");
@@ -65,7 +66,13 @@ int reap_results(int type,
    TFile* fes = 0;
    if (strcmp(estag, "null")) {
       fes = new TFile(Form("output/correction-%s-%i.root", estag, type));
-      printf("$ applying external single-diffractive fractions\n");
+      printf("$ applying external event selection corrections\n");
+   }
+
+   TFile* fpu = 0;
+   if (strcmp(putag, "null")) {
+      fpu = new TFile(Form("data/pileup-%s.root", putag));
+      printf("$ applying pileup corrections\n");
    }
 
    const char* mult = multhandle ? "nhit2" : "ntracklet";
@@ -612,8 +619,14 @@ int reap_results(int type,
       cempty->SaveAs(Form("figs/corrections/empty-%s-%i.png", label, type));
    }
 
-   TH1F* h1WEfinal = (TH1F*)h1WEtcorr->Clone("h1WEfinal");
-   h1WEfinal->Multiply(h1empty);
+   TH1F* h1WEprefinal = (TH1F*)h1WEtcorr->Clone("h1WEprefinal");
+   h1WEprefinal->Multiply(h1empty);
+
+   TH1F* h1WEfinal = (TH1F*)h1WEprefinal->Clone("h1WEfinal");
+   if (fpu) {
+      TH1F* h1pu = (TH1F*)fpu->Get(Form("h1pu%i", type))->Clone("h1pu");
+      h1WEfinal->Multiply(h1pu);
+   }
 
    /* analysis stages                                                         */
    TCanvas* cstage = new TCanvas("cstage", "", CANVASW, CANVASH);
@@ -708,12 +721,18 @@ int main(int argc, char* argv[]) {
             atoi(argv[4]), atoi(argv[5]), argv[6], atoi(argv[7]),
             atoi(argv[8]), atoi(argv[9]), argv[10],
             atoi(argv[11]), atof(argv[12]), argv[13], argv[14]);
+   } else if (argc == 16) {
+      return reap_results(atoi(argv[1]), argv[2], argv[3],
+            atoi(argv[4]), atoi(argv[5]), argv[6], atoi(argv[7]),
+            atoi(argv[8]), atoi(argv[9]), argv[10],
+            atoi(argv[11]), atof(argv[12]), argv[13], argv[14], argv[15]);
    } else {
       printf("usage: ./reap_results [type] [input] [label]\n"
              "(cmin cmax) (corrections (apply))"
              "(geometric-correction) (external-acceptance-maps)\n"
              "(event-selection-corrections)\n"
-             "(multiplicity-handle) (maxdr2) (gcorr-path)\n");
+             "(multiplicity-handle) (maxdr2) (gcorr-path)\n"
+             "(pileup-correction) (additional-selection)\n");
       return -1;
    }
 }
