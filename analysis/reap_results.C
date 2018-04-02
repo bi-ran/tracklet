@@ -24,18 +24,17 @@
 int reap_results(int type,
                  const char* input,
                  const char* label,
-                 int cmin = 0, int cmax = 20,   // centrality selection
-                 const char* ctag = 0,          // correction file label
-                 bool applyc = 0,               // apply external corrections
-                 bool applyg = 0,               // apply geometric correction
-                 bool applym = 1,               // apply external acceptance map
-                 const char* estag = "null",    // event selection corrections
-                 bool multhandle = 0,           // alternate mult handle
-                 float maxdr2 = 0.25,           // signal region selection
-                 const char* accepdir =         // acceptance corrections path
-                 "output/acceptances/rlt0p5",
-                 const char* putag = "null",    // pileup correction
-                 const char* asel = "(1)")      // additional selection
+                 int cmin = 0, int cmax = 20,     // centrality selection
+                 const char* ctag = 0,            // correction file label
+                 bool applyc = 0,                 // apply external corrections
+                 bool applyg = 0,                 // apply geometric correction
+                 bool applym = 1,                 // apply acceptance map
+                 const char* estag = "null",      // event selection corrections
+                 bool multhandle = 0,             // alternate mult handle
+                 float maxdr2 = 0.25,             // signal region selection
+                 const char* accepdir = "rlt0p5", // acceptance correction path
+                 const char* putag = "null",      // pileup correction
+                 const char* asel = "(1)")        // additional selection
 {
    TFile* finput = new TFile(input, "read");
    TTree* tinput = (TTree*)finput->Get(Form("TrackletTree%i", type));
@@ -55,7 +54,8 @@ int reap_results(int type,
       printf("$ applying correction factors: %s\n", ctag);
 
       if (applyg) {
-         faccep = new TFile(Form("%s/acceptance-%i.root", accepdir, type));
+         faccep = new TFile(Form("output/acceptances/%s/acceptance-%i.root",
+               accepdir, type));
          printf("$ applying geometric correction\n");
       }
    }
