@@ -38,4 +38,14 @@
    EXPAND(p, 1, 6)            \
    EXPAND(p, 1, 7)            \
 
+#define I12 0
+#define I13 1
+#define I14 2
+#define I23 3
+#define I24 4
+#define I34 5
+#define I15 6
+#define I16 7
+#define I17 8
+
 #endif  /* DEFINES_H */

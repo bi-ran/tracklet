@@ -24,16 +24,6 @@
 #define COUNT(q, w)  + 1
 #define NTRKLT2P  (0 TRKLTS2P(COUNT))
 
-#define INDEX12 0
-#define INDEX13 1
-#define INDEX14 2
-#define INDEX23 3
-#define INDEX24 4
-#define INDEX34 5
-#define INDEX15 6
-#define INDEX16 7
-#define INDEX17 8
-
 #define INCLUDE_ETA_RANGE
 #include "include/bins.h"
 
@@ -100,11 +90,11 @@ int merge_monads(const char* label, uint32_t opts) {
 
 #define STYLE(q, w)                                                           \
    htitle(h##q##w, ";#eta;dN/d#eta");                                         \
-   hstyle(h##q##w, markers[INDEX##q##w], colours[INDEX##q##w]);               \
+   hstyle(h##q##w, markers[I##q##w], colours[I##q##w]);                       \
 
 #define ZERO(q, w)                                                            \
    for (int j=1; j<=h##q##w->GetNbinsX(); ++j) {                              \
-      if (!good[INDEX##q##w][j - 1]) {                                        \
+      if (!good[I##q##w][j - 1]) {                                            \
          h##q##w->SetBinContent(j, 0);                                        \
          h##q##w->SetBinError(j, 0);                                          \
       }                                                                       \
@@ -126,7 +116,7 @@ int merge_monads(const char* label, uint32_t opts) {
       float avg = 0; float avg_err = 0; int nsum = 0;
 
 #define AVERAGE(q, w)                                                         \
-      if (good[INDEX##q##w][i - 1] && h##q##w->GetBinContent(i) != 0) {       \
+      if (good[I##q##w][i - 1] && h##q##w->GetBinContent(i) != 0) {           \
          avg += h##q##w->GetBinContent(i);                                    \
          avg_err += h##q##w->GetBinError(i) * h##q##w->GetBinError(i);        \
          nsum++;                                                              \
