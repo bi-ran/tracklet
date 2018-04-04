@@ -59,10 +59,17 @@ EXEC=eval
 $EXEC 'make reap_results merge_monads collect_cents || exit 1';
 
 if [[ $3 -gt 0 ]]; then
+    [ $# -ge 8 ] && ESTAG=${8}
+    [ $# -ge 12 ] && PUTAG=${12}
+
     for (( CMAX=20; CMAX>=$3; CMAX-=$3 )); do
         CMIN=$(( CMAX - $3 ))
 
         [ -n "$INCL" ] || CTAG=.a.$CMIN.$CMAX
+        [[ $# -ge 8 && $ESTAG != "null" ]] && {
+            set -- "${@:1:7}" "${ESTAG}$CTAG" "${@:9}"; }
+        [[ $# -ge 12 && $PUTAG != "null" ]] && {
+            set -- "${@:1:11}" "${PUTAG}$CTAG" "${@:13}"; }
         for TYPE in ${TYPES[@]}; do
             CMD='nice -n $NICE sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
                     "./reap_results $TYPE $1 $2.a.$CMIN.$CMAX \
@@ -85,8 +92,14 @@ if [[ $3 -gt 0 ]]; then
     $EXEC ./collect_cents $2.a $3
 elif [[ $3 -eq 0 ]]; then
     [[ $# -lt 5 ]] && exit 2
+    [ $# -ge 10 ] && ESTAG=${10}
+    [ $# -ge 14 ] && PUTAG=${14}
 
     [ -n "$INCL" ] || CTAG=.s.$4.$5
+    [[ $# -ge 10 && $ESTAG != "null" ]] && {
+        set -- "${@:1:9}" "${ESTAG}$CTAG" "${@:11}"; }
+    [[ $# -ge 14 && $PUTAG != "null" ]] && {
+        set -- "${@:1:13}" "${PUTAG}$CTAG" "${@:15}"; }
     for TYPE in ${TYPES[@]}; do
         CMD='nice -n $NICE sem -j$JOBS --id sem-grp-rr-$GROUP $FLAGS \
                 "./reap_results $TYPE $1 $2.s.$4.$5 \
