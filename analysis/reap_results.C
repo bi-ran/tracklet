@@ -42,9 +42,8 @@ int reap_results(int type,
    TTree* ttruth = (TTree*)finput->Get("truth");
    tinput->AddFriend(ttruth);
 
-   bool ismc = !ttruth->GetEntries("npart!=0");
-
-   if (ismc) { printf("$ monte carlo analysis\n"); }
+   if (ttruth->GetEntries("npart!=0")) {
+      printf("$ monte carlo analysis\n"); }
    else { printf("$ data analysis\n"); }
 
    TFile* fcorr = 0;
