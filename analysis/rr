@@ -132,6 +132,7 @@ fi
     grep reap_results $FILE.tmp | grep -v make >> $FILE;
     grep -- '--wait' $FILE.tmp >> $FILE;
     grep merge_monads $FILE.tmp | grep -v make >> $FILE;
+    grep collect_cents $FILE.tmp | grep -v make >> $FILE;
     grep purge_pileup $FILE.tmp | grep -v make >> $FILE;
     rm $FILE.tmp
 }
