@@ -12,7 +12,7 @@ int purge_pileup(const char* pu, const char* exact, const char* label) {
    TFile* fpu = new TFile(Form("output/merged-%s.root", pu));
    TFile* fexact = new TFile(Form("output/merged-%s.root", exact));
 
-   TFile* fout = new TFile(Form("data/pileup-%s.root", label), "recreate");
+   TFile* fout = new TFile(Form("output/pileup-%s.root", label), "recreate");
 
    TH1F* hpu[9] = {0}; TH1F* hexact[9] = {0}; TH1F* h1pu[9] = {0};
    for (int i=0; i<9; ++i) {

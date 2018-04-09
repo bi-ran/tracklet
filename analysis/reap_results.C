@@ -70,7 +70,7 @@ int reap_results(int type,
 
    TFile* fpu = 0;
    if (strcmp(putag, "null")) {
-      fpu = new TFile(Form("data/pileup-%s.root", putag));
+      fpu = new TFile(Form("output/pileup-%s.root", putag));
       printf("$ applying pileup corrections\n");
    }
 
