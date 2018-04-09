@@ -1,18 +1,16 @@
 #include "TFile.h"
+#include "TGraph.h"
 #include "TGraphErrors.h"
 #include "TH1.h"
-#include "TColor.h"
 #include "TCanvas.h"
 #include "TLegend.h"
 #include "TLegendEntry.h"
 #include "TGaxis.h"
 
-#include <vector>
-
 #include "include/cosmetics.h"
 
-#define NCENT       20
-#define NEXCLUDE    2
+#define NCENT   20
+#define OFFSET  4
 
 const float npart[NCENT] = {
     2.638, 2.814, 4.425, 6.183, 8.623,
@@ -39,51 +37,56 @@ TGraphErrors* phobos_cucu_0p2_norm();
 TGraphErrors* cms_pp_13p0_norm();
 TGraphErrors* cms_ppb_8p16_norm();
 
-int collect_cents(const char* label, int interval) {
-    TFile* fout = new TFile(Form("output/centrality-%s.root", label), "recreate");
+int collect_cents(const char* label) {
+    constexpr int ntotal = NCENT - OFFSET;
 
-    TGraphErrors* g = new TGraphErrors((NCENT - NEXCLUDE) / interval);
-    g->SetName("g");
-    g->SetMarkerStyle(21);
-    g->SetMarkerColor(COLOUR1);
-    g->SetFillStyle(1001);
-    g->SetFillColorAlpha(COLOUR1, 0.4);
+    TFile* fout = new TFile(Form("output/centrality-%s.root", label),
+            "recreate");
 
+    TGraphErrors* g = new TGraphErrors(ntotal); g->SetName("g");
+    g->SetMarkerStyle(21); g->SetMarkerColor(COLOUR1);
+    g->SetFillStyle(1001); g->SetFillColorAlpha(COLOUR1, 0.4);
     TGraphErrors* gs = (TGraphErrors*)g->Clone("gs");
-
     TGraphErrors* gnorm = (TGraphErrors*)g->Clone("gnorm");
-    TGraphErrors* gsnorm = (TGraphErrors*)g->Clone("gsnorm");
+    TGraph* gsnorm = new TGraph(2 * ntotal + 2);
+    gsnorm->SetFillStyle(1001); gsnorm->SetFillColorAlpha(COLOUR1, 0.4);
 
-    for (int c = NCENT; c >= interval + NEXCLUDE; c -= interval) {
-        TFile* f = new TFile(Form("output/merged-%s.%i.%i.root", label, c - interval, c), "read");
-        TH1F* h = (TH1F*)f->Get("havg");
+    for (int c = OFFSET; c < NCENT; ++c) {
+        TFile* f = new TFile(Form("output/merged-%s.%i.%i.root",
+                label, c, c + 1));
+        TH1F* h = (TH1F*)f->Get("hsym");
 
         int nbins = h->GetNbinsX();
-        float midy = (h->GetBinContent((nbins + 1) / 2) + h->GetBinContent(nbins / 2 + 1)) / 2;
-        float midyerr = (h->GetBinError((nbins + 1) / 2) + h->GetBinError(nbins / 2 + 1)) / 2;
+        float midy = h->GetBinContent((nbins + 1) / 2);
+        float midyerr = h->GetBinError((nbins + 1) / 2);
+        float midyserr = midy * 0.03;
 
-        int cindex = (c - NEXCLUDE) / interval - 1;
+        int cindex = c - OFFSET;
 
-        g->SetPoint(cindex, 100. / NCENT * ((2 * c - interval) / 2.), midy);
+        g->SetPoint(cindex, 5 * c + 2.5, midy);
         g->SetPointError(cindex, 0, midyerr);
+        gs->SetPoint(cindex, 5 * c + 2.5, midy);
+        gs->SetPointError(cindex, 0, midyserr);
 
-        gs->SetPoint(cindex, 100. / NCENT * ((2 * c - interval) / 2.), midy);
-        gs->SetPointError(cindex, 0, midy * 0.03);
+        float mnpart = npart[c]; float mnparterr = nparterr[c];
 
-        float avgnpart = 0;
-        float avgnparterr = 0;
-        for (int s = c - interval; s < c; ++s) {
-            avgnpart += npart[s];
-            avgnparterr += nparterr[s];
+        switch (cindex) {
+            case 0:
+                gsnorm->SetPoint(0, mnpart - mnparterr,
+                        (midy - midyserr) / (mnpart - mnparterr));
+                break;
+            case ntotal - 1:
+                gsnorm->SetPoint(ntotal + 1, mnpart + mnparterr,
+                        (midy + midyserr) / (mnpart + mnparterr));
+                break;
         }
-        avgnpart /= interval;
-        avgnparterr /= interval;
 
-        gnorm->SetPoint(cindex, avgnpart, midy / avgnpart);
-        gnorm->SetPointError(cindex, avgnparterr, midyerr / avgnpart);
-
-        gsnorm->SetPoint(cindex, avgnpart, midy / avgnpart);
-        gsnorm->SetPointError(cindex, avgnparterr, midy * 0.03 / avgnpart);
+        gnorm->SetPoint(cindex, mnpart, midy / mnpart);
+        gnorm->SetPointError(cindex, mnparterr, midyerr / mnpart);
+        gsnorm->SetPoint(cindex + 1, mnpart - mnparterr,
+                (midy + midyserr) / (mnpart - mnparterr));
+        gsnorm->SetPoint(2 * ntotal - cindex + 1, mnpart + mnparterr,
+                (midy - midyserr) / (mnpart + mnparterr));
     }
 
     fout->cd();
@@ -93,9 +96,7 @@ int collect_cents(const char* label, int interval) {
     TGraphErrors* gphobos_auau_0p2 = phobos_auau_0p2();
     TGraphErrors* gphobos_cucu_0p2 = phobos_cucu_0p2();
 
-    TCanvas* c2 = new TCanvas("c2", "", 600, 600);
-    gPad->SetLogy();
-
+    TCanvas* c2 = new TCanvas("c2", "", 600, 600); c2->SetLogy();
     TH1F* gframe = new TH1F("gframe", "", 1, 0, 100);
     hformat(gframe, 1.f, 4000.f,
             ";Centrality [%];#frac{dN}{d#eta}#lbar_{#eta=0}");
@@ -103,15 +104,11 @@ int collect_cents(const char* label, int interval) {
     gframe->Draw();
 
     TGaxis* axis = new TGaxis(100, 1, 0, 1, 0, 100, 510, "-");
-    axis->SetLabelOffset(-0.032);
-    axis->SetLabelFont(43);
-    axis->SetLabelSize(17);
-    axis->Draw();
+    axis->SetLabelOffset(-0.032); axis->SetLabelFont(43);
+    axis->SetLabelSize(16); axis->Draw();
 
-    gcms_pbpb_2p76->Draw("p same");
-    galice_pbpb_5p02->Draw("p same");
-    gs->Draw("p 3 same");
-    g->Draw("p same");
+    gcms_pbpb_2p76->Draw("p same"); galice_pbpb_5p02->Draw("p same");
+    gs->Draw("p 3 same"); g->Draw("p same");
 
     watermark();
 
@@ -125,7 +122,7 @@ int collect_cents(const char* label, int interval) {
     l2->AddEntry(galice_pbpb_5p02, "PbPb 5.02 TeV", "p");
     lstyle(l2, 43, 15); l2->Draw();
 
-    c2->SaveAs(Form("figs/merged/merged-%s-midy-int%i.png", label, interval));
+    c2->SaveAs(Form("figs/merged/merged-%s-midy-int1.png", label));
 
     TGraphErrors* gcms_pbpb_2p76_norm = cms_pbpb_2p76_norm();
     TGraphErrors* galice_pbpb_5p02_norm = alice_pbpb_5p02_norm();
@@ -147,7 +144,7 @@ int collect_cents(const char* label, int interval) {
     gphobos_cucu_0p2_norm->Draw("p same");
     gcms_pp_13p0_norm->Draw("p same");
     gcms_ppb_8p16_norm->Draw("p same");
-    gsnorm->Draw("p 3 same");
+    gsnorm->Draw("f");
     gnorm->Draw("p same");
 
     watermark();
@@ -176,7 +173,7 @@ int collect_cents(const char* label, int interval) {
     l5->AddEntry(gcms_ppb_8p16_norm, "pPb 8.16 TeV", "p");
     lstyle(l5, 43, 15); l5->Draw();
 
-    c3->SaveAs(Form("figs/merged/merged-%s-midynorm-int%i.png", label, interval));
+    c3->SaveAs(Form("figs/merged/merged-%s-midynorm-int1.png", label));
 
     g->Write("", TObject::kOverwrite);
     gs->Write("", TObject::kOverwrite);
@@ -433,10 +430,10 @@ TGraphErrors* cms_ppb_8p16_norm() {
 }
 
 int main(int argc, char* argv[]) {
-    if (argc == 3) {
-        return collect_cents(argv[1], atoi(argv[2]));
+    if (argc == 2) {
+        return collect_cents(argv[1]);
     } else {
-        printf("usage: ./collect_cents [label] [interval]\n");
+        printf("usage: ./collect_cents [label]\n");
         return 1;
     }
 }
