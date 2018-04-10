@@ -91,13 +91,13 @@ int hfbin(float hft) {
     __builtin_unreachable();
 }
 
-const float* hftables[4] = {
-   hfepos, hfhydjet, hfamptnm, hfamptsm
+const float* hftables[7] = {
+    hfofficial, hfeffup, hfeffdown,
+    hfepos, hfhydjet, hfamptnm, hfamptsm
 };
 
-float hftval(int hfb, int select) {
-    const float* hftable = hftables[select];
-    return hftable[hfb];
+float hftval(int hfb, int sample) {
+    return hftables[sample][hfb];
 }
 
 #endif  /* HF_H */
