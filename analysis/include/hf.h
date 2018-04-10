@@ -10,6 +10,24 @@ static const float hfofficial[21] = {
     10000.00
 };
 
+/* CentralityTable_HFtowers200_DataXeXe_effstep98a25_run2v941x01_offline */
+static const float hfeffup[21] = {
+        0.00, 17.6382, 23.7497, 34.2277, 49.7004,
+     71.2325, 100.793, 140.552, 193.142, 260.808,
+     345.225,     449, 574.858, 724.443, 900.748,
+      1109.4, 1353.88, 1641.79, 1987.47, 2410.48,
+    10000.00
+};
+
+/* CentralityTable_HFtowers200_DataXeXe_effstep92a25_run2v941x01_offline */
+static const float hfeffdown[21] = {
+        0.00,  15.929, 19.4426, 23.7154,  33.661,
+     50.1023, 73.4304, 106.172, 150.959, 210.843,
+     288.199, 385.384, 506.484, 652.586, 828.802,
+     1037.42, 1285.74, 1581.93, 1938.88, 2380.16,
+    10000.00
+};
+
 /* CentralityTable_HFtowers200_XeXe5p44TeVEPOSLHC_v941x01_mc */
 static const float hfepos[21] = {
         0.00, 12.4995, 17.3889, 25.2556, 37.7678,
