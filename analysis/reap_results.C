@@ -34,6 +34,7 @@ int reap_results(int type,
                  float maxdr2 = 0.25,             // signal region selection
                  const char* accepdir = "rlt0p5", // acceptance correction path
                  const char* putag = "null",      // pileup correction
+                 int ctable = 0,                  // centrality table
                  const char* asel = "(1)")        // additional selection
 {
    TFile* finput = new TFile(input, "read");
@@ -86,8 +87,8 @@ int reap_results(int type,
 #include "include/bins.h"
 
    /* selections                                                              */
-   float hftmin = hfofficial[cmin];
-   float hftmax = hfofficial[cmax];
+   float hftmin = hftval(cmin, ctable);
+   float hftmax = hftval(cmax, ctable);
 
    TCut vsel = "(vz[1]<15 && vz[1]>-15)";
    TCut fsel = vsel && asel;
@@ -724,14 +725,22 @@ int main(int argc, char* argv[]) {
       return reap_results(atoi(argv[1]), argv[2], argv[3],
             atoi(argv[4]), atoi(argv[5]), argv[6], atoi(argv[7]),
             atoi(argv[8]), atoi(argv[9]), argv[10],
-            atoi(argv[11]), atof(argv[12]), argv[13], argv[14], argv[15]);
+            atoi(argv[11]), atof(argv[12]), argv[13], argv[14],
+            atoi(argv[15]));
+   } else if (argc == 17) {
+      return reap_results(atoi(argv[1]), argv[2], argv[3],
+            atoi(argv[4]), atoi(argv[5]), argv[6], atoi(argv[7]),
+            atoi(argv[8]), atoi(argv[9]), argv[10],
+            atoi(argv[11]), atof(argv[12]), argv[13], argv[14],
+            atoi(argv[15]), argv[16]);
    } else {
       printf("usage: ./reap_results [type] [input] [label]\n"
              "(cmin cmax) (corrections (apply))"
              "(geometric-correction) (external-acceptance-maps)\n"
              "(event-selection-corrections)\n"
              "(multiplicity-handle) (maxdr2) (gcorr-path)\n"
-             "(pileup-correction) (additional-selection)\n");
+             "(pileup-correction) (centrality-table)\n"
+             "(additional-selection)\n");
       return -1;
    }
 }
