@@ -89,7 +89,7 @@ if [[ $3 -gt 0 ]]; then
             $EXEC ./purge_pileup $2.a.$CMIN.$CMAX $4$CTAG $4$CTAG; }
     done
 
-    $EXEC ./collect_cents $2.a $3
+    $EXEC ./collect_cents $2.a
 elif [[ $3 -eq 0 ]]; then
     [[ $# -lt 5 ]] && exit 2
     [ $# -ge 10 ] && ESTAG=${10}
