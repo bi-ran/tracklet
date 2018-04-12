@@ -26,6 +26,7 @@ int sum_systematics(const char* config, const char* label) {
     auto rffs = conf->get<std::vector<std::string>>("ratio-fit-funcs");
     auto options = conf->get<std::vector<int>>("options");
     auto groups = conf->get<std::vector<uint32_t>>("groups");
+    auto gtags = conf->get<std::vector<std::string>>("gtags");
 
     std::size_t nf = files.size(); std::size_t nhists = histograms.size();
     if (!nf) { printf("error: no files provided!\n"); return 1; }
@@ -57,8 +58,9 @@ int sum_systematics(const char* config, const char* label) {
             svars.back()->write();
 
             uint32_t group = groups[j];
+            std::string gtag = histograms[i] + "_" + gtags[group];
             if (vargroups.find(group) == std::end(vargroups))
-                vargroups.emplace(group, new varsum(histograms[i].data(), h0));
+                vargroups.emplace(group, new varsum(gtag.data(), h0));
 
             switch (group) {
                 case 0:
