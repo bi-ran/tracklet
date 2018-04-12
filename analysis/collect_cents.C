@@ -46,10 +46,9 @@ int collect_cents(const char* label) {
     TGraphErrors* g = new TGraphErrors(ntotal); g->SetName("g");
     g->SetMarkerStyle(21); g->SetMarkerColor(COLOUR1);
     g->SetFillStyle(1001); g->SetFillColorAlpha(COLOUR1, 0.4);
-    TGraphErrors* gs = (TGraphErrors*)g->Clone("gs");
     TGraphErrors* gnorm = (TGraphErrors*)g->Clone("gnorm");
-    TGraph* gsnorm = new TGraph(2 * ntotal + 2);
-    gsnorm->SetFillStyle(1001); gsnorm->SetFillColorAlpha(COLOUR1, 0.4);
+    TGraph* gsnp = new TGraph(2 * ntotal + 2);
+    gsnp->SetFillStyle(1001); gsnp->SetFillColorAlpha(COLOUR1, 0.4);
 
     for (int c = OFFSET; c < NCENT; ++c) {
         TFile* f = new TFile(Form("output/merged-%s.%i.%i.root",
@@ -59,34 +58,31 @@ int collect_cents(const char* label) {
         int nbins = h->GetNbinsX();
         float midy = h->GetBinContent((nbins + 1) / 2);
         float midyerr = h->GetBinError((nbins + 1) / 2);
-        float midyserr = midy * 0.03;
 
         int cindex = c - OFFSET;
 
         g->SetPoint(cindex, 5 * c + 2.5, midy);
         g->SetPointError(cindex, 0, midyerr);
-        gs->SetPoint(cindex, 5 * c + 2.5, midy);
-        gs->SetPointError(cindex, 0, midyserr);
 
         float mnpart = npart[c]; float mnparterr = nparterr[c];
 
         switch (cindex) {
             case 0:
-                gsnorm->SetPoint(0, mnpart - mnparterr,
-                        (midy - midyserr) / (mnpart - mnparterr));
+                gsnp->SetPoint(0, mnpart - mnparterr,
+                        (midy - midyerr) / (mnpart - mnparterr));
                 break;
             case ntotal - 1:
-                gsnorm->SetPoint(ntotal + 1, mnpart + mnparterr,
-                        (midy + midyserr) / (mnpart + mnparterr));
+                gsnp->SetPoint(ntotal + 1, mnpart + mnparterr,
+                        (midy + midyerr) / (mnpart + mnparterr));
                 break;
         }
 
         gnorm->SetPoint(cindex, mnpart, midy / mnpart);
         gnorm->SetPointError(cindex, mnparterr, midyerr / mnpart);
-        gsnorm->SetPoint(cindex + 1, mnpart - mnparterr,
-                (midy + midyserr) / (mnpart - mnparterr));
-        gsnorm->SetPoint(2 * ntotal - cindex + 1, mnpart + mnparterr,
-                (midy - midyserr) / (mnpart + mnparterr));
+        gsnp->SetPoint(cindex + 1, mnpart - mnparterr,
+                (midy + midyerr) / (mnpart - mnparterr));
+        gsnp->SetPoint(2 * ntotal - cindex + 1, mnpart + mnparterr,
+                (midy - midyerr) / (mnpart + mnparterr));
     }
 
     fout->cd();
@@ -108,7 +104,7 @@ int collect_cents(const char* label) {
     axis->SetLabelSize(16); axis->Draw();
 
     gcms_pbpb_2p76->Draw("p same"); galice_pbpb_5p02->Draw("p same");
-    gs->Draw("p 3 same"); g->Draw("p same");
+    g->Draw("p same");
 
     watermark();
 
@@ -144,7 +140,7 @@ int collect_cents(const char* label) {
     gphobos_cucu_0p2_norm->Draw("p same");
     gcms_pp_13p0_norm->Draw("p same");
     gcms_ppb_8p16_norm->Draw("p same");
-    gsnorm->Draw("f");
+    gsnp->Draw("f");
     gnorm->Draw("p same");
 
     watermark();
@@ -176,14 +172,13 @@ int collect_cents(const char* label) {
     c3->SaveAs(Form("figs/merged/merged-%s-midynorm-int1.png", label));
 
     g->Write("", TObject::kOverwrite);
-    gs->Write("", TObject::kOverwrite);
     gcms_pbpb_2p76->Write("", TObject::kOverwrite);
     galice_pbpb_5p02->Write("", TObject::kOverwrite);
     gphobos_cucu_0p2->Write("", TObject::kOverwrite);
     gphobos_auau_0p2->Write("", TObject::kOverwrite);
 
     gnorm->Write("", TObject::kOverwrite);
-    gsnorm->Write("", TObject::kOverwrite);
+    gsnp->Write("", TObject::kOverwrite);
     gcms_pbpb_2p76_norm->Write("", TObject::kOverwrite);
     galice_pbpb_5p02_norm->Write("", TObject::kOverwrite);
     gphobos_auau_0p2_norm->Write("", TObject::kOverwrite);
