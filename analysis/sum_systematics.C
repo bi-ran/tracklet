@@ -28,6 +28,9 @@ int sum_systematics(const char* config, const char* label) {
     auto groups = conf->get<std::vector<uint32_t>>("groups");
     auto gtags = conf->get<std::vector<std::string>>("gtags");
 
+    auto ggroups = conf->get<std::vector<uint32_t>>("ggroups");
+    auto ggtags = conf->get<std::vector<std::string>>("ggtags");
+
     std::size_t nf = files.size(); std::size_t nhists = histograms.size();
     if (!nf) { printf("error: no files provided!\n"); return 1; }
     if (!nhists) { printf("error: no histograms listed!\n"); return 1; }
@@ -43,15 +46,13 @@ int sum_systematics(const char* config, const char* label) {
     gStyle->SetOptStat(0);
 
     for (std::size_t i = 0; i < nhists; ++i) {
-        TH1F* h0 = (TH1F*)f0->Get(histograms[i].data())->Clone(
-                Form("%s0", histograms[i].data()));
+        TH1F* h0 = (TH1F*)f0->Get(histograms[i].data());
 
         std::vector<varone*> svars;
-        std::map<int, varsum*> vargroups;
+        std::map<int, varsum*> gvars;
 
         for (std::size_t j = 0; j < nf; ++j) {
-            TH1F* h1 = (TH1F*)f[j]->Get(histograms[i].data())->Clone(
-                    Form("%s%s", histograms[i].data(), tags[j].data()));
+            TH1F* h1 = (TH1F*)f[j]->Get(histograms[i].data());
 
             svars.push_back(new varone(histograms[i], tags[j], h0, h1));
             svars.back()->fit(dffs[j].data(), rffs[j].data(), 0.1);
@@ -59,22 +60,35 @@ int sum_systematics(const char* config, const char* label) {
 
             uint32_t group = groups[j];
             std::string gtag = histograms[i] + "_" + gtags[group];
-            if (vargroups.find(group) == std::end(vargroups))
-                vargroups.emplace(group, new varsum(gtag.data(), h0));
+            if (gvars.find(group) == std::end(gvars))
+                gvars.emplace(group, new varsum(gtag.data(), h0));
 
             switch (group) {
                 case 0:
-                    vargroups[group]->add(svars.back(), options[j]);
+                    gvars[group]->add(svars.back(), options[j]);
                     break;
                 default:
-                    vargroups[group]->max(svars.back(), options[j]);
+                    gvars[group]->max(svars.back(), options[j]);
                     break;
             }
         }
 
-        varsum *tvars = new varsum(histograms[i].data(), h0);
-        for (const auto& vargroup : vargroups)
-            tvars->add(vargroup.second);
+        std::vector<varsum*> ggvars;
+        for (std::size_t g = 0; g < ggroups.size(); ++g) {
+            std::string ggtag = histograms[i] + "_" + ggtags[g];
+            ggvars.push_back(new varsum(ggtag.data(), h0));
+            uint32_t bits = ggroups[g];
+            for (uint32_t g = 0; bits; bits >>= 1, ++g) {
+                if (bits & 0x1) { ggvars.back()->add(gvars[g]); }
+            }
+
+            ggvars.back()->write();
+        }
+
+        std::string ttag = histograms[i] + "_total";
+        varsum* tvars = new varsum(ttag.data(), h0);
+        for (const auto& gvar : gvars)
+            tvars->add(gvar.second);
 
         tvars->write();
 
@@ -128,7 +142,8 @@ int sum_systematics(const char* config, const char* label) {
 
         delete c0; delete c1; delete c2; delete c4;
         for (const auto& svar : svars) { delete svar; }
-        for (const auto& vargroup : vargroups) { delete vargroup.second; }
+        for (const auto& gvar : gvars) { delete gvar.second; }
+        for (const auto& ggvar : ggvars) { delete ggvar; }
         delete tvars;
     }
 
