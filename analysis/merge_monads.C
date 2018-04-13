@@ -73,7 +73,7 @@ int merge_monads(const char* label, uint32_t opts) {
    std::vector<hist_t> histc;
    for (const auto& gen : geninfo) {
       histc.emplace_back((TH1F*)fgen->Get(gen.hist), gen.label, "hist c same");
-      gformat(histc.back().hist, gen.style, gen.colour);
+      hline(histc.back().hist, gen.style, gen.colour);
    }
 
 #define INCLUDE_ETA_BINS
@@ -132,7 +132,8 @@ int merge_monads(const char* label, uint32_t opts) {
 #define RATIO(q, w)                                                           \
    TH1D* hr##q##w = (TH1D*)h##q##w->Clone("hr" #q #w);                        \
    hr##q##w->Divide(havg);                                                    \
-   hformat(hr##q##w, 0.8f, 1.2f, ";#eta;ratio (w.r.t. average)");             \
+   hrange(hr##q##w, 0.8, 1.2);                                                \
+   htitle(hr##q##w, ";#eta;ratio (w.r.t. average)");                          \
 
    TRKLTS2P(RATIO)
 

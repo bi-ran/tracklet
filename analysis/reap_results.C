@@ -324,23 +324,23 @@ int reap_results(int type,
       /* draw trigger efficiency                                              */
       TCanvas* ctrigger = new TCanvas("ctrigger", "", CANVASW, CANVASH);
       gPad->SetLogx();
-      hformat(h1teff, 38, COLOUR4, 0, 1.2,
-         ";number of tracklets;trigger efficiency");
+      hstyle(h1teff, 38, COLOUR4); hrange(h1teff, 0, 1.2);
+      htitle(h1teff, ";number of tracklets;trigger efficiency");
       h1teff->Draw();
       ctrigger->SaveAs(Form("figs/corrections/trigger-%s-%i.png", label, type));
 
       /* draw single-diffractive fraction                                     */
       TCanvas* csdf = new TCanvas("csdf", "", CANVASW, CANVASH);
       gPad->SetLogx();
-      hformat(h1sdf, 40, COLOUR5, -0.05, 0.2,
-         ";number of tracklets;single-diffractive event fraction");
+      hstyle(h1sdf, 40, COLOUR5); hrange(h1sdf, -0.05, 0.2);
+      htitle(h1sdf, ";number of tracklets;single-diffractive event fraction");
       h1sdf->Draw("e0");
       csdf->SaveAs(Form("figs/corrections/sdfrac-%s-%i.png", label, type));
 
       /* draw alpha fits                                                      */
       TH1D* halphaframe = new TH1D("halphaframe", "", 1, 1, 12000);
       htitle(halphaframe, ";number of tracklets;#alpha");
-      haxes(halphaframe, 0.0, 3.0);
+      hrange(halphaframe, 0.0, 3.0);
 
       TLatex* t1 = new TLatex();
       t1->SetTextAlign(23);
@@ -613,8 +613,8 @@ int reap_results(int type,
       /* draw empty correction                                                */
       TCanvas* cempty = new TCanvas("cempty", "", CANVASW, CANVASH);
       h1empty->SetAxisRange(0.8, 1.2, "Y");
-      hformat(h1empty, 36, COLOUR6, 0.8, 1.2,
-         ";#eta;empty event correction");
+      hstyle(h1empty, 36, COLOUR6); hrange(h1empty, 0.8, 1.2);
+      htitle(h1empty, ";#eta;empty event correction");
       h1empty->Draw();
       cempty->SaveAs(Form("figs/corrections/empty-%s-%i.png", label, type));
    }
@@ -643,7 +643,8 @@ int reap_results(int type,
    }
 
    TH1F* hframe = new TH1F("hframe", "", 1, etamin, etamax);
-   hformat(hframe, 21, 1, 0, ymax, ";#eta;dN/d#eta");
+   hstyle(hframe, 21, 1); hrange(hframe, 0, ymax);
+   htitle(hframe, ";#eta;dN/d#eta");
 
    hstyle(h1WGhadron, 1, COLOUR0);
    hstyle(h1WEraw, 25, COLOUR2);

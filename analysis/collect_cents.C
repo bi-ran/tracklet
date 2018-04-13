@@ -94,10 +94,9 @@ int collect_cents(const char* label) {
 
     TCanvas* c2 = new TCanvas("c2", "", 600, 600); c2->SetLogy();
     TH1F* gframe = new TH1F("gframe", "", 1, 0, 100);
-    hformat(gframe, 1.f, 4000.f,
-            ";Centrality [%];#frac{dN}{d#eta}#lbar_{#eta=0}");
     gframe->SetLabelOffset(999, "X"); gframe->SetTickLength(0, "X");
-    gframe->Draw();
+    htitle(gframe, ";Centrality [%];#frac{dN}{d#eta}#lbar_{#eta=0}");
+    hrange(gframe, 1, 4000); gframe->Draw();
 
     TGaxis* axis = new TGaxis(100, 1, 0, 1, 0, 100, 510, "-");
     axis->SetLabelOffset(-0.032); axis->SetLabelFont(43);
@@ -129,10 +128,9 @@ int collect_cents(const char* label) {
 
     TCanvas* c3 = new TCanvas("c3", "", 600, 600);
 
-    TH1F* gnormframe = new TH1F("gnormframe", "", 1, -20, 420);
-    hformat(gnormframe, 0.f, 6.f,
-            ";N_{part};#frac{dN}{d#eta}#lbar_{#eta=0} / #LTN_{part}#GT");
-    gnormframe->Draw();
+    TH1F* gnframe = new TH1F("gnframe", "", 1, -20, 420);
+    htitle(gnframe, ";N_{part};#frac{dN}{d#eta}#lbar_{#eta=0}/#LTN_{part}#GT");
+    hrange(gnframe, 0, 6); gnframe->Draw();
 
     gcms_pbpb_2p76_norm->Draw("p same");
     galice_pbpb_5p02_norm->Draw("p same");

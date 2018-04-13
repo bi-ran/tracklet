@@ -106,13 +106,13 @@ int sum_systematics(const char* config, const char* label) {
         c1->Divide(3, nrows); c2->Divide(3, nrows); l4->SetNColumns(2);
 
         h = tvars->diff();
-        hformat(h, 21, COLOUR0, ";#eta;difference"); h->SetMarkerSize(0.75);
+        hstyle(h, 21, COLOUR0, 0.75); htitle(h, ";#eta;difference");
         c0->cd(); h->Draw("p hist e"); l->DrawLatexNDC(0.4, 0.8, "total");
         c0->SaveAs(Form("%s.total-diff.png", path.data()));
         c1->cd(nf+1); h->Draw("p hist e"); l->DrawLatexNDC(0.4, 0.8, "total");
 
         h = tvars->ratio();
-        hformat(h, 21, COLOUR0, ";#eta;ratio"); h->SetMarkerSize(0.75);
+        hstyle(h, 21, COLOUR0, 0.75); htitle(h, ";#eta;ratio");
         c0->cd(); h->Draw("p hist e"); l->DrawLatexNDC(0.4, 0.8, "total");
         c0->SaveAs(Form("%s.total-ratio.png", path.data()));
         c2->cd(nf+1); h->Draw("p hist e"); l->DrawLatexNDC(0.4, 0.8, "total");

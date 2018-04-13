@@ -31,9 +31,9 @@ int purge_pileup(const char* pu, const char* exact, const char* label) {
    TCanvas* c1 = new TCanvas("c1", "", 400, 400);
    for (int i=0; i<9; ++i) {
       if (h1pu[i]) {
-         hformat(h1pu[i], 24, colours[i], 0.9, 1.1,
-               ";#eta;correction");
-         h1pu[i]->SetMarkerSize(0.8);
+         hstyle(h1pu[i], 24, colours[i], 0.8);
+         hrange(h1pu[i], 0.9, 1.1);
+         htitle(h1pu[i], ";#eta;correction");
          h1pu[i]->Draw("same");
       }
    }

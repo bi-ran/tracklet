@@ -43,16 +43,19 @@ int jot_jacobians(const char* config, const char* label) {
       hh[i] = new TH1F(Form("hh%s", tags[i].data()), "", neta, etab);
       t[i]->Project(Form("hh%s", tags[i].data()), "eta", gsel, "", 32768);
       hh[i]->Scale(1./nevent, "width");
-      hformat(hh[i], 21, colours[i % ncolours], 0, 600, ";#eta;dN/d#eta");
+      hstyle(hh[i], 21, colours[i % ncolours]);
+      hrange(hh[i], 0, 600); htitle(hh[i], ";#eta;dN/d#eta");
 
       hy[i] = new TH1F(Form("hy%s", tags[i].data()), "", neta, etab);
       t[i]->Project(Form("hy%s", tags[i].data()), "y", gsel, "", 32768);
       hy[i]->Scale(1./nevent, "width");
-      hformat(hy[i], 20, colours[(i + 1) % ncolours], 0, 600, ";y;dN/dy");
+      hstyle(hy[i], 20, colours[(i + 1) % ncolours]);
+      hrange(hy[i], 0, 600); htitle(hy[i], ";y;dN/dy");
 
       hj[i] = (TH1F*)hy[i]->Clone(Form("hj%s", tags[i].data()));
       hj[i]->Divide(hh[i]);
-      hformat(hj[i], 45, colours[(i + 2) % ncolours], 0.5, 1.5, ";#eta;");
+      hstyle(hj[i], 45, colours[(i + 2) % ncolours]);
+      hrange(hj[i], 0.5, 1.5); htitle(hj[i], ";#eta;");
 
       TCanvas* c1 = new TCanvas("c1", "", 600, 600);
 

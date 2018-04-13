@@ -53,8 +53,8 @@ int evaluate_effs(const char* config, const char* label) {
    TCanvas* c1 = new TCanvas("c1", "", 600, 600);
    TLegend* l1 = new TLegend(0.5, 0.56, 0.9, 0.72);
    for (std::size_t i = 0; i < nfiles; ++i) {
-      hformat(heff[i], 0.f, 1.2f,
-            ";number of pixel hits (layer 1);efficiency");
+      hrange(heff[i], 0, 1.2);
+      htitle(heff[i], ";number of pixel hits (layer 1);efficiency");
       heff[i]->Draw("p e same");
       l1->AddEntry(heff[i], legends[i].data(), "pl");
    }
@@ -65,8 +65,8 @@ int evaluate_effs(const char* config, const char* label) {
    c2->SetLogy();
    TLegend* l2 = new TLegend(0.5, 0.56, 0.9, 0.72);
    for (std::size_t i = 0; i < nfiles; ++i) {
-      hformat(hres[i], 0.001f, 0.5f,
-            ";number of pixel hits (layer 1);resolution (cm)");
+      hrange(hres[i], 0.001, 0.5);
+      htitle(hres[i], ";number of pixel hits (layer 1);resolution (cm)");
       hres[i]->Draw("p e same");
       l2->AddEntry(hres[i], legends[i].data(), "pl");
    }
