@@ -1120,6 +1120,40 @@ TGraphErrors* cms_pbpb_2p76_norm() {
    return gcms_pbpb_2p76_norm;
 }
 
+TGraphErrors* alice_pbpb_2p76() {
+   TGraphErrors* galice_pbpb_2p76 = new TGraphErrors(9);
+   galice_pbpb_2p76->SetName("galice_pbpb_2p76");
+
+   galice_pbpb_2p76->SetPoint(0, 25, 35); galice_pbpb_2p76->SetPointError(0, 0, 2);
+   galice_pbpb_2p76->SetPoint(1, 35, 76); galice_pbpb_2p76->SetPointError(1, 0, 4);
+   galice_pbpb_2p76->SetPoint(2, 45, 149); galice_pbpb_2p76->SetPointError(2, 0, 6);
+   galice_pbpb_2p76->SetPoint(3, 55, 261); galice_pbpb_2p76->SetPointError(3, 0, 9);
+   galice_pbpb_2p76->SetPoint(4, 65, 426); galice_pbpb_2p76->SetPointError(4, 0, 15);
+   galice_pbpb_2p76->SetPoint(5, 75, 649); galice_pbpb_2p76->SetPointError(5, 0, 23);
+   galice_pbpb_2p76->SetPoint(6, 85, 966); galice_pbpb_2p76->SetPointError(6, 0, 37);
+   galice_pbpb_2p76->SetPoint(7, 92.5, 1294); galice_pbpb_2p76->SetPointError(7, 0, 49);
+   galice_pbpb_2p76->SetPoint(8, 97.5, 1601); galice_pbpb_2p76->SetPointError(8, 0, 60);
+
+   return galice_pbpb_2p76;
+}
+
+TGraphErrors* alice_pbpb_2p76_norm() {
+   TGraphErrors* galice_pbpb_2p76_norm = new TGraphErrors(9);
+   galice_pbpb_2p76_norm->SetName("galice_pbpb_2p76_norm");
+
+   galice_pbpb_2p76_norm->SetPoint(0, 15.8, 4.4/2); galice_pbpb_2p76_norm->SetPointError(0, 0.6, 0.4/2);
+   galice_pbpb_2p76_norm->SetPoint(1, 30.0, 5.1/2); galice_pbpb_2p76_norm->SetPointError(1, 1.3, 0.3/2);
+   galice_pbpb_2p76_norm->SetPoint(2, 52.8, 5.7/2); galice_pbpb_2p76_norm->SetPointError(2, 2.0, 0.3/2);
+   galice_pbpb_2p76_norm->SetPoint(3, 85.0, 6.1/2); galice_pbpb_2p76_norm->SetPointError(3, 2.6, 0.3/2);
+   galice_pbpb_2p76_norm->SetPoint(4, 128.9, 6.6/2); galice_pbpb_2p76_norm->SetPointError(4, 3.3, 0.3/2);
+   galice_pbpb_2p76_norm->SetPoint(5, 186.4, 7.0/2); galice_pbpb_2p76_norm->SetPointError(5, 3.9, 0.3/2);
+   galice_pbpb_2p76_norm->SetPoint(6, 260.5, 7.4/2); galice_pbpb_2p76_norm->SetPointError(6, 4.4, 0.3/2);
+   galice_pbpb_2p76_norm->SetPoint(7, 329.7, 7.9/2); galice_pbpb_2p76_norm->SetPointError(7, 4.6, 0.3/2);
+   galice_pbpb_2p76_norm->SetPoint(8, 382.8, 8.4/2); galice_pbpb_2p76_norm->SetPointError(8, 3.1, 0.3/2);
+
+   return galice_pbpb_2p76_norm;
+}
+
 TGraphErrors* alice_pbpb_5p02() {
    TGraphErrors* galice_pbpb_5p02 = new TGraphErrors(11);
    galice_pbpb_5p02->SetName("galice_pbpb_5p02");
