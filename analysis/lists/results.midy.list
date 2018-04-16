@@ -1,0 +1,47 @@
+std::string hist = hsym
+
+std::vector<std::string> files =                            \
+   output/merged-304906.pu.cgm.int5.epos.m.v5.a.4.5.root    \
+   output/merged-304906.pu.cgm.int5.epos.m.v5.a.5.6.root    \
+   output/merged-304906.pu.cgm.int5.epos.m.v5.a.6.7.root    \
+   output/merged-304906.pu.cgm.int5.epos.m.v5.a.7.8.root    \
+   output/merged-304906.pu.cgm.int5.epos.m.v5.a.8.9.root    \
+   output/merged-304906.pu.cgm.int5.epos.m.v5.a.9.10.root   \
+   output/merged-304906.pu.cgm.int5.epos.m.v5.a.10.11.root  \
+   output/merged-304906.pu.cgm.int5.epos.m.v5.a.11.12.root  \
+   output/merged-304906.pu.cgm.int5.epos.m.v5.a.12.13.root  \
+   output/merged-304906.pu.cgm.int5.epos.m.v5.a.13.14.root  \
+   output/merged-304906.pu.cgm.int5.epos.m.v5.a.14.15.root  \
+   output/merged-304906.pu.cgm.int5.epos.m.v5.a.15.16.root  \
+   output/merged-304906.pu.cgm.int5.epos.m.v5.a.16.17.root  \
+   output/merged-304906.pu.cgm.int5.epos.m.v5.a.17.18.root  \
+   output/merged-304906.pu.cgm.int5.epos.m.v5.a.18.19.root  \
+   output/merged-304906.pu.cgm.int5.epos.m.v5.a.19.20.root
+std::vector<std::string> systs =                            \
+   output/systematics-v5.a.4.5.root                         \
+   output/systematics-v5.a.5.6.root                         \
+   output/systematics-v5.a.6.7.root                         \
+   output/systematics-v5.a.7.8.root                         \
+   output/systematics-v5.a.8.9.root                         \
+   output/systematics-v5.a.9.10.root                        \
+   output/systematics-v5.a.10.11.root                       \
+   output/systematics-v5.a.11.12.root                       \
+   output/systematics-v5.a.12.13.root                       \
+   output/systematics-v5.a.13.14.root                       \
+   output/systematics-v5.a.14.15.root                       \
+   output/systematics-v5.a.15.16.root                       \
+   output/systematics-v5.a.16.17.root                       \
+   output/systematics-v5.a.17.18.root                       \
+   output/systematics-v5.a.18.19.root                       \
+   output/systematics-v5.a.19.20.root
+std::vector<std::string> stags = total tracklet
+
+std::vector<float> cvs =                                    \
+   22.5 27.5 32.5 37.5 42.5 47.5 52.5 57.5                  \
+   62.5 67.5 72.5 77.5 82.5 87.5 92.5 97.5
+std::vector<float> nvs =                                    \
+   8.623 12.17 16.77 22.65 29.68 38.31 48.55 60.34          \
+   73.79 89.48 107.3 127.5 151.1 177.1 206.6 236.5
+std::vector<float> nes =                                    \
+   0.661  1.01  1.49   1.9  2.39  2.59  3.03  3.12          \
+    3.09  3.04  2.87   2.6  2.32  1.9,  1.54  1.74

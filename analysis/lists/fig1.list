@@ -1,0 +1,46 @@
+std::string figure = ratio
+
+std::string input = data/paper.root
+std::string output = tracklet-dr-t12-304906a-paper.pdf
+
+std::vector<std::string> hists = \
+   ht12f0dr ht12f4dr ht12f2dr ht12f1dr
+
+token ,
+std::string title = ;#Delta#it{r};#frac{1}{#it{N}_{tracklet}} #frac{d#it{N}_{tracklet}}{d(#Deltar)}
+
+token ;
+std::vector<std::string> legends = \
+   data; \
+   E#scale[0.8]{POS} #scale[0.9]{LHC}; \
+   H#scale[0.8]{YDJET} 1.9; \
+   A#scale[0.9]{MPT}
+std::vector<std::string> dopts = \
+   p e same; hist e same; hist e same; hist e same
+
+token
+std::vector<int> markers = 21 1 1 1 1
+std::vector<std::string> colours = \
+   #242424 #3498db #f99157 #ec5f67
+
+token
+std::vector<float> lx0 = 0.48
+std::vector<float> lx1 = 0.72
+std::vector<float> ly0 = 0.56
+std::vector<float> ly1 = 0.72
+
+std::vector<std::string> lopts = p l l l
+
+std::vector<float> xrange = 0 0.5
+std::vector<float> yrange = 0.100001 50
+
+float linewidth = 3.2
+
+std::vector<float> titleoffsets = 99 1.375
+std::vector<float> labelsizes = 0.01 0.04
+std::vector<float> rtitleoffsets = 1.16 0.5
+std::vector<float> rtitlesizes = 0.108 0.1
+std::vector<float> rlabeloffsets = 0.02 0.005
+std::vector<float> rlabelsizes = 0.1 0.1
+
+bool prelim = 0

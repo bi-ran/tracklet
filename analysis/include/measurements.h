@@ -1120,6 +1120,32 @@ TGraphErrors* cms_pbpb_2p76_norm() {
    return gcms_pbpb_2p76_norm;
 }
 
+TGraphErrors* cms_pbpb_2p76_norm_2a() {
+   TGraphErrors* gcms_pbpb_2p76_norm_2a = new TGraphErrors(18);
+   gcms_pbpb_2p76_norm_2a->SetName("gcms_pbpb_2p76_norm_2a");
+
+   gcms_pbpb_2p76_norm_2a->SetPoint(0, 5.71/416, 3.87 / 2);   gcms_pbpb_2p76_norm_2a->SetPointError(0, 0.24/416, 0.64 / 2);
+   gcms_pbpb_2p76_norm_2a->SetPoint(1, 8.64/416, 4.23 / 2);   gcms_pbpb_2p76_norm_2a->SetPointError(1, 0.56/416, 0.74 / 2);
+   gcms_pbpb_2p76_norm_2a->SetPoint(2, 12.8/416, 4.54 / 2);   gcms_pbpb_2p76_norm_2a->SetPointError(2, 0.9/416, 0.60 / 2);
+   gcms_pbpb_2p76_norm_2a->SetPoint(3, 18.5/416, 4.8 / 2);    gcms_pbpb_2p76_norm_2a->SetPointError(3, 1.2/416, 0.59 / 2);
+   gcms_pbpb_2p76_norm_2a->SetPoint(4, 25.8/416, 5.07 / 2);   gcms_pbpb_2p76_norm_2a->SetPointError(4, 1.6/416, 0.53 / 2);
+   gcms_pbpb_2p76_norm_2a->SetPoint(5, 35.3/416, 5.3 / 2);    gcms_pbpb_2p76_norm_2a->SetPointError(5, 2.0/416, 0.53 / 2);
+   gcms_pbpb_2p76_norm_2a->SetPoint(6, 46.7/416, 5.59 / 2);   gcms_pbpb_2p76_norm_2a->SetPointError(6, 2.3/416, 0.46 / 2);
+   gcms_pbpb_2p76_norm_2a->SetPoint(7, 60.4/416, 5.83 / 2);   gcms_pbpb_2p76_norm_2a->SetPointError(7, 2.7/416, 0.44 / 2);
+   gcms_pbpb_2p76_norm_2a->SetPoint(8, 76.8/416, 6.07 / 2);   gcms_pbpb_2p76_norm_2a->SetPointError(8, 2.7/416, 0.40 / 2);
+   gcms_pbpb_2p76_norm_2a->SetPoint(9, 95.8/416, 6.26 / 2);   gcms_pbpb_2p76_norm_2a->SetPointError(9, 3.0/416, 0.37 / 2);
+   gcms_pbpb_2p76_norm_2a->SetPoint(10, 117.0/416, 6.54 / 2);   gcms_pbpb_2p76_norm_2a->SetPointError(10, 3.0/416, 0.33 / 2);
+   gcms_pbpb_2p76_norm_2a->SetPoint(11, 142.0/416, 6.77 / 2);   gcms_pbpb_2p76_norm_2a->SetPointError(11, 3.0/416, 0.30 / 2);
+   gcms_pbpb_2p76_norm_2a->SetPoint(12, 171.0/416, 6.98 / 2);   gcms_pbpb_2p76_norm_2a->SetPointError(12, 3.0/416, 0.30 / 2);
+   gcms_pbpb_2p76_norm_2a->SetPoint(13, 203.0/416, 7.19 / 2);   gcms_pbpb_2p76_norm_2a->SetPointError(13, 3.0/416, 0.28 / 2);
+   gcms_pbpb_2p76_norm_2a->SetPoint(14, 240.0/416, 7.45 / 2);   gcms_pbpb_2p76_norm_2a->SetPointError(14, 3.0/416, 0.28 / 2);
+   gcms_pbpb_2p76_norm_2a->SetPoint(15, 283.0/416, 7.66 / 2);   gcms_pbpb_2p76_norm_2a->SetPointError(15, 3.0/416, 0.28 / 2);
+   gcms_pbpb_2p76_norm_2a->SetPoint(16, 329.0/416, 7.97 / 2);   gcms_pbpb_2p76_norm_2a->SetPointError(16, 3.0/416, 0.28 / 2);
+   gcms_pbpb_2p76_norm_2a->SetPoint(17, 381.0/416, 8.46 / 2);   gcms_pbpb_2p76_norm_2a->SetPointError(17, 2.0/416, 0.29 / 2);
+
+   return gcms_pbpb_2p76_norm_2a;
+}
+
 TGraphErrors* alice_pbpb_2p76() {
    TGraphErrors* galice_pbpb_2p76 = new TGraphErrors(9);
    galice_pbpb_2p76->SetName("galice_pbpb_2p76");
@@ -1135,6 +1161,23 @@ TGraphErrors* alice_pbpb_2p76() {
    galice_pbpb_2p76->SetPoint(8, 97.5, 1601); galice_pbpb_2p76->SetPointError(8, 0, 60);
 
    return galice_pbpb_2p76;
+}
+
+TGraphErrors* alice_pbpb_2p76_norm_2a() {
+   TGraphErrors* galice_pbpb_2p76_norm_2a = new TGraphErrors(9);
+   galice_pbpb_2p76_norm_2a->SetName("galice_pbpb_2p76_norm_2a");
+
+   galice_pbpb_2p76_norm_2a->SetPoint(0, 15.8/416, 4.4/2); galice_pbpb_2p76_norm_2a->SetPointError(0, 0.6/416, 0.4/2);
+   galice_pbpb_2p76_norm_2a->SetPoint(1, 30.0/416, 5.1/2); galice_pbpb_2p76_norm_2a->SetPointError(1, 1.3/416, 0.3/2);
+   galice_pbpb_2p76_norm_2a->SetPoint(2, 52.8/416, 5.7/2); galice_pbpb_2p76_norm_2a->SetPointError(2, 2.0/416, 0.3/2);
+   galice_pbpb_2p76_norm_2a->SetPoint(3, 85.0/416, 6.1/2); galice_pbpb_2p76_norm_2a->SetPointError(3, 2.6/416, 0.3/2);
+   galice_pbpb_2p76_norm_2a->SetPoint(4, 128.9/416, 6.6/2); galice_pbpb_2p76_norm_2a->SetPointError(4, 3.3/416, 0.3/2);
+   galice_pbpb_2p76_norm_2a->SetPoint(5, 186.4/416, 7.0/2); galice_pbpb_2p76_norm_2a->SetPointError(5, 3.9/416, 0.3/2);
+   galice_pbpb_2p76_norm_2a->SetPoint(6, 260.5/416, 7.4/2); galice_pbpb_2p76_norm_2a->SetPointError(6, 4.4/416, 0.3/2);
+   galice_pbpb_2p76_norm_2a->SetPoint(7, 329.7/416, 7.9/2); galice_pbpb_2p76_norm_2a->SetPointError(7, 4.6/416, 0.3/2);
+   galice_pbpb_2p76_norm_2a->SetPoint(8, 382.8/416, 8.4/2); galice_pbpb_2p76_norm_2a->SetPointError(8, 3.1/416, 0.3/2);
+
+   return galice_pbpb_2p76_norm_2a;
 }
 
 TGraphErrors* alice_pbpb_2p76_norm() {
@@ -1190,6 +1233,25 @@ TGraphErrors* alice_pbpb_5p02_norm() {
    galice_pbpb_5p02_norm->SetPoint(10, 398, 10.2 / 2); galice_pbpb_5p02_norm->SetPointError(10, 2, 0.3 / 2);
 
    return galice_pbpb_5p02_norm;
+}
+
+TGraphErrors* alice_pbpb_5p02_norm_2a() {
+   TGraphErrors* galice_pbpb_5p02_norm_2a = new TGraphErrors(11);
+   galice_pbpb_5p02_norm_2a->SetName("galice_pbpb_5p02_norm_2a");
+
+   galice_pbpb_5p02_norm_2a->SetPoint(0, 15.6 / 416, 5.8 / 2); galice_pbpb_5p02_norm_2a->SetPointError(0, 0.5 / 416, 0.5 / 2);
+   galice_pbpb_5p02_norm_2a->SetPoint(1, 30.4 / 416, 6.3 / 2); galice_pbpb_5p02_norm_2a->SetPointError(1, 0.8 / 416, 0.4 / 2);
+   galice_pbpb_5p02_norm_2a->SetPoint(2, 53.6 / 416, 6.8 / 2); galice_pbpb_5p02_norm_2a->SetPointError(2, 1.2 / 416, 0.3 / 2);
+   galice_pbpb_5p02_norm_2a->SetPoint(3, 86.3 / 416, 7.4 / 2); galice_pbpb_5p02_norm_2a->SetPointError(3, 1.7 / 416, 0.3 / 2);
+   galice_pbpb_5p02_norm_2a->SetPoint(4, 131. / 416, 7.8 / 2); galice_pbpb_5p02_norm_2a->SetPointError(4, 2. / 416, 0.3 / 2);
+   galice_pbpb_5p02_norm_2a->SetPoint(5, 188. / 416, 8.4 / 2); galice_pbpb_5p02_norm_2a->SetPointError(5, 3. / 416, 0.3 / 2);
+   galice_pbpb_5p02_norm_2a->SetPoint(6, 263. / 416, 9.0 / 2); galice_pbpb_5p02_norm_2a->SetPointError(6, 4. / 416, 0.3 / 2);
+   galice_pbpb_5p02_norm_2a->SetPoint(7, 320. / 416, 9.4 / 2); galice_pbpb_5p02_norm_2a->SetPointError(7, 4. / 416, 0.3 / 2);
+   galice_pbpb_5p02_norm_2a->SetPoint(8, 346. / 416, 9.6 / 2); galice_pbpb_5p02_norm_2a->SetPointError(8, 4. / 416, 0.3 / 2);
+   galice_pbpb_5p02_norm_2a->SetPoint(9, 372. / 416, 9.9 / 2); galice_pbpb_5p02_norm_2a->SetPointError(9, 3. / 416, 0.3 / 2);
+   galice_pbpb_5p02_norm_2a->SetPoint(10, 398. / 416, 10.2 / 2); galice_pbpb_5p02_norm_2a->SetPointError(10, 2. / 416, 0.3 / 2);
+
+   return galice_pbpb_5p02_norm_2a;
 }
 
 TGraphErrors* phobos_auau_0p2() {

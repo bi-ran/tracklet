@@ -1,0 +1,58 @@
+std::string figure = graph
+
+std::string input = output/results-v5.midy.root
+std::string output = merged-304906.pu.cgm.int5.epos.m.v5.a-midy-int1-paper.pdf
+
+token ,
+std::string title = \
+   ;centrality [%];#scale[1.2]{#LT}\
+   d#it{N}_{ch}/d#kern[-0.08]{#it{#eta}}#scale[1.2]{#GT}\
+   #lower[0.1]{#scale[1.5]{#kern[0.4]{#lbar}}}\
+   #kern[0.15]{#scale[0.6]{#lower[0.7]{#it{#eta}#scale[0.8]{=}}\
+   #kern[0.2]{#scale[0.8]{#lower[0.75]{0}}}}}
+std::string legend = XeXe 5.44 TeV
+
+token
+std::string data = g
+std::string colour = #f2777a
+
+bool logy = 1
+std::vector<float> xrange = 0 100
+std::vector<float> yrange = 2 6000
+std::vector<float> axispath = 100 0
+std::vector<float> axisrange = 0 100
+std::string aopt = -
+
+std::vector<std::string> systs = gs_total gs_tracklet
+std::vector<std::string> scolours = #f2777a #f2777a
+std::vector<float> salphas = 0.24 0.24
+
+std::vector<std::string> others =   \
+   gcms_pbpb_2p76                   \
+   galice_pbpb_2p76                 \
+   galice_pbpb_5p02
+
+token ;
+std::vector<std::string> legends = \
+   PbPb 2.76 TeV; \
+   PbPb 2.76 TeV; \
+   PbPb 5.02 TeV
+
+token
+std::vector<uint32_t> lgroups = 0 1 1
+
+std::vector<int> mstyles = 20 29 29
+std::vector<std::string> colours = #6bbaff #01a252 #99cc99
+std::vector<float> msizes = 0.64 0.80 0.80
+
+uint32_t nl = 2
+std::vector<std::string> lheaders = CMS ALICE
+std::vector<float> lx0 = 0.54 0.54
+std::vector<float> lx1 = 0.90 0.90
+std::vector<float> ly0 = 0.36 0.20
+std::vector<float> ly1 = 0.48 0.32
+
+std::vector<float> toffsets = 1.25 1.6
+float xloffset = -0.036
+
+bool prelim = 0

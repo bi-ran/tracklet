@@ -1,0 +1,70 @@
+std::string figure = hist
+
+std::string input = output/results-v5.s.all.root
+std::string output = results-hsym-v5.s.all-paper.pdf
+std::string title = ;#it{#eta};d#it{N}_{ch}/d#kern[-0.08]{#it{#eta}}
+
+std::vector<std::string> data = hr_hsym_19_20 hr_hsym_10_11
+std::vector<std::string> systs = hs_hsym_19_20 hs_hsym_10_11
+std::vector<std::string> colours = #f2777a #6699cc
+std::vector<int> markers = 21 21
+std::vector<float> sizes = 0.64 0.64
+
+std::vector<std::string> stags = total tracklet
+float alpha = 0.2
+
+token ;
+std::vector<std::string> headers = 0 - 5%; 50 - 55%
+std::vector<std::string> legends =  data;  data
+
+token
+std::vector<uint32_t> lgroups = 0 1
+std::vector<std::string> lopts = pf pf
+
+uint32_t nl = 2
+std::vector<float> lx0 = 0.20 0.56
+std::vector<float> lx1 = 0.45 0.81
+std::vector<float> ly0 = 0.45 0.45
+std::vector<float> ly1 = 0.64 0.64
+
+std::vector<float> xrange = -3.6 3.6
+std::vector<float> yrange = 80 3000
+std::vector<int> ndivs = 508 1003
+bool logy = 1
+
+std::string gen = data/gen-cent.root
+std::vector<std::string> models =   \
+   hepos_19_20                      \
+   hhydjet_19_20                    \
+   hamptnm_19_20                    \
+   hamptsm_19_20                    \
+   hepos_10_11                      \
+   hhydjet_10_11                    \
+   hamptnm_10_11                    \
+   hamptsm_10_11
+std::vector<uint32_t> mlgroups = 0 0 0 0 1 1 1 1
+std::vector<std::string> mcolours = \
+   #3498db                          \
+   #f99157                          \
+   #ec5f67                          \
+   #ec5f67                          \
+   #3498db                          \
+   #f99157                          \
+   #ec5f67                          \
+   #ec5f67
+std::vector<int> mstyles = 1 1 1 3 7 7 7 6
+
+float linewidth = 2.7
+
+token ;
+std::vector<std::string> mlegends =  \
+   E#scale[0.8]{POS} #scale[0.9]{LHC};  \
+   H#scale[0.8]{YDJET} 1.9;  \
+   A#scale[0.9]{MPT (default)};  \
+   A#scale[0.9]{MPT (string melting)};  \
+   E#scale[0.8]{POS} #scale[0.9]{LHC};  \
+   H#scale[0.8]{YDJET} 1.9;  \
+   A#scale[0.9]{MPT (default)};  \
+   A#scale[0.9]{MPT (string melting)}
+
+bool prelim = 0
