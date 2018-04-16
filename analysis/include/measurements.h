@@ -1242,6 +1242,20 @@ TGraphErrors* phobos_cucu_0p2_norm() {
    return gphobos_cucu_0p2_norm;
 }
 
+TGraphErrors* brahms_auau_0p2_norm() {
+   TGraphErrors* gbrahms_auau_0p2_norm = new TGraphErrors(6);
+   gbrahms_auau_0p2_norm->SetName("gbrahms_auau_0p2_norm");
+
+   gbrahms_auau_0p2_norm->SetPoint(0, 73, 110./73.); gbrahms_auau_0p2_norm->SetPointError(0, 8, 10./73.);
+   gbrahms_auau_0p2_norm->SetPoint(1, 114, 174./114.); gbrahms_auau_0p2_norm->SetPointError(1, 9, 16./114.);
+   gbrahms_auau_0p2_norm->SetPoint(2, 168, 257./168.); gbrahms_auau_0p2_norm->SetPointError(2, 9, 23./168.);
+   gbrahms_auau_0p2_norm->SetPoint(3, 239, 377./239.); gbrahms_auau_0p2_norm->SetPointError(3, 10, 33./239.);
+   gbrahms_auau_0p2_norm->SetPoint(4, 306, 501./306.); gbrahms_auau_0p2_norm->SetPointError(4, 11, 44./306.);
+   gbrahms_auau_0p2_norm->SetPoint(5, 357, 625./357.); gbrahms_auau_0p2_norm->SetPointError(5, 8, 55./357.);
+
+   return gbrahms_auau_0p2_norm;
+}
+
 TGraphErrors* cms_pp_13p0_norm() {
    TGraphErrors* gcms_pp_13p0_norm = new TGraphErrors(1);
    gcms_pp_13p0_norm->SetName("gcms_pp_13p0_norm");
