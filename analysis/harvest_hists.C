@@ -225,7 +225,7 @@ int compare_tracklets(std::vector<varinfo_t> const& options,
    for (std::size_t j = 0; j < nfiles; ++j) {                                 \
       t##q##w[j]->Draw(Form("%s>>ht" #q #w "f%zu%s", varstr, j, idstr),       \
             fsel, "goff");                                                    \
-      h##q##w[j]->Scale(1. / h##q##w[j]->Integral());                         \
+      h##q##w[j]->Scale(1. / h##q##w[j]->Integral(), "width");                \
    }                                                                          \
 
    TRKLTS2P(PROJECT_1D_TRACKLETS)
