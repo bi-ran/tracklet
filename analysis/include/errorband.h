@@ -3,7 +3,10 @@
 
 #include "TGraph.h"
 
-void draw_sys_unc(TGraph* gr, TH1* h1, TH1* h1_sys) {
+void box(TH1* h1, TH1* h1_sys, int colour, float alpha) {
+    TGraph* gr = new TGraph(); gr->SetFillStyle(1001);
+    gr->SetFillColorAlpha(colour, alpha);
+
     for (int i=1; i<=h1->GetNbinsX(); ++i) {
         if (h1->GetBinError(i) == 0) continue;
 
