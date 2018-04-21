@@ -167,10 +167,13 @@ int reap_results(int type,
 
    TH2F* haccepmc = 0;
    TH2F* haccepdata = 0;
+   TH2F* hgaccep = 0;
 
    if (applyg) {
       haccepmc = (TH2F*)faccep->Get("hmccoarse");
       haccepdata = (TH2F*)faccep->Get("hdatacoarse");
+      hgaccep = (TH2F*)haccepmc->Clone("hgaccep");
+      hgaccep->Divide(haccepdata);
    }
 
    /* scratch canvas                                                          */
@@ -475,6 +478,8 @@ int reap_results(int type,
                h3WEcorr->SetBinContent(x, y, z, 0);
                h3WEcorr->SetBinError(x, y, z, 0);
             }
+
+            if (faccep) hgaccep->SetBinContent(x, z, 0);
          }
       }
    }
@@ -489,6 +494,13 @@ int reap_results(int type,
    TCanvas* caccep = new TCanvas("caccep", "", CANVASW, CANVASH);
    h2amapxev->Draw("colz");
    caccep->SaveAs(Form("figs/acceptance/accep-%s-%i.png", label, type));
+
+   /* draw geometric acceptance                                               */
+   if (faccep) {
+      TCanvas* cga = new TCanvas("cga", "", CANVASW, CANVASH);
+      hgaccep->Draw("colz");
+      cga->SaveAs(Form("figs/acceptance/ga-%s-%i.png", label, type));
+   }
 
    /* draw alpha                                                              */
    TCanvas* calpha = new TCanvas("calpha", "", CANVASW, CANVASH);
