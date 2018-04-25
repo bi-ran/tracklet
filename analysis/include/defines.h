@@ -21,9 +21,9 @@
    EXPAND(3, 4)               \
 
 #define FTRKLT2P(EXPAND)      \
-   EXPAND(1, 5)               \
-   EXPAND(1, 6)               \
-   EXPAND(1, 7)               \
+   EXPAND(5, 6)               \
+   EXPAND(5, 7)               \
+   EXPAND(6, 7)               \
 
 #define BTRKLT3P(p, EXPAND)   \
    EXPAND(p, 1, 2)            \
@@ -34,9 +34,9 @@
    EXPAND(p, 3, 4)            \
 
 #define FTRKLT3P(p, EXPAND)   \
-   EXPAND(p, 1, 5)            \
-   EXPAND(p, 1, 6)            \
-   EXPAND(p, 1, 7)            \
+   EXPAND(p, 5, 6)            \
+   EXPAND(p, 5, 7)            \
+   EXPAND(p, 6, 7)            \
 
 #define I12 0
 #define I13 1
@@ -44,8 +44,8 @@
 #define I23 3
 #define I24 4
 #define I34 5
-#define I15 6
-#define I16 7
-#define I17 8
+#define I56 6
+#define I57 7
+#define I67 8
 
 #endif  /* DEFINES_H */

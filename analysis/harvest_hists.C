@@ -28,8 +28,9 @@
    FPIX1P(EXPAND)          \
 
 #define TRKLTS2P(EXPAND)   \
-   BTRKLT2P(EXPAND)        \
-   FTRKLT2P(EXPAND)        \
+   EXPAND(5, 6)            \
+   EXPAND(5, 7)            \
+   EXPAND(6, 7)            \
 
 typedef struct varinfo_t {
    std::string                         id;
