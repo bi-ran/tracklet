@@ -1455,3 +1455,67 @@ TGraphErrors* brahms_auau_0p2_y_c0t5_km() {
 
    return gbrahms_auau_0p2_y_c0t5_km;
 }
+
+TGraphErrors* cms_pp_13p0_y() {
+   TGraphErrors* gcms_pp_13p0_y = new TGraphErrors(20);
+   gcms_pp_13p0_y->SetName("gcms_pp_13p0_y");
+
+   gcms_pp_13p0_y->SetPoint(0, -1.9, 6.448360); gcms_pp_13p0_y->SetPointError(0, 0, 0.237099);
+   gcms_pp_13p0_y->SetPoint(1, -1.7, 6.395450); gcms_pp_13p0_y->SetPointError(1, 0, 0.215146);
+   gcms_pp_13p0_y->SetPoint(2, -1.5, 6.452803); gcms_pp_13p0_y->SetPointError(2, 0, 0.217976);
+   gcms_pp_13p0_y->SetPoint(3, -1.3, 6.531988); gcms_pp_13p0_y->SetPointError(3, 0, 0.218957);
+   gcms_pp_13p0_y->SetPoint(4, -1.1, 6.540498); gcms_pp_13p0_y->SetPointError(4, 0, 0.209042);
+   gcms_pp_13p0_y->SetPoint(5, -0.9, 6.509573); gcms_pp_13p0_y->SetPointError(5, 0, 0.205112);
+   gcms_pp_13p0_y->SetPoint(6, -0.7, 6.532171); gcms_pp_13p0_y->SetPointError(6, 0, 0.210979);
+   gcms_pp_13p0_y->SetPoint(7, -0.5, 6.506374); gcms_pp_13p0_y->SetPointError(7, 0, 0.221114);
+   gcms_pp_13p0_y->SetPoint(8, -0.3, 6.462763); gcms_pp_13p0_y->SetPointError(8, 0, 0.221482);
+   gcms_pp_13p0_y->SetPoint(9, -0.1, 6.414344); gcms_pp_13p0_y->SetPointError(9, 0, 0.219001);
+   gcms_pp_13p0_y->SetPoint(10, 0.1, 6.412884); gcms_pp_13p0_y->SetPointError(10, 0, 0.220220);
+   gcms_pp_13p0_y->SetPoint(11, 0.3, 6.466133); gcms_pp_13p0_y->SetPointError(11, 0, 0.218529);
+   gcms_pp_13p0_y->SetPoint(12, 0.5, 6.496522); gcms_pp_13p0_y->SetPointError(12, 0, 0.213954);
+   gcms_pp_13p0_y->SetPoint(13, 0.7, 6.539141); gcms_pp_13p0_y->SetPointError(13, 0, 0.215410);
+   gcms_pp_13p0_y->SetPoint(14, 0.9, 6.509951); gcms_pp_13p0_y->SetPointError(14, 0, 0.212230);
+   gcms_pp_13p0_y->SetPoint(15, 1.1, 6.536135); gcms_pp_13p0_y->SetPointError(15, 0, 0.204620);
+   gcms_pp_13p0_y->SetPoint(16, 1.3, 6.529927); gcms_pp_13p0_y->SetPointError(16, 0, 0.218396);
+   gcms_pp_13p0_y->SetPoint(17, 1.5, 6.454569); gcms_pp_13p0_y->SetPointError(17, 0, 0.208824);
+   gcms_pp_13p0_y->SetPoint(18, 1.7, 6.414360); gcms_pp_13p0_y->SetPointError(18, 0, 0.213922);
+   gcms_pp_13p0_y->SetPoint(19, 1.9, 6.420478); gcms_pp_13p0_y->SetPointError(19, 0, 0.237085);
+
+   return gcms_pp_13p0_y;
+}
+
+TGraphErrors* cms_pbpb_2p76_y_c0t5() {
+   TGraphErrors* gcms_pbpb_2p76_y_c0t5 = new TGraphErrors(10);
+   gcms_pbpb_2p76_y_c0t5->SetName("gcms_pbpb_2p76_y_c0t5");
+
+   gcms_pbpb_2p76_y_c0t5->SetPoint(0, -2.25, 1680.142944); gcms_pbpb_2p76_y_c0t5->SetPointError(0, 0, 69.471085);
+   gcms_pbpb_2p76_y_c0t5->SetPoint(1, -1.75, 1748.445557); gcms_pbpb_2p76_y_c0t5->SetPointError(1, 0, 65.571922);
+   gcms_pbpb_2p76_y_c0t5->SetPoint(2, -1.25, 1822.775635); gcms_pbpb_2p76_y_c0t5->SetPointError(2, 0, 67.621155);
+   gcms_pbpb_2p76_y_c0t5->SetPoint(3, -0.75, 1869.378784); gcms_pbpb_2p76_y_c0t5->SetPointError(3, 0, 76.877213);
+   gcms_pbpb_2p76_y_c0t5->SetPoint(4, -0.25, 1892.490356); gcms_pbpb_2p76_y_c0t5->SetPointError(4, 0, 82.717804);
+   gcms_pbpb_2p76_y_c0t5->SetPoint(5, 0.25, 1888.021362); gcms_pbpb_2p76_y_c0t5->SetPointError(5, 0, 83.284431);
+   gcms_pbpb_2p76_y_c0t5->SetPoint(6, 0.75, 1875.383667); gcms_pbpb_2p76_y_c0t5->SetPointError(6, 0, 76.332893);
+   gcms_pbpb_2p76_y_c0t5->SetPoint(7, 1.25, 1813.482544); gcms_pbpb_2p76_y_c0t5->SetPointError(7, 0, 67.577148);
+   gcms_pbpb_2p76_y_c0t5->SetPoint(8, 1.75, 1765.625366); gcms_pbpb_2p76_y_c0t5->SetPointError(8, 0, 65.734322);
+   gcms_pbpb_2p76_y_c0t5->SetPoint(9, 2.25, 1679.929810); gcms_pbpb_2p76_y_c0t5->SetPointError(9, 0, 69.107018);
+
+   return gcms_pbpb_2p76_y_c0t5;
+}
+
+TGraphErrors* cms_pbpb_2p76_y_c0t90() {
+   TGraphErrors* gcms_pbpb_2p76_y_c0t90 = new TGraphErrors(10);
+   gcms_pbpb_2p76_y_c0t90->SetName("gcms_pbpb_2p76_y_c0t90");
+
+   gcms_pbpb_2p76_y_c0t90->SetPoint(0, -2.25, 400.260193); gcms_pbpb_2p76_y_c0t90->SetPointError(0, 0, 32.296921);
+   gcms_pbpb_2p76_y_c0t90->SetPoint(1, -1.75, 417.487274); gcms_pbpb_2p76_y_c0t90->SetPointError(1, 0, 32.742054);
+   gcms_pbpb_2p76_y_c0t90->SetPoint(2, -1.25, 429.937958); gcms_pbpb_2p76_y_c0t90->SetPointError(2, 0, 33.370441);
+   gcms_pbpb_2p76_y_c0t90->SetPoint(3, -0.75, 439.847534); gcms_pbpb_2p76_y_c0t90->SetPointError(3, 0, 35.378124);
+   gcms_pbpb_2p76_y_c0t90->SetPoint(4, -0.25, 443.879120); gcms_pbpb_2p76_y_c0t90->SetPointError(4, 0, 36.211704);
+   gcms_pbpb_2p76_y_c0t90->SetPoint(5, 0.25, 443.269318); gcms_pbpb_2p76_y_c0t90->SetPointError(5, 0, 36.287189);
+   gcms_pbpb_2p76_y_c0t90->SetPoint(6, 0.75, 438.574707); gcms_pbpb_2p76_y_c0t90->SetPointError(6, 0, 35.290741);
+   gcms_pbpb_2p76_y_c0t90->SetPoint(7, 1.25, 428.558197); gcms_pbpb_2p76_y_c0t90->SetPointError(7, 0, 33.351376);
+   gcms_pbpb_2p76_y_c0t90->SetPoint(8, 1.75, 418.433655); gcms_pbpb_2p76_y_c0t90->SetPointError(8, 0, 32.745125);
+   gcms_pbpb_2p76_y_c0t90->SetPoint(9, 2.25, 400.209412); gcms_pbpb_2p76_y_c0t90->SetPointError(9, 0, 32.249535);
+
+   return gcms_pbpb_2p76_y_c0t90;
+}

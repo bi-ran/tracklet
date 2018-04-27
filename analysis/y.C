@@ -127,6 +127,9 @@ int y(const char* config, const char* label) {
    SAVE(brahms_auau_0p2_y_c0t5_pim)
    SAVE(brahms_auau_0p2_y_c0t5_kp)
    SAVE(brahms_auau_0p2_y_c0t5_km)
+   SAVE(cms_pp_13p0_y)
+   SAVE(cms_pbpb_2p76_y_c0t5)
+   SAVE(cms_pbpb_2p76_y_c0t90)
 
    fout->Write("", TObject::kOverwrite);
    fout->Close();
