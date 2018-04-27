@@ -4,18 +4,19 @@
 
 #include "include/cosmetics.h"
 
-static const int types[9] = {
-   12, 13, 14, 23, 24, 34, 15, 16, 17
+constexpr int ntypes = 9;
+static const int types[ntypes] = {
+   12, 13, 14, 23, 24, 34, 56, 57, 67
 };
 
 int purge_pileup(const char* pu, const char* exact, const char* label) {
    TFile* fpu = new TFile(Form("output/merged-%s.root", pu));
    TFile* fexact = new TFile(Form("output/merged-%s.root", exact));
 
-   TFile* fout = new TFile(Form("output/pileup-%s.root", label), "recreate");
+   TFile* fout = new TFile(Form("output/pileup-%s.root", label), "update");
 
-   TH1F* hpu[9] = {0}; TH1F* hexact[9] = {0}; TH1F* h1pu[9] = {0};
-   for (int i=0; i<9; ++i) {
+   TH1F* hpu[ntypes] = {0}; TH1F* hexact[ntypes] = {0}; TH1F* h1pu[ntypes] = {0};
+   for (int i=0; i<ntypes; ++i) {
       TH1F* h0 = (TH1F*)fpu->Get(Form("h%i", types[i]));
       TH1F* h1 = (TH1F*)fexact->Get(Form("h%i", types[i]));
 
@@ -29,7 +30,7 @@ int purge_pileup(const char* pu, const char* exact, const char* label) {
    }
 
    TCanvas* c1 = new TCanvas("c1", "", 400, 400);
-   for (int i=0; i<9; ++i) {
+   for (int i=0; i<ntypes; ++i) {
       if (h1pu[i]) {
          hstyle(h1pu[i], 24, colours[i], 0.8);
          hrange(h1pu[i], 0.9, 1.1);
