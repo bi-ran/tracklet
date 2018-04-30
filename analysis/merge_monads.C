@@ -73,7 +73,7 @@ int merge_monads(const char* label, uint32_t opts) {
    std::vector<hist_t> histc;
    for (const auto& gen : geninfo) {
       histc.emplace_back((TH1F*)fgen->Get(gen.hist), gen.label, "hist c same");
-      hline(histc.back().hist, gen.style, gen.colour);
+      hline(histc.back().hist, gen.style, gen.colour, 1.0);
    }
 
 #define INCLUDE_ETA_BINS

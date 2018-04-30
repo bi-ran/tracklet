@@ -61,6 +61,13 @@ void tstyle(T* o, int font, float size) {
    o->SetTextSize(size);
 }
 
+template<typename T>
+void tstyle(T* o, int font, float size, int align) {
+   o->SetTextFont(font);
+   o->SetTextSize(size);
+   o->SetTextAlign(align);
+}
+
 void hstyle(TH1* h, int style, int colour) {
    h->SetStats(0);
    h->SetMarkerStyle(style);
@@ -118,12 +125,11 @@ void htoffset(TH1* h, float xoffset, float yoffset) {
    h->SetTitleOffset(yoffset, "Y");
 }
 
-void hline(TH1* h, int style, int colour) {
+void hline(TH1* h, int style, int colour, float width) {
    h->SetStats(0);
    h->SetLineStyle(style);
    h->SetLineColor(colour);
-   h->SetMarkerColor(colour);
-   h->SetMarkerSize(0);
+   h->SetLineWidth(width);
 }
 
 void rstyle(TH1* h) {
