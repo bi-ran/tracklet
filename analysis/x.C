@@ -47,6 +47,15 @@ int x(const char* config, const char* label) {
       }
    }
 
+   std::vector<std::vector<TH1F*>> hr(nf, std::vector<TH1F*>(nf, 0));
+   for (std::size_t i=0; i<nf; ++i) {
+      for (std::size_t j=0; j<nf; ++j) {
+         hr[i][j] = (TH1F*)h[i]->Clone(Form("%s_over_%s",
+            h[i]->GetName(), h[j]->GetName()));
+         hr[i][j]->Divide(h[j]);
+      }
+   }
+
    TH1F* hj = (TH1F*)fj->Get(jtag.data())->Clone("hj");
    TH1F* hjs = (TH1F*)fj->Get(jstag.data())->Clone("hjs");
 
