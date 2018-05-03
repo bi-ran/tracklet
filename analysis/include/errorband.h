@@ -2,6 +2,7 @@
 #define ERRORBAND_H
 
 #include "TGraph.h"
+#include "TH1.h"
 
 void box(TH1* h1, TH1* h1_sys, int colour, float alpha) {
     TGraph* gr = new TGraph(); gr->SetFillStyle(1001);
@@ -24,6 +25,86 @@ void box(TH1* h1, TH1* h1_sys, int colour, float alpha) {
 
         gr->DrawClone("f");
     }
+}
+
+/* graphs with 1 point not supported */
+void box(TGraph* g, TGraph* gsys, int colour, float alpha) {
+    TGraph* gr = new TGraph(); gr->SetFillStyle(1001);
+    gr->SetFillColorAlpha(colour, alpha);
+
+    int n = g->GetN();
+    double* x = g->GetX();
+    double* val = g->GetY();
+    double* err = gsys->GetY();
+
+    for (int i=0; i<n; ++i) {
+        float lwidth = i ? x[i] - x[i-1] : x[i+1] - x[i];
+        float rwidth = i-(n-1) ? x[i+1] - x[i] : x[i] - x[i-1];
+
+        gr->SetPoint(0, x[i] - lwidth/2, val[i] - err[i]);
+        gr->SetPoint(1, x[i] + rwidth/2, val[i] - err[i]);
+        gr->SetPoint(2, x[i] + rwidth/2, val[i] + err[i]);
+        gr->SetPoint(3, x[i] - lwidth/2, val[i] + err[i]);
+
+        gr->DrawClone("f");
+    }
+}
+
+/* graphs with 1 point not supported */
+void box(TGraphErrors* g, int colour, float alpha) {
+    TGraph* gr = new TGraph(); gr->SetFillStyle(1001);
+    gr->SetFillColorAlpha(colour, alpha);
+
+    int n = g->GetN();
+    double* x = g->GetX();
+    double* val = g->GetY();
+    double* err = g->GetEY();
+
+    for (int i=0; i<n; ++i) {
+        float lwidth = i ? x[i] - x[i-1] : x[i+1] - x[i];
+        float rwidth = i-(n-1) ? x[i+1] - x[i] : x[i] - x[i-1];
+
+        gr->SetPoint(0, x[i] - lwidth/2, val[i] - err[i]);
+        gr->SetPoint(1, x[i] + rwidth/2, val[i] - err[i]);
+        gr->SetPoint(2, x[i] + rwidth/2, val[i] + err[i]);
+        gr->SetPoint(3, x[i] - lwidth/2, val[i] + err[i]);
+
+        gr->DrawClone("f");
+    }
+}
+
+void band(TGraph* g, TGraph* gsys, int colour, float alpha) {
+    TGraph* gr = new TGraph(); gr->SetFillStyle(1001);
+    gr->SetFillColorAlpha(colour, alpha);
+
+    int n = g->GetN();
+    double* x = g->GetX();
+    double* val = g->GetY();
+    double* err = gsys->GetY();
+
+    for (int i=0; i<n; ++i) {
+        gr->SetPoint(i, x[i], val[i] + err[i]);
+        gr->SetPoint(2*n-1-i, x[i], val[i] - err[i]);
+    }
+
+    gr->DrawClone("f");
+}
+
+void band(TGraphErrors* g, int colour, float alpha) {
+    TGraph* gr = new TGraph(); gr->SetFillStyle(1001);
+    gr->SetFillColorAlpha(colour, alpha);
+
+    int n = g->GetN();
+    double* x = g->GetX();
+    double* val = g->GetY();
+    double* err = g->GetEY();
+
+    for (int i=0; i<n; ++i) {
+        gr->SetPoint(i, x[i], val[i] + err[i]);
+        gr->SetPoint(2*n-1-i, x[i], val[i] - err[i]);
+    }
+
+    gr->DrawClone("f");
 }
 
 #endif  /* ERRORBAND_H */
