@@ -116,8 +116,7 @@ int sum_systematics(const char* config, const char* label) {
         c0->cd(); h->Draw("p hist e"); l->DrawLatexNDC(0.4, 0.8, "total");
         c0->SaveAs(Form("%s.total-ratio.png", path.data()));
         c2->cd(nf+1); h->Draw("p hist e"); l->DrawLatexNDC(0.4, 0.8, "total");
-        c4->cd(); h->SetAxisRange(-0.005, 0.08, "Y"); h->Draw("p hist e");
-        l4->AddEntry(h, "total uncertainty", "p");
+        c4->cd(); h->Draw("p hist e"); l4->AddEntry(h, "total", "p");
 
         for (std::size_t j = 0; j < nf; ++j) {
             h = svars[j]->adiff(0); hstyle(h, 20, colours[j%ncolours]);
