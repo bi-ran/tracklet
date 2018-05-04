@@ -28,15 +28,15 @@ const float nparterr[NCENT] = {
 };
 
 TGraphErrors* cms_pbpb_2p76();
-TGraphErrors* cms_pbpb_2p76_norm();
+TGraphErrors* cms_pbpb_2p76_over_npart_afo_npart();
 TGraphErrors* alice_pbpb_5p02();
-TGraphErrors* alice_pbpb_5p02_norm();
+TGraphErrors* alice_pbpb_5p02_over_npart_afo_npart();
 TGraphErrors* phobos_auau_0p2();
-TGraphErrors* phobos_auau_0p2_norm();
+TGraphErrors* phobos_auau_0p2_over_npart_afo_npart();
 TGraphErrors* phobos_cucu_0p2();
-TGraphErrors* phobos_cucu_0p2_norm();
-TGraphErrors* cms_pp_13p0_norm();
-TGraphErrors* cms_ppb_8p16_norm();
+TGraphErrors* phobos_cucu_0p2_over_npart_afo_npart();
+TGraphErrors* cms_pp_13p0_over_npart_afo_npart();
+TGraphErrors* cms_ppb_8p16_over_npart_afo_npart();
 
 int collect_cents(const char* label) {
     constexpr int ntotal = NCENT - OFFSET;
@@ -124,18 +124,18 @@ int collect_cents(const char* label) {
 
     c2->SaveAs(Form("figs/merged/merged-%s-midy-int1.png", label));
 
-    TGraphErrors* gcms_pbpb_2p76_norm = cms_pbpb_2p76_norm();
-    TGraphErrors* galice_pbpb_5p02_norm = alice_pbpb_5p02_norm();
-    TGraphErrors* gphobos_auau_0p2_norm = phobos_auau_0p2_norm();
-    TGraphErrors* gphobos_cucu_0p2_norm = phobos_cucu_0p2_norm();
-    TGraphErrors* gcms_pp_13p0_norm = cms_pp_13p0_norm();
-    TGraphErrors* gcms_ppb_8p16_norm = cms_ppb_8p16_norm();
-    gstyle(gcms_pbpb_2p76_norm, 24, COLOUR5);
-    gstyle(galice_pbpb_5p02_norm, 30, COLOUR4);
-    gstyle(gphobos_auau_0p2_norm, 47, COLOUR3);
-    gstyle(gphobos_cucu_0p2_norm, 42, COLOUR2);
-    gstyle(gcms_pp_13p0_norm, 43, COLOUR0);
-    gstyle(gcms_ppb_8p16_norm, 45, COLOUR6);
+    TGraphErrors* gcms_pbpb_2p76_over_npart_afo_npart = cms_pbpb_2p76_over_npart_afo_npart();
+    TGraphErrors* galice_pbpb_5p02_over_npart_afo_npart = alice_pbpb_5p02_over_npart_afo_npart();
+    TGraphErrors* gphobos_auau_0p2_over_npart_afo_npart = phobos_auau_0p2_over_npart_afo_npart();
+    TGraphErrors* gphobos_cucu_0p2_over_npart_afo_npart = phobos_cucu_0p2_over_npart_afo_npart();
+    TGraphErrors* gcms_pp_13p0_over_npart_afo_npart = cms_pp_13p0_over_npart_afo_npart();
+    TGraphErrors* gcms_ppb_8p16_over_npart_afo_npart = cms_ppb_8p16_over_npart_afo_npart();
+    gstyle(gcms_pbpb_2p76_over_npart_afo_npart, 24, COLOUR5);
+    gstyle(galice_pbpb_5p02_over_npart_afo_npart, 30, COLOUR4);
+    gstyle(gphobos_auau_0p2_over_npart_afo_npart, 47, COLOUR3);
+    gstyle(gphobos_cucu_0p2_over_npart_afo_npart, 42, COLOUR2);
+    gstyle(gcms_pp_13p0_over_npart_afo_npart, 43, COLOUR0);
+    gstyle(gcms_ppb_8p16_over_npart_afo_npart, 45, COLOUR6);
 
     TCanvas* c3 = new TCanvas("c3", "", 600, 600);
 
@@ -143,12 +143,12 @@ int collect_cents(const char* label) {
     htitle(gnframe, ";N_{part};#frac{dN}{d#eta}#lbar_{#eta=0}/#LTN_{part}#GT");
     hrange(gnframe, 0, 6); gnframe->Draw();
 
-    gcms_pbpb_2p76_norm->Draw("p same");
-    galice_pbpb_5p02_norm->Draw("p same");
-    gphobos_auau_0p2_norm->Draw("p same");
-    gphobos_cucu_0p2_norm->Draw("p same");
-    gcms_pp_13p0_norm->Draw("p same");
-    gcms_ppb_8p16_norm->Draw("p same");
+    gcms_pbpb_2p76_over_npart_afo_npart->Draw("p same");
+    galice_pbpb_5p02_over_npart_afo_npart->Draw("p same");
+    gphobos_auau_0p2_over_npart_afo_npart->Draw("p same");
+    gphobos_cucu_0p2_over_npart_afo_npart->Draw("p same");
+    gcms_pp_13p0_over_npart_afo_npart->Draw("p same");
+    gcms_ppb_8p16_over_npart_afo_npart->Draw("p same");
     gsnp->Draw("f");
     gnorm->Draw("p same");
 
@@ -158,24 +158,24 @@ int collect_cents(const char* label) {
     TLegendEntry* h2cms = l3->AddEntry((TObject*)0, "CMS", "");
     h2cms->SetTextFont(63); h2cms->SetTextSize(17);
     l3->AddEntry(gnorm, "XeXe 5.44 TeV", "p");
-    l3->AddEntry(gcms_pbpb_2p76_norm, "PbPb 2.76 TeV", "p");
+    l3->AddEntry(gcms_pbpb_2p76_over_npart_afo_npart, "PbPb 2.76 TeV", "p");
     TLegendEntry* h2alice = l3->AddEntry((TObject*)0, "ALICE", "");
     h2alice->SetTextFont(63); h2alice->SetTextSize(17);
-    l3->AddEntry(galice_pbpb_5p02_norm, "PbPb 5.02 TeV", "p");
+    l3->AddEntry(galice_pbpb_5p02_over_npart_afo_npart, "PbPb 5.02 TeV", "p");
     lstyle(l3, 43, 15); l3->Draw();
 
     TLegend* l4 = new TLegend(0.6, 0.18, 0.9, 0.30);
     TLegendEntry* hphobos = l4->AddEntry((TObject*)0, "PHOBOS", "");
     hphobos->SetTextFont(63); hphobos->SetTextSize(17);
-    l4->AddEntry(gphobos_auau_0p2_norm, "AuAu 200 GeV", "p");
-    l4->AddEntry(gphobos_cucu_0p2_norm, "CuCu 200 GeV", "p");
+    l4->AddEntry(gphobos_auau_0p2_over_npart_afo_npart, "AuAu 200 GeV", "p");
+    l4->AddEntry(gphobos_cucu_0p2_over_npart_afo_npart, "CuCu 200 GeV", "p");
     lstyle(l4, 43, 15); l4->Draw();
 
     TLegend* l5 = new TLegend(0.35, 0.18, 0.65, 0.30);
     TLegendEntry* h3cms = l5->AddEntry((TObject*)0, "CMS", "");
     h3cms->SetTextFont(63); h3cms->SetTextSize(17);
-    l5->AddEntry(gcms_pp_13p0_norm, "pp 13 TeV", "p");
-    l5->AddEntry(gcms_ppb_8p16_norm, "pPb 8.16 TeV", "p");
+    l5->AddEntry(gcms_pp_13p0_over_npart_afo_npart, "pp 13 TeV", "p");
+    l5->AddEntry(gcms_ppb_8p16_over_npart_afo_npart, "pPb 8.16 TeV", "p");
     lstyle(l5, 43, 15); l5->Draw();
 
     c3->SaveAs(Form("figs/merged/merged-%s-midynorm-int1.png", label));
@@ -188,12 +188,12 @@ int collect_cents(const char* label) {
 
     gnorm->Write("", TObject::kOverwrite);
     gsnp->Write("", TObject::kOverwrite);
-    gcms_pbpb_2p76_norm->Write("", TObject::kOverwrite);
-    galice_pbpb_5p02_norm->Write("", TObject::kOverwrite);
-    gphobos_auau_0p2_norm->Write("", TObject::kOverwrite);
-    gphobos_cucu_0p2_norm->Write("", TObject::kOverwrite);
-    gcms_pp_13p0_norm->Write("", TObject::kOverwrite);
-    gcms_ppb_8p16_norm->Write("", TObject::kOverwrite);
+    gcms_pbpb_2p76_over_npart_afo_npart->Write("", TObject::kOverwrite);
+    galice_pbpb_5p02_over_npart_afo_npart->Write("", TObject::kOverwrite);
+    gphobos_auau_0p2_over_npart_afo_npart->Write("", TObject::kOverwrite);
+    gphobos_cucu_0p2_over_npart_afo_npart->Write("", TObject::kOverwrite);
+    gcms_pp_13p0_over_npart_afo_npart->Write("", TObject::kOverwrite);
+    gcms_ppb_8p16_over_npart_afo_npart->Write("", TObject::kOverwrite);
 
     fout->Write("", TObject::kOverwrite);
     fout->Close();
