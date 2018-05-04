@@ -52,6 +52,8 @@ int x(const char* config, const char* label) {
          hr[i][j] = (TH1F*)h[i]->Clone(Form("%s_over_%s",
             h[i]->GetName(), h[j]->GetName()));
          hr[i][j]->Divide(h[j]);
+         hr[i][j]->Scale(1. / hr[i][j]->GetBinContent(
+            hr[i][j]->GetNbinsX() / 2));
       }
    }
 
