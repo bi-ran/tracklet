@@ -37,21 +37,30 @@ int y(const char* config, const char* label) {
    std::vector<TH1F*> h(nf, 0);
    std::vector<std::vector<TH1F*>> hs(nf, std::vector<TH1F*>(ns, 0));
 
-   TGraphErrors* g = new TGraphErrors(nf); g->SetName("g");
-   TGraphErrors* gn = (TGraphErrors*)g->Clone("gn");
-   TGraphErrors* gn2a = (TGraphErrors*)g->Clone("gn2a");
-   std::vector<TGraph*> gs(ns);
-   std::vector<TGraph*> gns(ns);
-   std::vector<TGraph*> gn2as(ns);
+   TGraphErrors* gxc = new TGraphErrors(nf); gxc->SetName("gxc");
+   TGraphErrors* g2axn = (TGraphErrors*)gxc->Clone("g2axn");
+   TGraphErrors* g2axn2a = (TGraphErrors*)gxc->Clone("g2axn2a");
+   TGraphErrors* gnxn = (TGraphErrors*)gxc->Clone("gnxn");
+   TGraphErrors* gnxn2a = (TGraphErrors*)gxc->Clone("gnxn2a");
+   std::vector<TGraph*> gxcs(ns);
+   std::vector<TGraph*> g2axns(ns);
+   std::vector<TGraph*> g2axn2as(ns);
+   std::vector<TGraph*> gnxns(ns);
+   std::vector<TGraph*> gnxn2as(ns);
    for (std::size_t j=0; j<ns; ++j) {
-      gs[j] = new TGraph(nf * 2); gns[j] = new TGraph(nf * 2);
-      gn2as[j] = new TGraph(nf * 2);
-      gs[j]->SetName(Form("gs_%s", stags[j].data()));
-      gns[j]->SetName(Form("gns_%s", stags[j].data()));
-      gn2as[j]->SetName(Form("gn2as_%s", stags[j].data()));
+      gxcs[j] = new TGraph(nf * 2);
+      g2axns[j] = new TGraph(nf * 2); g2axn2as[j] = new TGraph(nf * 2);
+      gnxns[j] = new TGraph(nf * 2); gnxn2as[j] = new TGraph(nf * 2);
+      gxcs[j]->SetName(Form("gxcs_%s", stags[j].data()));
+      g2axns[j]->SetName(Form("g2axns_%s", stags[j].data()));
+      g2axn2as[j]->SetName(Form("g2axn2as_%s", stags[j].data()));
+      gnxns[j]->SetName(Form("gnxns_%s", stags[j].data()));
+      gnxn2as[j]->SetName(Form("gnxn2as_%s", stags[j].data()));
    }
-   TGraph* gnst = new TGraph(2 * nf + 2); gnst->SetName("gnst");
-   TGraph* gn2ast = new TGraph(2 * nf + 2); gn2ast->SetName("gn2ast");
+   TGraph* gnxnst = new TGraph(2 * nf + 2); gnxnst->SetName("gnxnst");
+   TGraph* gnxn2ast = new TGraph(2 * nf + 2); gnxn2ast->SetName("gnxn2ast");
+   TGraph* g2axnst = new TGraph(2 * nf + 2); g2axnst->SetName("g2axnst");
+   TGraph* g2axn2ast = new TGraph(2 * nf + 2); g2axn2ast->SetName("g2axn2ast");
 
    for (std::size_t i=0; i<nf; ++i) {
       h[i] = (TH1F*)fr[i]->Get(hist.data())->Clone(
@@ -65,45 +74,69 @@ int y(const char* config, const char* label) {
       int b = (h[i]->GetNbinsX() + 1) / 2;
       float myv = h[i]->GetBinContent(b);
       float mye = h[i]->GetBinError(b);
-      g->SetPoint(i, cvs[i], myv);
-      g->SetPointError(i, 0, mye);
+      gxc->SetPoint(i, cvs[i], myv);
+      gxc->SetPointError(i, 0, mye);
       float nv = nvs[i]; float ne = nes[i];
-      gn->SetPoint(i, nv, myv / nv);
-      gn->SetPointError(i, 0, mye / nv);
-      gn2a->SetPoint(i, nv / 258, myv / nv);
-      gn2a->SetPointError(i, 0, mye / nv);
+      g2axn->SetPoint(i, nv, myv / 258);
+      g2axn->SetPointError(i, 0, mye / 258);
+      g2axn2a->SetPoint(i, nv / 258, myv / 258);
+      g2axn2a->SetPointError(i, 0, mye / 258);
+      gnxn->SetPoint(i, nv, myv / nv);
+      gnxn->SetPointError(i, 0, mye / nv);
+      gnxn2a->SetPoint(i, nv / 258, myv / nv);
+      gnxn2a->SetPointError(i, 0, mye / nv);
       std::vector<float> mys(ns, 0);
       for (std::size_t j=0; j<ns; ++j) {
           mys[j] = hs[i][j]->GetBinContent(b);
-          gs[j]->SetPoint(i, cvs[i], myv + mys[j]);
-          gs[j]->SetPoint(2 * nf - i - 1, cvs[i], myv - mys[j]);
-          gns[j]->SetPoint(i, nv, (myv + mys[j]) / nv);
-          gns[j]->SetPoint(2 * nf - i - 1, nv, (myv - mys[j]) / nv);
-          gn2as[j]->SetPoint(i, nv / 258, (myv + mys[j]) / nv);
-          gn2as[j]->SetPoint(2 * nf - i - 1, nv / 258, (myv - mys[j]) / nv);
+          gxcs[j]->SetPoint(i, cvs[i], myv + mys[j]);
+          gxcs[j]->SetPoint(2 * nf - i - 1, cvs[i], myv - mys[j]);
+          g2axns[j]->SetPoint(i, nv, (myv + mys[j]) / 258);
+          g2axns[j]->SetPoint(2 * nf - i - 1, nv, (myv - mys[j]) / 258);
+          g2axn2as[j]->SetPoint(i, nv / 258, (myv + mys[j]) / 258);
+          g2axn2as[j]->SetPoint(2 * nf - i - 1, nv / 258, (myv - mys[j]) / 258);
+          gnxns[j]->SetPoint(i, nv, (myv + mys[j]) / nv);
+          gnxns[j]->SetPoint(2 * nf - i - 1, nv, (myv - mys[j]) / nv);
+          gnxn2as[j]->SetPoint(i, nv / 258, (myv + mys[j]) / nv);
+          gnxn2as[j]->SetPoint(2 * nf - i - 1, nv / 258, (myv - mys[j]) / nv);
       }
       float myt = ns ? mys[0] : 0;
-      gnst->SetPoint(i + 1, nv - ne, (myv + myt) / (nv - ne));
-      gnst->SetPoint(2 * nf - i + 1, nv + ne, (myv - myt) / (nv + ne));
-      if (i == 0) gnst->SetPoint(0, nv - ne, (myv - myt) / (nv - ne));
-      if (i == nf - 1) gnst->SetPoint(nf + 1, nv + ne, (myv + myt) / (nv + ne));
-      gn2ast->SetPoint(i + 1, (nv - ne) / 258, (myv + myt) / (nv - ne));
-      gn2ast->SetPoint(2 * nf - i + 1, (nv + ne) / 258, (myv - myt) / (nv + ne));
-      if (i == 0) gn2ast->SetPoint(0, (nv - ne) / 258, (myv - myt) / (nv - ne));
-      if (i == nf - 1) gn2ast->SetPoint(nf + 1, (nv + ne) / 258, (myv + myt) / (nv + ne));
+      gnxnst->SetPoint(i + 1, nv - ne, (myv + myt) / (nv - ne));
+      gnxnst->SetPoint(2 * nf - i + 1, nv + ne, (myv - myt) / (nv + ne));
+      if (i == 0) gnxnst->SetPoint(0, nv - ne, (myv - myt) / (nv - ne));
+      if (i == nf - 1) gnxnst->SetPoint(nf + 1, nv + ne, (myv + myt) / (nv + ne));
+      gnxn2ast->SetPoint(i + 1, (nv - ne) / 258, (myv + myt) / (nv - ne));
+      gnxn2ast->SetPoint(2 * nf - i + 1, (nv + ne) / 258, (myv - myt) / (nv + ne));
+      if (i == 0) gnxn2ast->SetPoint(0, (nv - ne) / 258, (myv - myt) / (nv - ne));
+      if (i == nf - 1) gnxn2ast->SetPoint(nf + 1, (nv + ne) / 258, (myv + myt) / (nv + ne));
+      g2axnst->SetPoint(i + 1, nv - ne, (myv + myt) / 258);
+      g2axnst->SetPoint(2 * nf - i + 1, nv + ne, (myv - myt) / 258);
+      if (i == 0) g2axnst->SetPoint(0, nv - ne, (myv - myt) / 258);
+      if (i == nf - 1) g2axnst->SetPoint(nf + 1, nv + ne, (myv + myt) / 258);
+      g2axn2ast->SetPoint(i + 1, (nv - ne) / 258, (myv + myt) / 258);
+      g2axn2ast->SetPoint(2 * nf - i + 1, (nv + ne) / 258, (myv - myt) / 258);
+      if (i == 0) g2axn2ast->SetPoint(0, (nv - ne) / 258, (myv - myt) / 258);
+      if (i == nf - 1) g2axn2ast->SetPoint(nf + 1, (nv + ne) / 258, (myv + myt) / 258);
    }
 
-   g->Write("", TObject::kOverwrite);
-   gn->Write("", TObject::kOverwrite);
-   gn2a->Write("", TObject::kOverwrite);
-   for (const auto& gsi : gs)
-      gsi->Write("", TObject::kOverwrite);
-   for (const auto& gnsi : gns)
-      gnsi->Write("", TObject::kOverwrite);
-   for (const auto& gn2asi : gn2as)
-      gn2asi->Write("", TObject::kOverwrite);
-   gnst->Write("", TObject::kOverwrite);
-   gn2ast->Write("", TObject::kOverwrite);
+   gxc->Write("", TObject::kOverwrite);
+   g2axn->Write("", TObject::kOverwrite);
+   g2axn2a->Write("", TObject::kOverwrite);
+   gnxn->Write("", TObject::kOverwrite);
+   gnxn2a->Write("", TObject::kOverwrite);
+   for (const auto& g : gxcs)
+      g->Write("", TObject::kOverwrite);
+   for (const auto& g : g2axns)
+      g->Write("", TObject::kOverwrite);
+   for (const auto& g : g2axn2as)
+      g->Write("", TObject::kOverwrite);
+   for (const auto& g : gnxns)
+      g->Write("", TObject::kOverwrite);
+   for (const auto& g : gnxn2as)
+      g->Write("", TObject::kOverwrite);
+   gnxnst->Write("", TObject::kOverwrite);
+   gnxn2ast->Write("", TObject::kOverwrite);
+   g2axnst->Write("", TObject::kOverwrite);
+   g2axn2ast->Write("", TObject::kOverwrite);
 
 #define SAVE(data)                           \
    TGraphErrors* g##data = data();           \
@@ -130,6 +163,13 @@ int y(const char* config, const char* label) {
    SAVE(cms_pp_13p0_y)
    SAVE(cms_pbpb_2p76_y_c0t5)
    SAVE(cms_pbpb_2p76_y_c0t90)
+
+   SAVE(cms_pbpb_2p76_2a)
+   SAVE(cms_pbpb_2p76_2a_2a)
+   SAVE(alice_pbpb_2p76_2a)
+   SAVE(alice_pbpb_2p76_2a_2a)
+   SAVE(alice_pbpb_5p02_2a)
+   SAVE(alice_pbpb_5p02_2a_2a)
 
    fout->Write("", TObject::kOverwrite);
    fout->Close();
