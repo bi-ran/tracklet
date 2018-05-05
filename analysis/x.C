@@ -54,8 +54,19 @@ int x(const char* config, const char* label) {
          hr[i][j]->Divide(h[j]);
          hr[i][j]->Scale(1. / hr[i][j]->GetBinContent(
             hr[i][j]->GetNbinsX() / 2));
+
       }
    }
+
+   /* hardcoded 0-5% / 50-55% ratio */
+   TH1F* hr0 = (TH1F*)fs[0]->Get("hsym_modeldep_nominal");
+   TH1F* hrs0 = (TH1F*)fs[0]->Get("hsym_modeldep_tdiff");
+   TH1F* hr1 = (TH1F*)fs[1]->Get("hsym_modeldep_nominal");
+   TH1F* hrs1 = (TH1F*)fs[1]->Get("hsym_modeldep_tdiff");
+   hrs0->Divide(hr0); hrs1->Divide(hr1);
+   TH1F* hrs = (TH1F*)hrs0->Clone("hs_hsym_19_20_over_hsym_10_11_total");
+   sqrtsumsquares(hrs, hrs1);
+   hrs->Multiply(hr[0][1]);
 
    if (!jacobian.empty()) {
       TFile* fj = new TFile(jacobian.data(), "read");
