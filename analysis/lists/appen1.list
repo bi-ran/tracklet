@@ -1,0 +1,54 @@
+std::string figure = hist
+
+std::string input = output/results-v5.s.all.root
+std::string sinput = output/results-v5.s.all.root
+std::string output = results-hsym-v5.s.19.20-y-cms-paper.pdf
+std::string title = ;#it{y};d#it{N}_{ch}/d#kern[-0.08]{#it{y}}
+
+std::vector<bool> logscale = 0 0
+std::vector<float> xrange = -3.6 3.6
+std::vector<float> yrange = 0 2500
+std::vector<int> ndivs = 508 505
+
+uint32_t nl = 1
+std::vector<float> lx0 = 0.45
+std::vector<float> lx1 = 0.64
+std::vector<float> ly0 = 0.40
+std::vector<float> ly1 = 0.48
+
+std::vector<std::string> files = output/results-v5.midy.root
+std::vector<std::string> bfiles = output/results-v5.midy.root
+std::vector<std::string> graphs =   \
+   gcms_pbpb_2p76_y_c0t5            \
+   galice_pbpb_2p76_y_c0t5
+std::vector<uint32_t> gassocf = 0 0
+std::vector<uint32_t> gassocl = 0 0
+std::vector<std::string> glegends = CMS ALICE
+std::vector<int> gmstyles = 20 22
+std::vector<float> gmsizes = 0.64 0.72
+std::vector<std::string> gcolours = #61afef #73c844
+std::vector<std::string> gdopts = pxsame pxsame
+std::vector<float> glalphas = 0.24 0.24
+std::vector<std::string> gldopts = pf pf
+
+std::vector<std::string> gbands =   \
+   gcms_pbpb_2p76_y_c0t5            \
+   galice_pbpb_2p76_y_c0t5
+std::vector<int> gbtypes = 2 2
+std::vector<uint32_t> gbassocf = 0 0
+std::vector<uint32_t> gbassocg = 0 1
+std::vector<std::string> gbcolours = #61afef #73c844
+std::vector<float> gbalphas = 0.24 0.24
+
+uint32_t nlatex = 3
+std::vector<int> lxfonts = 63 43 53
+std::vector<float> lxsizes = 18 12 11
+std::vector<int> lxaligns = 13 33 13
+std::vector<float> lxx = 0.15 0.93 0.15
+std::vector<float> lxy = 0.915 0.99 0.87
+token ;
+std::vector<std::string> lxtexts = CMS; PbPb #sqrt{#it{s}_{NN}} = 2.76 TeV; Supplementary
+
+token
+std::vector<int> csizes = 400 400
+std::vector<float> cmargins = 0.05 0.1 0.12 0.05

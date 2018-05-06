@@ -1,0 +1,110 @@
+std::string figure = graph
+
+std::string input = keep/data/sgdep-epos.root
+std::string output = multiplicity-bias-epos.pdf
+std::string title = \
+   ;#scale[1.2]{#LT}\
+   #it{N}#lower[0.4]{#scale[0.7]{#kern[-0.05]{part}}}\
+   #scale[1.2]{#GT};\
+   #scale[1.2]{#LT}\
+   d#it{N}_{ch}/d#kern[-0.08]{#it{#eta}}\
+   #scale[1.2]{#GT}\
+   #lower[0.1]{#scale[1.5]{#kern[0.36]{#lbar}}}\
+   #lower[0.6]{#scale[0.6]{#kern[0.15]{#cbar}#it{#eta}#kern[-0.4]{#cbar}}}\
+   #lower[1.2]{#scale[0.45]{#kern[0.16]{#LT}}}\
+   #lower[1.1]{#scale[0.6]{#kern[0.1]{0.5}}}\
+   #lower[0.36]{#kern[0.36]{#scale[2.7]{#/}}}\
+   #kern[-1.5]{#scale[1.2]{#LT}}\
+   #lower[0.1]{#it{N}}\
+   #lower[0.5]{#scale[0.6]{#kern[-0.08]{part}}}\
+   #scale[1.2]{#GT}
+std::string data = gnpart
+token ;
+std::string legend = \
+   #lower[0.1]{#it{N}}#lower[0.5]{#scale[0.6]{#kern[-0.08]{part}}}\
+   #minusweighted events
+token
+std::string colour = #ef5253
+std::string ldopt = p
+
+std::vector<bool> logscale = 1 0
+std::vector<float> xrange = 1 425
+std::vector<float> yrange = 0 6
+
+uint32_t naxes = 2
+std::vector<float> apathx0 = 1 2
+std::vector<float> apathx1 = 425 258
+std::vector<float> apathy0 = 0 6
+std::vector<float> apathy1 = 0 6
+std::vector<float> arange0 = 1
+std::vector<float> arange1 = 425
+token ;
+std::vector<std::string> afuncs = ;252.555*(1+(1-0.685474)*-0.0276135*exp((x-1)/(425-1)*log(425)))**(1/(1-0.685474))+1.63534
+token
+std::vector<float> afrange0 = 0 0
+std::vector<float> afrange1 = 0 100
+std::vector<uint32_t> aassocc = 2 1
+std::vector<float> aloffsets = 0.008 0.01
+std::vector<std::string> aopts = G -
+
+uint32_t nl = 2
+std::vector<float> lx0 = 0.45 0.45
+std::vector<float> lx1 = 0.72 0.72
+std::vector<float> ly0 = 0.20 0.15
+std::vector<float> ly1 = 0.36 0.18
+token ;
+std::vector<std::string> headers = #splitline{           E#scale[0.8]{POS} #scale[0.9]{LHC}}{    #scale[0.9]{XeXe 5.44 TeV}}
+
+token
+std::vector<std::string> files = keep/data/sgdep-epos.root
+std::vector<std::string> graphs = ghft gratio
+std::vector<uint32_t> gassocc = 1 2
+std::vector<uint32_t> gassocf = 0 0
+std::vector<uint32_t> gassocl = 1 2
+token ;
+std::vector<std::string> glegends = \
+   #lower[0.3]{#scale[2.0]{#Sigma}}#kern[-0.7]{#lower[1.25]{#scale[0.75]{3<|#eta|<5}}}#kern[-0.7]{#it{E}}_{T}#minusbased event selection
+token
+std::vector<int> gmstyles = 20 21
+std::vector<float> gmsizes = 0.64 0.64
+std::vector<std::string> gcolours = #61afef #9999cc
+std::vector<std::string> gdopts = psame psame
+std::vector<std::string> gldopts = p
+
+std::vector<float> toffsets = 1.25 1.6
+
+uint32_t nlatex = 3
+std::vector<int> lxfonts = 63 53 53
+std::vector<float> lxsizes = 18 11 11
+std::vector<int> lxaligns = 13 13 13
+std::vector<float> lxx = 0.15 0.15 0.15
+std::vector<float> lxy = 0.915 0.87 0.84
+token ;
+std::vector<std::string> lxtexts = CMS; Simulation; Supplementary
+
+token
+uint32_t nlines = 1
+std::vector<float> lnx0 = 1
+std::vector<float> lnx1 = 425
+std::vector<float> lny0 = 1
+std::vector<float> lny1 = 1
+std::vector<int> lnstyles = 7
+std::vector<uint32_t> lnassocc = 2
+
+std::vector<int> csizes = 400 400
+std::vector<float> cmargins = 0.05 0.1 0.12 0.05
+float cdivide = 0.27
+
+token ,
+std::string rtitle = \
+   ;#scale[1.2]{#LT}\
+   #it{N}#lower[0.4]{#scale[0.7]{#kern[-0.05]{part}}}\
+   #scale[1.2]{#GT};\
+   ratio
+token
+std::vector<float> rrange = 0 5
+std::vector<float> rtitleoffsets = 1.2 0.4
+std::vector<float> rtitlesizes = 0.128 0.12
+std::vector<float> rlabeloffsets = 9 0.005
+std::vector<float> rlabelsizes = 0.1 0.1
+int rndiv = 203
