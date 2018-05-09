@@ -137,7 +137,7 @@ int hist(configurer* conf) {
    std::vector<std::vector<TH1F*>> hs(nd, std::vector<TH1F*>(ns, 0));
    for (std::size_t i=0; i<nd; ++i) {
       h[i] = (TH1F*)f->Get(data[i].data());
-      if (systs[i].empty()) { continue; }
+      if (systs.empty() || systs[i].empty()) { continue; }
       for (std::size_t j=0; j<ns; ++j) {
          std::string stag = systs[i] + "_" + stags[j];
          hs[i][j] = (TH1F*)fs->Get(stag.data());
@@ -249,11 +249,12 @@ int hist(configurer* conf) {
       else vgraphs[i]->Draw("p same"); }
    c1->cd(1); for (std::size_t i=0; i<nd; ++i) {
       int col = TColor::GetColor(colours[i].data());
-      for (const auto& hsi : hs[i]) if (hsi) box(h[i], hsi, col, alpha);
+      if (!hs.empty()) for (const auto& hsi : hs[i])
+      if (hsi) box(h[i], hsi, col, alpha);
       hstyle(h[i], markers[i], col, sizes[i]); h[i]->Draw("same e x0");
       if (assocl[i] >= nl) continue;
       hl[i] = (TH1F*)h[i]->Clone();
-      if (!systs[i].empty()) lestyle(hl[i], col, 0.4);
+      if (i < systs.size() && !systs[i].empty()) lestyle(hl[i], col, 0.4);
       l1[assocl[i]]->AddEntry(hl[i], legends[i].data(), lopts[i].data()); }
    if (redraw) {
       for (std::size_t i=0; i<hists.size(); ++i) {
