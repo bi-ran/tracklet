@@ -114,12 +114,21 @@ int hist(configurer* conf) {
    auto cmargins = conf->get<std::vector<float>>("cmargins");
    auto cdivide = conf->get<float>("cdivide");
 
+   auto tfonts = conf->get<std::vector<int>>("tfonts");
+   auto tsizes = conf->get<std::vector<float>>("tsizes");
+   auto toffsets = conf->get<std::vector<float>>("toffsets");
+   auto lfonts = conf->get<std::vector<int>>("lfonts");
+   auto lsizes = conf->get<std::vector<float>>("lsizes");
+   auto loffsets = conf->get<std::vector<float>>("loffsets");
+
    auto rtitle = conf->get<std::string>("rtitle");
    auto rrange = conf->get<std::vector<float>>("rrange");
-   auto rtitleoffsets = conf->get<std::vector<float>>("rtitleoffsets");
-   auto rlabelsizes = conf->get<std::vector<float>>("rlabelsizes");
-   auto rtitlesizes = conf->get<std::vector<float>>("rtitlesizes");
-   auto rlabeloffsets = conf->get<std::vector<float>>("rlabeloffsets");
+   auto rtfonts = conf->get<std::vector<int>>("rtfonts");
+   auto rtsizes = conf->get<std::vector<float>>("rtsizes");
+   auto rtoffsets = conf->get<std::vector<float>>("rtoffsets");
+   auto rlfonts = conf->get<std::vector<int>>("rlfonts");
+   auto rlsizes = conf->get<std::vector<float>>("rlsizes");
+   auto rloffsets = conf->get<std::vector<float>>("rloffsets");
    auto rndiv = conf->get<int>("rndiv");
 
    TFile* f = new TFile(input.data());
@@ -178,17 +187,25 @@ int hist(configurer* conf) {
    std::vector<TLegend*> l1(nl, 0); std::vector<TLegendEntry*> le1(nl, 0);
    TH1F* hframe = new TH1F("hframe", "", 1, xrange[0], xrange[1]);
    hrange(hframe, yrange[0], yrange[1]); htitle(hframe, title.data());
-   htoffset(hframe, 1.25, 1.6); hndiv(hframe, ndivs[0], ndivs[1]);
+   if (!toffsets.empty()) htoffset(hframe, toffsets[0], toffsets[1]);
+   if (!tfonts.empty()) htfont(hframe, tfonts[0], tfonts[1]);
+   if (!tsizes.empty()) htsize(hframe, tsizes[0], tsizes[1]);
+   if (!loffsets.empty()) hloffset(hframe, loffsets[0], loffsets[1]);
+   if (!lfonts.empty()) hlfont(hframe, lfonts[0], lfonts[1]);
+   if (!lsizes.empty()) hlsize(hframe, lsizes[0], lsizes[1]);
+   if (!ndivs.empty()) hndiv(hframe, ndivs[0], ndivs[1]);
    hframe->Draw();
 
    if (cdivide) {
       t2->cd(); t2->SetLogx(logscale[0]);
       TH1F* hrframe = new TH1F("hrframe", "", 1, xrange[0], xrange[1]);
       hrange(hrframe, rrange[0], rrange[1]); htitle(hrframe, rtitle.data());
-      hlsize(hrframe, rlabelsizes[0], rlabelsizes[1]);
-      htsize(hrframe, rtitlesizes[0], rtitlesizes[1]);
-      htoffset(hrframe, rtitleoffsets[0], rtitleoffsets[1]);
-      hloffset(hrframe, rlabeloffsets[0], rlabeloffsets[1]);
+      if (!rtoffsets.empty()) htoffset(hrframe, rtoffsets[0], rtoffsets[1]);
+      if (!rtfonts.empty()) htfont(hrframe, rtfonts[0], rtfonts[1]);
+      if (!rtsizes.empty()) htsize(hrframe, rtsizes[0], rtsizes[1]);
+      if (!rloffsets.empty()) hloffset(hrframe, rloffsets[0], rloffsets[1]);
+      if (!rlfonts.empty()) hlfont(hrframe, rlfonts[0], rlfonts[1]);
+      if (!rlsizes.empty()) hlsize(hrframe, rlsizes[0], rlsizes[1]);
       hndiv(hrframe, ndivs[0], rndiv); hrframe->Draw();
    }
 
@@ -251,10 +268,10 @@ int hist(configurer* conf) {
       if (gassocl[i] >= nl) continue;
       l1[gassocl[i]]->AddEntry(vlgraphs[i], glegends[i].data(),
          gldopts[i].data()); }
-   for (const auto& le : le1) if (le) tstyle(le, 63, 13);
+   for (const auto& le : le1) if (le) tstyle(le, 63, 15);
    c1->cd(1); for (std::size_t i=0; i<nl; ++i) {
       if (i < lassocc.size()) c1->cd(lassocc[i]);
-      lstyle(l1[i], 43, 12); l1[i]->Draw(); }
+      lstyle(l1[i], 43, 14); l1[i]->Draw(); }
    c1->SaveAs(output.data()); delete c1;
 
    return 0;
@@ -294,9 +311,16 @@ int graph(configurer* conf) {
    auto afrange0 = conf->get<std::vector<float>>("afrange0");
    auto afrange1 = conf->get<std::vector<float>>("afrange1");
    auto aassocc = conf->get<std::vector<uint32_t>>("aassocc");
-   auto aloffsets = conf->get<std::vector<float>>("aloffsets");
+   auto andivs = conf->get<std::vector<int>>("andivs");
    auto aopts = conf->get<std::vector<std::string>>("aopts");
    for (auto& afunc : afuncs) { ltrim(afunc); }
+
+   auto atfonts = conf->get<std::vector<int>>("atfonts");
+   auto atsizes = conf->get<std::vector<float>>("atsizes");
+   auto atoffsets = conf->get<std::vector<float>>("atoffsets");
+   auto alfonts = conf->get<std::vector<int>>("alfonts");
+   auto alsizes = conf->get<std::vector<float>>("alsizes");
+   auto aloffsets = conf->get<std::vector<float>>("aloffsets");
 
    auto nl = conf->get<uint32_t>("nl");
    auto lx0 = conf->get<std::vector<float>>("lx0");
@@ -355,18 +379,25 @@ int graph(configurer* conf) {
    auto lnstyles = conf->get<std::vector<int>>("lnstyles");
    auto lnassocc = conf->get<std::vector<uint32_t>>("lnassocc");
 
-   auto toffsets = conf->get<std::vector<float>>("toffsets");
-
    auto csizes = conf->get<std::vector<int>>("csizes");
    auto cmargins = conf->get<std::vector<float>>("cmargins");
    auto cdivide = conf->get<float>("cdivide");
 
+   auto tfonts = conf->get<std::vector<int>>("tfonts");
+   auto tsizes = conf->get<std::vector<float>>("tsizes");
+   auto toffsets = conf->get<std::vector<float>>("toffsets");
+   auto lfonts = conf->get<std::vector<int>>("lfonts");
+   auto lsizes = conf->get<std::vector<float>>("lsizes");
+   auto loffsets = conf->get<std::vector<float>>("loffsets");
+
    auto rtitle = conf->get<std::string>("rtitle");
    auto rrange = conf->get<std::vector<float>>("rrange");
-   auto rtitleoffsets = conf->get<std::vector<float>>("rtitleoffsets");
-   auto rlabelsizes = conf->get<std::vector<float>>("rlabelsizes");
-   auto rtitlesizes = conf->get<std::vector<float>>("rtitlesizes");
-   auto rlabeloffsets = conf->get<std::vector<float>>("rlabeloffsets");
+   auto rtfonts = conf->get<std::vector<int>>("rtfonts");
+   auto rtsizes = conf->get<std::vector<float>>("rtsizes");
+   auto rtoffsets = conf->get<std::vector<float>>("rtoffsets");
+   auto rlfonts = conf->get<std::vector<int>>("rlfonts");
+   auto rlsizes = conf->get<std::vector<float>>("rlsizes");
+   auto rloffsets = conf->get<std::vector<float>>("rloffsets");
    auto rndiv = conf->get<int>("rndiv");
 
    TFile* f = new TFile(input.data());
@@ -418,31 +449,40 @@ int graph(configurer* conf) {
    std::vector<TLegend*> l1(nl, 0); std::vector<TLegendEntry*> le1(nl, 0);
    TH1F* hframe = new TH1F("hframe", "", 1, xrange[0], xrange[1]);
    hrange(hframe, yrange[0], yrange[1]); htitle(hframe, title.data());
-   hframe->SetLabelOffset(9, "X"); hframe->SetTickLength(0, "X");
-   htoffset(hframe, toffsets[0], toffsets[1]); hframe->Draw();
+   if (!toffsets.empty()) htoffset(hframe, toffsets[0], toffsets[1]);
+   if (!tfonts.empty()) htfont(hframe, tfonts[0], tfonts[1]);
+   if (!tsizes.empty()) htsize(hframe, tsizes[0], tsizes[1]);
+   if (!loffsets.empty()) hloffset(hframe, loffsets[0], loffsets[1]);
+   if (!lfonts.empty()) hlfont(hframe, lfonts[0], lfonts[1]);
+   if (!lsizes.empty()) hlsize(hframe, lsizes[0], lsizes[1]);
+   hframe->Draw();
 
    if (cdivide) {
       t2->cd(); t2->SetLogx(logscale[0]);
       TH1F* hrframe = new TH1F("hrframe", "", 1, xrange[0], xrange[1]);
       hrange(hrframe, rrange[0], rrange[1]); htitle(hrframe, rtitle.data());
-      hlsize(hrframe, rlabelsizes[0], rlabelsizes[1]);
-      htsize(hrframe, rtitlesizes[0], rtitlesizes[1]);
-      htoffset(hrframe, rtitleoffsets[0], rtitleoffsets[1]);
-      hloffset(hrframe, rlabeloffsets[0], rlabeloffsets[1]);
+      if (!rtoffsets.empty()) htoffset(hrframe, rtoffsets[0], rtoffsets[1]);
+      if (!rtfonts.empty()) htfont(hrframe, rtfonts[0], rtfonts[1]);
+      if (!rtsizes.empty()) htsize(hrframe, rtsizes[0], rtsizes[1]);
+      if (!rloffsets.empty()) hloffset(hrframe, rloffsets[0], rloffsets[1]);
+      if (!rlfonts.empty()) hlfont(hrframe, rlfonts[0], rlfonts[1]);
+      if (!rlsizes.empty()) hlsize(hrframe, rlsizes[0], rlsizes[1]);
       hndiv(hrframe, 1, rndiv); hrframe->Draw();
    }
 
    std::vector<TGaxis*> axes(naxes, 0); std::vector<TF1*> faxes(naxes, 0);
+   if (naxes) { hframe->SetLabelOffset(9, "X"); hframe->SetTickLength(0, "X"); }
    c1->cd(1); for (std::size_t i=0; i<naxes; ++i) {
       if (afuncs.empty() || afuncs[i].empty()) {
          axes[i] = new TGaxis(apathx0[i], apathy0[i], apathx1[i], apathy1[i],
-            arange0[i], arange1[i], 510, aopts[i].data());
+            arange0[i], arange1[i], andivs[i], aopts[i].data());
       } else {
          faxes[i] = new TF1(Form("f%zu", i), afuncs[i].data(),
             afrange0[i], afrange1[i]);
          axes[i] = new TGaxis(apathx0[i], apathy0[i], apathx1[i], apathy1[i],
-            Form("f%zu", i), 510, aopts[i].data()); }
-      astyle(axes[i], 43, 13, aloffsets[i]);
+            Form("f%zu", i), andivs[i], aopts[i].data()); }
+      atstyle(axes[i], atfonts[i], atsizes[i], atoffsets[i]);
+      alstyle(axes[i], alfonts[i], alsizes[i], aloffsets[i]);
       if (i < aassocc.size()) c1->cd(aassocc[i]);
       axes[i]->Draw();
    }
@@ -503,10 +543,10 @@ int graph(configurer* conf) {
       if (gassocl[i] >= nl) continue;
       l1[gassocl[i]]->AddEntry(vlgraphs[i], glegends[i].data(),
          gldopts[i].data()); }
-   for (const auto& le : le1) if (le) tstyle(le, 63, 13);
+   for (const auto& le : le1) if (le) tstyle(le, 63, 15);
    c1->cd(1); for (std::size_t i=0; i<nl; ++i) {
       if (i < lassocc.size()) c1->cd(lassocc[i]);
-      lstyle(l1[i], 43, 12); l1[i]->Draw(); }
+      lstyle(l1[i], 43, 14); l1[i]->Draw(); }
    c1->SaveAs(output.data()); delete c1;
 
    return 0;
