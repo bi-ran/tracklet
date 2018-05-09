@@ -101,6 +101,12 @@ void hndiv(TH1* h, int xndiv, int yndiv) {
    h->SetNdivisions(yndiv, "Y");
 }
 
+void hlfont(TH1* h, int xfont, int yfont) {
+   h->SetStats(0);
+   h->SetLabelFont(xfont, "X");
+   h->SetLabelFont(yfont, "Y");
+}
+
 void hlsize(TH1* h, float xsize, float ysize) {
    h->SetStats(0);
    h->SetLabelSize(xsize, "X");
@@ -113,6 +119,12 @@ void hloffset(TH1* h, float xoffset, float yoffset) {
    h->SetLabelOffset(yoffset, "Y");
 }
 
+void htfont(TH1* h, int xfont, int yfont) {
+   h->SetStats(0);
+   h->SetTitleFont(xfont, "X");
+   h->SetTitleFont(yfont, "Y");
+}
+
 void htsize(TH1* h, float xsize, float ysize) {
    h->SetStats(0);
    h->SetTitleSize(xsize, "X");
@@ -123,6 +135,12 @@ void htoffset(TH1* h, float xoffset, float yoffset) {
    h->SetStats(0);
    h->SetTitleOffset(xoffset, "X");
    h->SetTitleOffset(yoffset, "Y");
+}
+
+void htksize(TH1* h, float xsize, float ysize) {
+   h->SetStats(0);
+   h->SetTickLength(xsize, "X");
+   h->SetTickLength(ysize, "Y");
 }
 
 void hline(TH1* h, int style, int colour, float width) {
@@ -166,10 +184,16 @@ void gstyle(TGraph* g, int style, int colour, float size) {
    g->SetLineColor(colour);
 }
 
-void astyle(TGaxis* a, int font, float size, float offset) {
-   a->SetLabelOffset(offset);
+void atstyle(TGaxis* a, int font, float size, float offset) {
+   a->SetTitleFont(font);
+   a->SetTitleSize(size);
+   a->SetTitleOffset(offset);
+}
+
+void alstyle(TGaxis* a, int font, float size, float offset) {
    a->SetLabelFont(font);
    a->SetLabelSize(size);
+   a->SetLabelOffset(offset);
 }
 
 void cmargin(TCanvas* c1, float tm, float bm, float lm, float rm) {
