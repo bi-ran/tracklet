@@ -29,6 +29,7 @@ int hist(configurer* conf) {
    auto data = conf->get<std::vector<std::string>>("data");
    auto legends = conf->get<std::vector<std::string>>("legends");
    auto assocl = conf->get<std::vector<uint32_t>>("assocl");
+   auto assocc = conf->get<std::vector<uint32_t>>("assocc");
    auto lopts = conf->get<std::vector<std::string>>("lopts");
    auto systs = conf->get<std::vector<std::string>>("systs");
    auto colours = conf->get<std::vector<std::string>>("colours");
@@ -129,6 +130,7 @@ int hist(configurer* conf) {
    auto rlfonts = conf->get<std::vector<int>>("rlfonts");
    auto rlsizes = conf->get<std::vector<float>>("rlsizes");
    auto rloffsets = conf->get<std::vector<float>>("rloffsets");
+   auto rtksizes = conf->get<std::vector<float>>("rtksizes");
    auto rndiv = conf->get<int>("rndiv");
 
    TFile* f = new TFile(input.data());
@@ -206,6 +208,7 @@ int hist(configurer* conf) {
       if (!rloffsets.empty()) hloffset(hrframe, rloffsets[0], rloffsets[1]);
       if (!rlfonts.empty()) hlfont(hrframe, rlfonts[0], rlfonts[1]);
       if (!rlsizes.empty()) hlsize(hrframe, rlsizes[0], rlsizes[1]);
+      if (!rtksizes.empty()) htksize(hrframe, rtksizes[0], rtksizes[1]);
       hndiv(hrframe, ndivs[0], rndiv); hrframe->Draw();
    }
 
@@ -248,6 +251,7 @@ int hist(configurer* conf) {
       if (i < gdopts.size()) vgraphs[i]->Draw(gdopts[i].data());
       else vgraphs[i]->Draw("p same"); }
    c1->cd(1); for (std::size_t i=0; i<nd; ++i) {
+      if (i < assocc.size()) c1->cd(assocc[i]);
       int col = TColor::GetColor(colours[i].data());
       if (!hs.empty()) for (const auto& hsi : hs[i])
       if (hsi) box(h[i], hsi, col, alpha);
@@ -256,7 +260,7 @@ int hist(configurer* conf) {
       hl[i] = (TH1F*)h[i]->Clone();
       if (i < systs.size() && !systs[i].empty()) lestyle(hl[i], col, 0.4);
       l1[assocl[i]]->AddEntry(hl[i], legends[i].data(), lopts[i].data()); }
-   if (redraw) {
+   c1->cd(1); if (redraw) {
       for (std::size_t i=0; i<hists.size(); ++i) {
          if (i < hassocc.size()) c1->cd(hassocc[i]);
          vhists[i]->Draw(hgopts[i].data()); }
@@ -316,12 +320,14 @@ int graph(configurer* conf) {
    auto aopts = conf->get<std::vector<std::string>>("aopts");
    for (auto& afunc : afuncs) { ltrim(afunc); }
 
+   auto atitles = conf->get<std::vector<std::string>>("atitles");
    auto atfonts = conf->get<std::vector<int>>("atfonts");
    auto atsizes = conf->get<std::vector<float>>("atsizes");
    auto atoffsets = conf->get<std::vector<float>>("atoffsets");
    auto alfonts = conf->get<std::vector<int>>("alfonts");
    auto alsizes = conf->get<std::vector<float>>("alsizes");
    auto aloffsets = conf->get<std::vector<float>>("aloffsets");
+   for (auto& atitle : atitles) { ltrim(atitle); }
 
    auto nl = conf->get<uint32_t>("nl");
    auto lx0 = conf->get<std::vector<float>>("lx0");
@@ -482,6 +488,8 @@ int graph(configurer* conf) {
             afrange0[i], afrange1[i]);
          axes[i] = new TGaxis(apathx0[i], apathy0[i], apathx1[i], apathy1[i],
             Form("f%zu", i), andivs[i], aopts[i].data()); }
+      if (i < atitles.size()) {
+         axes[i]->SetTitle(atitles[i].data()); axes[i]->CenterTitle(); }
       atstyle(axes[i], atfonts[i], atsizes[i], atoffsets[i]);
       alstyle(axes[i], alfonts[i], alsizes[i], aloffsets[i]);
       if (i < aassocc.size()) c1->cd(aassocc[i]);
