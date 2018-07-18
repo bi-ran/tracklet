@@ -1699,3 +1699,32 @@ TGraphErrors* cms_pbpb_2p76_y_c0t90() {
 
    return gcms_pbpb_2p76_y_c0t90;
 }
+
+TGraphErrors* alice_xexe_5p44_over_npart_afo_npart() {
+   TGraphErrors* galice_xexe_5p44_over_npart_afo_npart = new TGraphErrors(10);
+   galice_xexe_5p44_over_npart_afo_npart->SetName("galice_xexe_5p44_over_npart_afo_npart");
+
+   galice_xexe_5p44_over_npart_afo_npart->SetPoint(0, 5.13, 5.19 / 2);
+   galice_xexe_5p44_over_npart_afo_npart->SetPoint(1, 10.5, 6.10 / 2);
+   galice_xexe_5p44_over_npart_afo_npart->SetPoint(2, 19.7, 6.57 / 2);
+   galice_xexe_5p44_over_npart_afo_npart->SetPoint(3, 34.1, 6.92 / 2);
+   galice_xexe_5p44_over_npart_afo_npart->SetPoint(4, 54.6, 7.25 / 2);
+   galice_xexe_5p44_over_npart_afo_npart->SetPoint(5, 82.2, 7.66 / 2);
+   galice_xexe_5p44_over_npart_afo_npart->SetPoint(6, 118, 8.10 / 2);
+   galice_xexe_5p44_over_npart_afo_npart->SetPoint(7, 165, 8.56 / 2);
+   galice_xexe_5p44_over_npart_afo_npart->SetPoint(8, 207, 9.07 / 2);
+   galice_xexe_5p44_over_npart_afo_npart->SetPoint(9, 236, 9.89 / 2);
+
+   galice_xexe_5p44_over_npart_afo_npart->SetPointError(0, 0.9, 0.58 / 2);
+   galice_xexe_5p44_over_npart_afo_npart->SetPointError(1, 1.3, 0.68 / 2);
+   galice_xexe_5p44_over_npart_afo_npart->SetPointError(2, 2.0, 0.73 / 2);
+   galice_xexe_5p44_over_npart_afo_npart->SetPointError(3, 3, 0.63 / 2);
+   galice_xexe_5p44_over_npart_afo_npart->SetPointError(4, 5, 0.51 / 2);
+   galice_xexe_5p44_over_npart_afo_npart->SetPointError(5, 8, 0.41 / 2);
+   galice_xexe_5p44_over_npart_afo_npart->SetPointError(6, 11, 0.33 / 2);
+   galice_xexe_5p44_over_npart_afo_npart->SetPointError(7, 17, 0.26 / 2);
+   galice_xexe_5p44_over_npart_afo_npart->SetPointError(8, 24, 0.27 / 2);
+   galice_xexe_5p44_over_npart_afo_npart->SetPointError(9, 26, 0.24 / 2);
+
+   return galice_xexe_5p44_over_npart_afo_npart;
+}
