@@ -1654,6 +1654,90 @@ TGraphErrors* phobos_cucu_0p2_over_2a_afo_npart_2a() {
    return gphobos_cucu_0p2_over_2a_afo_npart_2a;
 }
 
+TGraphErrors* phobos_cucu_0p0224() {
+   TGraphErrors* gphobos_cucu_0p0224 = new TGraphErrors(6);
+   gphobos_cucu_0p0224->SetName("gphobos_cucu_0p0224");
+
+   gphobos_cucu_0p0224->SetPoint(0, 50, 15.73); gphobos_cucu_0p0224->SetPointError(0, 0, 1.29); // -1.34
+   gphobos_cucu_0p0224->SetPoint(1, 60, 24.29); gphobos_cucu_0p0224->SetPointError(1, 0, 1.89); // -1.89
+   gphobos_cucu_0p0224->SetPoint(2, 70, 36.15); gphobos_cucu_0p0224->SetPointError(2, 0, 2.92); // -2.91
+   gphobos_cucu_0p0224->SetPoint(3, 80, 52.33); gphobos_cucu_0p0224->SetPointError(3, 0, 4.24); // -4.26
+   gphobos_cucu_0p0224->SetPoint(4, 89.5, 73.50); gphobos_cucu_0p0224->SetPointError(4, 0, 5.96); // -5.91
+   gphobos_cucu_0p0224->SetPoint(5, 97, 97.43); gphobos_cucu_0p0224->SetPointError(5, 0, 7.69); // -7.94
+
+   return gphobos_cucu_0p0224;
+}
+
+TGraphErrors* phobos_cucu_0p0624() {
+   TGraphErrors* gphobos_cucu_0p0624 = new TGraphErrors(6);
+   gphobos_cucu_0p0624->SetName("gphobos_cucu_0p0624");
+
+   gphobos_cucu_0p0624->SetPoint(0, 50, 21.76); gphobos_cucu_0p0624->SetPointError(0, 0, 1.57); // -1.91
+   gphobos_cucu_0p0624->SetPoint(1, 60, 33.49); gphobos_cucu_0p0624->SetPointError(1, 0, 2.48); // -2.87
+   gphobos_cucu_0p0624->SetPoint(2, 70, 49.44); gphobos_cucu_0p0624->SetPointError(2, 0, 3.69); // -4.25
+   gphobos_cucu_0p0624->SetPoint(3, 80, 71.68); gphobos_cucu_0p0624->SetPointError(3, 0, 5.72); // -6.177
+   gphobos_cucu_0p0624->SetPoint(4, 89.5, 98.88); gphobos_cucu_0p0624->SetPointError(4, 0, 8.03); // -8.18
+   gphobos_cucu_0p0624->SetPoint(5, 97, 119.87); gphobos_cucu_0p0624->SetPointError(5, 0, -9.90);
+
+   return gphobos_cucu_0p0624;
+}
+
+TGraphErrors* phobos_auau_0p0196() {
+   TGraphErrors* gphobos_auau_0p0196 = new TGraphErrors(9);
+   gphobos_auau_0p0196->SetName("gphobos_auau_0p0196");
+
+   gphobos_auau_0p0196->SetPoint(0, 62.5, 78); gphobos_auau_0p0196->SetPointError(0, 0, 6);
+   gphobos_auau_0p0196->SetPoint(1, 67.5, 97); gphobos_auau_0p0196->SetPointError(1, 0, 7);
+   gphobos_auau_0p0196->SetPoint(2, 72.5, 121); gphobos_auau_0p0196->SetPointError(2, 0, 9);
+   gphobos_auau_0p0196->SetPoint(3, 77.5, 148); gphobos_auau_0p0196->SetPointError(3, 0, 11);
+   gphobos_auau_0p0196->SetPoint(4, 82.5, 181); gphobos_auau_0p0196->SetPointError(4, 0, 14);
+   gphobos_auau_0p0196->SetPoint(5, 87.5, 216); gphobos_auau_0p0196->SetPointError(5, 0, 16);
+   gphobos_auau_0p0196->SetPoint(6, 92, 260); gphobos_auau_0p0196->SetPointError(6, 0, 20);
+   gphobos_auau_0p0196->SetPoint(7, 95.5, 297); gphobos_auau_0p0196->SetPointError(7, 0, 22);
+   gphobos_auau_0p0196->SetPoint(8, 98.5, 331); gphobos_auau_0p0196->SetPointError(8, 0, 24);
+
+   return gphobos_auau_0p0196;
+}
+
+TGraphErrors* phobos_auau_0p13() {
+   TGraphErrors* gphobos_auau_0p13 = new TGraphErrors(11);
+   gphobos_auau_0p13->SetName("gphobos_auau_0p13");
+
+   gphobos_auau_0p13->SetPoint(0, 52.5, 83); gphobos_auau_0p13->SetPointError(0, 0, 3);
+   gphobos_auau_0p13->SetPoint(1, 57.5, 110); gphobos_auau_0p13->SetPointError(1, 0, 4);
+   gphobos_auau_0p13->SetPoint(2, 62.5, 140); gphobos_auau_0p13->SetPointError(2, 0, 5);
+   gphobos_auau_0p13->SetPoint(3, 67.5, 180); gphobos_auau_0p13->SetPointError(3, 0, 7);
+   gphobos_auau_0p13->SetPoint(4, 72.5, 220); gphobos_auau_0p13->SetPointError(4, 0, 8);
+   gphobos_auau_0p13->SetPoint(5, 77.5, 274); gphobos_auau_0p13->SetPointError(5, 0, 11);
+   gphobos_auau_0p13->SetPoint(6, 82.5, 327); gphobos_auau_0p13->SetPointError(6, 0, 13);
+   gphobos_auau_0p13->SetPoint(7, 87.5, 393); gphobos_auau_0p13->SetPointError(7, 0, 15);
+   gphobos_auau_0p13->SetPoint(8, 92, 472); gphobos_auau_0p13->SetPointError(8, 0, 18);
+   gphobos_auau_0p13->SetPoint(9, 95.5, 545); gphobos_auau_0p13->SetPointError(9, 0, 21);
+   gphobos_auau_0p13->SetPoint(10, 98.5, 613); gphobos_auau_0p13->SetPointError(10, 0, 24);
+
+   return gphobos_auau_0p13;
+}
+
+TGraphErrors* phobos_auau_0p0624() {
+   TGraphErrors* gphobos_auau_0p0624 = new TGraphErrors(6);
+   gphobos_auau_0p0624->SetName("gphobos_auau_0p0624");
+
+   gphobos_auau_0p0624->SetPoint(0, 52.5, 68.03);
+   gphobos_auau_0p0624->SetPointError(0, 0, 5.665); // -5.99
+   gphobos_auau_0p0624->SetPoint(1, 60, 98.99);
+   gphobos_auau_0p0624->SetPointError(1, 0, 7.87); // -8.63
+   gphobos_auau_0p0624->SetPoint(2, 70, 153.93);
+   gphobos_auau_0p0624->SetPointError(2, 0, 12.73); // -13.56
+   gphobos_auau_0p0624->SetPoint(3, 80, 231.19);
+   gphobos_auau_0p0624->SetPointError(3, 0, 18.466); // -20.427
+   gphobos_auau_0p0624->SetPoint(4, 89.5, 334.15);
+   gphobos_auau_0p0624->SetPointError(4, 0, 27.9); // -26.55
+   gphobos_auau_0p0624->SetPoint(5, 97, 429.9);
+   gphobos_auau_0p0624->SetPointError(5, 0, 37.32); // -33.02
+
+   return gphobos_auau_0p0624;
+}
+
 TGraphErrors* brahms_auau_0p2_over_npart_afo_npart() {
    TGraphErrors* gbrahms_auau_0p2_over_npart_afo_npart = new TGraphErrors(6);
    gbrahms_auau_0p2_over_npart_afo_npart->SetName("gbrahms_auau_0p2_over_npart_afo_npart");
