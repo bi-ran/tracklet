@@ -1988,3 +1988,28 @@ TGraphErrors* alice_xexe_5p44_over_npart_afo_npart() {
 
    return galice_xexe_5p44_over_npart_afo_npart;
 }
+
+TGraphErrors* atlas_ppb_5p02() {
+   TGraphErrors* gatlas_ppb_5p02 = new TGraphErrors(8);
+   gatlas_ppb_5p02->SetName("gatlas_ppb_5p02");
+
+   gatlas_ppb_5p02->SetPoint(0, 25, 8.442);
+   gatlas_ppb_5p02->SetPoint(1, 50, 16.715);
+   gatlas_ppb_5p02->SetPoint(2, 65, 22.401);
+   gatlas_ppb_5p02->SetPoint(3, 75, 26.831);
+   gatlas_ppb_5p02->SetPoint(4, 85, 32.634);
+   gatlas_ppb_5p02->SetPoint(5, 92.5, 39.147);
+   gatlas_ppb_5p02->SetPoint(6, 97, 46.872);
+   gatlas_ppb_5p02->SetPoint(7, 99.5, 60.041);
+
+   gatlas_ppb_5p02->SetPointError(0, 0, 0.489);
+   gatlas_ppb_5p02->SetPointError(1, 0, 0.629);
+   gatlas_ppb_5p02->SetPointError(2, 0, 0.728);
+   gatlas_ppb_5p02->SetPointError(3, 0, 0.778);
+   gatlas_ppb_5p02->SetPointError(4, 0, 0.947);
+   gatlas_ppb_5p02->SetPointError(5, 0, 1.099);
+   gatlas_ppb_5p02->SetPointError(6, 0, 1.317);
+   gatlas_ppb_5p02->SetPointError(7, 0, 1.843);
+
+   return gatlas_ppb_5p02;
+}
