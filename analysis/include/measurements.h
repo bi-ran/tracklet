@@ -2013,3 +2013,21 @@ TGraphErrors* atlas_ppb_5p02() {
 
    return gatlas_ppb_5p02;
 }
+
+TGraphErrors* phobos_dau_0p2() {
+   TGraphErrors* gphobos_dau_0p2 = new TGraphErrors(5);
+
+   gphobos_dau_0p2->SetPoint(0, 10, 3.484);
+   gphobos_dau_0p2->SetPoint(1, 30, 5.541);
+   gphobos_dau_0p2->SetPoint(2, 50, 8.917);
+   gphobos_dau_0p2->SetPoint(3, 70, 12.579);
+   gphobos_dau_0p2->SetPoint(4, 90, 17.525);
+
+   gphobos_dau_0p2->SetPointError(0, 0, 0.514);
+   gphobos_dau_0p2->SetPointError(1, 0, 0.405);
+   gphobos_dau_0p2->SetPointError(2, 0, 0.629);
+   gphobos_dau_0p2->SetPointError(3, 0, 1.031);
+   gphobos_dau_0p2->SetPointError(4, 0, 1.341);
+
+   return gphobos_dau_0p2;
+}
