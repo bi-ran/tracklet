@@ -1371,3 +1371,87 @@ TGraphErrors* cms_ppb_8p16_norm() {
 
    return gcms_ppb_8p16_norm;
 }
+
+TGraphErrors* brahms_auau_0p2_y_c0t5_pip() {
+   TGraphErrors* gbrahms_auau_0p2_y_c0t5_pip = new TGraphErrors(14);
+   gbrahms_auau_0p2_y_c0t5_pip->SetName("gbrahms_auau_0p2_y_c0t5_pip");
+
+   gbrahms_auau_0p2_y_c0t5_pip->SetPoint(0, -0.05, 302.47); gbrahms_auau_0p2_y_c0t5_pip->SetPointError(0, 0, 4.26);
+   gbrahms_auau_0p2_y_c0t5_pip->SetPoint(1, 0.05, 306.56); gbrahms_auau_0p2_y_c0t5_pip->SetPointError(1, 0, 4.68);
+   gbrahms_auau_0p2_y_c0t5_pip->SetPoint(2, 0.50, 297.80); gbrahms_auau_0p2_y_c0t5_pip->SetPointError(2, 0, 3.32);
+   gbrahms_auau_0p2_y_c0t5_pip->SetPoint(3, 0.70, 290.39); gbrahms_auau_0p2_y_c0t5_pip->SetPointError(3, 0, 2.80);
+   gbrahms_auau_0p2_y_c0t5_pip->SetPoint(4, 0.90, 288.62); gbrahms_auau_0p2_y_c0t5_pip->SetPointError(4, 0, 1.99);
+   gbrahms_auau_0p2_y_c0t5_pip->SetPoint(5, 1.10, 273.26); gbrahms_auau_0p2_y_c0t5_pip->SetPointError(5, 0, 3.15);
+   gbrahms_auau_0p2_y_c0t5_pip->SetPoint(6, 1.30, 256.60); gbrahms_auau_0p2_y_c0t5_pip->SetPointError(6, 0, 1.81);
+   gbrahms_auau_0p2_y_c0t5_pip->SetPoint(7, 2.20, 198.16); gbrahms_auau_0p2_y_c0t5_pip->SetPointError(7, 0, 3.55);
+   gbrahms_auau_0p2_y_c0t5_pip->SetPoint(8, 2.50, 167.22); gbrahms_auau_0p2_y_c0t5_pip->SetPointError(8, 0, 3.29);
+   gbrahms_auau_0p2_y_c0t5_pip->SetPoint(9, 3.05, 128.99); gbrahms_auau_0p2_y_c0t5_pip->SetPointError(9, 0, 2.66);
+   gbrahms_auau_0p2_y_c0t5_pip->SetPoint(10, 3.15, 120.02); gbrahms_auau_0p2_y_c0t5_pip->SetPointError(10, 0, 4.04);
+   gbrahms_auau_0p2_y_c0t5_pip->SetPoint(11, 3.25, 110.38); gbrahms_auau_0p2_y_c0t5_pip->SetPointError(11, 0, 1.22);
+   gbrahms_auau_0p2_y_c0t5_pip->SetPoint(12, 3.35, 96.52); gbrahms_auau_0p2_y_c0t5_pip->SetPointError(12, 0, 1.93);
+   gbrahms_auau_0p2_y_c0t5_pip->SetPoint(13, 3.53, 91.65); gbrahms_auau_0p2_y_c0t5_pip->SetPointError(13, 0, 2.56);
+
+   return gbrahms_auau_0p2_y_c0t5_pip;
+}
+
+TGraphErrors* brahms_auau_0p2_y_c0t5_pim() {
+   TGraphErrors* gbrahms_auau_0p2_y_c0t5_pim = new TGraphErrors(14);
+   gbrahms_auau_0p2_y_c0t5_pim->SetName("gbrahms_auau_0p2_y_c0t5_pim");
+
+   gbrahms_auau_0p2_y_c0t5_pim->SetPoint(0, -0.05, 299.35); gbrahms_auau_0p2_y_c0t5_pim->SetPointError(0, 0, 4.42);
+   gbrahms_auau_0p2_y_c0t5_pim->SetPoint(1, 0.05, 295.14); gbrahms_auau_0p2_y_c0t5_pim->SetPointError(1, 0, 4.40);
+   gbrahms_auau_0p2_y_c0t5_pim->SetPoint(2, 0.50, 300.29); gbrahms_auau_0p2_y_c0t5_pim->SetPointError(2, 0, 3.33);
+   gbrahms_auau_0p2_y_c0t5_pim->SetPoint(3, 0.70, 288.04); gbrahms_auau_0p2_y_c0t5_pim->SetPointError(3, 0, 2.45);
+   gbrahms_auau_0p2_y_c0t5_pim->SetPoint(4, 0.90, 293.14); gbrahms_auau_0p2_y_c0t5_pim->SetPointError(4, 0, 2.08);
+   gbrahms_auau_0p2_y_c0t5_pim->SetPoint(5, 1.10, 271.98); gbrahms_auau_0p2_y_c0t5_pim->SetPointError(5, 0, 2.70);
+   gbrahms_auau_0p2_y_c0t5_pim->SetPoint(6, 1.30, 259.67); gbrahms_auau_0p2_y_c0t5_pim->SetPointError(6, 0, 2.15);
+   gbrahms_auau_0p2_y_c0t5_pim->SetPoint(7, 2.20, 204.49); gbrahms_auau_0p2_y_c0t5_pim->SetPointError(7, 0, 2.90);
+   gbrahms_auau_0p2_y_c0t5_pim->SetPoint(8, 2.50, 177.19); gbrahms_auau_0p2_y_c0t5_pim->SetPointError(8, 0, 4.89);
+   gbrahms_auau_0p2_y_c0t5_pim->SetPoint(9, 3.05, 131.10); gbrahms_auau_0p2_y_c0t5_pim->SetPointError(9, 0, 4.11);
+   gbrahms_auau_0p2_y_c0t5_pim->SetPoint(10, 3.15, 122.30); gbrahms_auau_0p2_y_c0t5_pim->SetPointError(10, 0, 2.64);
+   gbrahms_auau_0p2_y_c0t5_pim->SetPoint(11, 3.25, 117.50); gbrahms_auau_0p2_y_c0t5_pim->SetPointError(11, 0, 1.59);
+   gbrahms_auau_0p2_y_c0t5_pim->SetPoint(12, 3.35, 98.00); gbrahms_auau_0p2_y_c0t5_pim->SetPointError(12, 0, 1.86);
+   gbrahms_auau_0p2_y_c0t5_pim->SetPoint(13, 3.53, 94.72); gbrahms_auau_0p2_y_c0t5_pim->SetPointError(13, 0, 1.60);
+
+   return gbrahms_auau_0p2_y_c0t5_pim;
+}
+
+TGraphErrors* brahms_auau_0p2_y_c0t5_kp() {
+   TGraphErrors* gbrahms_auau_0p2_y_c0t5_kp = new TGraphErrors(12);
+   gbrahms_auau_0p2_y_c0t5_kp->SetName("gbrahms_auau_0p2_y_c0t5_kp");
+
+   gbrahms_auau_0p2_y_c0t5_kp->SetPoint(0, -0.05, 47.56); gbrahms_auau_0p2_y_c0t5_kp->SetPointError(0, 0, 0.94);
+   gbrahms_auau_0p2_y_c0t5_kp->SetPoint(1, 0.05, 46.79); gbrahms_auau_0p2_y_c0t5_kp->SetPointError(1, 0, 1.32);
+   gbrahms_auau_0p2_y_c0t5_kp->SetPoint(2, 0.50, 46.73); gbrahms_auau_0p2_y_c0t5_kp->SetPointError(2, 0, 0.88);
+   gbrahms_auau_0p2_y_c0t5_kp->SetPoint(3, 0.70, 45.64); gbrahms_auau_0p2_y_c0t5_kp->SetPointError(3, 0, 0.54);
+   gbrahms_auau_0p2_y_c0t5_kp->SetPoint(4, 0.90, 44.42); gbrahms_auau_0p2_y_c0t5_kp->SetPointError(4, 0, 0.60);
+   gbrahms_auau_0p2_y_c0t5_kp->SetPoint(5, 1.10, 42.82); gbrahms_auau_0p2_y_c0t5_kp->SetPointError(5, 0, 0.74);
+   gbrahms_auau_0p2_y_c0t5_kp->SetPoint(6, 2.10, 33.14); gbrahms_auau_0p2_y_c0t5_kp->SetPointError(6, 0, 2.91);
+   gbrahms_auau_0p2_y_c0t5_kp->SetPoint(7, 2.40, 27.65); gbrahms_auau_0p2_y_c0t5_kp->SetPointError(7, 0, 1.21);
+   gbrahms_auau_0p2_y_c0t5_kp->SetPoint(8, 2.95, 23.74); gbrahms_auau_0p2_y_c0t5_kp->SetPointError(8, 0, 2.16);
+   gbrahms_auau_0p2_y_c0t5_kp->SetPoint(9, 3.05, 22.05); gbrahms_auau_0p2_y_c0t5_kp->SetPointError(9, 0, 1.88);
+   gbrahms_auau_0p2_y_c0t5_kp->SetPoint(10, 3.15, 20.10); gbrahms_auau_0p2_y_c0t5_kp->SetPointError(10, 0, 1.02);
+   gbrahms_auau_0p2_y_c0t5_kp->SetPoint(11, 3.30, 18.13); gbrahms_auau_0p2_y_c0t5_kp->SetPointError(11, 0, 0.59);
+
+   return gbrahms_auau_0p2_y_c0t5_kp;
+}
+
+TGraphErrors* brahms_auau_0p2_y_c0t5_km() {
+   TGraphErrors* gbrahms_auau_0p2_y_c0t5_km = new TGraphErrors(12);
+   gbrahms_auau_0p2_y_c0t5_km->SetName("gbrahms_auau_0p2_y_c0t5_km");
+
+   gbrahms_auau_0p2_y_c0t5_km->SetPoint(0, -0.05, 43.06); gbrahms_auau_0p2_y_c0t5_km->SetPointError(0, 0, 1.07);
+   gbrahms_auau_0p2_y_c0t5_km->SetPoint(1, 0.05, 43.95); gbrahms_auau_0p2_y_c0t5_km->SetPointError(1, 0, 0.93);
+   gbrahms_auau_0p2_y_c0t5_km->SetPoint(2, 0.50, 44.35); gbrahms_auau_0p2_y_c0t5_km->SetPointError(2, 0, 0.85);
+   gbrahms_auau_0p2_y_c0t5_km->SetPoint(3, 0.70, 44.08); gbrahms_auau_0p2_y_c0t5_km->SetPointError(3, 0, 0.57);
+   gbrahms_auau_0p2_y_c0t5_km->SetPoint(4, 0.90, 42.09); gbrahms_auau_0p2_y_c0t5_km->SetPointError(4, 0, 0.54);
+   gbrahms_auau_0p2_y_c0t5_km->SetPoint(5, 1.10, 40.62); gbrahms_auau_0p2_y_c0t5_km->SetPointError(5, 0, 0.82);
+   gbrahms_auau_0p2_y_c0t5_km->SetPoint(6, 2.10, 29.15); gbrahms_auau_0p2_y_c0t5_km->SetPointError(6, 0, 1.16);
+   gbrahms_auau_0p2_y_c0t5_km->SetPoint(7, 2.30, 24.63); gbrahms_auau_0p2_y_c0t5_km->SetPointError(7, 0, 1.09);
+   gbrahms_auau_0p2_y_c0t5_km->SetPoint(8, 2.95, 18.26); gbrahms_auau_0p2_y_c0t5_km->SetPointError(8, 0, 1.49);
+   gbrahms_auau_0p2_y_c0t5_km->SetPoint(9, 3.05, 16.95); gbrahms_auau_0p2_y_c0t5_km->SetPointError(9, 0, 1.08);
+   gbrahms_auau_0p2_y_c0t5_km->SetPoint(10, 3.15, 15.33); gbrahms_auau_0p2_y_c0t5_km->SetPointError(10, 0, 0.77);
+   gbrahms_auau_0p2_y_c0t5_km->SetPoint(11, 3.30, 11.44); gbrahms_auau_0p2_y_c0t5_km->SetPointError(11, 0, 0.40);
+
+   return gbrahms_auau_0p2_y_c0t5_km;
+}
