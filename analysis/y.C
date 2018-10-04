@@ -41,23 +41,32 @@ int y(const char* config, const char* label) {
    TGraphErrors* g2axn = (TGraphErrors*)gxc->Clone("g2axn");
    TGraphErrors* g2axn2a = (TGraphErrors*)gxc->Clone("g2axn2a");
    TGraphErrors* gnxn = (TGraphErrors*)gxc->Clone("gnxn");
+   TGraphErrors* gnxc = (TGraphErrors*)gxc->Clone("gnxc");
+   TGraphErrors* g2axc = (TGraphErrors*)gxc->Clone("g2axc");
    TGraphErrors* gnxn2a = (TGraphErrors*)gxc->Clone("gnxn2a");
    std::vector<TGraph*> gxcs(ns);
    std::vector<TGraph*> g2axns(ns);
    std::vector<TGraph*> g2axn2as(ns);
    std::vector<TGraph*> gnxns(ns);
+   std::vector<TGraph*> gnxcs(ns);
+   std::vector<TGraph*> g2axcs(ns);
    std::vector<TGraph*> gnxn2as(ns);
    for (std::size_t j=0; j<ns; ++j) {
       gxcs[j] = new TGraph(nf * 2);
       g2axns[j] = new TGraph(nf * 2); g2axn2as[j] = new TGraph(nf * 2);
       gnxns[j] = new TGraph(nf * 2); gnxn2as[j] = new TGraph(nf * 2);
+      gnxcs[j] = new TGraph(nf * 2);
+      g2axcs[j] = new TGraph(nf * 2);
       gxcs[j]->SetName(Form("gxcs_%s", stags[j].data()));
       g2axns[j]->SetName(Form("g2axns_%s", stags[j].data()));
       g2axn2as[j]->SetName(Form("g2axn2as_%s", stags[j].data()));
       gnxns[j]->SetName(Form("gnxns_%s", stags[j].data()));
+      gnxcs[j]->SetName(Form("gnxcs_%s", stags[j].data()));
+      g2axcs[j]->SetName(Form("g2axcs_%s", stags[j].data()));
       gnxn2as[j]->SetName(Form("gnxn2as_%s", stags[j].data()));
    }
    TGraph* gnxnst = new TGraph(2 * nf + 2); gnxnst->SetName("gnxnst");
+   TGraph* gnxcst = new TGraph(2 * nf + 2); gnxcst->SetName("gnxcst");
    TGraph* gnxn2ast = new TGraph(2 * nf + 2); gnxn2ast->SetName("gnxn2ast");
    TGraph* g2axnst = new TGraph(2 * nf + 2); g2axnst->SetName("g2axnst");
    TGraph* g2axn2ast = new TGraph(2 * nf + 2); g2axn2ast->SetName("g2axn2ast");
@@ -83,6 +92,10 @@ int y(const char* config, const char* label) {
       g2axn2a->SetPointError(i, 0, mye / 258);
       gnxn->SetPoint(i, nv, myv / nv);
       gnxn->SetPointError(i, 0, mye / nv);
+      gnxc->SetPoint(i, cvs[i], myv / nv);
+      gnxc->SetPointError(i, 0, mye / nv);
+      g2axc->SetPoint(i, cvs[i], myv / 258);
+      g2axc->SetPointError(i, 0, mye / 258);
       gnxn2a->SetPoint(i, nv / 258, myv / nv);
       gnxn2a->SetPointError(i, 0, mye / nv);
       std::vector<float> mys(ns, 0);
@@ -96,6 +109,10 @@ int y(const char* config, const char* label) {
           g2axn2as[j]->SetPoint(2 * nf - i - 1, nv / 258, (myv - mys[j]) / 258);
           gnxns[j]->SetPoint(i, nv, (myv + mys[j]) / nv);
           gnxns[j]->SetPoint(2 * nf - i - 1, nv, (myv - mys[j]) / nv);
+          gnxcs[j]->SetPoint(i, cvs[i], (myv + mys[j]) / nv);
+          gnxcs[j]->SetPoint(2 * nf - i - 1, cvs[i], (myv - mys[j]) / nv);
+          g2axcs[j]->SetPoint(i, cvs[i], (myv + mys[j]) / 258);
+          g2axcs[j]->SetPoint(2 * nf - i - 1, cvs[i], (myv - mys[j]) / 258);
           gnxn2as[j]->SetPoint(i, nv / 258, (myv + mys[j]) / nv);
           gnxn2as[j]->SetPoint(2 * nf - i - 1, nv / 258, (myv - mys[j]) / nv);
       }
@@ -104,6 +121,10 @@ int y(const char* config, const char* label) {
       gnxnst->SetPoint(2 * nf - i + 1, nv + ne, (myv - myt) / (nv + ne));
       if (i == 0) gnxnst->SetPoint(0, nv - ne, (myv - myt) / (nv - ne));
       if (i == nf - 1) gnxnst->SetPoint(nf + 1, nv + ne, (myv + myt) / (nv + ne));
+      gnxcst->SetPoint(i + 1, cvs[i], (myv + myt) / (nv - ne));
+      gnxcst->SetPoint(2 * nf - i + 1, cvs[i], (myv - myt) / (nv + ne));
+      if (i == 0) gnxcst->SetPoint(0, cvs[i], (myv - myt) / (nv - ne));
+      if (i == nf - 1) gnxcst->SetPoint(nf + 1, cvs[i], (myv + myt) / (nv + ne));
       gnxn2ast->SetPoint(i + 1, (nv - ne) / 258, (myv + myt) / (nv - ne));
       gnxn2ast->SetPoint(2 * nf - i + 1, (nv + ne) / 258, (myv - myt) / (nv + ne));
       if (i == 0) gnxn2ast->SetPoint(0, (nv - ne) / 258, (myv - myt) / (nv - ne));
@@ -122,6 +143,8 @@ int y(const char* config, const char* label) {
    g2axn->Write("", TObject::kOverwrite);
    g2axn2a->Write("", TObject::kOverwrite);
    gnxn->Write("", TObject::kOverwrite);
+   gnxc->Write("", TObject::kOverwrite);
+   g2axc->Write("", TObject::kOverwrite);
    gnxn2a->Write("", TObject::kOverwrite);
    for (const auto& g : gxcs)
       g->Write("", TObject::kOverwrite);
@@ -131,29 +154,21 @@ int y(const char* config, const char* label) {
       g->Write("", TObject::kOverwrite);
    for (const auto& g : gnxns)
       g->Write("", TObject::kOverwrite);
+   for (const auto& g : gnxcs)
+      g->Write("", TObject::kOverwrite);
+   for (const auto& g : g2axcs)
+      g->Write("", TObject::kOverwrite);
    for (const auto& g : gnxn2as)
       g->Write("", TObject::kOverwrite);
    gnxnst->Write("", TObject::kOverwrite);
+   gnxcst->Write("", TObject::kOverwrite);
    gnxn2ast->Write("", TObject::kOverwrite);
    g2axnst->Write("", TObject::kOverwrite);
    g2axn2ast->Write("", TObject::kOverwrite);
 
 #define SAVE(data)                           \
-   TGraphErrors* g##data = data();           \
-   g##data->Write("", TObject::kOverwrite);
+   data()->Write("", TObject::kOverwrite);   \
 
-   SAVE(cms_pbpb_2p76)
-   SAVE(alice_pbpb_2p76)
-   SAVE(alice_pbpb_5p02)
-   SAVE(cms_pbpb_2p76_over_npart_afo_npart)
-   SAVE(alice_pbpb_2p76_over_npart_afo_npart)
-   SAVE(alice_pbpb_5p02_over_npart_afo_npart)
-   SAVE(phobos_auau_0p2_over_npart_afo_npart)
-   SAVE(phobos_cucu_0p2_over_npart_afo_npart)
-   SAVE(brahms_auau_0p2_over_npart_afo_npart)
-   SAVE(cms_pbpb_2p76_over_npart_afo_npart_2a)
-   SAVE(alice_pbpb_2p76_over_npart_afo_npart_2a)
-   SAVE(alice_pbpb_5p02_over_npart_afo_npart_2a)
    SAVE(alice_pbpb_2p76_y_c0t5)
    SAVE(alice_pbpb_5p02_y_c0t5)
    SAVE(brahms_auau_0p2_y_c0t5_pip)
@@ -164,12 +179,48 @@ int y(const char* config, const char* label) {
    SAVE(cms_pbpb_2p76_y_c0t5)
    SAVE(cms_pbpb_2p76_y_c0t90)
 
-   SAVE(cms_pbpb_2p76_over_2a_afo_npart)
-   SAVE(cms_pbpb_2p76_over_2a_afo_npart_2a)
-   SAVE(alice_pbpb_2p76_over_2a_afo_npart)
-   SAVE(alice_pbpb_2p76_over_2a_afo_npart_2a)
-   SAVE(alice_pbpb_5p02_over_2a_afo_npart)
-   SAVE(alice_pbpb_5p02_over_2a_afo_npart_2a)
+   SAVE(cms_pbpb_2p76_nnpart_x_npart)
+   SAVE(alice_pbpb_2p76_nnpart_x_npart)
+   SAVE(alice_pbpb_5p02_nnpart_x_npart)
+   SAVE(phobos_auau_0p2_nnpart_x_npart)
+   SAVE(phobos_cucu_0p2_nnpart_x_npart)
+   SAVE(brahms_auau_0p2_nnpart_x_npart)
+   SAVE(alice_xexe_5p44_nnpart_x_npart)
+
+   SAVE(cms_pbpb_2p76_nnpart_x_npart2a)
+   SAVE(alice_pbpb_2p76_nnpart_x_npart2a)
+   SAVE(alice_pbpb_5p02_nnpart_x_npart2a)
+   SAVE(phobos_auau_0p2_nnpart_x_npart2a)
+   SAVE(phobos_cucu_0p2_nnpart_x_npart2a)
+   SAVE(brahms_auau_0p2_nnpart_x_npart2a)
+   SAVE(alice_xexe_5p44_nnpart_x_npart2a)
+
+   SAVE(cms_pbpb_2p76_n2a_x_npart)
+   SAVE(alice_pbpb_2p76_n2a_x_npart)
+   SAVE(alice_pbpb_5p02_n2a_x_npart)
+   SAVE(alice_xexe_5p44_n2a_x_npart)
+
+   SAVE(cms_pbpb_2p76_n2a_x_npart2a)
+   SAVE(alice_pbpb_2p76_n2a_x_npart2a)
+   SAVE(alice_pbpb_5p02_n2a_x_npart2a)
+   SAVE(alice_xexe_5p44_n2a_x_npart2a)
+   SAVE(phobos_auau_0p2_n2a_x_npart2a)
+   SAVE(phobos_cucu_0p2_n2a_x_npart2a)
+   SAVE(brahms_auau_0p2_n2a_x_npart2a)
+
+   SAVE(cms_pbpb_2p76_nnpart)
+   SAVE(alice_pbpb_2p76_nnpart)
+   SAVE(alice_pbpb_5p02_nnpart)
+   SAVE(alice_xexe_5p44_nnpart)
+   SAVE(phobos_cucu_0p2_nnpart)
+   SAVE(phobos_auau_0p2_nnpart)
+
+   SAVE(cms_pbpb_2p76_n2a)
+   SAVE(alice_pbpb_2p76_n2a)
+   SAVE(alice_pbpb_5p02_n2a)
+   SAVE(alice_xexe_5p44_n2a)
+   SAVE(phobos_cucu_0p2_n2a)
+   SAVE(phobos_auau_0p2_n2a)
 
    fout->Write("", TObject::kOverwrite);
    fout->Close();
