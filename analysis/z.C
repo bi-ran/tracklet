@@ -55,7 +55,8 @@ int hist(configurer* conf) {
    auto lassocc = conf->get<std::vector<uint32_t>>("lassocc");
    for (auto& head : headers) { ltrim(head); }
 
-   auto ofiles = conf->get<std::vector<std::string>>("ofiles");
+   auto files = conf->get<std::vector<std::string>>("files");
+   auto bfiles = conf->get<std::vector<std::string>>("bfiles");
 
    auto graphs = conf->get<std::vector<std::string>>("graphs");
    auto gassocc = conf->get<std::vector<uint32_t>>("gassocc");
@@ -65,6 +66,14 @@ int hist(configurer* conf) {
    auto gmstyles = conf->get<std::vector<int>>("gmstyles");
    auto gmsizes = conf->get<std::vector<float>>("gmsizes");
    auto gcolours = conf->get<std::vector<std::string>>("gcolours");
+
+   auto gbands = conf->get<std::vector<std::string>>("gbands");
+   auto gblegends = conf->get<std::vector<std::string>>("gblegends");
+   auto gbtypes = conf->get<std::vector<int>>("gbtypes");
+   auto gbassocf = conf->get<std::vector<uint32_t>>("gbassocf");
+   auto gbassocg = conf->get<std::vector<uint32_t>>("gbassocg");
+   auto gbcolours = conf->get<std::vector<std::string>>("gbcolours");
+   auto gbalphas = conf->get<std::vector<float>>("gbalphas");
 
    auto hists = conf->get<std::vector<std::string>>("hists");
    auto hassocc = conf->get<std::vector<uint32_t>>("hassocc");
@@ -124,18 +133,24 @@ int hist(configurer* conf) {
    }
 
    std::vector<TLine*> lines(nlines, 0);
-   std::vector<TFile*> files(ofiles.size(), 0);
-   for (std::size_t i=0; i<ofiles.size(); ++i)
-      files[i] = new TFile(ofiles[i].data());
+   std::vector<TFile*> vfiles(files.size(), 0);
+   for (std::size_t i=0; i<files.size(); ++i)
+      vfiles[i] = new TFile(files[i].data());
+   std::vector<TFile*> vbfiles(bfiles.size(), 0);
+   for (std::size_t i=0; i<bfiles.size(); ++i)
+      vbfiles[i] = new TFile(bfiles[i].data());
    std::vector<TGraphErrors*> vgraphs(graphs.size(), 0);
    for (std::size_t i=0; i<graphs.size(); ++i) {
-      vgraphs[i] = (TGraphErrors*)files[gassocf[i]]->Get(graphs[i].data());
+      vgraphs[i] = (TGraphErrors*)vfiles[gassocf[i]]->Get(graphs[i].data());
       int gcolour = TColor::GetColor(gcolours[i].data());
       gstyle(vgraphs[i], gmstyles[i], gcolour, gmsizes[i]);
    }
+   std::vector<TGraphErrors*> vgbands(gbands.size(), 0);
+   for (std::size_t i=0; i<gbands.size(); ++i)
+      vgbands[i] = (TGraphErrors*)vbfiles[gbassocf[i]]->Get(gbands[i].data());
    std::vector<TH1F*> vhists(hists.size(), 0);
    for (std::size_t i=0; i<hists.size(); ++i) {
-      vhists[i] = (TH1F*)files[hassocf[i]]->Get(hists[i].data());
+      vhists[i] = (TH1F*)vfiles[hassocf[i]]->Get(hists[i].data());
       int hcolour = TColor::GetColor(hcolours[i].data());
       hstyle(vhists[i], hmstyles[i], hcolour, hmsizes[i]);
       hline(vhists[i], hlstyles[i], hcolour, hlwidths[i]);
@@ -190,9 +205,24 @@ int hist(configurer* conf) {
    c1->cd(1); for (std::size_t i=0; i<hists.size(); ++i) {
       if (i < hassocc.size()) c1->cd(hassocc[i]);
       vhists[i]->Draw(hgopts[i].data()); }
+   c1->cd(1); for (std::size_t i=0; i<gbands.size(); ++i) {
+      int gbcol = TColor::GetColor(gbcolours[i].data());
+      if (gbassocg[i] < gassocc.size()) c1->cd(gassocc[gbassocg[i]]);
+      switch (gbtypes[i]) {
+         case 0:
+            // draw graph directly
+            break;
+         case 1:
+            box(vgraphs[gbassocg[i]], vgbands[i], gbcol, gbalphas[i]);
+            break;
+         case 2:
+            box(vgbands[i], gbcol, gbalphas[i]);
+            break;
+      }
+   }
    c1->cd(1); for (std::size_t i=0; i<graphs.size(); ++i) {
       if (i < gassocc.size()) c1->cd(gassocc[i]);
-      vgraphs[i]->Draw("p same"); }
+      vgraphs[i]->Draw("p x same"); }
    c1->cd(1); for (std::size_t i=0; i<nd; ++i) {
       int col = TColor::GetColor(colours[i].data());
       for (const auto& hsi : hs[i]) if (hsi) box(h[i], hsi, col, alpha);
@@ -264,7 +294,7 @@ int graph(configurer* conf) {
    auto headers = conf->get<std::vector<std::string>>("headers");
    auto lassocc = conf->get<std::vector<uint32_t>>("lassocc");
 
-   auto ofiles = conf->get<std::vector<std::string>>("ofiles");
+   auto files = conf->get<std::vector<std::string>>("files");
 
    auto graphs = conf->get<std::vector<std::string>>("graphs");
    auto gassocc = conf->get<std::vector<uint32_t>>("gassocc");
@@ -322,18 +352,18 @@ int graph(configurer* conf) {
       gs[i] = (TGraph*)f->Get(systs[i].data());
 
    std::vector<TLine*> lines(nlines, 0);
-   std::vector<TFile*> files(ofiles.size(), 0);
-   for (std::size_t i=0; i<ofiles.size(); ++i)
-      files[i] = new TFile(ofiles[i].data());
+   std::vector<TFile*> vfiles(files.size(), 0);
+   for (std::size_t i=0; i<files.size(); ++i)
+      vfiles[i] = new TFile(files[i].data());
    std::vector<TGraphErrors*> vgraphs(graphs.size(), 0);
    for (std::size_t i=0; i<graphs.size(); ++i) {
-      vgraphs[i] = (TGraphErrors*)files[gassocf[i]]->Get(graphs[i].data());
+      vgraphs[i] = (TGraphErrors*)vfiles[gassocf[i]]->Get(graphs[i].data());
       int gcolour = TColor::GetColor(gcolours[i].data());
       gstyle(vgraphs[i], gmstyles[i], gcolour, gmsizes[i]);
    }
    std::vector<TH1F*> vhists(hists.size(), 0);
    for (std::size_t i=0; i<hists.size(); ++i) {
-      vhists[i] = (TH1F*)files[hassocf[i]]->Get(hists[i].data());
+      vhists[i] = (TH1F*)vfiles[hassocf[i]]->Get(hists[i].data());
       int hcolour = TColor::GetColor(hcolours[i].data());
       hstyle(vhists[i], hmstyles[i], hcolour, hmsizes[i]);
    }
