@@ -17,19 +17,18 @@ int x(const char* config, const char* label) {
    auto stags = conf->get<std::vector<std::string>>("stags");
    std::size_t nf = files.size(); std::size_t ns = stags.size();
 
-   auto hist = conf->get<std::string>("hist");
+   auto hists = conf->get<std::vector<std::string>>("hists");
 
    auto jacobian = conf->get<std::string>("jacobian");
    auto jtag = conf->get<std::string>("jtag");
    auto jstag = conf->get<std::string>("jstag");
 
    std::vector<TFile*> fr; std::vector<TFile*> fs;
-   for (std::size_t f=0; f<nf; ++f) {
-      fr.emplace_back(new TFile(files[f].data(), "read"));
-      fs.emplace_back(new TFile(systs[f].data(), "read"));
-   }
+   for (const auto& f : files)
+      fr.emplace_back(new TFile(f.data(), "read"));
+   for (const auto& s : systs)
+      fs.emplace_back(new TFile(s.data(), "read"));
 
-   TFile* fj = new TFile(jacobian.data(), "read");
    TFile* fout = new TFile(Form("output/results-%s.root", label), "recreate");
 
    TH1::SetDefaultSumw2();
@@ -37,12 +36,12 @@ int x(const char* config, const char* label) {
    std::vector<TH1F*> h(nf, 0);
    std::vector<std::vector<TH1F*>> hs(nf, std::vector<TH1F*>(ns, 0));
    for (std::size_t i=0; i<nf; ++i) {
-      std::string htag = hist + "_" + tags[i];
-      h[i] = (TH1F*)fr[i]->Get(hist.data())->Clone(
+      std::string htag = hists[i] + "_" + tags[i];
+      h[i] = (TH1F*)fr[i]->Get(hists[i].data())->Clone(
          Form("hr_%s", htag.data()));
       for (std::size_t j=0; j<ns; ++j) {
          hs[i][j] = (TH1F*)fs[i]->Get(
-            Form("%s_%s_tdiff", hist.data(), stags[j].data()))->Clone(
+            Form("%s_%s_tdiff", hists[i].data(), stags[j].data()))->Clone(
             Form("hs_%s_%s", htag.data(), stags[j].data()));
       }
    }
@@ -56,24 +55,29 @@ int x(const char* config, const char* label) {
       }
    }
 
-   TH1F* hj = (TH1F*)fj->Get(jtag.data())->Clone("hj");
-   TH1F* hjs = (TH1F*)fj->Get(jstag.data())->Clone("hjs");
+   if (!jacobian.empty()) {
+      TFile* fj = new TFile(jacobian.data(), "read");
+      fout->cd();
 
-   std::vector<TH1F*> hy(nf, 0); std::vector<TH1F*> hys(nf, 0);
-   std::vector<std::vector<TH1F*>> hsy(nf, std::vector<TH1F*>(ns, 0));
-   for (std::size_t i=0; i<nf; ++i) {
-      std::string htag = hist + "_" + tags[i];
-      hy[i] = (TH1F*)h[i]->Clone(Form("hy_%s", htag.data()));
-      hy[i]->Multiply(hj);
-      for (std::size_t j=0; j<ns; ++j) {
-         hsy[i][j] = (TH1F*)hs[i][j]->Clone(
-            Form("hsy_%s_%s", htag.data(), stags[j].data()));
-         hsy[i][j]->Multiply(hj);
+      TH1F* hj = (TH1F*)fj->Get(jtag.data())->Clone("hj");
+      TH1F* hjs = (TH1F*)fj->Get(jstag.data())->Clone("hjs");
+
+      std::vector<TH1F*> hy(nf, 0); std::vector<TH1F*> hys(nf, 0);
+      std::vector<std::vector<TH1F*>> hsy(nf, std::vector<TH1F*>(ns, 0));
+      for (std::size_t i=0; i<nf; ++i) {
+         std::string htag = hists[i] + "_" + tags[i];
+         hy[i] = (TH1F*)h[i]->Clone(Form("hy_%s", htag.data()));
+         hy[i]->Multiply(hj);
+         for (std::size_t j=0; j<ns; ++j) {
+            hsy[i][j] = (TH1F*)hs[i][j]->Clone(
+               Form("hsy_%s_%s", htag.data(), stags[j].data()));
+            hsy[i][j]->Multiply(hj);
+         }
+
+         hys[i] = (TH1F*)hy[i]->Clone(Form("hys_%s", htag.data()));
+         hys[i]->Multiply(hjs);
+         if (ns) { sqrtsumsquares(hys[i], hsy[i][0]); }
       }
-
-      hys[i] = (TH1F*)hy[i]->Clone(Form("hys_%s", htag.data()));
-      hys[i]->Multiply(hjs);
-      if (ns) { sqrtsumsquares(hys[i], hsy[i][0]); }
    }
 
    fout->Write("", TObject::kOverwrite);
