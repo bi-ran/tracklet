@@ -149,11 +149,11 @@ int hist(configurer* conf) {
    auto ndivs = conf->get<std::vector<int>>("ndivs");
 
    auto nl = conf->get<uint32_t>("nl");
-   auto headers = conf->get<std::vector<std::string>>("headers");
    auto lx0 = conf->get<std::vector<float>>("lx0");
    auto lx1 = conf->get<std::vector<float>>("lx1");
    auto ly0 = conf->get<std::vector<float>>("ly0");
    auto ly1 = conf->get<std::vector<float>>("ly1");
+   auto headers = conf->get<std::vector<std::string>>("headers");
    for (auto& head : headers) { ltrim(head); }
 
    auto ofiles = conf->get<std::vector<std::string>>("ofiles");
@@ -243,31 +243,35 @@ int graph(configurer* conf) {
    auto output = conf->get<std::string>("output");
    auto title = conf->get<std::string>("title");
    auto data = conf->get<std::string>("data");
-   auto colour = conf->get<std::string>("colour");
    auto legend = conf->get<std::string>("legend");
+   auto colour = conf->get<std::string>("colour");
+   auto alpha = conf->get<float>("alpha");
 
    auto systs = conf->get<std::vector<std::string>>("systs");
    auto scolours = conf->get<std::vector<std::string>>("scolours");
    auto salphas = conf->get<std::vector<float>>("salphas");
    std::size_t ns = systs.size();
 
-   auto logy = conf->get<bool>("logy");
+   auto logscale = conf->get<std::vector<bool>>("logscale");
    auto xrange = conf->get<std::vector<float>>("xrange");
    auto yrange = conf->get<std::vector<float>>("yrange");
    auto axispath = conf->get<std::vector<float>>("axispath");
    auto axisrange = conf->get<std::vector<float>>("axisrange");
+   auto aloffset = conf->get<float>("aloffset");
    auto aopt = conf->get<std::string>("aopt");
 
    auto nl = conf->get<uint32_t>("nl");
-   auto lheaders = conf->get<std::vector<std::string>>("lheaders");
    auto lx0 = conf->get<std::vector<float>>("lx0");
    auto lx1 = conf->get<std::vector<float>>("lx1");
    auto ly0 = conf->get<std::vector<float>>("ly0");
    auto ly1 = conf->get<std::vector<float>>("ly1");
+   auto headers = conf->get<std::vector<std::string>>("headers");
+   auto lassocc = conf->get<std::vector<uint32_t>>("lassocc");
 
    auto ofiles = conf->get<std::vector<std::string>>("ofiles");
 
    auto graphs = conf->get<std::vector<std::string>>("graphs");
+   auto gassocc = conf->get<std::vector<uint32_t>>("gassocc");
    auto gassocf = conf->get<std::vector<uint32_t>>("gassocf");
    auto gassocl = conf->get<std::vector<uint32_t>>("gassocl");
    auto glegends = conf->get<std::vector<std::string>>("glegends");
@@ -276,6 +280,7 @@ int graph(configurer* conf) {
    auto gcolours = conf->get<std::vector<std::string>>("gcolours");
 
    auto hists = conf->get<std::vector<std::string>>("hists");
+   auto hassocc = conf->get<std::vector<uint32_t>>("hassocc");
    auto hassocf = conf->get<std::vector<uint32_t>>("hassocf");
    auto hassocl = conf->get<std::vector<uint32_t>>("hassocl");
    auto hlegends = conf->get<std::vector<std::string>>("hlegends");
@@ -283,8 +288,19 @@ int graph(configurer* conf) {
    auto hmsizes = conf->get<std::vector<float>>("hmsizes");
    auto hcolours = conf->get<std::vector<std::string>>("hcolours");
 
-   auto xloffset = conf->get<float>("xloffset");
    auto toffsets = conf->get<std::vector<float>>("toffsets");
+
+   auto csizes = conf->get<std::vector<int>>("csizes");
+   auto cmargins = conf->get<std::vector<float>>("cmargins");
+   auto cdivide = conf->get<float>("cdivide");
+
+   auto rtitle = conf->get<std::string>("rtitle");
+   auto rrange = conf->get<std::vector<float>>("rrange");
+   auto rtitleoffsets = conf->get<std::vector<float>>("rtitleoffsets");
+   auto rlabelsizes = conf->get<std::vector<float>>("rlabelsizes");
+   auto rtitlesizes = conf->get<std::vector<float>>("rtitlesizes");
+   auto rlabeloffsets = conf->get<std::vector<float>>("rlabeloffsets");
+   auto rndiv = conf->get<int>("rndiv");
 
    auto prelim = conf->get<bool>("prelim");
 
@@ -312,7 +328,18 @@ int graph(configurer* conf) {
 
    int col = TColor::GetColor(colour.data());
    TCanvas* c1 = new TCanvas("c1", "", 400, 400);
-   cmargin(c1, 0.05, 0.1, 0.12, 0.05); c1->SetLogy(logy);
+   TPad* t1 = new TPad("t1", "", 0, cdivide, 1, 1);
+   t1->SetTopMargin(cmargins[0]/(1-cdivide));
+   if (cdivide) t1->SetBottomMargin(0);
+   else t1->SetBottomMargin(cmargins[1]);
+   t1->SetLeftMargin(cmargins[2]); t1->SetRightMargin(cmargins[3]);
+   t1->Draw(); t1->SetNumber(1); t1->SetLogy();
+   TPad* t2 = new TPad("t2", "", 0, 0, 1, cdivide);
+   t2->SetTopMargin(0); t2->SetBottomMargin(cmargins[1]/cdivide);
+   t2->SetLeftMargin(cmargins[2]); t2->SetRightMargin(cmargins[3]);
+   t2->Draw(); t2->SetNumber(2);
+
+   t1->cd(); t1->SetLogx(logscale[0]); t1->SetLogy(logscale[1]);
    std::vector<TLegend*> l1(nl, 0); std::vector<TLegendEntry*> le1(nl, 0);
    TH1F* hframe = new TH1F("hframe", "", 1, xrange[0], xrange[1]);
    hrange(hframe, yrange[0], yrange[1]); htitle(hframe, title.data());
@@ -320,21 +347,41 @@ int graph(configurer* conf) {
    htoffset(hframe, toffsets[0], toffsets[1]); hframe->Draw();
    TGaxis* axis = new TGaxis(axispath[0], yrange[0], axispath[1], yrange[0],
       axisrange[0], axisrange[1], 510, aopt.data());
-   astyle(axis, 43, 13, xloffset); axis->Draw();
-   for (const auto& gi : vgraphs) gi->Draw("p same");
+   astyle(axis, 43, 13, aloffset); axis->Draw();
+
+   if (cdivide) {
+      t2->cd(); t2->SetLogx(logscale[0]);
+      TH1F* hrframe = new TH1F("hrframe", "", 1, xrange[0], xrange[1]);
+      hrange(hrframe, rrange[0], rrange[1]); htitle(hrframe, rtitle.data());
+      hlsize(hrframe, rlabelsizes[0], rlabelsizes[1]);
+      htsize(hrframe, rtitlesizes[0], rtitlesizes[1]);
+      htoffset(hrframe, rtitleoffsets[0], rtitleoffsets[1]);
+      hloffset(hrframe, rlabeloffsets[0], rlabeloffsets[1]);
+      hndiv(hrframe, 1, rndiv); hrframe->Draw(); axis->Draw();
+   }
+
+   for (std::size_t i=0; i<graphs.size(); ++i) {
+      if (i < gassocc.size()) c1->cd(gassocc[i]);
+      vgraphs[i]->Draw("p same"); }
+   c1->cd(1);
    for (std::size_t i=0; i<ns; ++i) {
       int scol = TColor::GetColor(scolours[i].data());
       gs[i]->SetFillColorAlpha(scol, salphas[i]); gs[i]->Draw("f"); }
    gstyle(g, 21, col, 0.6); g->Draw("p same"); mark(prelim);
-   for (std::size_t i=0; i<nl; ++i) {
+   for (std::size_t i=0; i<nl; ++i)
       l1[i] = new TLegend(lx0[i], ly0[i], lx1[i], ly1[i]);
-      le1[i] = l1[i]->AddEntry((TObject*)0, lheaders[i].data(), ""); }
+   for (std::size_t i=0; i<headers.size() && !headers[i].empty(); ++i)
+      le1[i] = l1[i]->AddEntry((TObject*)0, headers[i].data(), "");
    TGraphErrors* gl = (TGraphErrors*)g->Clone("gl");
-   lestyle(gl, col, 0.4); l1[0]->AddEntry(gl, legend.data(), "pf");
-   for (std::size_t i=0; i<graphs.size(); ++i)
-      l1[gassocl[i]]->AddEntry(vgraphs[i], glegends[i].data(), "p");
-   for (const auto& l : l1) { lstyle(l, 43, 12); l->Draw(); }
-   for (const auto& le : le1) { tstyle(le, 63, 13); }
+   lestyle(gl, col, alpha); l1[0]->AddEntry(gl, legend.data(), "pf");
+   for (std::size_t i=0; i<graphs.size(); ++i) {
+      if (gassocl[i] > nl) continue;
+      l1[gassocl[i]]->AddEntry(vgraphs[i], glegends[i].data(), "p"); }
+   for (const auto& le : le1) if (le) tstyle(le, 63, 13);
+   for (std::size_t i=0; i<nl; ++i) {
+      if (i < lassocc.size()) c1->cd(lassocc[i]);
+      lstyle(l1[i], 43, 12); l1[i]->Draw(); }
+
    c1->SaveAs(output.data()); delete c1;
 
    return 0;
