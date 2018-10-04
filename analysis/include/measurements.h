@@ -1068,748 +1068,24 @@ TH1F* hcms_xexe_5p44_eta_c0t5() {
    return hcms_xexe_5p44_eta_c0t5;
 }
 
-TGraphErrors* cms_pbpb_2p76() {
-   TGraphErrors* gcms_pbpb_2p76 = new TGraphErrors(18);
-   gcms_pbpb_2p76->SetName("gcms_pbpb_2p76");
+TGraphErrors* cms_pp_13p0_nnpart_x_npart() {
+   TGraphErrors* gcms_pp_13p0_nnpart_x_npart = new TGraphErrors(1);
+   gcms_pp_13p0_nnpart_x_npart->SetName("gcms_pp_13p0_nnpart_x_npart");
 
-   gcms_pbpb_2p76->SetPoint(0, 12.5, 11.05);       gcms_pbpb_2p76->SetPointError(0, 0, 1.77);
-   gcms_pbpb_2p76->SetPoint(1, 17.5, 18.49);       gcms_pbpb_2p76->SetPointError(1, 0, 2.96);
-   gcms_pbpb_2p76->SetPoint(2, 22.5, 28.12);       gcms_pbpb_2p76->SetPointError(2, 0, 3.26);
-   gcms_pbpb_2p76->SetPoint(3, 27.5, 44.46);       gcms_pbpb_2p76->SetPointError(3, 0, 4.71);
-   gcms_pbpb_2p76->SetPoint(4, 32.5, 65.42);       gcms_pbpb_2p76->SetPointError(4, 0, 5.41);
-   gcms_pbpb_2p76->SetPoint(5, 37.5, 93.55);       gcms_pbpb_2p76->SetPointError(5, 0, 7.73);
-   gcms_pbpb_2p76->SetPoint(6, 42.5, 130.3);       gcms_pbpb_2p76->SetPointError(6, 0, 8.6);
-   gcms_pbpb_2p76->SetPoint(7, 47.5, 176.1);       gcms_pbpb_2p76->SetPointError(7, 0, 10.7);
-   gcms_pbpb_2p76->SetPoint(8, 52.5, 233.0);       gcms_pbpb_2p76->SetPointError(8, 0, 13);
-   gcms_pbpb_2p76->SetPoint(9, 57.5, 299.9);       gcms_pbpb_2p76->SetPointError(9, 0, 15.3);
-   gcms_pbpb_2p76->SetPoint(10, 62.5, 383.9);      gcms_pbpb_2p76->SetPointError(10, 0, 16.2);
-   gcms_pbpb_2p76->SetPoint(11, 67.5, 482.3);      gcms_pbpb_2p76->SetPointError(11, 0, 18.7);
-   gcms_pbpb_2p76->SetPoint(12, 72.5, 596.8);      gcms_pbpb_2p76->SetPointError(12, 0, 23.1);
-   gcms_pbpb_2p76->SetPoint(13, 77.5, 731.6);      gcms_pbpb_2p76->SetPointError(13, 0, 26.3);
-   gcms_pbpb_2p76->SetPoint(14, 82.5, 893.9);      gcms_pbpb_2p76->SetPointError(14, 0, 31.4);
-   gcms_pbpb_2p76->SetPoint(15, 87.5, 1082);       gcms_pbpb_2p76->SetPointError(15, 0, 38);
-   gcms_pbpb_2p76->SetPoint(16, 92.5, 1313);       gcms_pbpb_2p76->SetPointError(16, 0, 45);
-   gcms_pbpb_2p76->SetPoint(17, 97.5, 1612);       gcms_pbpb_2p76->SetPointError(17, 0, 55);
+   gcms_pp_13p0_nnpart_x_npart->SetPoint(0, 2, 5.49 / 2);
+   gcms_pp_13p0_nnpart_x_npart->SetPointError(0, 0, 0.17 / 2);
 
-   return gcms_pbpb_2p76;
+   return gcms_pp_13p0_nnpart_x_npart;
 }
 
-TGraphErrors* cms_pbpb_2p76_over_npart_afo_npart() {
-   TGraphErrors* gcms_pbpb_2p76_over_npart_afo_npart = new TGraphErrors(18);
-   gcms_pbpb_2p76_over_npart_afo_npart->SetName("gcms_pbpb_2p76_over_npart_afo_npart");
+TGraphErrors* cms_ppb_8p16_nnpart_x_npart() {
+   TGraphErrors* gcms_ppb_8p16_nnpart_x_npart = new TGraphErrors(1);
+   gcms_ppb_8p16_nnpart_x_npart->SetName("gcms_ppb_8p16_nnpart_x_npart");
 
-   gcms_pbpb_2p76_over_npart_afo_npart->SetPoint(0, 5.71, 3.87 / 2);   gcms_pbpb_2p76_over_npart_afo_npart->SetPointError(0, 0.24, 0.64 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart->SetPoint(1, 8.64, 4.23 / 2);   gcms_pbpb_2p76_over_npart_afo_npart->SetPointError(1, 0.56, 0.74 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart->SetPoint(2, 12.8, 4.54 / 2);   gcms_pbpb_2p76_over_npart_afo_npart->SetPointError(2, 0.9, 0.60 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart->SetPoint(3, 18.5, 4.8  / 2);   gcms_pbpb_2p76_over_npart_afo_npart->SetPointError(3, 1.2, 0.59 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart->SetPoint(4, 25.8, 5.07 / 2);   gcms_pbpb_2p76_over_npart_afo_npart->SetPointError(4, 1.6, 0.53 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart->SetPoint(5, 35.3, 5.3  / 2);   gcms_pbpb_2p76_over_npart_afo_npart->SetPointError(5, 2.0, 0.53 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart->SetPoint(6, 46.7, 5.59 / 2);   gcms_pbpb_2p76_over_npart_afo_npart->SetPointError(6, 2.3, 0.46 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart->SetPoint(7, 60.4, 5.83 / 2);   gcms_pbpb_2p76_over_npart_afo_npart->SetPointError(7, 2.7, 0.44 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart->SetPoint(8, 76.8, 6.07 / 2);   gcms_pbpb_2p76_over_npart_afo_npart->SetPointError(8, 2.7, 0.40 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart->SetPoint(9, 95.8, 6.26 / 2);   gcms_pbpb_2p76_over_npart_afo_npart->SetPointError(9, 3.0, 0.37 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart->SetPoint(10, 117, 6.54 / 2);   gcms_pbpb_2p76_over_npart_afo_npart->SetPointError(10, 3, 0.33 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart->SetPoint(11, 142, 6.77 / 2);   gcms_pbpb_2p76_over_npart_afo_npart->SetPointError(11, 3, 0.30 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart->SetPoint(12, 171, 6.98 / 2);   gcms_pbpb_2p76_over_npart_afo_npart->SetPointError(12, 3, 0.30 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart->SetPoint(13, 203, 7.19 / 2);   gcms_pbpb_2p76_over_npart_afo_npart->SetPointError(13, 3, 0.28 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart->SetPoint(14, 240, 7.45 / 2);   gcms_pbpb_2p76_over_npart_afo_npart->SetPointError(14, 3, 0.28 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart->SetPoint(15, 283, 7.66 / 2);   gcms_pbpb_2p76_over_npart_afo_npart->SetPointError(15, 3, 0.28 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart->SetPoint(16, 329, 7.97 / 2);   gcms_pbpb_2p76_over_npart_afo_npart->SetPointError(16, 3, 0.28 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart->SetPoint(17, 381, 8.46 / 2);   gcms_pbpb_2p76_over_npart_afo_npart->SetPointError(17, 2, 0.29 / 2);
+   gcms_ppb_8p16_nnpart_x_npart->SetPoint(0, 8.12, 2.475);
+   gcms_ppb_8p16_nnpart_x_npart->SetPointError(0, 0, 0.07);
 
-   return gcms_pbpb_2p76_over_npart_afo_npart;
-}
-
-TGraphErrors* cms_pbpb_2p76_over_npart_afo_npart_2a() {
-   TGraphErrors* gcms_pbpb_2p76_over_npart_afo_npart_2a = new TGraphErrors(18);
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetName("gcms_pbpb_2p76_over_npart_afo_npart_2a");
-
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(0, 5.71/416, 3.87 / 2);   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(0, 0.24/416, 0.64 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(1, 8.64/416, 4.23 / 2);   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(1, 0.56/416, 0.74 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(2, 12.8/416, 4.54 / 2);   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(2, 0.9/416, 0.60 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(3, 18.5/416, 4.8  / 2);   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(3, 1.2/416, 0.59 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(4, 25.8/416, 5.07 / 2);   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(4, 1.6/416, 0.53 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(5, 35.3/416, 5.3  / 2);   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(5, 2.0/416, 0.53 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(6, 46.7/416, 5.59 / 2);   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(6, 2.3/416, 0.46 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(7, 60.4/416, 5.83 / 2);   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(7, 2.7/416, 0.44 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(8, 76.8/416, 6.07 / 2);   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(8, 2.7/416, 0.40 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(9, 95.8/416, 6.26 / 2);   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(9, 3.0/416, 0.37 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(10, 117.0/416, 6.54 / 2);   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(10, 3.0/416, 0.33 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(11, 142.0/416, 6.77 / 2);   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(11, 3.0/416, 0.30 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(12, 171.0/416, 6.98 / 2);   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(12, 3.0/416, 0.30 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(13, 203.0/416, 7.19 / 2);   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(13, 3.0/416, 0.28 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(14, 240.0/416, 7.45 / 2);   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(14, 3.0/416, 0.28 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(15, 283.0/416, 7.66 / 2);   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(15, 3.0/416, 0.28 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(16, 329.0/416, 7.97 / 2);   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(16, 3.0/416, 0.28 / 2);
-   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(17, 381.0/416, 8.46 / 2);   gcms_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(17, 2.0/416, 0.29 / 2);
-
-   return gcms_pbpb_2p76_over_npart_afo_npart_2a;
-}
-
-TGraphErrors* cms_pbpb_2p76_over_2a_afo_npart() {
-   TGraphErrors* gcms_pbpb_2p76_over_2a_afo_npart = new TGraphErrors(18);
-   gcms_pbpb_2p76_over_2a_afo_npart->SetName("gcms_pbpb_2p76_over_2a_afo_npart");
-
-   gcms_pbpb_2p76_over_2a_afo_npart->SetPoint(0, 5.71, 5.71 * 3.87 / 832); gcms_pbpb_2p76_over_2a_afo_npart->SetPointError(0, 0.24, 5.71 * 0.64 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart->SetPoint(1, 8.64, 8.64 * 4.23 / 832); gcms_pbpb_2p76_over_2a_afo_npart->SetPointError(1, 0.56, 8.64 * 0.74 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart->SetPoint(2, 12.8, 12.8 * 4.54 / 832); gcms_pbpb_2p76_over_2a_afo_npart->SetPointError(2,  0.9, 12.8 * 0.60 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart->SetPoint(3, 18.5, 18.5 * 4.8  / 832); gcms_pbpb_2p76_over_2a_afo_npart->SetPointError(3,  1.2, 18.5 * 0.59 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart->SetPoint(4, 25.8, 25.8 * 5.07 / 832); gcms_pbpb_2p76_over_2a_afo_npart->SetPointError(4,  1.6, 25.8 * 0.53 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart->SetPoint(5, 35.3, 35.3 * 5.3  / 832); gcms_pbpb_2p76_over_2a_afo_npart->SetPointError(5,  2.0, 35.3 * 0.53 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart->SetPoint(6, 46.7, 46.7 * 5.59 / 832); gcms_pbpb_2p76_over_2a_afo_npart->SetPointError(6,  2.3, 46.7 * 0.46 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart->SetPoint(7, 60.4, 60.4 * 5.83 / 832); gcms_pbpb_2p76_over_2a_afo_npart->SetPointError(7,  2.7, 60.4 * 0.44 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart->SetPoint(8, 76.8, 76.8 * 6.07 / 832); gcms_pbpb_2p76_over_2a_afo_npart->SetPointError(8,  2.7, 76.8 * 0.40 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart->SetPoint(9, 95.8, 95.8 * 6.26 / 832); gcms_pbpb_2p76_over_2a_afo_npart->SetPointError(9,  3.0, 95.8 * 0.37 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart->SetPoint(10, 117,  117 * 6.54 / 832); gcms_pbpb_2p76_over_2a_afo_npart->SetPointError(10,   3,  117 * 0.33 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart->SetPoint(11, 142,  142 * 6.77 / 832); gcms_pbpb_2p76_over_2a_afo_npart->SetPointError(11,   3,  142 * 0.30 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart->SetPoint(12, 171,  171 * 6.98 / 832); gcms_pbpb_2p76_over_2a_afo_npart->SetPointError(12,   3,  171 * 0.30 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart->SetPoint(13, 203,  203 * 7.19 / 832); gcms_pbpb_2p76_over_2a_afo_npart->SetPointError(13,   3,  203 * 0.28 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart->SetPoint(14, 240,  240 * 7.45 / 832); gcms_pbpb_2p76_over_2a_afo_npart->SetPointError(14,   3,  240 * 0.28 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart->SetPoint(15, 283,  283 * 7.66 / 832); gcms_pbpb_2p76_over_2a_afo_npart->SetPointError(15,   3,  283 * 0.28 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart->SetPoint(16, 329,  329 * 7.97 / 832); gcms_pbpb_2p76_over_2a_afo_npart->SetPointError(16,   3,  329 * 0.28 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart->SetPoint(17, 381,  381 * 8.46 / 832); gcms_pbpb_2p76_over_2a_afo_npart->SetPointError(17,   2,  381 * 0.29 / 832);
-
-   return gcms_pbpb_2p76_over_2a_afo_npart;
-}
-
-TGraphErrors* cms_pbpb_2p76_over_2a_afo_npart_2a() {
-   TGraphErrors* gcms_pbpb_2p76_over_2a_afo_npart_2a = new TGraphErrors(18);
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetName("gcms_pbpb_2p76_over_2a_afo_npart_2a");
-
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(0,  5.71/416,  5.71*3.87 / 832);   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(0,  0.24/416, 5.71*0.64 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(1,  8.64/416,  8.64*4.23 / 832);   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(1,  0.56/416, 8.64*0.74 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(2,  12.8/416,  12.8*4.54 / 832);   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(2,  0.9/416,  12.8*0.60 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(3,  18.5/416,  18.5*4.8  / 832);   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(3,  1.2/416,  18.5*0.59 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(4,  25.8/416,  25.8*5.07 / 832);   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(4,  1.6/416,  25.8*0.53 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(5,  35.3/416,  35.3*5.3  / 832);   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(5,  2.0/416,  35.3*0.53 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(6,  46.7/416,  46.7*5.59 / 832);   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(6,  2.3/416,  46.7*0.46 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(7,  60.4/416,  60.4*5.83 / 832);   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(7,  2.7/416,  60.4*0.44 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(8,  76.8/416,  76.8*6.07 / 832);   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(8,  2.7/416,  76.8*0.40 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(9,  95.8/416,  95.8*6.26 / 832);   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(9,  3.0/416,  95.8*0.37 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(10, 117.0/416,  117*6.54 / 832);   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(10, 3.0/416,   117*0.33 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(11, 142.0/416,  142*6.77 / 832);   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(11, 3.0/416,   142*0.30 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(12, 171.0/416,  171*6.98 / 832);   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(12, 3.0/416,   171*0.30 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(13, 203.0/416,  203*7.19 / 832);   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(13, 3.0/416,   203*0.28 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(14, 240.0/416,  240*7.45 / 832);   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(14, 3.0/416,   240*0.28 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(15, 283.0/416,  283*7.66 / 832);   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(15, 3.0/416,   283*0.28 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(16, 329.0/416,  329*7.97 / 832);   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(16, 3.0/416,   329*0.28 / 832);
-   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(17, 381.0/416,  381*8.46 / 832);   gcms_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(17, 2.0/416,   381*0.29 / 832);
-
-   return gcms_pbpb_2p76_over_2a_afo_npart_2a;
-}
-
-TGraphErrors* alice_pbpb_2p76() {
-   TGraphErrors* galice_pbpb_2p76 = new TGraphErrors(9);
-   galice_pbpb_2p76->SetName("galice_pbpb_2p76");
-
-   galice_pbpb_2p76->SetPoint(0, 25, 35); galice_pbpb_2p76->SetPointError(0, 0, 2);
-   galice_pbpb_2p76->SetPoint(1, 35, 76); galice_pbpb_2p76->SetPointError(1, 0, 4);
-   galice_pbpb_2p76->SetPoint(2, 45, 149); galice_pbpb_2p76->SetPointError(2, 0, 6);
-   galice_pbpb_2p76->SetPoint(3, 55, 261); galice_pbpb_2p76->SetPointError(3, 0, 9);
-   galice_pbpb_2p76->SetPoint(4, 65, 426); galice_pbpb_2p76->SetPointError(4, 0, 15);
-   galice_pbpb_2p76->SetPoint(5, 75, 649); galice_pbpb_2p76->SetPointError(5, 0, 23);
-   galice_pbpb_2p76->SetPoint(6, 85, 966); galice_pbpb_2p76->SetPointError(6, 0, 37);
-   galice_pbpb_2p76->SetPoint(7, 92.5, 1294); galice_pbpb_2p76->SetPointError(7, 0, 49);
-   galice_pbpb_2p76->SetPoint(8, 97.5, 1601); galice_pbpb_2p76->SetPointError(8, 0, 60);
-
-   return galice_pbpb_2p76;
-}
-
-TGraphErrors* alice_pbpb_2p76_over_npart_afo_npart_2a() {
-   TGraphErrors* galice_pbpb_2p76_over_npart_afo_npart_2a = new TGraphErrors(9);
-   galice_pbpb_2p76_over_npart_afo_npart_2a->SetName("galice_pbpb_2p76_over_npart_afo_npart_2a");
-
-   galice_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(0, 15.8/416, 4.4/2); galice_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(0, 0.6/416, 0.4/2);
-   galice_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(1, 30.0/416, 5.1/2); galice_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(1, 1.3/416, 0.3/2);
-   galice_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(2, 52.8/416, 5.7/2); galice_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(2, 2.0/416, 0.3/2);
-   galice_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(3, 85.0/416, 6.1/2); galice_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(3, 2.6/416, 0.3/2);
-   galice_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(4, 128.9/416, 6.6/2); galice_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(4, 3.3/416, 0.3/2);
-   galice_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(5, 186.4/416, 7.0/2); galice_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(5, 3.9/416, 0.3/2);
-   galice_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(6, 260.5/416, 7.4/2); galice_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(6, 4.4/416, 0.3/2);
-   galice_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(7, 329.7/416, 7.9/2); galice_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(7, 4.6/416, 0.3/2);
-   galice_pbpb_2p76_over_npart_afo_npart_2a->SetPoint(8, 382.8/416, 8.4/2); galice_pbpb_2p76_over_npart_afo_npart_2a->SetPointError(8, 3.1/416, 0.3/2);
-
-   return galice_pbpb_2p76_over_npart_afo_npart_2a;
-}
-
-TGraphErrors* alice_pbpb_2p76_over_npart_afo_npart() {
-   TGraphErrors* galice_pbpb_2p76_over_npart_afo_npart = new TGraphErrors(9);
-   galice_pbpb_2p76_over_npart_afo_npart->SetName("galice_pbpb_2p76_over_npart_afo_npart");
-
-   galice_pbpb_2p76_over_npart_afo_npart->SetPoint(0, 15.8, 4.4/2); galice_pbpb_2p76_over_npart_afo_npart->SetPointError(0, 0.6, 0.4/2);
-   galice_pbpb_2p76_over_npart_afo_npart->SetPoint(1, 30.0, 5.1/2); galice_pbpb_2p76_over_npart_afo_npart->SetPointError(1, 1.3, 0.3/2);
-   galice_pbpb_2p76_over_npart_afo_npart->SetPoint(2, 52.8, 5.7/2); galice_pbpb_2p76_over_npart_afo_npart->SetPointError(2, 2.0, 0.3/2);
-   galice_pbpb_2p76_over_npart_afo_npart->SetPoint(3, 85.0, 6.1/2); galice_pbpb_2p76_over_npart_afo_npart->SetPointError(3, 2.6, 0.3/2);
-   galice_pbpb_2p76_over_npart_afo_npart->SetPoint(4, 128.9, 6.6/2); galice_pbpb_2p76_over_npart_afo_npart->SetPointError(4, 3.3, 0.3/2);
-   galice_pbpb_2p76_over_npart_afo_npart->SetPoint(5, 186.4, 7.0/2); galice_pbpb_2p76_over_npart_afo_npart->SetPointError(5, 3.9, 0.3/2);
-   galice_pbpb_2p76_over_npart_afo_npart->SetPoint(6, 260.5, 7.4/2); galice_pbpb_2p76_over_npart_afo_npart->SetPointError(6, 4.4, 0.3/2);
-   galice_pbpb_2p76_over_npart_afo_npart->SetPoint(7, 329.7, 7.9/2); galice_pbpb_2p76_over_npart_afo_npart->SetPointError(7, 4.6, 0.3/2);
-   galice_pbpb_2p76_over_npart_afo_npart->SetPoint(8, 382.8, 8.4/2); galice_pbpb_2p76_over_npart_afo_npart->SetPointError(8, 3.1, 0.3/2);
-
-   return galice_pbpb_2p76_over_npart_afo_npart;
-}
-
-TGraphErrors* alice_pbpb_2p76_over_2a_afo_npart_2a() {
-   TGraphErrors* galice_pbpb_2p76_over_2a_afo_npart_2a = new TGraphErrors(9);
-   galice_pbpb_2p76_over_2a_afo_npart_2a->SetName("galice_pbpb_2p76_over_2a_afo_npart_2a");
-
-   galice_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(0,  15.8/416,  15.8*4.4/832);
-   galice_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(1,  30.0/416,  30.0*5.1/832);
-   galice_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(2,  52.8/416,  52.8*5.7/832);
-   galice_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(3,  85.0/416,  85.0*6.1/832);
-   galice_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(4, 128.9/416, 128.9*6.6/832);
-   galice_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(5, 186.4/416, 186.4*7.0/832);
-   galice_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(6, 260.5/416, 260.5*7.4/832);
-   galice_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(7, 329.7/416, 329.7*7.9/832);
-   galice_pbpb_2p76_over_2a_afo_npart_2a->SetPoint(8, 382.8/416, 382.8*8.4/832);
-
- galice_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(0, 0.6/416,  15.8*0.4/832);
- galice_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(1, 1.3/416,  30.0*0.3/832);
- galice_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(2, 2.0/416,  52.8*0.3/832);
- galice_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(3, 2.6/416,  85.0*0.3/832);
- galice_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(4, 3.3/416, 128.9*0.3/832);
- galice_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(5, 3.9/416, 186.4*0.3/832);
- galice_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(6, 4.4/416, 260.5*0.3/832);
- galice_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(7, 4.6/416, 329.7*0.3/832);
- galice_pbpb_2p76_over_2a_afo_npart_2a->SetPointError(8, 3.1/416, 382.8*0.3/832);
-
-   return galice_pbpb_2p76_over_2a_afo_npart_2a;
-}
-
-TGraphErrors* alice_pbpb_2p76_over_2a_afo_npart() {
-   TGraphErrors* galice_pbpb_2p76_over_2a_afo_npart = new TGraphErrors(9);
-   galice_pbpb_2p76_over_2a_afo_npart->SetName("galice_pbpb_2p76_over_2a_afo_npart");
-
-   galice_pbpb_2p76_over_2a_afo_npart->SetPoint(0,  15.8,  15.8*4.4/832);
-   galice_pbpb_2p76_over_2a_afo_npart->SetPoint(1,  30.0,  30.0*5.1/832);
-   galice_pbpb_2p76_over_2a_afo_npart->SetPoint(2,  52.8,  52.8*5.7/832);
-   galice_pbpb_2p76_over_2a_afo_npart->SetPoint(3,  85.0,  85.0*6.1/832);
-   galice_pbpb_2p76_over_2a_afo_npart->SetPoint(4, 128.9, 128.9*6.6/832);
-   galice_pbpb_2p76_over_2a_afo_npart->SetPoint(5, 186.4, 186.4*7.0/832);
-   galice_pbpb_2p76_over_2a_afo_npart->SetPoint(6, 260.5, 260.5*7.4/832);
-   galice_pbpb_2p76_over_2a_afo_npart->SetPoint(7, 329.7, 329.7*7.9/832);
-   galice_pbpb_2p76_over_2a_afo_npart->SetPoint(8, 382.8, 382.8*8.4/832);
-
- galice_pbpb_2p76_over_2a_afo_npart->SetPointError(0, 0.6,  15.8*0.4/832);
- galice_pbpb_2p76_over_2a_afo_npart->SetPointError(1, 1.3,  30.0*0.3/832);
- galice_pbpb_2p76_over_2a_afo_npart->SetPointError(2, 2.0,  52.8*0.3/832);
- galice_pbpb_2p76_over_2a_afo_npart->SetPointError(3, 2.6,  85.0*0.3/832);
- galice_pbpb_2p76_over_2a_afo_npart->SetPointError(4, 3.3, 128.9*0.3/832);
- galice_pbpb_2p76_over_2a_afo_npart->SetPointError(5, 3.9, 186.4*0.3/832);
- galice_pbpb_2p76_over_2a_afo_npart->SetPointError(6, 4.4, 260.5*0.3/832);
- galice_pbpb_2p76_over_2a_afo_npart->SetPointError(7, 4.6, 329.7*0.3/832);
- galice_pbpb_2p76_over_2a_afo_npart->SetPointError(8, 3.1, 382.8*0.3/832);
-
-   return galice_pbpb_2p76_over_2a_afo_npart;
-}
-
-TGraphErrors* alice_pbpb_5p02() {
-   TGraphErrors* galice_pbpb_5p02 = new TGraphErrors(11);
-   galice_pbpb_5p02->SetName("galice_pbpb_5p02");
-
-   galice_pbpb_5p02->SetPoint(0, 25, 44.9); galice_pbpb_5p02->SetPointError(0, 0, 3.4);
-   galice_pbpb_5p02->SetPoint(1, 35, 96.3); galice_pbpb_5p02->SetPointError(1, 0, 5.8);
-   galice_pbpb_5p02->SetPoint(2, 45, 183); galice_pbpb_5p02->SetPointError(2, 0, 8);
-   galice_pbpb_5p02->SetPoint(3, 55, 318); galice_pbpb_5p02->SetPointError(3, 0, 12);
-   galice_pbpb_5p02->SetPoint(4, 65, 512); galice_pbpb_5p02->SetPointError(4, 0, 15);
-   galice_pbpb_5p02->SetPoint(5, 75, 786); galice_pbpb_5p02->SetPointError(5, 0, 20);
-   galice_pbpb_5p02->SetPoint(6, 85, 1180); galice_pbpb_5p02->SetPointError(6, 0, 31);
-   galice_pbpb_5p02->SetPoint(7, 91.25, 1505); galice_pbpb_5p02->SetPointError(7, 0, 44);
-   galice_pbpb_5p02->SetPoint(8, 93.75, 1666); galice_pbpb_5p02->SetPointError(8, 0, 48);
-   galice_pbpb_5p02->SetPoint(9, 96.25, 1850); galice_pbpb_5p02->SetPointError(9, 0, 55);
-   galice_pbpb_5p02->SetPoint(10, 98.75, 2035); galice_pbpb_5p02->SetPointError(10, 0, 52);
-
-   return galice_pbpb_5p02;
-}
-
-TGraphErrors* alice_pbpb_5p02_over_npart_afo_npart() {
-   TGraphErrors* galice_pbpb_5p02_over_npart_afo_npart = new TGraphErrors(11);
-   galice_pbpb_5p02_over_npart_afo_npart->SetName("galice_pbpb_5p02_over_npart_afo_npart");
-
-   galice_pbpb_5p02_over_npart_afo_npart->SetPoint(0,  15.6, 5.8 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart->SetPoint(1,  30.4, 6.3 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart->SetPoint(2,  53.6, 6.8 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart->SetPoint(3,  86.3, 7.4 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart->SetPoint(4,  131,  7.8 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart->SetPoint(5,  188,  8.4 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart->SetPoint(6,  263,  9.0 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart->SetPoint(7,  320,  9.4 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart->SetPoint(8,  346,  9.6 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart->SetPoint(9,  372,  9.9 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart->SetPoint(10, 398,  10.2 / 2);
-
-galice_pbpb_5p02_over_npart_afo_npart->SetPointError(0,   0.5, 0.5 / 2);
-galice_pbpb_5p02_over_npart_afo_npart->SetPointError(1,   0.8, 0.4 / 2);
-galice_pbpb_5p02_over_npart_afo_npart->SetPointError(2,   1.2, 0.3 / 2);
-galice_pbpb_5p02_over_npart_afo_npart->SetPointError(3,   1.7, 0.3 / 2);
-galice_pbpb_5p02_over_npart_afo_npart->SetPointError(4,   2,   0.3 / 2);
-galice_pbpb_5p02_over_npart_afo_npart->SetPointError(5,   3,   0.3 / 2);
-galice_pbpb_5p02_over_npart_afo_npart->SetPointError(6,   4,   0.3 / 2);
-galice_pbpb_5p02_over_npart_afo_npart->SetPointError(7,   4,   0.3 / 2);
-galice_pbpb_5p02_over_npart_afo_npart->SetPointError(8,   4,   0.3 / 2);
-galice_pbpb_5p02_over_npart_afo_npart->SetPointError(9,   3,   0.3 / 2);
- galice_pbpb_5p02_over_npart_afo_npart->SetPointError(10, 2,   0.3 / 2);
-
-   return galice_pbpb_5p02_over_npart_afo_npart;
-}
-
-TGraphErrors* alice_pbpb_5p02_over_npart_afo_npart_2a() {
-   TGraphErrors* galice_pbpb_5p02_over_npart_afo_npart_2a = new TGraphErrors(11);
-   galice_pbpb_5p02_over_npart_afo_npart_2a->SetName("galice_pbpb_5p02_over_npart_afo_npart_2a");
-
-   galice_pbpb_5p02_over_npart_afo_npart_2a->SetPoint(0,  15.6 / 416, 5.8 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart_2a->SetPoint(1,  30.4 / 416, 6.3 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart_2a->SetPoint(2,  53.6 / 416, 6.8 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart_2a->SetPoint(3,  86.3 / 416, 7.4 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart_2a->SetPoint(4,  131. / 416, 7.8 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart_2a->SetPoint(5,  188. / 416, 8.4 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart_2a->SetPoint(6,  263. / 416, 9.0 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart_2a->SetPoint(7,  320. / 416, 9.4 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart_2a->SetPoint(8,  346. / 416, 9.6 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart_2a->SetPoint(9,  372. / 416, 9.9 / 2); 
-   galice_pbpb_5p02_over_npart_afo_npart_2a->SetPoint(10, 398. / 416, 10.2 / 2);
-
- galice_pbpb_5p02_over_npart_afo_npart_2a->SetPointError(0,   0.5 / 416, 0.5 / 2);
- galice_pbpb_5p02_over_npart_afo_npart_2a->SetPointError(1,   0.8 / 416, 0.4 / 2);
- galice_pbpb_5p02_over_npart_afo_npart_2a->SetPointError(2,   1.2 / 416, 0.3 / 2);
- galice_pbpb_5p02_over_npart_afo_npart_2a->SetPointError(3,   1.7 / 416, 0.3 / 2);
- galice_pbpb_5p02_over_npart_afo_npart_2a->SetPointError(4,   2. / 416,  0.3 / 2);
- galice_pbpb_5p02_over_npart_afo_npart_2a->SetPointError(5,   3. / 416,  0.3 / 2);
- galice_pbpb_5p02_over_npart_afo_npart_2a->SetPointError(6,   4. / 416,  0.3 / 2);
- galice_pbpb_5p02_over_npart_afo_npart_2a->SetPointError(7,   4. / 416,  0.3 / 2);
- galice_pbpb_5p02_over_npart_afo_npart_2a->SetPointError(8,   4. / 416,  0.3 / 2);
- galice_pbpb_5p02_over_npart_afo_npart_2a->SetPointError(9,   3. / 416,  0.3 / 2);
- galice_pbpb_5p02_over_npart_afo_npart_2a->SetPointError(10, 2. / 416,  0.3 / 2);
-
-   return galice_pbpb_5p02_over_npart_afo_npart_2a;
-}
-
-TGraphErrors* alice_pbpb_5p02_over_2a_afo_npart() {
-   TGraphErrors* galice_pbpb_5p02_over_2a_afo_npart = new TGraphErrors(11);
-   galice_pbpb_5p02_over_2a_afo_npart->SetName("galice_pbpb_5p02_over_2a_afo_npart");
-
-   galice_pbpb_5p02_over_2a_afo_npart->SetPoint(0, 15.6, 15.6*5.8  / 832);  galice_pbpb_5p02_over_2a_afo_npart->SetPointError(0,  0.5, 15.6*0.5 / 832);
-   galice_pbpb_5p02_over_2a_afo_npart->SetPoint(1, 30.4, 30.4*6.3  / 832);  galice_pbpb_5p02_over_2a_afo_npart->SetPointError(1,  0.8, 30.4*0.4 / 832);
-   galice_pbpb_5p02_over_2a_afo_npart->SetPoint(2, 53.6, 53.6*6.8  / 832);  galice_pbpb_5p02_over_2a_afo_npart->SetPointError(2,  1.2, 53.6*0.3 / 832);
-   galice_pbpb_5p02_over_2a_afo_npart->SetPoint(3, 86.3, 86.3*7.4  / 832);  galice_pbpb_5p02_over_2a_afo_npart->SetPointError(3,  1.7, 86.3*0.3 / 832);
-   galice_pbpb_5p02_over_2a_afo_npart->SetPoint(4,  131,  131*7.8  / 832);  galice_pbpb_5p02_over_2a_afo_npart->SetPointError(4,  2.0,  131*0.3 / 832);
-   galice_pbpb_5p02_over_2a_afo_npart->SetPoint(5,  188,  188*8.4  / 832);  galice_pbpb_5p02_over_2a_afo_npart->SetPointError(5,  3.0,  188*0.3 / 832);
-   galice_pbpb_5p02_over_2a_afo_npart->SetPoint(6,  263,  263*9.0  / 832);  galice_pbpb_5p02_over_2a_afo_npart->SetPointError(6,  4.0,  263*0.3 / 832);
-   galice_pbpb_5p02_over_2a_afo_npart->SetPoint(7,  320,  320*9.4  / 832);  galice_pbpb_5p02_over_2a_afo_npart->SetPointError(7,  4.0,  320*0.3 / 832);
-   galice_pbpb_5p02_over_2a_afo_npart->SetPoint(8,  346,  346*9.6  / 832);  galice_pbpb_5p02_over_2a_afo_npart->SetPointError(8,  4.0,  346*0.3 / 832);
-   galice_pbpb_5p02_over_2a_afo_npart->SetPoint(9,  372,  372*9.9  / 832);  galice_pbpb_5p02_over_2a_afo_npart->SetPointError(9,  3.0,  372*0.3 / 832);
-   galice_pbpb_5p02_over_2a_afo_npart->SetPoint(10, 398,  398*10.2 / 832);  galice_pbpb_5p02_over_2a_afo_npart->SetPointError(10, 2.0,  398*0.3 / 832);
-
-   return galice_pbpb_5p02_over_2a_afo_npart;
-}
-
-TGraphErrors* alice_pbpb_5p02_over_2a_afo_npart_2a() {
-   TGraphErrors* galice_pbpb_5p02_over_2a_afo_npart_2a = new TGraphErrors(11);
-   galice_pbpb_5p02_over_2a_afo_npart_2a->SetName("galice_pbpb_5p02_over_2a_afo_npart_2a");
-
-   galice_pbpb_5p02_over_2a_afo_npart_2a->SetPoint(0,  15.6 / 416, 15.6*5.8  / 832);
-   galice_pbpb_5p02_over_2a_afo_npart_2a->SetPoint(1,  30.4 / 416, 30.4*6.3  / 832);
-   galice_pbpb_5p02_over_2a_afo_npart_2a->SetPoint(2,  53.6 / 416, 53.6*6.8  / 832);
-   galice_pbpb_5p02_over_2a_afo_npart_2a->SetPoint(3,  86.3 / 416, 86.3*7.4  / 832);
-   galice_pbpb_5p02_over_2a_afo_npart_2a->SetPoint(4,  131. / 416,  131*7.8  / 832);
-   galice_pbpb_5p02_over_2a_afo_npart_2a->SetPoint(5,  188. / 416,  188*8.4  / 832);
-   galice_pbpb_5p02_over_2a_afo_npart_2a->SetPoint(6,  263. / 416,  263*9.0  / 832);
-   galice_pbpb_5p02_over_2a_afo_npart_2a->SetPoint(7,  320. / 416,  320*9.4  / 832);
-   galice_pbpb_5p02_over_2a_afo_npart_2a->SetPoint(8,  346. / 416,  346*9.6  / 832);
-   galice_pbpb_5p02_over_2a_afo_npart_2a->SetPoint(9,  372. / 416,  372*9.9  / 832);
-   galice_pbpb_5p02_over_2a_afo_npart_2a->SetPoint(10, 398. / 416,  398*10.2 / 832);
-
- galice_pbpb_5p02_over_2a_afo_npart_2a->SetPointError(0, 0.5 / 416, 15.6*0.5 / 832);
- galice_pbpb_5p02_over_2a_afo_npart_2a->SetPointError(1, 0.8 / 416, 30.4*0.4 / 832);
- galice_pbpb_5p02_over_2a_afo_npart_2a->SetPointError(2, 1.2 / 416, 53.6*0.3 / 832);
- galice_pbpb_5p02_over_2a_afo_npart_2a->SetPointError(3, 1.7 / 416, 86.3*0.3 / 832);
- galice_pbpb_5p02_over_2a_afo_npart_2a->SetPointError(4,  2. / 416,  131*0.3 / 832);
- galice_pbpb_5p02_over_2a_afo_npart_2a->SetPointError(5,  3. / 416,  188*0.3 / 832);
- galice_pbpb_5p02_over_2a_afo_npart_2a->SetPointError(6,  4. / 416,  263*0.3 / 832);
- galice_pbpb_5p02_over_2a_afo_npart_2a->SetPointError(7,  4. / 416,  320*0.3 / 832);
- galice_pbpb_5p02_over_2a_afo_npart_2a->SetPointError(8,  4. / 416,  346*0.3 / 832);
- galice_pbpb_5p02_over_2a_afo_npart_2a->SetPointError(9,  3. / 416,  372*0.3 / 832);
- galice_pbpb_5p02_over_2a_afo_npart_2a->SetPointError(10, 2. / 416,  398*0.3 / 832);
-
-   return galice_pbpb_5p02_over_2a_afo_npart_2a;
-}
-
-TGraphErrors* phobos_auau_0p2() {
-   TGraphErrors* gphobos_auau_0p2 = new TGraphErrors(15);
-   gphobos_auau_0p2->SetName("gphobos_auau_0p2");
-
-   gphobos_auau_0p2->SetPoint(0, 32.5, 27); gphobos_auau_0p2->SetPointError(0, 0, 2);
-   gphobos_auau_0p2->SetPoint(1, 37.5, 38); gphobos_auau_0p2->SetPointError(1, 0, 3);
-   gphobos_auau_0p2->SetPoint(2, 42.5, 54); gphobos_auau_0p2->SetPointError(2, 0, 4);
-   gphobos_auau_0p2->SetPoint(3, 47.5, 73); gphobos_auau_0p2->SetPointError(3, 0, 5);
-   gphobos_auau_0p2->SetPoint(4, 52.5, 100); gphobos_auau_0p2->SetPointError(4, 0, 8);
-   gphobos_auau_0p2->SetPoint(5, 57.5, 133); gphobos_auau_0p2->SetPointError(5, 0, 10);
-   gphobos_auau_0p2->SetPoint(6, 62.5, 165); gphobos_auau_0p2->SetPointError(6, 0, 12);
-   gphobos_auau_0p2->SetPoint(7, 67.5, 208); gphobos_auau_0p2->SetPointError(7, 0, 16);
-   gphobos_auau_0p2->SetPoint(8, 72.5, 257); gphobos_auau_0p2->SetPointError(8, 0, 19);
-   gphobos_auau_0p2->SetPoint(9, 77.5, 313); gphobos_auau_0p2->SetPointError(9, 0, 24);
-   gphobos_auau_0p2->SetPoint(10, 82.5, 384); gphobos_auau_0p2->SetPointError(10, 0, 29);
-   gphobos_auau_0p2->SetPoint(11, 87.5, 465); gphobos_auau_0p2->SetPointError(11, 0, 35);
-   gphobos_auau_0p2->SetPoint(12, 92, 540); gphobos_auau_0p2->SetPointError(12, 0, 41);
-   gphobos_auau_0p2->SetPoint(13, 95.5, 619); gphobos_auau_0p2->SetPointError(13, 0, 46);
-   gphobos_auau_0p2->SetPoint(14, 98.5, 691); gphobos_auau_0p2->SetPointError(14, 0, 52);
-
-   return gphobos_auau_0p2;
-}
-
-TGraphErrors* phobos_auau_0p2_over_npart_afo_npart() {
-   TGraphErrors* gphobos_auau_0p2_over_npart_afo_npart = new TGraphErrors(15);
-   gphobos_auau_0p2_over_npart_afo_npart->SetName("gphobos_auau_0p2_over_npart_afo_npart");
-
-   gphobos_auau_0p2_over_npart_afo_npart->SetPoint(0, 20, 2.68 / 2); gphobos_auau_0p2_over_npart_afo_npart->SetPointError(0, 3, 0.41 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart->SetPoint(1, 28, 2.78 / 2); gphobos_auau_0p2_over_npart_afo_npart->SetPointError(1, 3, 0.40 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart->SetPoint(2, 37, 2.88 / 2); gphobos_auau_0p2_over_npart_afo_npart->SetPointError(2, 4, 0.39 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart->SetPoint(3, 49, 2.98 / 2); gphobos_auau_0p2_over_npart_afo_npart->SetPointError(3, 5, 0.37 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart->SetPoint(4, 65, 3.10 / 2); gphobos_auau_0p2_over_npart_afo_npart->SetPointError(4, 6, 0.38 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart->SetPoint(5, 82, 3.25 / 2); gphobos_auau_0p2_over_npart_afo_npart->SetPointError(5, 6, 0.34 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart->SetPoint(6, 101, 3.25 / 2); gphobos_auau_0p2_over_npart_afo_npart->SetPointError(6, 6, 0.31 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart->SetPoint(7, 124, 3.37 / 2); gphobos_auau_0p2_over_npart_afo_npart->SetPointError(7, 6, 0.30 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart->SetPoint(8, 150, 3.42 / 2); gphobos_auau_0p2_over_npart_afo_npart->SetPointError(8, 6, 0.29 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart->SetPoint(9, 180, 3.47 / 2); gphobos_auau_0p2_over_npart_afo_npart->SetPointError(9, 7, 0.30 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart->SetPoint(10, 215, 3.57 / 2); gphobos_auau_0p2_over_npart_afo_npart->SetPointError(10, 7, 0.29 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart->SetPoint(11, 255, 3.65 / 2); gphobos_auau_0p2_over_npart_afo_npart->SetPointError(11, 8, 0.30 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart->SetPoint(12, 297, 3.64 / 2); gphobos_auau_0p2_over_npart_afo_npart->SetPointError(12, 9, 0.30 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart->SetPoint(13, 331, 3.74 / 2); gphobos_auau_0p2_over_npart_afo_npart->SetPointError(13, 10, 0.30 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart->SetPoint(14, 361, 3.82 / 2); gphobos_auau_0p2_over_npart_afo_npart->SetPointError(14, 11, 0.31 / 2);
-
-   return gphobos_auau_0p2_over_npart_afo_npart;
-}
-
-TGraphErrors* phobos_auau_0p2_over_npart_afo_npart_2a() {
-   TGraphErrors* gphobos_auau_0p2_over_npart_afo_npart_2a = new TGraphErrors(15);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetName("gphobos_auau_0p2_over_npart_afo_npart_2a");
-
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPoint(0, 20 / 394., 2.68 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPointError(0, 3 / 394., 0.41 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPoint(1, 28 / 394., 2.78 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPointError(1, 3 / 394., 0.40 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPoint(2, 37 / 394., 2.88 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPointError(2, 4 / 394., 0.39 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPoint(3, 49 / 394., 2.98 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPointError(3, 5 / 394., 0.37 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPoint(4, 65 / 394., 3.10 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPointError(4, 6 / 394., 0.38 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPoint(5, 82 / 394., 3.25 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPointError(5, 6 / 394., 0.34 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPoint(6, 101 / 394., 3.25 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPointError(6, 6 / 394., 0.31 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPoint(7, 124 / 394., 3.37 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPointError(7, 6 / 394., 0.30 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPoint(8, 150 / 394., 3.42 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPointError(8, 6 / 394., 0.29 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPoint(9, 180 / 394., 3.47 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPointError(9, 7 / 394., 0.30 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPoint(10, 215 / 394., 3.57 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPointError(10, 7 / 394., 0.29 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPoint(11, 255 / 394., 3.65 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPointError(11, 8 / 394., 0.30 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPoint(12, 297 / 394., 3.64 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPointError(12, 9 / 394., 0.30 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPoint(13, 331 / 394., 3.74 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPointError(13, 10 / 394., 0.30 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPoint(14, 361 / 394., 3.82 / 2);
-   gphobos_auau_0p2_over_npart_afo_npart_2a->SetPointError(14, 11 / 394., 0.31 / 2);
-
-   return gphobos_auau_0p2_over_npart_afo_npart_2a;
-}
-
-TGraphErrors* phobos_auau_0p2_over_2a_afo_npart_2a() {
-   TGraphErrors* gphobos_auau_0p2_over_2a_afo_npart_2a = new TGraphErrors(15);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetName("gphobos_auau_0p2_over_2a_afo_npart_2a");
-
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPoint(0, 20 / 394., 2.68 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPointError(0, 3 / 394., 0.41 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPoint(1, 28 / 394., 2.78 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPointError(1, 3 / 394., 0.40 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPoint(2, 37 / 394., 2.88 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPointError(2, 4 / 394., 0.39 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPoint(3, 49 / 394., 2.98 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPointError(3, 5 / 394., 0.37 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPoint(4, 65 / 394., 3.10 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPointError(4, 6 / 394., 0.38 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPoint(5, 82 / 394., 3.25 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPointError(5, 6 / 394., 0.34 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPoint(6, 101 / 394., 3.25 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPointError(6, 6 / 394., 0.31 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPoint(7, 124 / 394., 3.37 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPointError(7, 6 / 394., 0.30 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPoint(8, 150 / 394., 3.42 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPointError(8, 6 / 394., 0.29 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPoint(9, 180 / 394., 3.47 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPointError(9, 7 / 394., 0.30 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPoint(10, 215 / 394., 3.57 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPointError(10, 7 / 394., 0.29 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPoint(11, 255 / 394., 3.65 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPointError(11, 8 / 394., 0.30 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPoint(12, 297 / 394., 3.64 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPointError(12, 9 / 394., 0.30 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPoint(13, 331 / 394., 3.74 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPointError(13, 10 / 394., 0.30 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPoint(14, 361 / 394., 3.82 / 394);
-   gphobos_auau_0p2_over_2a_afo_npart_2a->SetPointError(14, 11 / 394., 0.31 / 394);
-
-   return gphobos_auau_0p2_over_2a_afo_npart_2a;
-}
-
-TGraphErrors* phobos_cucu_0p2() {
-   TGraphErrors* gphobos_cucu_0p2 = new TGraphErrors(11);
-   gphobos_cucu_0p2->SetName("gphobos_cucu_0p2");
-
-   gphobos_cucu_0p2->SetPoint(0, 52.5, 32); gphobos_cucu_0p2->SetPointError(0, 0, 2);
-   gphobos_cucu_0p2->SetPoint(1, 57.5, 40); gphobos_cucu_0p2->SetPointError(1, 0, 3);
-   gphobos_cucu_0p2->SetPoint(2, 62.5, 50); gphobos_cucu_0p2->SetPointError(2, 0, 4);
-   gphobos_cucu_0p2->SetPoint(3, 67.5, 62); gphobos_cucu_0p2->SetPointError(3, 0, 5);
-   gphobos_cucu_0p2->SetPoint(4, 72.5, 75); gphobos_cucu_0p2->SetPointError(4, 0, 6);
-   gphobos_cucu_0p2->SetPoint(5, 77.5, 91); gphobos_cucu_0p2->SetPointError(5, 0, 7);
-   gphobos_cucu_0p2->SetPoint(6, 82.5, 109); gphobos_cucu_0p2->SetPointError(6, 0, 8);
-   gphobos_cucu_0p2->SetPoint(7, 87.5, 132); gphobos_cucu_0p2->SetPointError(7, 0, 10);
-   gphobos_cucu_0p2->SetPoint(8, 92, 155); gphobos_cucu_0p2->SetPointError(8, 0, 12);
-   gphobos_cucu_0p2->SetPoint(9, 95.5, 175); gphobos_cucu_0p2->SetPointError(9, 0, 13);
-   gphobos_cucu_0p2->SetPoint(10, 98.5, 198); gphobos_cucu_0p2->SetPointError(10, 0, 15);
-
-   return gphobos_cucu_0p2;
-}
-
-TGraphErrors* phobos_cucu_0p2_over_npart_afo_npart() {
-   TGraphErrors* gphobos_cucu_0p2_over_npart_afo_npart = new TGraphErrors(11);
-   gphobos_cucu_0p2_over_npart_afo_npart->SetName("gphobos_cucu_0p2_over_npart_afo_npart");
-
-   gphobos_cucu_0p2_over_npart_afo_npart->SetPoint(0, 22, 2.97 / 2); gphobos_cucu_0p2_over_npart_afo_npart->SetPointError(0, 3, 0.46 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart->SetPoint(1, 27, 3.04 / 2); gphobos_cucu_0p2_over_npart_afo_npart->SetPointError(1, 3, 0.43 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart->SetPoint(2, 33, 3.07 / 2); gphobos_cucu_0p2_over_npart_afo_npart->SetPointError(2, 3, 0.38 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart->SetPoint(3, 40, 3.15 / 2); gphobos_cucu_0p2_over_npart_afo_npart->SetPointError(3, 3, 0.35 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart->SetPoint(4, 48, 3.17 / 2); gphobos_cucu_0p2_over_npart_afo_npart->SetPointError(4, 3, 0.32 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart->SetPoint(5, 57, 3.21 / 2); gphobos_cucu_0p2_over_npart_afo_npart->SetPointError(5, 3, 0.29 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart->SetPoint(6, 67, 3.26 / 2); gphobos_cucu_0p2_over_npart_afo_npart->SetPointError(6, 3, 0.28 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart->SetPoint(7, 79, 3.33 / 2); gphobos_cucu_0p2_over_npart_afo_npart->SetPointError(7, 3, 0.27 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart->SetPoint(8, 91, 3.42 / 2); gphobos_cucu_0p2_over_npart_afo_npart->SetPointError(8, 3, 0.28 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart->SetPoint(9, 101, 3.48 / 2); gphobos_cucu_0p2_over_npart_afo_npart->SetPointError(9, 3, 0.28 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart->SetPoint(10, 108, 3.66 / 2); gphobos_cucu_0p2_over_npart_afo_npart->SetPointError(10, 4, 0.29 / 2);
-
-   return gphobos_cucu_0p2_over_npart_afo_npart;
-}
-
-TGraphErrors* phobos_cucu_0p2_over_npart_afo_npart_2a() {
-   TGraphErrors* gphobos_cucu_0p2_over_npart_afo_npart_2a = new TGraphErrors(11);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetName("gphobos_cucu_0p2_over_npart_afo_npart_2a");
-
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPoint(0, 22 / 128., 2.97 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPointError(0, 3 / 128., 0.46 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPoint(1, 27 / 128., 3.04 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPointError(1, 3 / 128., 0.43 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPoint(2, 33 / 128., 3.07 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPointError(2, 3 / 128., 0.38 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPoint(3, 40 / 128., 3.15 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPointError(3, 3 / 128., 0.35 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPoint(4, 48 / 128., 3.17 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPointError(4, 3 / 128., 0.32 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPoint(5, 57 / 128., 3.21 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPointError(5, 3 / 128., 0.29 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPoint(6, 67 / 128., 3.26 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPointError(6, 3 / 128., 0.28 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPoint(7, 79 / 128., 3.33 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPointError(7, 3 / 128., 0.27 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPoint(8, 91 / 128., 3.42 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPointError(8, 3 / 128., 0.28 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPoint(9, 101 / 128., 3.48 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPointError(9, 3 / 128., 0.28 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPoint(10, 108 / 128., 3.66 / 2);
-   gphobos_cucu_0p2_over_npart_afo_npart_2a->SetPointError(10, 4 / 128., 0.29 / 2);
-
-   return gphobos_cucu_0p2_over_npart_afo_npart_2a;
-}
-
-TGraphErrors* phobos_cucu_0p2_over_2a_afo_npart_2a() {
-   TGraphErrors* gphobos_cucu_0p2_over_2a_afo_npart_2a = new TGraphErrors(11);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetName("gphobos_cucu_0p2_over_2a_afo_npart_2a");
-
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPoint(0, 22 / 128., 2.97 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPointError(0, 3 / 128., 0.46 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPoint(1, 27 / 128., 3.04 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPointError(1, 3 / 128., 0.43 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPoint(2, 33 / 128., 3.07 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPointError(2, 3 / 128., 0.38 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPoint(3, 40 / 128., 3.15 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPointError(3, 3 / 128., 0.35 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPoint(4, 48 / 128., 3.17 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPointError(4, 3 / 128., 0.32 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPoint(5, 57 / 128., 3.21 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPointError(5, 3 / 128., 0.29 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPoint(6, 67 / 128., 3.26 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPointError(6, 3 / 128., 0.28 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPoint(7, 79 / 128., 3.33 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPointError(7, 3 / 128., 0.27 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPoint(8, 91 / 128., 3.42 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPointError(8, 3 / 128., 0.28 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPoint(9, 101 / 128., 3.48 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPointError(9, 3 / 128., 0.28 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPoint(10, 108 / 128., 3.66 / 128);
-   gphobos_cucu_0p2_over_2a_afo_npart_2a->SetPointError(10, 4 / 128., 0.29 / 128);
-
-   return gphobos_cucu_0p2_over_2a_afo_npart_2a;
-}
-
-TGraphErrors* phobos_cucu_0p0224() {
-   TGraphErrors* gphobos_cucu_0p0224 = new TGraphErrors(6);
-   gphobos_cucu_0p0224->SetName("gphobos_cucu_0p0224");
-
-   gphobos_cucu_0p0224->SetPoint(0, 50, 15.73); gphobos_cucu_0p0224->SetPointError(0, 0, 1.29); // -1.34
-   gphobos_cucu_0p0224->SetPoint(1, 60, 24.29); gphobos_cucu_0p0224->SetPointError(1, 0, 1.89); // -1.89
-   gphobos_cucu_0p0224->SetPoint(2, 70, 36.15); gphobos_cucu_0p0224->SetPointError(2, 0, 2.92); // -2.91
-   gphobos_cucu_0p0224->SetPoint(3, 80, 52.33); gphobos_cucu_0p0224->SetPointError(3, 0, 4.24); // -4.26
-   gphobos_cucu_0p0224->SetPoint(4, 89.5, 73.50); gphobos_cucu_0p0224->SetPointError(4, 0, 5.96); // -5.91
-   gphobos_cucu_0p0224->SetPoint(5, 97, 97.43); gphobos_cucu_0p0224->SetPointError(5, 0, 7.69); // -7.94
-
-   return gphobos_cucu_0p0224;
-}
-
-TGraphErrors* phobos_cucu_0p0624() {
-   TGraphErrors* gphobos_cucu_0p0624 = new TGraphErrors(6);
-   gphobos_cucu_0p0624->SetName("gphobos_cucu_0p0624");
-
-   gphobos_cucu_0p0624->SetPoint(0, 50, 21.76); gphobos_cucu_0p0624->SetPointError(0, 0, 1.57); // -1.91
-   gphobos_cucu_0p0624->SetPoint(1, 60, 33.49); gphobos_cucu_0p0624->SetPointError(1, 0, 2.48); // -2.87
-   gphobos_cucu_0p0624->SetPoint(2, 70, 49.44); gphobos_cucu_0p0624->SetPointError(2, 0, 3.69); // -4.25
-   gphobos_cucu_0p0624->SetPoint(3, 80, 71.68); gphobos_cucu_0p0624->SetPointError(3, 0, 5.72); // -6.177
-   gphobos_cucu_0p0624->SetPoint(4, 89.5, 98.88); gphobos_cucu_0p0624->SetPointError(4, 0, 8.03); // -8.18
-   gphobos_cucu_0p0624->SetPoint(5, 97, 119.87); gphobos_cucu_0p0624->SetPointError(5, 0, -9.90);
-
-   return gphobos_cucu_0p0624;
-}
-
-TGraphErrors* phobos_auau_0p0196() {
-   TGraphErrors* gphobos_auau_0p0196 = new TGraphErrors(9);
-   gphobos_auau_0p0196->SetName("gphobos_auau_0p0196");
-
-   gphobos_auau_0p0196->SetPoint(0, 62.5, 78); gphobos_auau_0p0196->SetPointError(0, 0, 6);
-   gphobos_auau_0p0196->SetPoint(1, 67.5, 97); gphobos_auau_0p0196->SetPointError(1, 0, 7);
-   gphobos_auau_0p0196->SetPoint(2, 72.5, 121); gphobos_auau_0p0196->SetPointError(2, 0, 9);
-   gphobos_auau_0p0196->SetPoint(3, 77.5, 148); gphobos_auau_0p0196->SetPointError(3, 0, 11);
-   gphobos_auau_0p0196->SetPoint(4, 82.5, 181); gphobos_auau_0p0196->SetPointError(4, 0, 14);
-   gphobos_auau_0p0196->SetPoint(5, 87.5, 216); gphobos_auau_0p0196->SetPointError(5, 0, 16);
-   gphobos_auau_0p0196->SetPoint(6, 92, 260); gphobos_auau_0p0196->SetPointError(6, 0, 20);
-   gphobos_auau_0p0196->SetPoint(7, 95.5, 297); gphobos_auau_0p0196->SetPointError(7, 0, 22);
-   gphobos_auau_0p0196->SetPoint(8, 98.5, 331); gphobos_auau_0p0196->SetPointError(8, 0, 24);
-
-   return gphobos_auau_0p0196;
-}
-
-TGraphErrors* phobos_auau_0p13() {
-   TGraphErrors* gphobos_auau_0p13 = new TGraphErrors(11);
-   gphobos_auau_0p13->SetName("gphobos_auau_0p13");
-
-   gphobos_auau_0p13->SetPoint(0, 52.5, 83); gphobos_auau_0p13->SetPointError(0, 0, 3);
-   gphobos_auau_0p13->SetPoint(1, 57.5, 110); gphobos_auau_0p13->SetPointError(1, 0, 4);
-   gphobos_auau_0p13->SetPoint(2, 62.5, 140); gphobos_auau_0p13->SetPointError(2, 0, 5);
-   gphobos_auau_0p13->SetPoint(3, 67.5, 180); gphobos_auau_0p13->SetPointError(3, 0, 7);
-   gphobos_auau_0p13->SetPoint(4, 72.5, 220); gphobos_auau_0p13->SetPointError(4, 0, 8);
-   gphobos_auau_0p13->SetPoint(5, 77.5, 274); gphobos_auau_0p13->SetPointError(5, 0, 11);
-   gphobos_auau_0p13->SetPoint(6, 82.5, 327); gphobos_auau_0p13->SetPointError(6, 0, 13);
-   gphobos_auau_0p13->SetPoint(7, 87.5, 393); gphobos_auau_0p13->SetPointError(7, 0, 15);
-   gphobos_auau_0p13->SetPoint(8, 92, 472); gphobos_auau_0p13->SetPointError(8, 0, 18);
-   gphobos_auau_0p13->SetPoint(9, 95.5, 545); gphobos_auau_0p13->SetPointError(9, 0, 21);
-   gphobos_auau_0p13->SetPoint(10, 98.5, 613); gphobos_auau_0p13->SetPointError(10, 0, 24);
-
-   return gphobos_auau_0p13;
-}
-
-TGraphErrors* phobos_auau_0p0624() {
-   TGraphErrors* gphobos_auau_0p0624 = new TGraphErrors(6);
-   gphobos_auau_0p0624->SetName("gphobos_auau_0p0624");
-
-   gphobos_auau_0p0624->SetPoint(0, 52.5, 68.03);
-   gphobos_auau_0p0624->SetPointError(0, 0, 5.665); // -5.99
-   gphobos_auau_0p0624->SetPoint(1, 60, 98.99);
-   gphobos_auau_0p0624->SetPointError(1, 0, 7.87); // -8.63
-   gphobos_auau_0p0624->SetPoint(2, 70, 153.93);
-   gphobos_auau_0p0624->SetPointError(2, 0, 12.73); // -13.56
-   gphobos_auau_0p0624->SetPoint(3, 80, 231.19);
-   gphobos_auau_0p0624->SetPointError(3, 0, 18.466); // -20.427
-   gphobos_auau_0p0624->SetPoint(4, 89.5, 334.15);
-   gphobos_auau_0p0624->SetPointError(4, 0, 27.9); // -26.55
-   gphobos_auau_0p0624->SetPoint(5, 97, 429.9);
-   gphobos_auau_0p0624->SetPointError(5, 0, 37.32); // -33.02
-
-   return gphobos_auau_0p0624;
-}
-
-TGraphErrors* brahms_auau_0p2_over_npart_afo_npart() {
-   TGraphErrors* gbrahms_auau_0p2_over_npart_afo_npart = new TGraphErrors(6);
-   gbrahms_auau_0p2_over_npart_afo_npart->SetName("gbrahms_auau_0p2_over_npart_afo_npart");
-
-   gbrahms_auau_0p2_over_npart_afo_npart->SetPoint(0, 73, 110./73.); gbrahms_auau_0p2_over_npart_afo_npart->SetPointError(0, 8, 10./73.);
-   gbrahms_auau_0p2_over_npart_afo_npart->SetPoint(1, 114, 174./114.); gbrahms_auau_0p2_over_npart_afo_npart->SetPointError(1, 9, 16./114.);
-   gbrahms_auau_0p2_over_npart_afo_npart->SetPoint(2, 168, 257./168.); gbrahms_auau_0p2_over_npart_afo_npart->SetPointError(2, 9, 23./168.);
-   gbrahms_auau_0p2_over_npart_afo_npart->SetPoint(3, 239, 377./239.); gbrahms_auau_0p2_over_npart_afo_npart->SetPointError(3, 10, 33./239.);
-   gbrahms_auau_0p2_over_npart_afo_npart->SetPoint(4, 306, 501./306.); gbrahms_auau_0p2_over_npart_afo_npart->SetPointError(4, 11, 44./306.);
-   gbrahms_auau_0p2_over_npart_afo_npart->SetPoint(5, 357, 625./357.); gbrahms_auau_0p2_over_npart_afo_npart->SetPointError(5, 8, 55./357.);
-
-   return gbrahms_auau_0p2_over_npart_afo_npart;
-}
-
-TGraphErrors* brahms_auau_0p2_over_npart_afo_npart_2a() {
-   TGraphErrors* gbrahms_auau_0p2_over_npart_afo_npart_2a = new TGraphErrors(6);
-   gbrahms_auau_0p2_over_npart_afo_npart_2a->SetName("gbrahms_auau_0p2_over_npart_afo_npart_2a");
-
-   gbrahms_auau_0p2_over_npart_afo_npart_2a->SetPoint(0, 73 / 394., 110./73.);
-   gbrahms_auau_0p2_over_npart_afo_npart_2a->SetPointError(0, 8 / 394., 10./73.);
-   gbrahms_auau_0p2_over_npart_afo_npart_2a->SetPoint(1, 114 / 394., 174./114.);
-   gbrahms_auau_0p2_over_npart_afo_npart_2a->SetPointError(1, 9 / 394., 16./114.);
-   gbrahms_auau_0p2_over_npart_afo_npart_2a->SetPoint(2, 168 / 394., 257./168.);
-   gbrahms_auau_0p2_over_npart_afo_npart_2a->SetPointError(2, 9 / 394., 23./168.);
-   gbrahms_auau_0p2_over_npart_afo_npart_2a->SetPoint(3, 239 / 394., 377./239.);
-   gbrahms_auau_0p2_over_npart_afo_npart_2a->SetPointError(3, 10 / 394., 33./239.);
-   gbrahms_auau_0p2_over_npart_afo_npart_2a->SetPoint(4, 306 / 394., 501./306.);
-   gbrahms_auau_0p2_over_npart_afo_npart_2a->SetPointError(4, 11 / 394., 44./306.);
-   gbrahms_auau_0p2_over_npart_afo_npart_2a->SetPoint(5, 357 / 394., 625./357.);
-   gbrahms_auau_0p2_over_npart_afo_npart_2a->SetPointError(5, 8 / 394., 55./357.);
-
-   return gbrahms_auau_0p2_over_npart_afo_npart_2a;
-}
-
-TGraphErrors* brahms_auau_0p2_over_2a_afo_npart_2a() {
-   TGraphErrors* gbrahms_auau_0p2_over_2a_afo_npart_2a = new TGraphErrors(6);
-   gbrahms_auau_0p2_over_2a_afo_npart_2a->SetName("gbrahms_auau_0p2_over_2a_afo_npart_2a");
-
-   gbrahms_auau_0p2_over_2a_afo_npart_2a->SetPoint(0, 73 / 394., 110./394.);
-   gbrahms_auau_0p2_over_2a_afo_npart_2a->SetPointError(0, 8 / 394., 10./394.);
-   gbrahms_auau_0p2_over_2a_afo_npart_2a->SetPoint(1, 114 / 394., 174./394.);
-   gbrahms_auau_0p2_over_2a_afo_npart_2a->SetPointError(1, 9 / 394., 16./394.);
-   gbrahms_auau_0p2_over_2a_afo_npart_2a->SetPoint(2, 168 / 394., 257./394.);
-   gbrahms_auau_0p2_over_2a_afo_npart_2a->SetPointError(2, 9 / 394., 23./394.);
-   gbrahms_auau_0p2_over_2a_afo_npart_2a->SetPoint(3, 239 / 394., 377./394.);
-   gbrahms_auau_0p2_over_2a_afo_npart_2a->SetPointError(3, 10 / 394., 33./394.);
-   gbrahms_auau_0p2_over_2a_afo_npart_2a->SetPoint(4, 306 / 394., 501./394.);
-   gbrahms_auau_0p2_over_2a_afo_npart_2a->SetPointError(4, 11 / 394., 44./394.);
-   gbrahms_auau_0p2_over_2a_afo_npart_2a->SetPoint(5, 357 / 394., 625./394.);
-   gbrahms_auau_0p2_over_2a_afo_npart_2a->SetPointError(5, 8 / 394., 55./394.);
-
-   return gbrahms_auau_0p2_over_2a_afo_npart_2a;
-}
-
-TGraphErrors* cms_pp_13p0_over_npart_afo_npart() {
-   TGraphErrors* gcms_pp_13p0_over_npart_afo_npart = new TGraphErrors(1);
-   gcms_pp_13p0_over_npart_afo_npart->SetName("gcms_pp_13p0_over_npart_afo_npart");
-
-   gcms_pp_13p0_over_npart_afo_npart->SetPoint(0, 2, 5.49 / 2);
-   gcms_pp_13p0_over_npart_afo_npart->SetPointError(0, 0, 0.17 / 2);
-
-   return gcms_pp_13p0_over_npart_afo_npart;
-}
-
-TGraphErrors* cms_ppb_8p16_over_npart_afo_npart() {
-   TGraphErrors* gcms_ppb_8p16_over_npart_afo_npart = new TGraphErrors(1);
-   gcms_ppb_8p16_over_npart_afo_npart->SetName("gcms_ppb_8p16_over_npart_afo_npart");
-
-   gcms_ppb_8p16_over_npart_afo_npart->SetPoint(0, 8.12, 2.475);
-   gcms_ppb_8p16_over_npart_afo_npart->SetPointError(0, 0, 0.07);
-
-   return gcms_ppb_8p16_over_npart_afo_npart;
+   return gcms_ppb_8p16_nnpart_x_npart;
 }
 
 TGraphErrors* brahms_auau_0p2_y_c0t5_pip() {
@@ -1960,34 +1236,270 @@ TGraphErrors* cms_pbpb_2p76_y_c0t90() {
    return gcms_pbpb_2p76_y_c0t90;
 }
 
-TGraphErrors* alice_xexe_5p44_over_npart_afo_npart() {
-   TGraphErrors* galice_xexe_5p44_over_npart_afo_npart = new TGraphErrors(10);
-   galice_xexe_5p44_over_npart_afo_npart->SetName("galice_xexe_5p44_over_npart_afo_npart");
+#define GENERATE(MSRMNT)                                                      \
+TGraphErrors* MSRMNT() {                                                      \
+   TGraphErrors* g##MSRMNT = new TGraphErrors(MSRMNT##_size);                 \
+   g##MSRMNT->SetName("g" #MSRMNT);                                           \
+   for (std::size_t i=0; i<MSRMNT##_size; ++i) {                              \
+      g##MSRMNT->SetPoint(i, MSRMNT##_cent[i], MSRMNT##_raw[i]);              \
+      g##MSRMNT->SetPointError(i, 0, MSRMNT##_rawerr[i]); }                   \
+   return g##MSRMNT; }                                                        \
+TGraphErrors* MSRMNT##_n2a() {                                                \
+   TGraphErrors* g##MSRMNT##_n2a = new TGraphErrors(MSRMNT##_size);           \
+   g##MSRMNT##_n2a->SetName("g" #MSRMNT "_n2a");                              \
+   for (std::size_t i=0; i<MSRMNT##_size; ++i) {                              \
+      g##MSRMNT##_n2a->SetPoint(i, MSRMNT##_cent[i],                          \
+         MSRMNT##_raw[i]/MSRMNT##_2a);                                        \
+      g##MSRMNT##_n2a->SetPointError(i, 0,                                    \
+         MSRMNT##_rawerr[i]/MSRMNT##_2a); }                                   \
+   return g##MSRMNT##_n2a; }                                                  \
+TGraphErrors* MSRMNT##_nnpart() {                                             \
+   TGraphErrors* g##MSRMNT##_nnpart = new TGraphErrors(MSRMNT##_size);        \
+   g##MSRMNT##_nnpart->SetName("g" #MSRMNT "_nnpart");                        \
+   for (std::size_t i=0; i<MSRMNT##_size; ++i) {                              \
+      g##MSRMNT##_nnpart->SetPoint(i, MSRMNT##_cent[i],                       \
+         MSRMNT##_raw[i]/MSRMNT##_npart[i]);                                  \
+      g##MSRMNT##_nnpart->SetPointError(i, 0,                                 \
+         MSRMNT##_rawerr[i]/MSRMNT##_npart[i]); }                             \
+   return g##MSRMNT##_nnpart; }                                               \
+TGraphErrors* MSRMNT##_n2a_x_npart() {                                        \
+   TGraphErrors* g##MSRMNT##_n2a_x_npart = new TGraphErrors(MSRMNT##_size);   \
+   g##MSRMNT##_n2a_x_npart->SetName("g" #MSRMNT "_n2a_x_npart");              \
+   for (std::size_t i=0; i<MSRMNT##_size; ++i) {                              \
+      g##MSRMNT##_n2a_x_npart->SetPoint(i, MSRMNT##_npart[i],                 \
+         MSRMNT##_raw[i]/MSRMNT##_2a);                                        \
+      g##MSRMNT##_n2a_x_npart->SetPointError(i, MSRMNT##_nparterr[i],         \
+         MSRMNT##_rawerr[i]/MSRMNT##_2a); }                                   \
+   return g##MSRMNT##_n2a_x_npart; }                                          \
+TGraphErrors* MSRMNT##_nnpart_x_npart() {                                     \
+   TGraphErrors* g##MSRMNT##_nnpart_x_npart = new TGraphErrors(MSRMNT##_size);\
+   g##MSRMNT##_nnpart_x_npart->SetName("g" #MSRMNT "_nnpart_x_npart");        \
+   for (std::size_t i=0; i<MSRMNT##_size; ++i) {                              \
+      g##MSRMNT##_nnpart_x_npart->SetPoint(i, MSRMNT##_npart[i],              \
+         MSRMNT##_raw[i]/MSRMNT##_npart[i]);                                  \
+      g##MSRMNT##_nnpart_x_npart->SetPointError(i, MSRMNT##_nparterr[i],      \
+         MSRMNT##_rawerr[i]/MSRMNT##_npart[i]); }                             \
+   return g##MSRMNT##_nnpart_x_npart; }                                       \
+TGraphErrors* MSRMNT##_n2a_x_npart2a() {                                      \
+   TGraphErrors* g##MSRMNT##_n2a_x_npart2a =                                  \
+      new TGraphErrors(MSRMNT##_size);                                        \
+   g##MSRMNT##_n2a_x_npart2a->SetName("g" #MSRMNT "_n2a_x_npart2a");          \
+   for (std::size_t i=0; i<MSRMNT##_size; ++i) {                              \
+      g##MSRMNT##_n2a_x_npart2a->SetPoint(i, MSRMNT##_npart[i]/MSRMNT##_2a,   \
+         MSRMNT##_raw[i]/MSRMNT##_2a);                                        \
+      g##MSRMNT##_n2a_x_npart2a->SetPointError(i,                             \
+         MSRMNT##_nparterr[i]/MSRMNT##_2a,                                    \
+         MSRMNT##_rawerr[i]/MSRMNT##_2a); }                                   \
+   return g##MSRMNT##_n2a_x_npart2a; }                                        \
+TGraphErrors* MSRMNT##_nnpart_x_npart2a() {                                   \
+   TGraphErrors* g##MSRMNT##_nnpart_x_npart2a =                               \
+      new TGraphErrors(MSRMNT##_size);                                        \
+   g##MSRMNT##_nnpart_x_npart2a->SetName("g" #MSRMNT "_nnpart_x_npart2a");    \
+   for (std::size_t i=0; i<MSRMNT##_size; ++i) {                              \
+      g##MSRMNT##_nnpart_x_npart2a->SetPoint(i,                               \
+         MSRMNT##_npart[i]/MSRMNT##_2a,                                       \
+         MSRMNT##_raw[i]/MSRMNT##_npart[i]);                                  \
+      g##MSRMNT##_nnpart_x_npart2a->SetPointError(i,                          \
+         MSRMNT##_nparterr[i]/MSRMNT##_2a,                                    \
+         MSRMNT##_rawerr[i]/MSRMNT##_npart[i]); }                             \
+   return g##MSRMNT##_nnpart_x_npart2a; }
 
-   galice_xexe_5p44_over_npart_afo_npart->SetPoint(0, 5.13, 5.19 / 2);
-   galice_xexe_5p44_over_npart_afo_npart->SetPoint(1, 10.5, 6.10 / 2);
-   galice_xexe_5p44_over_npart_afo_npart->SetPoint(2, 19.7, 6.57 / 2);
-   galice_xexe_5p44_over_npart_afo_npart->SetPoint(3, 34.1, 6.92 / 2);
-   galice_xexe_5p44_over_npart_afo_npart->SetPoint(4, 54.6, 7.25 / 2);
-   galice_xexe_5p44_over_npart_afo_npart->SetPoint(5, 82.2, 7.66 / 2);
-   galice_xexe_5p44_over_npart_afo_npart->SetPoint(6, 118, 8.10 / 2);
-   galice_xexe_5p44_over_npart_afo_npart->SetPoint(7, 165, 8.56 / 2);
-   galice_xexe_5p44_over_npart_afo_npart->SetPoint(8, 207, 9.07 / 2);
-   galice_xexe_5p44_over_npart_afo_npart->SetPoint(9, 236, 9.89 / 2);
+std::vector<float> cms_pbpb_2p76_raw = {
+   11.05, 18.49, 28.12, 44.46, 65.42, 93.55, 130.3, 176.1, 233.0,
+   299.9, 383.9, 482.3, 596.8, 731.6, 893.9, 1082, 1313, 1612};
+std::vector<float> cms_pbpb_2p76_rawerr = {
+   1.77, 2.96, 3.26, 4.71, 5.41, 7.73, 8.6, 10.7, 13,
+   15.3, 16.2, 18.7, 23.1, 26.3, 31.4, 38, 45, 55};
+std::vector<float> cms_pbpb_2p76_cent = {
+   12.5, 17.5, 22.5, 27.5, 32.5, 37.5, 42.5, 47.5, 52.5,
+   57.5, 62.5, 67.5, 72.5, 77.5, 82.5, 87.5, 92.5, 97.5};
+std::vector<float> cms_pbpb_2p76_npart = {
+   5.71, 8.64, 12.8, 18.5, 25.8, 35.3, 46.7, 60.4, 76.8,
+   95.8, 117, 142, 171, 203, 240, 283, 329, 381};
+std::vector<float> cms_pbpb_2p76_nparterr = {
+   0.24, 0.56, 0.9, 1.2, 1.6, 2.0, 2.3, 2.7, 2.7,
+   3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 2.0};
+auto cms_pbpb_2p76_2a = 416.;
+auto cms_pbpb_2p76_size = cms_pbpb_2p76_raw.size();
 
-   galice_xexe_5p44_over_npart_afo_npart->SetPointError(0, 0.9, 0.58 / 2);
-   galice_xexe_5p44_over_npart_afo_npart->SetPointError(1, 1.3, 0.68 / 2);
-   galice_xexe_5p44_over_npart_afo_npart->SetPointError(2, 2.0, 0.73 / 2);
-   galice_xexe_5p44_over_npart_afo_npart->SetPointError(3, 3, 0.63 / 2);
-   galice_xexe_5p44_over_npart_afo_npart->SetPointError(4, 5, 0.51 / 2);
-   galice_xexe_5p44_over_npart_afo_npart->SetPointError(5, 8, 0.41 / 2);
-   galice_xexe_5p44_over_npart_afo_npart->SetPointError(6, 11, 0.33 / 2);
-   galice_xexe_5p44_over_npart_afo_npart->SetPointError(7, 17, 0.26 / 2);
-   galice_xexe_5p44_over_npart_afo_npart->SetPointError(8, 24, 0.27 / 2);
-   galice_xexe_5p44_over_npart_afo_npart->SetPointError(9, 26, 0.24 / 2);
+std::vector<float> alice_pbpb_2p76_raw = {
+   35, 76, 149, 261, 426, 649, 966, 1294, 1601};
+std::vector<float> alice_pbpb_2p76_rawerr = {
+   2, 4, 6, 9, 15, 23, 37, 49, 60};
+std::vector<float> alice_pbpb_2p76_cent = {
+   25, 35, 45, 55, 65, 75, 85, 92.5, 97.5};
+std::vector<float> alice_pbpb_2p76_npart = {
+   15.8, 30.0, 52.8, 85.0, 128.9, 186.4, 260.5, 329.7, 382.8};
+std::vector<float> alice_pbpb_2p76_nparterr = {
+   0.6, 1.3, 2.0, 2.6, 3.3, 3.9, 4.4, 4.6, 3.1};
+auto alice_pbpb_2p76_2a = 416.;
+auto alice_pbpb_2p76_size = alice_pbpb_2p76_raw.size();
 
-   return galice_xexe_5p44_over_npart_afo_npart;
-}
+std::vector<float> alice_pbpb_5p02_raw = {
+   44.9, 96.3, 183, 318, 512, 786, 1180, 1505, 1666, 1850, 2035};
+std::vector<float> alice_pbpb_5p02_rawerr = {
+   3.4, 5.8, 8, 12, 15, 20, 31, 44, 48, 55, 52};
+std::vector<float> alice_pbpb_5p02_cent = {
+   25, 35, 45, 55, 65, 75, 85, 91.25, 93.75, 96.25, 98.75};
+std::vector<float> alice_pbpb_5p02_npart = {
+   15.6, 30.4, 53.6, 86.3, 131, 188, 263, 320, 346, 372, 398};
+std::vector<float> alice_pbpb_5p02_nparterr = {
+   0.5, 0.8, 1.2, 1.7, 2, 3, 4, 4, 4, 3, 2};
+auto alice_pbpb_5p02_2a = 416.;
+auto alice_pbpb_5p02_size = alice_pbpb_5p02_raw.size();
+
+std::vector<float> phobos_auau_0p2_raw = {
+   27, 38, 54, 73, 100, 133, 165, 208,
+   257, 313, 384, 465, 540, 619, 691};
+std::vector<float> phobos_auau_0p2_rawerr = {
+   2, 3, 4, 5, 8, 10, 12, 16,
+   19, 24, 29, 35, 41, 46, 52};
+std::vector<float> phobos_auau_0p2_cent = {
+   32.5, 37.5, 42.5, 47.5, 52.5, 57.5, 62.5, 67.5,
+   72.5, 77.5, 82.5, 87.5, 92,  95.5, 98.5};
+std::vector<float> phobos_auau_0p2_npart = {
+   20, 28, 37, 49, 65, 82, 101, 124,
+   150, 180, 215, 255, 297, 331, 361};
+std::vector<float> phobos_auau_0p2_nparterr = {
+   3, 3, 4, 5, 6, 6, 6, 6,
+   6, 7, 7, 8, 9, 10, 11};
+auto phobos_auau_0p2_2a = 394.;
+auto phobos_auau_0p2_size = phobos_auau_0p2_raw.size();
+
+std::vector<float> phobos_auau_0p13_raw = {
+   83, 110, 140, 180, 220, 274, 327, 393, 472, 545, 613};
+std::vector<float> phobos_auau_0p13_rawerr = {
+   3, 4, 5, 7, 8, 11, 13, 15, 18, 21, 24};
+std::vector<float> phobos_auau_0p13_cent = {
+   52.5, 57.5, 62.5, 67.5, 72.5, 77.5, 82.5, 87.5, 92, 95.5, 98.5};
+std::vector<float> phobos_auau_0p13_npart = {
+   63, 80, 100, 122, 148, 179, 214, 254, 295, 330, 355};
+std::vector<float> phobos_auau_0p13_nparterr = {
+   4, 5, 5, 6, 6, 7, 8, 8, 9, 10, 12};
+auto phobos_auau_0p13_2a = 394.;
+auto phobos_auau_0p13_size = phobos_auau_0p13_raw.size();
+
+std::vector<float> phobos_auau_0p0624_raw = {
+   17, 25, 36, 50, 67, 87, 111, 140,
+   174, 212, 260, 316, 377, 433, 492};
+std::vector<float> phobos_auau_0p0624_rawerr = {
+   1, 2, 3, 4, 5, 6, 8, 10,
+   13, 15, 19, 23, 28, 32, 36};
+std::vector<float> phobos_auau_0p0624_cent = {
+   32.5, 37.5, 45, 47.5, 52.5, 57.5, 62.5, 67.5,
+   72.5, 77.5, 82.5, 87.5, 92, 95.5, 98.5};
+std::vector<float> phobos_auau_0p0624_npart = {
+   19, 27, 36, 48, 62, 78, 98, 119,
+   145, 174, 209, 248, 288, 325, 356};
+std::vector<float> phobos_auau_0p0624_nparterr = {
+   3, 3, 4, 5, 6, 6, 7, 7,
+   7, 7, 7, 8, 9, 10, 11};
+auto phobos_auau_0p0624_2a = 394.;
+auto phobos_auau_0p0624_size = phobos_auau_0p0624_raw.size();
+
+std::vector<float> phobos_auau_0p0196_raw = {
+   78, 97, 121, 148, 181, 216, 260, 297, 331};
+std::vector<float> phobos_auau_0p0196_rawerr = {
+   6, 7, 9, 11, 14, 16, 20, 22, 24};
+std::vector<float> phobos_auau_0p0196_cent = {
+   62.5, 67.5, 72.5, 77.5, 82.5, 87.5, 92, 95.5, 98.5};
+std::vector<float> phobos_auau_0p0196_npart = {
+   95, 117, 142, 171, 206, 247, 286, 322, 351};
+std::vector<float> phobos_auau_0p0196_nparterr = {
+   7, 7, 7, 7, 8, 8, 9, 10, 11};
+auto phobos_auau_0p0196_2a = 394.;
+auto phobos_auau_0p0196_size = phobos_auau_0p0196_raw.size();
+
+std::vector<float> phobos_cucu_0p2_raw = {
+   32, 40, 50, 62, 75, 91, 109, 132, 155, 175, 198};
+std::vector<float> phobos_cucu_0p2_rawerr = {
+   2, 3, 4, 5, 6, 7, 8, 10, 12, 13, 15};
+std::vector<float> phobos_cucu_0p2_cent = {
+   52.5, 57.5, 62.5, 67.5, 72.5, 77.5, 82.5, 87.5, 92, 95.5, 98.5};
+std::vector<float> phobos_cucu_0p2_npart = {
+   22, 27, 33, 40, 48, 57, 67, 79, 91, 101, 108};
+std::vector<float> phobos_cucu_0p2_nparterr = {
+   3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4};
+auto phobos_cucu_0p2_2a = 128.;
+auto phobos_cucu_0p2_size = phobos_cucu_0p2_raw.size();
+
+std::vector<float> phobos_cucu_0p0624_raw = {
+   23, 28, 35, 43, 52, 64, 77, 92, 108, 123, 138};
+std::vector<float> phobos_cucu_0p0624_rawerr = {
+   2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10};
+std::vector<float> phobos_cucu_0p0624_cent = {
+   52.5, 57.5, 62.5, 67.5, 72.5, 77.5, 82.5, 87.5, 92, 95.5, 98.5};
+std::vector<float> phobos_cucu_0p0624_npart = {
+   21, 26, 32, 38, 47, 55, 65, 76, 88, 97, 106};
+std::vector<float> phobos_cucu_0p0624_nparterr = {
+   3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3};
+auto phobos_cucu_0p0624_2a = 128.;
+auto phobos_cucu_0p0624_size = phobos_cucu_0p0624_raw.size();
+
+std::vector<float> phobos_cucu_0p0224_raw = {
+   18, 22, 27, 33, 40, 48, 57, 68, 80, 90, 101};
+std::vector<float> phobos_cucu_0p0224_rawerr = {
+   1, 2, 2, 2, 3, 4, 4, 5, 6, 7, 8};
+std::vector<float> phobos_cucu_0p0224_cent = {
+   52.5, 57.5, 62.5, 67.5, 72.5, 77.5, 82.5, 87.5, 92, 95.5, 98.5};
+std::vector<float> phobos_cucu_0p0224_npart = {
+   20, 24, 30, 37, 44, 53, 63, 74, 86, 95, 103};
+std::vector<float> phobos_cucu_0p0224_nparterr = {
+   3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3};
+auto phobos_cucu_0p0224_2a = 128.;
+auto phobos_cucu_0p0224_size = phobos_cucu_0p0224_raw.size();
+
+std::vector<float> brahms_auau_0p2_raw = {
+   110., 174., 257., 377., 501., 625.};
+std::vector<float> brahms_auau_0p2_rawerr = {
+   10., 16., 23., 33., 44., 55.};
+std::vector<float> brahms_auau_0p2_cent = {
+   55, 65, 75, 85, 92.5, 97.5};
+std::vector<float> brahms_auau_0p2_npart = {
+   73, 114, 168, 239, 306, 357};
+std::vector<float> brahms_auau_0p2_nparterr = {
+   8, 9, 9, 10, 11, 8};
+auto brahms_auau_0p2_2a = 394.;
+auto brahms_auau_0p2_size = brahms_auau_0p2_raw.size();
+
+std::vector<float> alice_xexe_5p44_raw = {
+   13.3, 32.0, 64.7, 118, 198, 315, 478, 706, 891, 986, 1069, 1113, 1166, 1223, 1302};
+std::vector<float> alice_xexe_5p44_rawerr = {
+   0.9, 1.3, 2.0, 3, 5, 8, 11, 17, 24, 25, 20, 20, 23, 25, 17};
+std::vector<float> alice_xexe_5p44_cent = {
+   15, 25, 35, 45, 55, 65, 75, 85, 91.25, 93.75, 95.5, 96.5, 97.5, 98.5, 99.5};
+std::vector<float> alice_xexe_5p44_npart = {
+   5.13, 10.4, 19.7, 34.1, 54.6, 82.2, 118, 165, 199, 214, 225, 231, 236, 241, 246};
+std::vector<float> alice_xexe_5p44_nparterr = {
+   0.46, 1.1, 2.1, 3.0, 3.6, 3.9, 4, 3, 2, 3, 3, 2, 3, 2, 2};
+auto alice_xexe_5p44_2a = 258.;
+auto alice_xexe_5p44_size = alice_xexe_5p44_raw.size();
+
+/* std::vector<float> alice_xexe_5p44_raw = { */
+/*    13.3, 32.0, 64.7, 118, 198, 315, 478, 706, 939, 1167}; */
+/* std::vector<float> alice_xexe_5p44_rawerr = { */
+/*    0.9, 1.3, 2.0, 3, 5, 8, 11, 17, 24, 26}; */
+/* std::vector<float> alice_xexe_5p44_cent = { */
+/*    15, 25, 35, 45, 55, 65, 75, 85, 92.5, 97.5}; */
+/* std::vector<float> alice_xexe_5p44_npart = { */
+/*    5.13, 10.4, 19.7, 34.1, 54.6, 82.2, 118, 165, 207, 236}; */
+/* std::vector<float> alice_xexe_5p44_nparterr = { */
+/*    0.46, 1.1, 2.1, 3.0, 3.6, 3.9, 4, 3, 3, 2}; */
+/* auto alice_xexe_5p44_2a = 258.; */
+/* auto alice_xexe_5p44_size = alice_xexe_5p44_raw.size(); */
+
+GENERATE(cms_pbpb_2p76)
+GENERATE(alice_pbpb_2p76)
+GENERATE(alice_pbpb_5p02)
+GENERATE(phobos_auau_0p2)
+GENERATE(phobos_auau_0p13)
+GENERATE(phobos_auau_0p0624)
+GENERATE(phobos_auau_0p0196)
+GENERATE(phobos_cucu_0p2)
+GENERATE(phobos_cucu_0p0624)
+GENERATE(phobos_cucu_0p0224)
+GENERATE(brahms_auau_0p2)
+GENERATE(alice_xexe_5p44)
 
 TGraphErrors* atlas_ppb_5p02() {
    TGraphErrors* gatlas_ppb_5p02 = new TGraphErrors(8);
