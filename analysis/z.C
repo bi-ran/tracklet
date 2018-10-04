@@ -5,6 +5,7 @@
 #include "TCanvas.h"
 #include "TColor.h"
 #include "TGaxis.h"
+#include "TF1.h"
 #include "TLatex.h"
 #include "TLine.h"
 #include "TLegend.h"
@@ -101,6 +102,7 @@ int hist(configurer* conf) {
    auto hlegends = conf->get<std::vector<std::string>>("hlegends");
    auto hlopts = conf->get<std::vector<std::string>>("hlopts");
    auto hlstyles = conf->get<std::vector<int>>("hlstyles");
+   auto hlwidths = conf->get<std::vector<float>>("hlwidths");
    auto hmstyles = conf->get<std::vector<int>>("hmstyles");
    auto hmsizes = conf->get<std::vector<float>>("hmsizes");
    auto hcolours = conf->get<std::vector<std::string>>("hcolours");
@@ -108,15 +110,13 @@ int hist(configurer* conf) {
 
    auto redraw = conf->get<bool>("redraw");
 
-   auto linewidth = conf->get<float>("linewidth");
+   auto nlines = conf->get<uint32_t>("nlines");
    auto lnx0 = conf->get<std::vector<float>>("lnx0");
    auto lnx1 = conf->get<std::vector<float>>("lnx1");
    auto lny0 = conf->get<std::vector<float>>("lny0");
    auto lny1 = conf->get<std::vector<float>>("lny1");
    auto lnstyles = conf->get<std::vector<int>>("lnstyles");
    auto lnassocc = conf->get<std::vector<int>>("lnassocc");
-
-   auto nlines = conf->get<uint32_t>("nlines");
 
    auto csizes = conf->get<std::vector<int>>("csizes");
    auto cmargins = conf->get<std::vector<float>>("cmargins");
@@ -145,10 +145,10 @@ int hist(configurer* conf) {
       }
    }
 
+   std::vector<TLine*> lines(nlines, 0);
    std::vector<TFile*> files(ofiles.size(), 0);
    for (std::size_t i=0; i<ofiles.size(); ++i)
       files[i] = new TFile(ofiles[i].data());
-   std::vector<TLine*> lines(nlines, 0);
    std::vector<TGraphErrors*> vgraphs(graphs.size(), 0);
    for (std::size_t i=0; i<graphs.size(); ++i) {
       vgraphs[i] = (TGraphErrors*)files[gassocf[i]]->Get(graphs[i].data());
@@ -160,7 +160,7 @@ int hist(configurer* conf) {
       vhists[i] = (TH1F*)files[hassocf[i]]->Get(hists[i].data());
       int hcolour = TColor::GetColor(hcolours[i].data());
       hstyle(vhists[i], hmstyles[i], hcolour, hmsizes[i]);
-      hline(vhists[i], hlstyles[i], hcolour, linewidth);
+      hline(vhists[i], hlstyles[i], hcolour, hlwidths[i]);
    }
 
    TCanvas* c1 = new TCanvas("c1", "", 400, 400);
@@ -256,10 +256,20 @@ int graph(configurer* conf) {
    auto logscale = conf->get<std::vector<bool>>("logscale");
    auto xrange = conf->get<std::vector<float>>("xrange");
    auto yrange = conf->get<std::vector<float>>("yrange");
-   auto axispath = conf->get<std::vector<float>>("axispath");
-   auto axisrange = conf->get<std::vector<float>>("axisrange");
-   auto aloffset = conf->get<float>("aloffset");
-   auto aopt = conf->get<std::string>("aopt");
+
+   auto naxes = conf->get<uint32_t>("naxes");
+   auto apathx0 = conf->get<std::vector<float>>("apathx0");
+   auto apathx1 = conf->get<std::vector<float>>("apathx1");
+   auto apathy0 = conf->get<std::vector<float>>("apathy0");
+   auto apathy1 = conf->get<std::vector<float>>("apathy1");
+   auto arange0 = conf->get<std::vector<float>>("arange0");
+   auto arange1 = conf->get<std::vector<float>>("arange1");
+   auto afuncs = conf->get<std::vector<std::string>>("afuncs");
+   auto afrange0 = conf->get<std::vector<float>>("afrange0");
+   auto afrange1 = conf->get<std::vector<float>>("afrange1");
+   auto aassocc = conf->get<std::vector<uint32_t>>("aassocc");
+   auto aloffsets = conf->get<std::vector<float>>("aloffsets");
+   auto aopts = conf->get<std::vector<std::string>>("aopts");
 
    auto nl = conf->get<uint32_t>("nl");
    auto lx0 = conf->get<std::vector<float>>("lx0");
@@ -289,6 +299,14 @@ int graph(configurer* conf) {
    auto hmsizes = conf->get<std::vector<float>>("hmsizes");
    auto hcolours = conf->get<std::vector<std::string>>("hcolours");
 
+   auto nlines = conf->get<uint32_t>("nlines");
+   auto lnx0 = conf->get<std::vector<float>>("lnx0");
+   auto lnx1 = conf->get<std::vector<float>>("lnx1");
+   auto lny0 = conf->get<std::vector<float>>("lny0");
+   auto lny1 = conf->get<std::vector<float>>("lny1");
+   auto lnstyles = conf->get<std::vector<int>>("lnstyles");
+   auto lnassocc = conf->get<std::vector<int>>("lnassocc");
+
    auto toffsets = conf->get<std::vector<float>>("toffsets");
 
    auto csizes = conf->get<std::vector<int>>("csizes");
@@ -311,6 +329,7 @@ int graph(configurer* conf) {
    for (std::size_t i=0; i<ns; ++i)
       gs[i] = (TGraph*)f->Get(systs[i].data());
 
+   std::vector<TLine*> lines(nlines, 0);
    std::vector<TFile*> files(ofiles.size(), 0);
    for (std::size_t i=0; i<ofiles.size(); ++i)
       files[i] = new TFile(ofiles[i].data());
@@ -345,9 +364,6 @@ int graph(configurer* conf) {
    hrange(hframe, yrange[0], yrange[1]); htitle(hframe, title.data());
    hframe->SetLabelOffset(9, "X"); hframe->SetTickLength(0, "X");
    htoffset(hframe, toffsets[0], toffsets[1]); hframe->Draw();
-   TGaxis* axis = new TGaxis(axispath[0], yrange[0], axispath[1], yrange[0],
-      axisrange[0], axisrange[1], 510, aopt.data());
-   astyle(axis, 43, 13, aloffset); axis->Draw();
 
    if (cdivide) {
       t2->cd(); t2->SetLogx(logscale[0]);
@@ -357,7 +373,22 @@ int graph(configurer* conf) {
       htsize(hrframe, rtitlesizes[0], rtitlesizes[1]);
       htoffset(hrframe, rtitleoffsets[0], rtitleoffsets[1]);
       hloffset(hrframe, rlabeloffsets[0], rlabeloffsets[1]);
-      hndiv(hrframe, 1, rndiv); hrframe->Draw(); axis->Draw();
+      hndiv(hrframe, 1, rndiv); hrframe->Draw();
+   }
+
+   std::vector<TGaxis*> axes(naxes, 0); std::vector<TF1*> faxes(naxes, 0);
+   for (std::size_t i=0; i<naxes; ++i) {
+      if (afuncs.empty()) {
+         axes[i] = new TGaxis(apathx0[i], apathy0[i], apathx1[i], apathy1[i],
+            arange0[i], arange1[i], 510, aopts[i].data());
+      } else {
+         faxes[i] = new TF1(Form("f%zu", i), afuncs[i].data(),
+            afrange0[i], afrange1[i]);
+         axes[i] = new TGaxis(apathx0[i], apathy0[i], apathx1[i], apathy1[i],
+            Form("f%zu", i), 510, aopts[i].data()); }
+      astyle(axes[i], 43, 13, aloffsets[i]);
+      if (i < aassocc.size()) c1->cd(aassocc[i]);
+      axes[i]->Draw();
    }
 
    for (std::size_t i=0; i<graphs.size(); ++i) {
@@ -373,6 +404,10 @@ int graph(configurer* conf) {
       l1[i] = new TLegend(lx0[i], ly0[i], lx1[i], ly1[i]);
    for (std::size_t i=0; i<headers.size() && !headers[i].empty(); ++i)
       le1[i] = l1[i]->AddEntry((TObject*)0, headers[i].data(), "");
+   for (std::size_t i=0; i<nlines; ++i) {
+      lines[i] = new TLine(lnx0[i], lny0[i], lnx1[i], lny1[i]);
+      if (i < lnassocc.size()) c1->cd(lnassocc[i]);
+      lines[i]->SetLineStyle(lnstyles[i]); lines[i]->Draw(); }
    TGraphErrors* gl = (TGraphErrors*)g->Clone("gl");
    lestyle(gl, col, alpha); l1[lindex]->AddEntry(gl, legend.data(), "pf");
    for (std::size_t i=0; i<graphs.size(); ++i) {
