@@ -275,6 +275,7 @@ int graph(configurer* conf) {
    auto scolours = conf->get<std::vector<std::string>>("scolours");
    auto salphas = conf->get<std::vector<float>>("salphas");
    auto slegends = conf->get<std::vector<std::string>>("slegends");
+   auto slalphas = conf->get<std::vector<float>>("slalphas");
    auto slassocl = conf->get<std::vector<uint32_t>>("slassocl");
    std::size_t ns = systs.size();
 
@@ -371,6 +372,7 @@ int graph(configurer* conf) {
    TFile* f = new TFile(input.data());
    TGraphErrors* g = (TGraphErrors*)f->Get(data.data());
    std::vector<TGraph*> gs(ns, 0);
+   std::vector<TGraph*> gls(ns, 0);
    for (std::size_t i=0; i<ns; ++i)
       gs[i] = (TGraph*)f->Get(systs[i].data());
 
@@ -480,8 +482,9 @@ int graph(configurer* conf) {
       else vgraphs[i]->Draw("p same"); }
    c1->cd(1); for (std::size_t i=0; i<ns; ++i) {
       int scol = TColor::GetColor(scolours[i].data());
-      gs[i]->SetFillColorAlpha(scol, salphas[i]);
-      gs[i]->SetLineColorAlpha(0, 0); gs[i]->Draw("f"); }
+      lestyle(gs[i], scol, salphas[i]); gs[i]->Draw("f");
+      if (i < slegends.size()) { gls[i] = (TGraph*)gs[i]->Clone();
+         lestyle(gls[i], scol, slalphas[i]); } }
    int col = TColor::GetColor(colour.data());
    gstyle(g, 21, col, 0.6); g->Draw("p same");
    for (std::size_t i=0; i<nl; ++i)
@@ -495,7 +498,7 @@ int graph(configurer* conf) {
    TGraph* gl = (TGraph*)g->Clone("gl"); lestyle(gl, col, alpha);
    l1[lindex]->AddEntry(gl, legend.data(), ldopt.data());
    for (std::size_t i=0; i<ns; ++i) if (i < slegends.size())
-      l1[slassocl[i]]->AddEntry(gs[i], slegends[i].data(), "f");
+      l1[slassocl[i]]->AddEntry(gls[i], slegends[i].data(), "f");
    for (std::size_t i=0; i<graphs.size(); ++i) {
       if (gassocl[i] >= nl) continue;
       l1[gassocl[i]]->AddEntry(vlgraphs[i], glegends[i].data(),
