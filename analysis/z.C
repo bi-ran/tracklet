@@ -19,7 +19,7 @@
 
 #include "git/config/configurer.h"
 
-void mark(bool prelim, float cdivide) {
+void mark(std::string cmslabel, float cdivide) {
    TLatex* lcms = new TLatex();
    lcms->SetTextFont(63);
    lcms->SetTextSize(18);
@@ -28,14 +28,14 @@ void mark(bool prelim, float cdivide) {
       (0.915 - cdivide) / (1 - cdivide),
       "CMS");
 
-   if (prelim) {
+   if (!cmslabel.empty()) {
       TLatex* lprelim = new TLatex();
       lprelim->SetTextFont(53);
       lprelim->SetTextSize(11);
       lprelim->SetTextAlign(13);
       lprelim->DrawLatexNDC(0.15,
          (0.87 - cdivide) / (1 - cdivide),
-         "Preliminary");
+         cmslabel.data());
    }
 
    TLatex* linfo = new TLatex();
@@ -130,7 +130,7 @@ int hist(configurer* conf) {
    auto rlabeloffsets = conf->get<std::vector<float>>("rlabeloffsets");
    auto rndiv = conf->get<int>("rndiv");
 
-   auto prelim = conf->get<bool>("prelim");
+   auto cmslabel = conf->get<std::string>("cmslabel");
 
    TFile* f = new TFile(input.data());
    TFile* fs = new TFile(sinput.data());
@@ -180,7 +180,7 @@ int hist(configurer* conf) {
    TH1F* hframe = new TH1F("hframe", "", 1, xrange[0], xrange[1]);
    hrange(hframe, yrange[0], yrange[1]); htitle(hframe, title.data());
    htoffset(hframe, 1.25, 1.6); hndiv(hframe, ndivs[0], ndivs[1]);
-   hframe->Draw(); mark(prelim, cdivide);
+   hframe->Draw(); mark(cmslabel, cdivide);
 
    if (cdivide) {
       t2->cd(); t2->SetLogx(logscale[0]);
@@ -303,7 +303,7 @@ int graph(configurer* conf) {
    auto rlabeloffsets = conf->get<std::vector<float>>("rlabeloffsets");
    auto rndiv = conf->get<int>("rndiv");
 
-   auto prelim = conf->get<bool>("prelim");
+   auto cmslabel = conf->get<std::string>("cmslabel");
 
    TFile* f = new TFile(input.data());
    TGraphErrors* g = (TGraphErrors*)f->Get(data.data());
@@ -368,7 +368,7 @@ int graph(configurer* conf) {
       int scol = TColor::GetColor(scolours[i].data());
       gs[i]->SetFillColorAlpha(scol, salphas[i]); gs[i]->Draw("f"); }
    int col = TColor::GetColor(colour.data());
-   gstyle(g, 21, col, 0.6); g->Draw("p same"); mark(prelim, cdivide);
+   gstyle(g, 21, col, 0.6); g->Draw("p same"); mark(cmslabel, cdivide);
    for (std::size_t i=0; i<nl; ++i)
       l1[i] = new TLegend(lx0[i], ly0[i], lx1[i], ly1[i]);
    for (std::size_t i=0; i<headers.size() && !headers[i].empty(); ++i)
