@@ -1,7 +1,7 @@
 std::string figure = graph
 
 std::string input = keep/data/sgdep-epos.root
-std::string output = multiplicity-bias-epos.pdf
+std::string output = multiplicity-bias-epos-paper.pdf
 std::string title = \
    ;#scale[1.2]{#LT}\
    #it{N}#lower[0.4]{#scale[0.7]{#kern[-0.05]{part}}}\
@@ -44,16 +44,26 @@ token
 std::vector<float> afrange0 = 0 0
 std::vector<float> afrange1 = 0 100
 std::vector<uint32_t> aassocc = 2 1
-std::vector<float> aloffsets = 0.008 0.01
+std::vector<int> andivs = 510 510
 std::vector<std::string> aopts = G -
 
-uint32_t nl = 2
-std::vector<float> lx0 = 0.45 0.45
-std::vector<float> lx1 = 0.72 0.72
-std::vector<float> ly0 = 0.20 0.15
-std::vector<float> ly1 = 0.36 0.18
 token ;
-std::vector<std::string> headers = #splitline{           E#scale[0.8]{POS} #scale[0.9]{LHC}}{    #scale[0.9]{XeXe 5.44 TeV}}
+std::vector<std::string> atitles = ;centrality [%]
+token
+std::vector<int> atfonts = 43 43
+std::vector<float> atsizes = 14 14
+std::vector<float> atoffsets = 0 1.25
+std::vector<int> alfonts = 43 43
+std::vector<float> alsizes = 14 13
+std::vector<float> aloffsets = 0.005 0.005
+
+uint32_t nl = 2
+std::vector<float> lx0 = 0.41 0.41
+std::vector<float> lx1 = 0.68 0.68
+std::vector<float> ly0 = 0.19 0.13
+std::vector<float> ly1 = 0.35 0.16
+token ;
+std::vector<std::string> headers = #splitline{            E#scale[0.8]{POS} #scale[0.9]{LHC}}{    #scale[0.9]{XeXe 5.44 TeV}}
 
 token
 std::vector<std::string> files = keep/data/sgdep-epos.root
@@ -71,13 +81,11 @@ std::vector<std::string> gcolours = #61afef #9999cc
 std::vector<std::string> gdopts = psame psame
 std::vector<std::string> gldopts = p
 
-std::vector<float> toffsets = 1.25 1.6
-
 uint32_t nlatex = 3
 std::vector<int> lxfonts = 63 53 53
 std::vector<float> lxsizes = 18 11 11
 std::vector<int> lxaligns = 13 13 13
-std::vector<float> lxx = 0.15 0.15 0.15
+std::vector<float> lxx = 0.18 0.18 0.18
 std::vector<float> lxy = 0.915 0.87 0.84
 token ;
 std::vector<std::string> lxtexts = CMS; Simulation; Supplementary
@@ -92,8 +100,14 @@ std::vector<int> lnstyles = 7
 std::vector<uint32_t> lnassocc = 2
 
 std::vector<int> csizes = 400 400
-std::vector<float> cmargins = 0.05 0.1 0.12 0.05
-float cdivide = 0.27
+std::vector<float> cmargins = 0.8 0.12 0.15 0.05
+float cdivide = 0.30
+
+std::vector<int> tfonts = 43 43
+std::vector<float> tsizes = 16 16
+std::vector<float> toffsets = 1.25 1.6
+std::vector<int> lfonts = 43 43
+std::vector<float> lsizes = 14 14
 
 token ,
 std::string rtitle = \
@@ -103,8 +117,10 @@ std::string rtitle = \
    ratio
 token
 std::vector<float> rrange = 0 5
-std::vector<float> rtitleoffsets = 1.2 0.4
-std::vector<float> rtitlesizes = 0.128 0.12
-std::vector<float> rlabeloffsets = 9 0.005
-std::vector<float> rlabelsizes = 0.1 0.1
+std::vector<int> rtfonts = 43 43
+std::vector<float> rtsizes = 15 14
+std::vector<float> rtoffsets = 4.5 1.6
+std::vector<int> rlfonts = 43 43
+std::vector<float> rlsizes = 14 13
+std::vector<float> rloffsets = 9 0.005
 int rndiv = 203

@@ -1,46 +1,98 @@
-std::string figure = ratio
+std::string figure = hist
 
-std::string input = data/paper.root
+std::string input = output/results-spectra.root
+std::string sinput = output/results-spectra.root
 std::string output = tracklet-dr-t12-304906a-paper.pdf
+std::string title = ;#Delta#it{r};#frac{1}{#it{N}}#kern[0.1]{#frac{d#it{N}}{d(#Delta#it{r})}}
 
-std::vector<std::string> hists = \
-   ht12f0dr ht12f4dr ht12f2dr ht12f1dr
-
-token ,
-std::string title = ;#Delta#it{r};#frac{1}{#it{N}_{tracklet}} #frac{d#it{N}_{tracklet}}{d(#Deltar)}
-
+std::vector<std::string> data = hr_ht12f0dr_data
 token ;
-std::vector<std::string> legends = \
-   data; \
+std::vector<std::string> legends = data
+token
+std::vector<uint32_t> assocl = 0
+std::vector<std::string> lopts = p
+std::vector<std::string> colours = #242424
+std::vector<int> markers = 21
+std::vector<float> sizes = 0.64
+
+std::vector<bool> logscale = 0 1
+std::vector<float> xrange = 0 0.5
+std::vector<float> yrange = 0.100001 50
+std::vector<int> ndivs = 505 1003
+
+uint32_t nl = 1
+std::vector<float> lx0 = 0.47
+std::vector<float> lx1 = 0.72
+std::vector<float> ly0 = 0.50
+std::vector<float> ly1 = 0.74
+
+std::vector<std::string> files = output/results-spectra.root
+std::vector<std::string> hists =             \
+   hr_ht12f4dr_epos                          \
+   hr_ht12f2dr_hydjet                        \
+   hr_ht12f1dr_ampt                          \
+   hr_ht12f4dr_epos_over_hr_ht12f0dr_data    \
+   hr_ht12f2dr_hydjet_over_hr_ht12f0dr_data  \
+   hr_ht12f1dr_ampt_over_hr_ht12f0dr_data
+std::vector<uint32_t> hassocc = 1 1 1 2 2 2
+std::vector<uint32_t> hassocf = 0 0 0 0 0 0
+std::vector<uint32_t> hassocl = 0 0 0 9 9 9
+token ;
+std::vector<std::string> hlegends = \
    E#scale[0.8]{POS} #scale[0.9]{LHC}; \
    H#scale[0.8]{YDJET} 1.9; \
    A#scale[0.9]{MPT}
-std::vector<std::string> dopts = \
-   p e same; hist e same; hist e same; hist e same
+token
+std::vector<std::string> hlopts = l l l
+std::vector<int> hlstyles = 5 1 7 5 1 7
+std::vector<float> hlwidths = 3.6 3.6 3.6 3.6 3.6 3.6
+std::vector<int> hmstyles = 1 1 1 1 1 1
+std::vector<float> hmsizes = 0 0 0 0 0 0
+std::vector<std::string> hcolours = #33cc99 #8267d1 #f3594a #33cc99 #8267d1 #f3594a
+token ;
+std::vector<std::string> hgopts = \
+   hist c same; hist c same; hist c same; hist c same; hist c same; hist c same
 
 token
-std::vector<int> markers = 21 1 1 1 1
-std::vector<std::string> colours = \
-   #242424 #3498db #f99157 #ec5f67
+bool redraw = 1
+
+uint32_t nlatex = 2
+std::vector<int> lxfonts = 63 43
+std::vector<float> lxsizes = 19 15
+std::vector<int> lxaligns = 13 33
+std::vector<float> lxx = 0.18 0.93
+std::vector<float> lxy = 0.91 0.99
+token ;
+std::vector<std::string> lxtexts = CMS; XeXe #sqrt{#it{s}_{NN}} = 5.44 TeV
 
 token
-std::vector<float> lx0 = 0.48
-std::vector<float> lx1 = 0.72
-std::vector<float> ly0 = 0.56
-std::vector<float> ly1 = 0.72
+uint32_t nlines = 1
+std::vector<float> lnx0 = 0.0
+std::vector<float> lnx1 = 0.5
+std::vector<float> lny0 = 1.0
+std::vector<float> lny1 = 1.0
+std::vector<int> lnstyles = 7
+std::vector<uint32_t> lnassocc = 2
 
-std::vector<std::string> lopts = p l l l
+std::vector<int> csizes = 400 400
+std::vector<float> cmargins = 0.06 0.12 0.15 0.05
+float cdivide = 0.30
 
-std::vector<float> xrange = 0 0.5
-std::vector<float> yrange = 0.100001 50
+std::vector<int> tfonts = 43 43
+std::vector<float> tsizes = 17 18
+std::vector<float> toffsets = 1.2 1.2
+std::vector<int> lfonts = 43 43
+std::vector<float> lsizes = 15 15
 
-float linewidth = 3.2
-
-std::vector<float> titleoffsets = 99 1.375
-std::vector<float> labelsizes = 0.01 0.04
-std::vector<float> rtitleoffsets = 1.16 0.5
-std::vector<float> rtitlesizes = 0.108 0.1
-std::vector<float> rlabeloffsets = 0.02 0.005
-std::vector<float> rlabelsizes = 0.1 0.1
-
-bool prelim = 0
+token ,
+std::string rtitle = ;#Delta#it{r};ratio
+token
+std::vector<float> rrange = 0.5 1.5
+std::vector<int> rtfonts = 43 43
+std::vector<float> rtsizes = 16 16
+std::vector<float> rtoffsets = 4.0 1.44
+std::vector<int> rlfonts = 43 43
+std::vector<float> rlsizes = 15 13
+std::vector<float> rloffsets = 0.02 0.005
+std::vector<float> rtksizes = 0.08 0.04
+int rndiv = 206

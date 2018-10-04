@@ -1,70 +1,106 @@
 std::string figure = hist
 
 std::string input = output/results-v5.s.all.root
-std::string output = results-hsym-v5.s.all-paper.pdf
+std::string sinput = output/results-v5.s.all.root
+std::string output = results-hsym-v5.s.all-ratio-paper.pdf
 std::string title = ;#it{#eta};d#it{N}_{ch}/d#kern[-0.08]{#it{#eta}}
 
-std::vector<std::string> data = hr_hsym_19_20 hr_hsym_10_11
-std::vector<std::string> systs = hs_hsym_19_20 hs_hsym_10_11
-std::vector<std::string> colours = #f2777a #6699cc
-std::vector<int> markers = 21 21
-std::vector<float> sizes = 0.64 0.64
+std::vector<std::string> data = hr_hsym_19_20 hr_hsym_10_11 hr_hsym_19_20_over_hr_hsym_10_11
+token ;
+std::vector<std::string> legends =  data;  data; data (0 - 5% / 50 - 55%)
+token
+std::vector<uint32_t> assocl = 0 1 2
+std::vector<uint32_t> assocc = 1 1 2
+std::vector<std::string> lopts = pf pf pf
+std::vector<std::string> systs = hs_hsym_19_20 hs_hsym_10_11 hs_hsym_19_20_over_hsym_10_11
+std::vector<std::string> colours = #ef5253 #61afef #9999cc
+std::vector<int> markers = 21 20 21
+std::vector<float> sizes = 0.64 0.64 0.64
 
-std::vector<std::string> stags = total tracklet
-float alpha = 0.2
+std::vector<std::string> stags = total
+float alpha = 0.32
 
+std::vector<bool> logscale = 0 1
+std::vector<float> xrange = -3.6 3.6
+std::vector<float> yrange = 90 3000
+std::vector<int> ndivs = 508 1003
+
+uint32_t nl = 3
+std::vector<float> lx0 = 0.25 0.61 0.35
+std::vector<float> lx1 = 0.50 0.86 0.54
+std::vector<float> ly0 = 0.30 0.30 0.80
+std::vector<float> ly1 = 0.59 0.59 0.96
 token ;
 std::vector<std::string> headers = 0 - 5%; 50 - 55%
-std::vector<std::string> legends =  data;  data
+token
+std::vector<uint32_t> lassocc = 1 1 2
+
+std::vector<std::string> files = \
+   data/gen-cent.root output/results-sim.root
+std::vector<std::string> hists =                         \
+   hepos_19_20 hhydjet_19_20 hamptnm_19_20               \
+   hepos_10_11 hhydjet_10_11 hamptnm_10_11               \
+   hr_hepos_19_20_eta_over_hr_hepos_10_11_eta            \
+   hr_hhydjet_19_20_eta_over_hr_hhydjet_10_11_eta        \
+   hr_hamptnm_19_20_eta_over_hr_hamptnm_10_11_eta
+std::vector<uint32_t> hassocc = 1 1 1 1 1 1 2 2 2
+std::vector<uint32_t> hassocf = 0 0 0 0 0 0 1 1 1
+std::vector<uint32_t> hassocl = 0 0 0 1 1 1 9 9 9
+token ;
+std::vector<std::string> hlegends =  \
+   E#scale[0.8]{POS} #scale[0.9]{LHC};  \
+   H#scale[0.8]{YDJET} 1.9;  \
+   A#scale[0.9]{MPT};  \
+   E#scale[0.8]{POS} #scale[0.9]{LHC};  \
+   H#scale[0.8]{YDJET} 1.9;  \
+   A#scale[0.9]{MPT}
+token
+std::vector<std::string> hlopts = l l l l l l l l l
+std::vector<int> hlstyles = 1 1 1 7 7 7 1 1 1
+std::vector<float> hlwidths = \
+   3.2 3.2 3.2 3.2 3.2 3.2 3.2 3.2 3.2
+std::vector<int> hmstyles = 1 1 1 1 1 1 1 1 1
+std::vector<float> hmsizes = 0 0 0 0 0 0 0 0 0
+std::vector<std::string> hcolours = \
+   #33cc99 #8267d1 #f3594a          \
+   #33cc99 #8267d1 #f3594a          \
+   #33cc99 #8267d1 #f3594a
+token ;
+std::vector<std::string> hgopts = \
+   hist c same; hist c same; hist c same; \
+   hist c same; hist c same; hist c same; \
+   hist c same; hist c same; hist c same
 
 token
-std::vector<uint32_t> lgroups = 0 1
-std::vector<std::string> lopts = pf pf
-
-uint32_t nl = 2
-std::vector<float> lx0 = 0.20 0.56
-std::vector<float> lx1 = 0.45 0.81
-std::vector<float> ly0 = 0.45 0.45
-std::vector<float> ly1 = 0.64 0.64
-
-std::vector<float> xrange = -3.6 3.6
-std::vector<float> yrange = 80 3000
-std::vector<int> ndivs = 508 1003
-bool logy = 1
-
-std::string gen = data/gen-cent.root
-std::vector<std::string> models =   \
-   hepos_19_20                      \
-   hhydjet_19_20                    \
-   hamptnm_19_20                    \
-   hamptsm_19_20                    \
-   hepos_10_11                      \
-   hhydjet_10_11                    \
-   hamptnm_10_11                    \
-   hamptsm_10_11
-std::vector<uint32_t> mlgroups = 0 0 0 0 1 1 1 1
-std::vector<std::string> mcolours = \
-   #3498db                          \
-   #f99157                          \
-   #ec5f67                          \
-   #ec5f67                          \
-   #3498db                          \
-   #f99157                          \
-   #ec5f67                          \
-   #ec5f67
-std::vector<int> mstyles = 1 1 1 3 7 7 7 6
-
-float linewidth = 2.7
-
+uint32_t nlatex = 2
+std::vector<int> lxfonts = 63 43
+std::vector<float> lxsizes = 19 15
+std::vector<int> lxaligns = 13 33
+std::vector<float> lxx = 0.18 0.93
+std::vector<float> lxy = 0.91 0.99
 token ;
-std::vector<std::string> mlegends =  \
-   E#scale[0.8]{POS} #scale[0.9]{LHC};  \
-   H#scale[0.8]{YDJET} 1.9;  \
-   A#scale[0.9]{MPT (default)};  \
-   A#scale[0.9]{MPT (string melting)};  \
-   E#scale[0.8]{POS} #scale[0.9]{LHC};  \
-   H#scale[0.8]{YDJET} 1.9;  \
-   A#scale[0.9]{MPT (default)};  \
-   A#scale[0.9]{MPT (string melting)}
+std::vector<std::string> lxtexts = CMS; XeXe #sqrt{#it{s}_{NN}} = 5.44 TeV
 
-bool prelim = 0
+token
+std::vector<int> csizes = 400 400
+std::vector<float> cmargins = 0.06 0.12 0.15 0.05
+float cdivide = 0.30
+
+std::vector<int> tfonts = 43 43
+std::vector<float> tsizes = 17 18
+std::vector<float> toffsets = 1.2 1.36
+std::vector<int> lfonts = 43 43
+std::vector<float> lsizes = 15 15
+
+token ,
+std::string rtitle = ;#it{#eta};#splitline{normalised }{      ratio}
+token
+std::vector<float> rrange = 0.82 1.18
+std::vector<int> rtfonts = 43 43
+std::vector<float> rtsizes = 16 15
+std::vector<float> rtoffsets = 4.0 1.5
+std::vector<int> rlfonts = 43 43
+std::vector<float> rlsizes = 14 13
+std::vector<float> rloffsets = 0.02 0.005
+std::vector<float> rtksizes = 0.08 0.04
+int rndiv = 504
