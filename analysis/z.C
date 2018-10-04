@@ -47,90 +47,6 @@ void mark(bool prelim, float cdivide) {
       "XeXe #sqrt{s_{NN}} = 5.44 TeV");
 }
 
-int ratio(configurer* conf) {
-   auto input = conf->get<std::string>("input");
-   auto output = conf->get<std::string>("output");
-   auto title = conf->get<std::string>("title");
-
-   auto hists = conf->get<std::vector<std::string>>("hists");
-   auto legends = conf->get<std::vector<std::string>>("legends");
-   auto markers = conf->get<std::vector<int>>("markers");
-   auto colours = conf->get<std::vector<std::string>>("colours");
-   auto dopts = conf->get<std::vector<std::string>>("dopts");
-   auto lopts = conf->get<std::vector<std::string>>("lopts");
-
-   auto xrange = conf->get<std::vector<float>>("xrange");
-   auto yrange = conf->get<std::vector<float>>("yrange");
-
-   auto lx0 = conf->get<std::vector<float>>("lx0");
-   auto lx1 = conf->get<std::vector<float>>("lx1");
-   auto ly0 = conf->get<std::vector<float>>("ly0");
-   auto ly1 = conf->get<std::vector<float>>("ly1");
-
-   auto linewidth = conf->get<float>("linewidth");
-
-   auto csizes = conf->get<std::vector<int>>("csizes");
-   auto cmargins = conf->get<std::vector<float>>("cmargins");
-   auto cdivide = conf->get<float>("cdivide");
-
-   auto titleoffsets = conf->get<std::vector<float>>("titleoffsets");
-   auto labelsizes = conf->get<std::vector<float>>("labelsizes");
-   auto rtitleoffsets = conf->get<std::vector<float>>("rtitleoffsets");
-   auto rlabelsizes = conf->get<std::vector<float>>("rlabelsizes");
-   auto rtitlesizes = conf->get<std::vector<float>>("rtitlesizes");
-   auto rlabeloffsets = conf->get<std::vector<float>>("rlabeloffsets");
-
-   auto prelim = conf->get<bool>("prelim");
-
-   TFile* f = new TFile(input.data());
-
-   std::vector<TH1F*> h(hists.size(), 0);
-   std::vector<TH1F*> hr(hists.size(), 0);
-
-   TCanvas* c1 = new TCanvas("c1", "", 400, 450);
-   TLegend* l1 = new TLegend(lx0[0], ly0[0], lx1[0], ly1[0]);
-   TPad* t1 = new TPad("t1", "", 0, 125./450., 1, 1);
-   t1->SetTopMargin(20./325.); t1->SetBottomMargin(0);
-   t1->SetLeftMargin(0.12); t1->SetRightMargin(0.05);
-   t1->Draw(); t1->SetNumber(1); t1->SetLogy();
-   TPad* t2 = new TPad("t2", "", 0, 0, 1, 125./450.);
-   t2->SetTopMargin(0); t2->SetBottomMargin(40./125.);
-   t2->SetLeftMargin(0.12); t2->SetRightMargin(0.05);
-   t2->Draw(); t2->SetNumber(2);
-
-   TH1F* hframe = new TH1F("hframe", "", 1, xrange[0], xrange[1]);
-   hrange(hframe, yrange[0], yrange[1]); htitle(hframe, title.data());
-   htoffset(hframe, titleoffsets[0], titleoffsets[1]);
-   hlsize(hframe, labelsizes[0], labelsizes[1]);
-   hndiv(hframe, 505, 1003); hframe->SetLabelOffset(99, "X");
-   TH1F* hrframe = (TH1F*)hframe->Clone("hrframe");
-   hlsize(hrframe, rlabelsizes[0], rlabelsizes[1]);
-   htsize(hrframe, rtitlesizes[0], rtitlesizes[1]);
-   htoffset(hrframe, rtitleoffsets[0], rtitleoffsets[1]);
-   hloffset(hrframe, rlabeloffsets[0], rlabeloffsets[1]);
-   hrange(hrframe, 0.5, 1.5); htitle(hrframe, title.data());
-   hrframe->SetYTitle("ratio (w.r.t. data)");
-   hndiv(hrframe, 505, 206); hrframe->SetTickLength(0.08);
-   c1->cd(1); hframe->Draw(); c1->cd(2); hrframe->Draw();
-
-   for (std::size_t i=0; i<hists.size(); ++i) {
-      h[i] = (TH1F*)f->Get(hists[i].data());
-      int col = TColor::GetColor(colours[i].data());
-      hstyle(h[i], markers[i], col); h[i]->SetLineWidth(linewidth);
-      std::string rtag = hists[i] + "ratio";
-      hr[i] = (TH1F*)h[i]->Clone(rtag.data()); hr[i]->Divide(h[0]);
-      l1->AddEntry(h[i], legends[i].data(), lopts[i].data());
-      c1->cd(1); h[i]->Draw(dopts[i].data());
-      c1->cd(2); if (i) hr[i]->Draw(dopts[i].data());
-   }
-   c1->cd(2); TLine* lunity = new TLine(xrange[0], 1, xrange[1], 1);
-   lunity->SetLineStyle(7); lunity->SetLineWidth(1.6); lunity->Draw();
-   c1->cd(1); mark(prelim, cdivide); lstyle(l1, 43, 13); l1->Draw();
-   c1->SaveAs(output.data()); delete c1;
-
-   return 0;
-}
-
 int hist(configurer* conf) {
    auto input = conf->get<std::string>("input");
    auto sinput = conf->get<std::string>("sinput");
@@ -190,7 +106,17 @@ int hist(configurer* conf) {
    auto hcolours = conf->get<std::vector<std::string>>("hcolours");
    auto hgopts = conf->get<std::vector<std::string>>("hgopts");
 
+   auto redraw = conf->get<bool>("redraw");
+
    auto linewidth = conf->get<float>("linewidth");
+   auto lnx0 = conf->get<std::vector<float>>("lnx0");
+   auto lnx1 = conf->get<std::vector<float>>("lnx1");
+   auto lny0 = conf->get<std::vector<float>>("lny0");
+   auto lny1 = conf->get<std::vector<float>>("lny1");
+   auto lnstyles = conf->get<std::vector<int>>("lnstyles");
+   auto lnassocc = conf->get<std::vector<int>>("lnassocc");
+
+   auto nlines = conf->get<uint32_t>("nlines");
 
    auto csizes = conf->get<std::vector<int>>("csizes");
    auto cmargins = conf->get<std::vector<float>>("cmargins");
@@ -222,6 +148,7 @@ int hist(configurer* conf) {
    std::vector<TFile*> files(ofiles.size(), 0);
    for (std::size_t i=0; i<ofiles.size(); ++i)
       files[i] = new TFile(ofiles[i].data());
+   std::vector<TLine*> lines(nlines, 0);
    std::vector<TGraphErrors*> vgraphs(graphs.size(), 0);
    for (std::size_t i=0; i<graphs.size(); ++i) {
       vgraphs[i] = (TGraphErrors*)files[gassocf[i]]->Get(graphs[i].data());
@@ -233,8 +160,7 @@ int hist(configurer* conf) {
       vhists[i] = (TH1F*)files[hassocf[i]]->Get(hists[i].data());
       int hcolour = TColor::GetColor(hcolours[i].data());
       hstyle(vhists[i], hmstyles[i], hcolour, hmsizes[i]);
-      hline(vhists[i], hlstyles[i], hcolour);
-      vhists[i]->SetLineWidth(linewidth);
+      hline(vhists[i], hlstyles[i], hcolour, linewidth);
    }
 
    TCanvas* c1 = new TCanvas("c1", "", 400, 400);
@@ -271,6 +197,10 @@ int hist(configurer* conf) {
       l1[i] = new TLegend(lx0[i], ly0[i], lx1[i], ly1[i]);
    for (std::size_t i=0; i<headers.size() && !headers[i].empty(); ++i)
       le1[i] = l1[i]->AddEntry((TObject*)0, headers[i].data(), "");
+   for (std::size_t i=0; i<nlines; ++i) {
+      lines[i] = new TLine(lnx0[i], lny0[i], lnx1[i], lny1[i]);
+      if (i < lnassocc.size()) c1->cd(lnassocc[i]);
+      lines[i]->SetLineStyle(lnstyles[i]); lines[i]->Draw(); }
    for (std::size_t i=0; i<hists.size(); ++i) {
       if (i < hassocc.size()) c1->cd(hassocc[i]);
       vhists[i]->Draw(hgopts[i].data()); }
@@ -286,6 +216,12 @@ int hist(configurer* conf) {
       hl[i] = (TH1F*)h[i]->Clone();
       if (!systs[i].empty()) lestyle(hl[i], col, 0.4);
       l1[assocl[i]]->AddEntry(hl[i], legends[i].data(), lopts[i].data()); }
+   if (redraw) {
+      for (std::size_t i=0; i<hists.size(); ++i) {
+         if (i < hassocc.size()) c1->cd(hassocc[i]);
+         vhists[i]->Draw(hgopts[i].data()); }
+      c1->cd(1);
+   }
    for (std::size_t i=0; i<hists.size(); ++i) {
       if (hassocl[i] >= nl) continue;
       l1[hassocl[i]]->AddEntry(vhists[i], hlegends[i].data(),
@@ -456,7 +392,7 @@ int z(const char* config) {
    auto figure = conf->get<std::string>("figure");
 
    std::map<std::string, int (*)(configurer*)> delegates = {
-      {"ratio", ratio}, {"hist", hist}, {"graph", graph}
+      {"hist", hist}, {"graph", graph}
    };
 
    return delegates[figure](conf);
