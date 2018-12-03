@@ -1,0 +1,117 @@
+std::string figure = graph
+
+std::string input = output/results-v5.midy.root
+std::string output = merged-304906.pu.cgm.int5.epos.m.v5.a-midyover2a-int1-paper-2a.pdf
+std::string title = \
+   ;#scale[1.2]{#LT}\
+   #it{N}#lower[0.4]{#scale[0.7]{#kern[-0.05]{part}}}\
+   #scale[1.2]{#GT}\
+   #kern[0.2]{#lower[0.3]{#scale[2.4]{#/}}}\
+   #kern[-1.0]{2}#it{A};\
+   #scale[1.2]{#LT}\
+   d#it{N}_{ch}/d#kern[-0.08]{#it{#eta}}\
+   #scale[1.2]{#GT}\
+   #lower[0.1]{#scale[1.5]{#kern[0.36]{#lbar}}}\
+   #lower[0.6]{#scale[0.6]{#kern[0.15]{#cbar}#it{#eta}#kern[-0.4]{#cbar}#kern[0.2]{<}#kern[0.2]{0.5}}}\
+   #lower[0.36]{#kern[0.36]{#scale[2.7]{#/}}}\
+   #kern[-0.5]{2#it{A}}
+std::string data = g2axn2a
+token ;
+std::string legend = XeXe 5.44 TeV
+token
+std::string colour = #ef5253
+float alpha = 0.32
+std::string ldopt = pf
+
+std::vector<std::string> systs = g2axn2ast
+std::vector<std::string> scolours = #ef5253
+std::vector<float> salphas = 0.24
+
+std::vector<bool> logscale = 0 0
+std::vector<float> xrange = -0.0601 1.0216
+std::vector<float> yrange = 0 6
+
+uint32_t naxes = 1
+std::vector<float> apathx0 = 0
+std::vector<float> apathx1 = 1.02
+std::vector<float> apathy0 = 0
+std::vector<float> apathy1 = 0
+std::vector<float> arange0 = 0
+std::vector<float> arange1 = 1.02
+std::vector<int> andivs = 510
+token ;
+std::vector<std::string> aopts = ;
+
+token
+std::vector<int> atfonts = 43
+std::vector<float> atsizes = 13
+std::vector<float> atoffsets = 0
+std::vector<int> alfonts = 43
+std::vector<float> alsizes = 15
+std::vector<float> aloffsets = 0.005
+
+uint32_t nl = 3
+std::vector<float> lx0 = 0.20 0.20 0.52
+std::vector<float> lx1 = 0.44 0.44 0.76
+std::vector<float> ly0 = 0.68 0.45 0.68
+std::vector<float> ly1 = 0.82 0.64 0.82
+std::vector<std::string> headers = CMS ALICE PHOBOS
+
+std::vector<std::string> files = output/results-v5.midy.root
+std::vector<std::string> bfiles = output/results-v5.midy.root
+std::vector<std::string> graphs =   \
+   galice_xexe_5p44_n2a_x_npart2a   \
+   galice_pbpb_5p02_n2a_x_npart2a   \
+   galice_pbpb_2p76_n2a_x_npart2a   \
+   gcms_pbpb_2p76_n2a_x_npart2a     \
+   gphobos_cucu_0p2_n2a_x_npart2a   \
+   gphobos_auau_0p2_n2a_x_npart2a
+std::vector<uint32_t> gassocf = 0 0 0 0 0 0
+std::vector<uint32_t> gassocl = 1 1 1 0 2 2
+token ;
+std::vector<std::string> glegends = \
+   XeXe 5.44 TeV; \
+   PbPb 5.02 TeV; \
+   PbPb 2.76 TeV; \
+   PbPb 2.76 TeV; \
+   CuCu 200 GeV; \
+   AuAu 200 GeV
+token
+std::vector<int> gmstyles = 47 22 23 20 43 29
+std::vector<float> gmsizes = 0.72 0.72 0.72 0.64 0.84 0.84
+std::vector<std::string> gcolours = #73c844 #61afef #61afef #f9a257 #5151e8 #9966cc
+std::vector<std::string> gdopts = pxsame pxsame pxsame pxsame pxsame pxsame
+std::vector<float> glalphas = 0.24 0.24 0.24 0.24 0.24 0.24
+std::vector<std::string> gldopts = pf pf pf pf pf pf
+
+std::vector<std::string> gbands =   \
+   galice_xexe_5p44_n2a_x_npart2a   \
+   galice_pbpb_5p02_n2a_x_npart2a   \
+   galice_pbpb_2p76_n2a_x_npart2a   \
+   gcms_pbpb_2p76_n2a_x_npart2a     \
+   gphobos_cucu_0p2_n2a_x_npart2a   \
+   gphobos_auau_0p2_n2a_x_npart2a
+std::vector<int> gbtypes = 4 4 4 4 4 4
+std::vector<uint32_t> gbassocf = 0 0 0 0 0 0
+std::vector<uint32_t> gbassocg = 0 1 2 3 4 5
+std::vector<std::string> gbcolours = #73c844 #61afef #61afef #f9a257 #5151e8 #9966cc
+std::vector<float> gbalphas = 0.24 0.24 0.24 0.24 0.24 0.24
+
+uint32_t nlatex = 1
+std::vector<int> lxfonts = 63
+std::vector<float> lxsizes = 19
+std::vector<int> lxaligns = 13
+std::vector<float> lxx = 0.18
+std::vector<float> lxy = 0.91
+token ;
+std::vector<std::string> lxtexts = CMS
+
+token
+std::vector<int> csizes = 400 400
+std::vector<float> cmargins = 0.06 0.12 0.15 0.05
+
+std::vector<int> tfonts = 43 43
+std::vector<float> tsizes = 17 18
+std::vector<float> toffsets = 0.9 1.6
+std::vector<int> lfonts = 43 43
+std::vector<float> lsizes = 15 15

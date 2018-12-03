@@ -26,8 +26,8 @@ std::vector<float> yrange = 90 3000
 std::vector<int> ndivs = 508 1003
 
 uint32_t nl = 3
-std::vector<float> lx0 = 0.25 0.61 0.35
-std::vector<float> lx1 = 0.50 0.86 0.54
+std::vector<float> lx0 = 0.25 0.61 0.34
+std::vector<float> lx1 = 0.50 0.86 0.53
 std::vector<float> ly0 = 0.30 0.30 0.80
 std::vector<float> ly1 = 0.59 0.59 0.96
 token ;

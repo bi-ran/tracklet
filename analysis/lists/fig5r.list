@@ -1,0 +1,118 @@
+std::string figure = graph
+
+std::string input = output/results-v5.midy.root
+std::string output = merged-304906.pu.cgm.int5.epos.m.v5.a-midynorm-int1-paper-2a.pdf
+std::string title = \
+   ;#scale[1.2]{#LT}\
+   #it{N}#lower[0.4]{#scale[0.7]{#kern[-0.05]{part}}}\
+   #scale[1.2]{#GT}\
+   #kern[0.2]{#lower[0.3]{#scale[2.4]{#/}}}\
+   #kern[-1.0]{2}#it{A};\
+   #scale[1.2]{#LT}\
+   d#it{N}_{ch}/d#kern[-0.08]{#it{#eta}}\
+   #scale[1.2]{#GT}\
+   #lower[0.1]{#scale[1.5]{#kern[0.36]{#lbar}}}\
+   #lower[0.6]{#scale[0.6]{#kern[0.15]{#cbar}#it{#eta}#kern[-0.4]{#cbar}#kern[0.2]{<}#kern[0.2]{0.5}}}\
+   #lower[0.36]{#kern[0.36]{#scale[2.7]{#/}}}\
+   #kern[-1.5]{#scale[1.2]{#LT}}\
+   #lower[0.1]{#it{N}}\
+   #lower[0.5]{#scale[0.6]{#kern[-0.08]{part}}}\
+   #scale[1.2]{#GT}
+std::string data = gnxn2a
+token ;
+std::string legend = XeXe 5.44 TeV
+token
+std::string colour = #ef5253
+std::string ldopt = pf
+
+std::vector<std::string> systs = gnxn2ast gnxn2as_total
+std::vector<std::string> scolours = #ef5253 #ef5253
+std::vector<float> salphas = 0.24 0.24
+token ;
+std::vector<std::string> slegends =    total (expt. + #scale[1.2]{#LT}#it{N}#lower[0.5]{#scale[0.6]{#kern[-0.08]{part}}}#scale[1.2]{#GT}) unc.;    expt. unc.
+token
+std::vector<float> slalphas = 0.24 0.48
+std::vector<uint32_t> slassocl = 3 3
+
+std::vector<bool> logscale = 0 0
+std::vector<float> xrange = -0.0601 1.0216
+std::vector<float> yrange = 0 6
+
+uint32_t naxes = 1
+std::vector<float> apathx0 = 0
+std::vector<float> apathx1 = 1.02
+std::vector<float> apathy0 = 0
+std::vector<float> apathy1 = 0
+std::vector<float> arange0 = 0
+std::vector<float> arange1 = 1.02
+std::vector<int> andivs = 510
+token ;
+std::vector<std::string> aopts = ;
+
+token
+std::vector<int> atfonts = 43
+std::vector<float> atsizes = 13
+std::vector<float> atoffsets = 0
+std::vector<int> alfonts = 43
+std::vector<float> alsizes = 15
+std::vector<float> aloffsets = 0.005
+
+uint32_t nl = 4
+std::vector<float> lx0 = 0.40 0.40 0.40 0.40
+std::vector<float> lx1 = 0.67 0.67 0.67 0.67
+std::vector<float> ly0 = 0.46 0.15 0.34 0.395
+std::vector<float> ly1 = 0.55 0.32 0.39 0.46
+std::vector<std::string> headers = CMS ALICE
+
+std::vector<std::string> files = output/results-v5.midy.root
+std::vector<std::string> bfiles = output/results-v5.midy.root
+std::vector<std::string> graphs =      \
+   galice_xexe_5p44_nnpart_x_npart2a   \
+   galice_pbpb_5p02_nnpart_x_npart2a   \
+   galice_pbpb_2p76_nnpart_x_npart2a   \
+   gcms_pbpb_2p76_nnpart_x_npart2a
+std::vector<uint32_t> gassocf = 0 0 0 0
+std::vector<uint32_t> gassocl = 1 1 1 2
+token ;
+std::vector<std::string> glegends = \
+   XeXe 5.44 TeV; \
+   PbPb 5.02 TeV; \
+   PbPb 2.76 TeV; \
+   PbPb 2.76 TeV
+token
+std::vector<int> gmstyles = 47 22 23 20
+std::vector<float> gmsizes = 0.72 0.72 0.72 0.64
+std::vector<std::string> gcolours = #73c844 #61afef #61afef #f9a257
+std::vector<std::string> gdopts = pxsame pxsame pxsame pxsame
+std::vector<float> glalphas = 0.24 0.24 0.24 0.24
+std::vector<std::string> gldopts = pf pf pf pf
+
+std::vector<std::string> gbands =      \
+   galice_xexe_5p44_nnpart_x_npart2a   \
+   galice_pbpb_5p02_nnpart_x_npart2a   \
+   galice_pbpb_2p76_nnpart_x_npart2a   \
+   gcms_pbpb_2p76_nnpart_x_npart2a
+std::vector<int> gbtypes = 4 4 4 4
+std::vector<uint32_t> gbassocf = 0 0 0 0
+std::vector<uint32_t> gbassocg = 0 1 2 3
+std::vector<std::string> gbcolours = #73c844 #61afef #61afef #f9a257
+std::vector<float> gbalphas = 0.24 0.24 0.24 0.24
+
+uint32_t nlatex = 1
+std::vector<int> lxfonts = 63
+std::vector<float> lxsizes = 19
+std::vector<int> lxaligns = 13
+std::vector<float> lxx = 0.18
+std::vector<float> lxy = 0.91
+token ;
+std::vector<std::string> lxtexts = CMS
+
+token
+std::vector<int> csizes = 400 400
+std::vector<float> cmargins = 0.06 0.12 0.15 0.05
+
+std::vector<int> tfonts = 43 43
+std::vector<float> tsizes = 17 18
+std::vector<float> toffsets = 0.9 1.6
+std::vector<int> lfonts = 43 43
+std::vector<float> lsizes = 15 15

@@ -27,8 +27,8 @@ std::vector<int> ndivs = 508 507
 uint32_t nl = 1
 std::vector<float> lx0 = 0.42
 std::vector<float> lx1 = 0.67
-std::vector<float> ly0 = 0.23
-std::vector<float> ly1 = 0.44
+std::vector<float> ly0 = 0.22
+std::vector<float> ly1 = 0.45
 token ;
 std::vector<std::string> headers = 0 - 80%
 
