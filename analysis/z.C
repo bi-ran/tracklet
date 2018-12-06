@@ -220,17 +220,6 @@ int hist(configurer* conf) {
          lxtexts[i].data());
    }
 
-   for (std::size_t i=0; i<nl; ++i)
-      l1[i] = new TLegend(lx0[i], ly0[i], lx1[i], ly1[i]);
-   for (std::size_t i=0; i<headers.size() && !headers[i].empty(); ++i)
-      le1[i] = l1[i]->AddEntry((TObject*)0, headers[i].data(), "");
-   c1->cd(1); for (std::size_t i=0; i<nlines; ++i) {
-      lines[i] = new TLine(lnx0[i], lny0[i], lnx1[i], lny1[i]);
-      if (i < lnassocc.size()) c1->cd(lnassocc[i]);
-      lines[i]->SetLineStyle(lnstyles[i]); lines[i]->Draw(); }
-   c1->cd(1); for (std::size_t i=0; i<hists.size(); ++i) {
-      if (i < hassocc.size()) c1->cd(hassocc[i]);
-      vhists[i]->Draw(hgopts[i].data()); }
    c1->cd(1); for (std::size_t i=0; i<gbands.size(); ++i) {
       int gbcol = TColor::GetColor(gbcolours[i].data());
       if (gbassocg[i] < gassocc.size()) c1->cd(gassocc[gbassocg[i]]);
@@ -243,6 +232,12 @@ int hist(configurer* conf) {
             break;
          case 2:
             box(vgbands[i], gbcol, gbalphas[i]);
+            break;
+         case 3:
+            band(vgraphs[gbassocg[i]], vgbands[i], gbcol, gbalphas[i]);
+            break;
+         case 4:
+            band(vgbands[i], gbcol, gbalphas[i]);
             break;
       }
    }
@@ -260,6 +255,17 @@ int hist(configurer* conf) {
       hl[i] = (TH1F*)h[i]->Clone();
       if (i < systs.size() && !systs[i].empty()) lestyle(hl[i], col, 0.4);
       l1[assocl[i]]->AddEntry(hl[i], legends[i].data(), lopts[i].data()); }
+   for (std::size_t i=0; i<nl; ++i)
+      l1[i] = new TLegend(lx0[i], ly0[i], lx1[i], ly1[i]);
+   for (std::size_t i=0; i<headers.size() && !headers[i].empty(); ++i)
+      le1[i] = l1[i]->AddEntry((TObject*)0, headers[i].data(), "");
+   c1->cd(1); for (std::size_t i=0; i<nlines; ++i) {
+      lines[i] = new TLine(lnx0[i], lny0[i], lnx1[i], lny1[i]);
+      if (i < lnassocc.size()) c1->cd(lnassocc[i]);
+      lines[i]->SetLineStyle(lnstyles[i]); lines[i]->Draw(); }
+   c1->cd(1); for (std::size_t i=0; i<hists.size(); ++i) {
+      if (i < hassocc.size()) c1->cd(hassocc[i]);
+      vhists[i]->Draw(hdopts[i].data()); }
    c1->cd(1); if (redraw) {
       for (std::size_t i=0; i<hists.size(); ++i) {
          if (i < hassocc.size()) c1->cd(hassocc[i]);
@@ -304,6 +310,7 @@ int graph(configurer* conf) {
    auto logscale = conf->get<std::vector<bool>>("logscale");
    auto xrange = conf->get<std::vector<float>>("xrange");
    auto yrange = conf->get<std::vector<float>>("yrange");
+   auto ndivs = conf->get<std::vector<int>>("ndivs");
 
    auto naxes = conf->get<uint32_t>("naxes");
    auto apathx0 = conf->get<std::vector<float>>("apathx0");
@@ -368,9 +375,15 @@ int graph(configurer* conf) {
    auto hassocf = conf->get<std::vector<uint32_t>>("hassocf");
    auto hassocl = conf->get<std::vector<uint32_t>>("hassocl");
    auto hlegends = conf->get<std::vector<std::string>>("hlegends");
+   auto hldopts = conf->get<std::vector<std::string>>("hldopts");
+   auto hlstyles = conf->get<std::vector<int>>("hlstyles");
+   auto hlwidths = conf->get<std::vector<float>>("hlwidths");
    auto hmstyles = conf->get<std::vector<int>>("hmstyles");
    auto hmsizes = conf->get<std::vector<float>>("hmsizes");
    auto hcolours = conf->get<std::vector<std::string>>("hcolours");
+   auto hdopts = conf->get<std::vector<std::string>>("hdopts");
+
+   auto redraw = conf->get<bool>("redraw");
 
    auto nlatex = conf->get<uint32_t>("nlatex");
    auto lxfonts = conf->get<std::vector<int>>("lxfonts");
@@ -408,6 +421,7 @@ int graph(configurer* conf) {
    auto rlfonts = conf->get<std::vector<int>>("rlfonts");
    auto rlsizes = conf->get<std::vector<float>>("rlsizes");
    auto rloffsets = conf->get<std::vector<float>>("rloffsets");
+   auto rtksizes = conf->get<std::vector<float>>("rtksizes");
    auto rndiv = conf->get<int>("rndiv");
 
    TFile* f = new TFile(input.data());
@@ -438,6 +452,7 @@ int graph(configurer* conf) {
       vhists[i] = (TH1F*)vfiles[hassocf[i]]->Get(hists[i].data());
       int hcolour = TColor::GetColor(hcolours[i].data());
       hstyle(vhists[i], hmstyles[i], hcolour, hmsizes[i]);
+      hline(vhists[i], hlstyles[i], hcolour, hlwidths[i]);
    }
 
    TCanvas* c1 = new TCanvas("c1", "", 400, 400);
@@ -462,6 +477,7 @@ int graph(configurer* conf) {
    if (!loffsets.empty()) hloffset(hframe, loffsets[0], loffsets[1]);
    if (!lfonts.empty()) hlfont(hframe, lfonts[0], lfonts[1]);
    if (!lsizes.empty()) hlsize(hframe, lsizes[0], lsizes[1]);
+   if (!ndivs.empty()) hndiv(hframe, ndivs[0], ndivs[1]);
    hframe->Draw();
 
    if (cdivide) {
@@ -474,7 +490,8 @@ int graph(configurer* conf) {
       if (!rloffsets.empty()) hloffset(hrframe, rloffsets[0], rloffsets[1]);
       if (!rlfonts.empty()) hlfont(hrframe, rlfonts[0], rlfonts[1]);
       if (!rlsizes.empty()) hlsize(hrframe, rlsizes[0], rlsizes[1]);
-      hndiv(hrframe, 1, rndiv); hrframe->Draw();
+      if (!rtksizes.empty()) htksize(hrframe, rtksizes[0], rtksizes[1]);
+      hndiv(hrframe, ndivs[0], rndiv); hrframe->Draw();
    }
 
    std::vector<TGaxis*> axes(naxes, 0); std::vector<TF1*> faxes(naxes, 0);
@@ -548,6 +565,17 @@ int graph(configurer* conf) {
    l1[lindex]->AddEntry(gl, legend.data(), ldopt.data());
    for (std::size_t i=0; i<ns; ++i) if (i < slegends.size())
       l1[slassocl[i]]->AddEntry(gls[i], slegends[i].data(), "f");
+   c1->cd(1); for (std::size_t i=0; i<hists.size(); ++i) {
+      if (i < hassocc.size()) c1->cd(hassocc[i]);
+      vhists[i]->Draw(hdopts[i].data()); }
+   c1->cd(1); if (redraw) {
+      for (std::size_t i=0; i<hists.size(); ++i) {
+         if (i < hassocc.size()) c1->cd(hassocc[i]);
+         vhists[i]->Draw(hdopts[i].data()); } }
+   for (std::size_t i=0; i<hists.size(); ++i) {
+      if (hassocl[i] >= nl) continue;
+      l1[hassocl[i]]->AddEntry(vhists[i], hlegends[i].data(),
+         hldopts[i].data()); }
    for (std::size_t i=0; i<graphs.size(); ++i) {
       if (gassocl[i] >= nl) continue;
       l1[gassocl[i]]->AddEntry(vlgraphs[i], glegends[i].data(),
