@@ -1,6 +1,5 @@
 std::string figure = graph
 
-std::string input = output/results-v5.midy.root
 std::string output = Figure_004-b.pdf
 token ,
 std::string title = \
@@ -12,19 +11,8 @@ std::string title = \
    #lower[0.6]{#scale[0.6]{#kern[0.15]{#cbar}#it{#eta}#kern[-0.4]{#cbar}#kern[0.2]{<}#kern[0.2]{0.5}}}\
    #lower[0.36]{#kern[0.36]{#scale[2.7]{#/}}}\
    #kern[-0.5]{2#it{A}}
-token
-std::string data = g2axc
-token ;
-std::string legend = XeXe 5.44 TeV
-token
-std::string colour = #ef5253
-float alpha = 0.32
-std::string ldopt = pf
 
-std::vector<std::string> systs = g2axcs_total
-std::vector<std::string> scolours = #ef5253
-std::vector<float> salphas = 0.24
-
+token
 std::vector<bool> logscale = 0 0
 std::vector<float> xrange = 0 100
 std::vector<float> yrange = 0 6
@@ -62,39 +50,44 @@ std::vector<std::string> graphs =   \
    galice_xexe_5p44_n2a             \
    galice_pbpb_5p02_n2a             \
    galice_pbpb_2p76_n2a             \
-   gcms_pbpb_2p76_n2a               \
    gphobos_cucu_0p2_n2a             \
-   gphobos_auau_0p2_n2a
-std::vector<uint32_t> gassocf = 0 0 0 0 0 0
-std::vector<uint32_t> gassocl = 1 1 1 0 2 2
+   gphobos_auau_0p2_n2a             \
+   g2axc                            \
+   gcms_pbpb_2p76_n2a               \
+   g2axc
+std::vector<uint32_t> gassocf = 0 0 0 0 0 0 0 0
+std::vector<int> gmstyles = 47 22 23 43 29 21 20 21
+std::vector<float> gmsizes = 0.72 0.72 0.72 0.84 0.84 0.6 0.64 0.6
+std::vector<std::string> gcolours = #73c844 #61afef #61afef #5151e8 #9966cc #ef5253 #f9a257 #ef5253
+std::vector<std::string> gdopts = pxsame pxsame pxsame pxsame pxsame pxsame pxsame pxsame
+
+std::vector<uint32_t> gassocl = 1 1 1 2 2 0 0
+std::vector<float> glalphas = 0.24 0.24 0.24 0.24 0.24 0.24 0.32
+std::vector<std::string> gldopts = pf pf pf pf pf pf pf
 token ;
 std::vector<std::string> glegends = \
    XeXe 5.44 TeV; \
    PbPb 5.02 TeV; \
    PbPb 2.76 TeV; \
-   PbPb 2.76 TeV; \
    CuCu 200 GeV; \
-   AuAu 200 GeV
-token
-std::vector<int> gmstyles = 47 22 23 20 43 29
-std::vector<float> gmsizes = 0.72 0.72 0.72 0.64 0.84 0.84
-std::vector<std::string> gcolours = #73c844 #61afef #61afef #f9a257 #5151e8 #9966cc
-std::vector<std::string> gdopts = pxsame pxsame pxsame pxsame pxsame pxsame
-std::vector<float> glalphas = 0.24 0.24 0.24 0.24 0.24 0.24
-std::vector<std::string> gldopts = pf pf pf pf pf pf
+   AuAu 200 GeV; \
+   XeXe 5.44 TeV; \
+   PbPb 2.76 TeV
 
+token
 std::vector<std::string> gbands =   \
    galice_xexe_5p44_n2a             \
    galice_pbpb_5p02_n2a             \
    galice_pbpb_2p76_n2a             \
-   gcms_pbpb_2p76_n2a               \
    gphobos_cucu_0p2_n2a             \
-   gphobos_auau_0p2_n2a
-std::vector<int> gbtypes = 4 4 4 4 4 4
-std::vector<uint32_t> gbassocf = 0 0 0 0 0 0
-std::vector<uint32_t> gbassocg = 0 1 2 3 4 5
-std::vector<std::string> gbcolours = #73c844 #61afef #61afef #f9a257 #5151e8 #9966cc
-std::vector<float> gbalphas = 0.24 0.24 0.24 0.24 0.24 0.24
+   gphobos_auau_0p2_n2a             \
+   gcms_pbpb_2p76_n2a               \
+   g2axcs_total
+std::vector<uint32_t> gbassocf = 0 0 0 0 0 0 0
+std::vector<uint32_t> gbassocg = 0 1 2 3 4 6 5
+std::vector<int> gbtypes = 4 4 4 4 4 4 5
+std::vector<std::string> gbcolours = #73c844 #61afef #61afef #5151e8 #9966cc #f9a257 #ef5253
+std::vector<float> gbalphas = 0.24 0.24 0.24 0.24 0.24 0.24 0.24
 
 uint32_t nlatex = 1
 std::vector<int> lxfonts = 63

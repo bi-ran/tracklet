@@ -289,23 +289,8 @@ int hist(configurer* conf) {
 }
 
 int graph(configurer* conf) {
-   auto input = conf->get<std::string>("input");
    auto output = conf->get<std::string>("output");
    auto title = conf->get<std::string>("title");
-   auto data = conf->get<std::string>("data");
-   auto legend = conf->get<std::string>("legend");
-   auto lindex = conf->get<uint32_t>("lindex");
-   auto colour = conf->get<std::string>("colour");
-   auto alpha = conf->get<float>("alpha");
-   auto ldopt = conf->get<std::string>("ldopt");
-
-   auto systs = conf->get<std::vector<std::string>>("systs");
-   auto scolours = conf->get<std::vector<std::string>>("scolours");
-   auto salphas = conf->get<std::vector<float>>("salphas");
-   auto slegends = conf->get<std::vector<std::string>>("slegends");
-   auto slalphas = conf->get<std::vector<float>>("slalphas");
-   auto slassocl = conf->get<std::vector<uint32_t>>("slassocl");
-   std::size_t ns = systs.size();
 
    auto logscale = conf->get<std::vector<bool>>("logscale");
    auto xrange = conf->get<std::vector<float>>("xrange");
@@ -353,22 +338,25 @@ int graph(configurer* conf) {
    auto graphs = conf->get<std::vector<std::string>>("graphs");
    auto gassocc = conf->get<std::vector<uint32_t>>("gassocc");
    auto gassocf = conf->get<std::vector<uint32_t>>("gassocf");
-   auto gassocl = conf->get<std::vector<uint32_t>>("gassocl");
-   auto glegends = conf->get<std::vector<std::string>>("glegends");
    auto gmstyles = conf->get<std::vector<int>>("gmstyles");
    auto gmsizes = conf->get<std::vector<float>>("gmsizes");
    auto gcolours = conf->get<std::vector<std::string>>("gcolours");
    auto gdopts = conf->get<std::vector<std::string>>("gdopts");
+   auto gassocl = conf->get<std::vector<uint32_t>>("gassocl");
+   auto glegends = conf->get<std::vector<std::string>>("glegends");
    auto glalphas = conf->get<std::vector<float>>("glalphas");
    auto gldopts = conf->get<std::vector<std::string>>("gldopts");
 
    auto gbands = conf->get<std::vector<std::string>>("gbands");
-   auto gblegends = conf->get<std::vector<std::string>>("gblegends");
    auto gbtypes = conf->get<std::vector<int>>("gbtypes");
-   auto gbassocf = conf->get<std::vector<uint32_t>>("gbassocf");
-   auto gbassocg = conf->get<std::vector<uint32_t>>("gbassocg");
    auto gbcolours = conf->get<std::vector<std::string>>("gbcolours");
    auto gbalphas = conf->get<std::vector<float>>("gbalphas");
+   auto gbassocf = conf->get<std::vector<uint32_t>>("gbassocf");
+   auto gbassocg = conf->get<std::vector<uint32_t>>("gbassocg");
+   auto gbassocl = conf->get<std::vector<uint32_t>>("gbassocl");
+   auto gblegends = conf->get<std::vector<std::string>>("gblegends");
+   auto gblalphas = conf->get<std::vector<float>>("gblalphas");
+   auto gbldopts = conf->get<std::vector<std::string>>("gbldopts");
 
    auto hists = conf->get<std::vector<std::string>>("hists");
    auto hassocc = conf->get<std::vector<uint32_t>>("hassocc");
@@ -424,13 +412,6 @@ int graph(configurer* conf) {
    auto rtksizes = conf->get<std::vector<float>>("rtksizes");
    auto rndiv = conf->get<int>("rndiv");
 
-   TFile* f = new TFile(input.data());
-   TGraphErrors* g = (TGraphErrors*)f->Get(data.data());
-   std::vector<TGraph*> gs(ns, 0);
-   std::vector<TGraph*> gls(ns, 0);
-   for (std::size_t i=0; i<ns; ++i)
-      gs[i] = (TGraph*)f->Get(systs[i].data());
-
    std::vector<TLine*> lines(nlines, 0);
    std::vector<TFile*> vfiles(files.size(), 0);
    for (std::size_t i=0; i<files.size(); ++i)
@@ -445,6 +426,7 @@ int graph(configurer* conf) {
       lestyle(vlgraphs[i], gcolour, glalphas[i]);
    }
    std::vector<TGraphErrors*> vgbands(gbands.size(), 0);
+   std::vector<TGraph*> vlgbands(gbands.size(), 0);
    for (std::size_t i=0; i<gbands.size(); ++i)
       vgbands[i] = (TGraphErrors*)vfiles[gbassocf[i]]->Get(gbands[i].data());
    std::vector<TH1F*> vhists(hists.size(), 0);
@@ -521,38 +503,25 @@ int graph(configurer* conf) {
          lxtexts[i].data());
    }
 
-   c1->cd(1); for (std::size_t i=0; i<gbands.size(); ++i) {
-      int gbcol = TColor::GetColor(gbcolours[i].data());
-      if (gbassocg[i] < gassocc.size()) c1->cd(gassocc[gbassocg[i]]);
-      switch (gbtypes[i]) {
-         case 0:
-            // draw graph directly
-            break;
-         case 1:
-            box(vgraphs[gbassocg[i]], vgbands[i], gbcol, gbalphas[i]);
-            break;
-         case 2:
-            box(vgbands[i], gbcol, gbalphas[i]);
-            break;
-         case 3:
-            band(vgraphs[gbassocg[i]], vgbands[i], gbcol, gbalphas[i]);
-            break;
-         case 4:
-            band(vgbands[i], gbcol, gbalphas[i]);
-            break;
-      }
-   }
    c1->cd(1); for (std::size_t i=0; i<graphs.size(); ++i) {
       if (i < gassocc.size()) c1->cd(gassocc[i]);
-      if (i < gdopts.size()) vgraphs[i]->Draw(gdopts[i].data());
-      else vgraphs[i]->Draw("p same"); }
-   c1->cd(1); for (std::size_t i=0; i<ns; ++i) {
-      int scol = TColor::GetColor(scolours[i].data());
-      lestyle(gs[i], scol, salphas[i]); gs[i]->Draw("f");
-      if (i < slegends.size()) { gls[i] = (TGraph*)gs[i]->Clone();
-         lestyle(gls[i], scol, slalphas[i]); } }
-   int col = TColor::GetColor(colour.data());
-   gstyle(g, 21, col, 0.6); g->Draw("p same");
+      std::vector<uint32_t> gbassoci;
+      std::vector<uint32_t> gbindices(gbands.size());
+      std::iota(gbindices.begin(), gbindices.end(), 0);
+      std::copy_if(gbindices.begin(), gbindices.end(),
+         std::back_inserter(gbassoci),
+         [&](auto const& g) { return gbassocg[g] == i; });
+      for (auto const& g : gbassoci) {
+         int gbcol = TColor::GetColor(gbcolours[g].data());
+         switch (gbtypes[g]) {
+            case 0: break;
+            case 1: box(vgraphs[i], vgbands[g], gbcol, gbalphas[g]); break;
+            case 2: box(vgbands[g], gbcol, gbalphas[g]); break;
+            case 3: band(vgraphs[i], vgbands[g], gbcol, gbalphas[g]); break;
+            case 4: band(vgbands[g], gbcol, gbalphas[g]); break;
+            case 5: lestyle(vgbands[g], gbcol, gbalphas[g]);
+               vgbands[g]->Draw("f"); break; } }
+      vgraphs[i]->Draw(gdopts[i].data()); }
    for (std::size_t i=0; i<nl; ++i)
       l1[i] = new TLegend(lx0[i], ly0[i], lx1[i], ly1[i]);
    for (std::size_t i=0; i<headers.size() && !headers[i].empty(); ++i)
@@ -561,10 +530,6 @@ int graph(configurer* conf) {
       lines[i] = new TLine(lnx0[i], lny0[i], lnx1[i], lny1[i]);
       if (i < lnassocc.size()) c1->cd(lnassocc[i]);
       lines[i]->SetLineStyle(lnstyles[i]); lines[i]->Draw(); }
-   TGraph* gl = (TGraph*)g->Clone("gl"); lestyle(gl, col, alpha);
-   l1[lindex]->AddEntry(gl, legend.data(), ldopt.data());
-   for (std::size_t i=0; i<ns; ++i) if (i < slegends.size())
-      l1[slassocl[i]]->AddEntry(gls[i], slegends[i].data(), "f");
    c1->cd(1); for (std::size_t i=0; i<hists.size(); ++i) {
       if (i < hassocc.size()) c1->cd(hassocc[i]);
       vhists[i]->Draw(hdopts[i].data()); }
@@ -580,6 +545,13 @@ int graph(configurer* conf) {
       if (gassocl[i] >= nl) continue;
       l1[gassocl[i]]->AddEntry(vlgraphs[i], glegends[i].data(),
          gldopts[i].data()); }
+   for (std::size_t i=0; i<gbassocl.size(); ++i) {
+      if (gbassocl[i] >= nl) continue;
+      vlgbands[i] = (TGraph*)vgbands[i]->Clone();
+      int gbcol = TColor::GetColor(gbcolours[i].data());
+      lestyle(vlgbands[i], gbcol, gblalphas[i]);
+      l1[gbassocl[i]]->AddEntry(vlgbands[i], gblegends[i].data(),
+         gbldopts[i].data()); }
    for (std::size_t i=0; i<le1.size(); ++i)
       if (le1[i]) tstyle(le1[i], hfonts[i], hsizes[i]);
    c1->cd(1); for (std::size_t i=0; i<nl; ++i) {

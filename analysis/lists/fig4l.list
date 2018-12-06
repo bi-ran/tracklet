@@ -1,6 +1,5 @@
 std::string figure = graph
 
-std::string input = output/results-v5.midy.root
 std::string output = Figure_004-a.pdf
 token ,
 std::string title = \
@@ -10,19 +9,8 @@ std::string title = \
    #scale[1.2]{#GT}\
    #lower[0.1]{#scale[1.5]{#kern[0.36]{#lbar}}}\
    #lower[0.6]{#scale[0.6]{#kern[0.15]{#cbar}#it{#eta}#kern[-0.4]{#cbar}#kern[0.2]{<}#kern[0.2]{0.5}}}
-token
-std::string data = gxc
-token ;
-std::string legend = XeXe 5.44 TeV
-token
-std::string colour = #ef5253
-float alpha = 0.32
-std::string ldopt = pf
 
-std::vector<std::string> systs = gxcs_total
-std::vector<std::string> scolours = #ef5253
-std::vector<float> salphas = 0.24
-
+token
 std::vector<bool> logscale = 0 1
 std::vector<float> xrange = 0 100
 std::vector<float> yrange = 2 6000
@@ -60,33 +48,37 @@ std::vector<std::string> graphs =   \
    galice_xexe_5p44                 \
    galice_pbpb_5p02                 \
    galice_pbpb_2p76                 \
+   gxc                              \
    gcms_pbpb_2p76
-std::vector<uint32_t> gassocf = 0 0 0 0
-std::vector<uint32_t> gassocl = 1 1 1 0
+std::vector<uint32_t> gassocf = 0 0 0 0 0
+std::vector<int> gmstyles = 47 22 23 21 20
+std::vector<float> gmsizes = 0.72 0.72 0.72 0.6 0.64
+std::vector<std::string> gcolours = #73c844 #61afef #61afef #ef5253 #f9a257
+std::vector<std::string> gdopts = pxsame pxsame pxsame pxsame pxsame
+
+std::vector<uint32_t> gassocl = 1 1 1 0 0
+std::vector<float> glalphas = 0.24 0.24 0.24 0.32 0.24
+std::vector<std::string> gldopts = pf pf pf pf pf
 token ;
 std::vector<std::string> glegends = \
    XeXe 5.44 TeV; \
    PbPb 5.02 TeV; \
    PbPb 2.76 TeV; \
+   XeXe 5.44 TeV; \
    PbPb 2.76 TeV
-token
-std::vector<int> gmstyles = 47 22 23 20
-std::vector<float> gmsizes = 0.72 0.72 0.72 0.64
-std::vector<std::string> gcolours = #73c844 #61afef #61afef #f9a257
-std::vector<std::string> gdopts = pxsame pxsame pxsame pxsame
-std::vector<float> glalphas = 0.24 0.24 0.24 0.24
-std::vector<std::string> gldopts = pf pf pf pf
 
+token
 std::vector<std::string> gbands =   \
    galice_xexe_5p44                 \
    galice_pbpb_5p02                 \
    galice_pbpb_2p76                 \
+   gxcs_total                       \
    gcms_pbpb_2p76
-std::vector<int> gbtypes = 4 4 4 4
-std::vector<uint32_t> gbassocf = 0 0 0 0
-std::vector<uint32_t> gbassocg = 0 1 2 3
-std::vector<std::string> gbcolours = #73c844 #61afef #61afef #f9a257
-std::vector<float> gbalphas = 0.24 0.24 0.24 0.24
+std::vector<uint32_t> gbassocf = 0 0 0 0 0
+std::vector<uint32_t> gbassocg = 0 1 2 3 4
+std::vector<int> gbtypes = 4 4 4 5 4
+std::vector<std::string> gbcolours = #73c844 #61afef #61afef #ef5253 #f9a257
+std::vector<float> gbalphas = 0.24 0.24 0.24 0.24 0.24
 
 uint32_t nlatex = 1
 std::vector<int> lxfonts = 63
