@@ -1,7 +1,7 @@
 std::string figure = graph
 
 std::string input = output/results-v5.midy.root
-std::string output = merged-304906.pu.cgm.int5.epos.m.v5.a-midyover2a-int1-paper-centrality.pdf
+std::string output = Figure_004-b.pdf
 token ,
 std::string title = \
    ;centrality [%];\
@@ -52,6 +52,10 @@ std::vector<float> lx1 = 0.44 0.44 0.76
 std::vector<float> ly0 = 0.63 0.40 0.63
 std::vector<float> ly1 = 0.77 0.59 0.77
 std::vector<std::string> headers = CMS ALICE PHOBOS
+std::vector<int> lgfonts = 43 43 43
+std::vector<float> lgsizes = 14 14 14
+std::vector<int> hfonts = 63 63 63
+std::vector<float> hsizes = 15 15 15
 
 std::vector<std::string> files = output/results-v5.midy.root
 std::vector<std::string> bfiles = output/results-v5.midy.root
