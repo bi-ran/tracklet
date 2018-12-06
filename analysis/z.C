@@ -54,6 +54,10 @@ int hist(configurer* conf) {
    auto ly1 = conf->get<std::vector<float>>("ly1");
    auto headers = conf->get<std::vector<std::string>>("headers");
    auto lassocc = conf->get<std::vector<uint32_t>>("lassocc");
+   auto lgfonts = conf->get<std::vector<int>>("lgfonts");
+   auto lgsizes = conf->get<std::vector<float>>("lgsizes");
+   auto hfonts = conf->get<std::vector<int>>("hfonts");
+   auto hsizes = conf->get<std::vector<float>>("hsizes");
    for (auto& head : headers) { ltrim(head); }
 
    auto files = conf->get<std::vector<std::string>>("files");
@@ -273,10 +277,11 @@ int hist(configurer* conf) {
       if (gassocl[i] >= nl) continue;
       l1[gassocl[i]]->AddEntry(vlgraphs[i], glegends[i].data(),
          gldopts[i].data()); }
-   for (const auto& le : le1) if (le) tstyle(le, 63, 15);
+   for (std::size_t i=0; i<le1.size(); ++i)
+      if (le1[i]) tstyle(le1[i], hfonts[i], hsizes[i]);
    c1->cd(1); for (std::size_t i=0; i<nl; ++i) {
       if (i < lassocc.size()) c1->cd(lassocc[i]);
-      lstyle(l1[i], 43, 14); l1[i]->Draw(); }
+      lstyle(l1[i], lgfonts[i], lgsizes[i]); l1[i]->Draw(); }
    c1->SaveAs(output.data()); delete c1;
 
    return 0;
@@ -336,6 +341,10 @@ int graph(configurer* conf) {
    auto ly1 = conf->get<std::vector<float>>("ly1");
    auto headers = conf->get<std::vector<std::string>>("headers");
    auto lassocc = conf->get<std::vector<uint32_t>>("lassocc");
+   auto lgfonts = conf->get<std::vector<int>>("lgfonts");
+   auto lgsizes = conf->get<std::vector<float>>("lgsizes");
+   auto hfonts = conf->get<std::vector<int>>("hfonts");
+   auto hsizes = conf->get<std::vector<float>>("hsizes");
 
    auto files = conf->get<std::vector<std::string>>("files");
    auto bfiles = conf->get<std::vector<std::string>>("bfiles");
@@ -552,10 +561,11 @@ int graph(configurer* conf) {
       if (gassocl[i] >= nl) continue;
       l1[gassocl[i]]->AddEntry(vlgraphs[i], glegends[i].data(),
          gldopts[i].data()); }
-   for (const auto& le : le1) if (le) tstyle(le, 63, 15);
+   for (std::size_t i=0; i<le1.size(); ++i)
+      if (le1[i]) tstyle(le1[i], hfonts[i], hsizes[i]);
    c1->cd(1); for (std::size_t i=0; i<nl; ++i) {
       if (i < lassocc.size()) c1->cd(lassocc[i]);
-      lstyle(l1[i], 43, 14); l1[i]->Draw(); }
+      lstyle(l1[i], lgfonts[i], lgsizes[i]); l1[i]->Draw(); }
    c1->SaveAs(output.data()); delete c1;
 
    return 0;
