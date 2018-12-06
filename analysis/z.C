@@ -61,7 +61,6 @@ int hist(configurer* conf) {
    for (auto& head : headers) { ltrim(head); }
 
    auto files = conf->get<std::vector<std::string>>("files");
-   auto bfiles = conf->get<std::vector<std::string>>("bfiles");
 
    auto graphs = conf->get<std::vector<std::string>>("graphs");
    auto gassocc = conf->get<std::vector<uint32_t>>("gassocc");
@@ -94,7 +93,7 @@ int hist(configurer* conf) {
    auto hmstyles = conf->get<std::vector<int>>("hmstyles");
    auto hmsizes = conf->get<std::vector<float>>("hmsizes");
    auto hcolours = conf->get<std::vector<std::string>>("hcolours");
-   auto hgopts = conf->get<std::vector<std::string>>("hgopts");
+   auto hdopts = conf->get<std::vector<std::string>>("hdopts");
 
    auto redraw = conf->get<bool>("redraw");
 
@@ -154,9 +153,6 @@ int hist(configurer* conf) {
    std::vector<TFile*> vfiles(files.size(), 0);
    for (std::size_t i=0; i<files.size(); ++i)
       vfiles[i] = new TFile(files[i].data());
-   std::vector<TFile*> vbfiles(bfiles.size(), 0);
-   for (std::size_t i=0; i<bfiles.size(); ++i)
-      vbfiles[i] = new TFile(bfiles[i].data());
    std::vector<TGraphErrors*> vgraphs(graphs.size(), 0);
    std::vector<TGraph*> vlgraphs(graphs.size(), 0);
    for (std::size_t i=0; i<graphs.size(); ++i) {
@@ -164,11 +160,11 @@ int hist(configurer* conf) {
       int gcolour = TColor::GetColor(gcolours[i].data());
       gstyle(vgraphs[i], gmstyles[i], gcolour, gmsizes[i]);
       vlgraphs[i] = (TGraph*)vgraphs[i]->Clone();
-      if (i < glalphas.size()) lestyle(vlgraphs[i], gcolour, glalphas[i]);
+      lestyle(vlgraphs[i], gcolour, glalphas[i]);
    }
    std::vector<TGraphErrors*> vgbands(gbands.size(), 0);
    for (std::size_t i=0; i<gbands.size(); ++i)
-      vgbands[i] = (TGraphErrors*)vbfiles[gbassocf[i]]->Get(gbands[i].data());
+      vgbands[i] = (TGraphErrors*)vfiles[gbassocf[i]]->Get(gbands[i].data());
    std::vector<TH1F*> vhists(hists.size(), 0);
    for (std::size_t i=0; i<hists.size(); ++i) {
       vhists[i] = (TH1F*)vfiles[hassocf[i]]->Get(hists[i].data());
@@ -267,8 +263,7 @@ int hist(configurer* conf) {
    c1->cd(1); if (redraw) {
       for (std::size_t i=0; i<hists.size(); ++i) {
          if (i < hassocc.size()) c1->cd(hassocc[i]);
-         vhists[i]->Draw(hgopts[i].data()); }
-   }
+         vhists[i]->Draw(hdopts[i].data()); } }
    for (std::size_t i=0; i<hists.size(); ++i) {
       if (hassocl[i] >= nl) continue;
       l1[hassocl[i]]->AddEntry(vhists[i], hlegends[i].data(),
@@ -347,7 +342,6 @@ int graph(configurer* conf) {
    auto hsizes = conf->get<std::vector<float>>("hsizes");
 
    auto files = conf->get<std::vector<std::string>>("files");
-   auto bfiles = conf->get<std::vector<std::string>>("bfiles");
 
    auto graphs = conf->get<std::vector<std::string>>("graphs");
    auto gassocc = conf->get<std::vector<uint32_t>>("gassocc");
@@ -427,9 +421,6 @@ int graph(configurer* conf) {
    std::vector<TFile*> vfiles(files.size(), 0);
    for (std::size_t i=0; i<files.size(); ++i)
       vfiles[i] = new TFile(files[i].data());
-   std::vector<TFile*> vbfiles(bfiles.size(), 0);
-   for (std::size_t i=0; i<bfiles.size(); ++i)
-      vbfiles[i] = new TFile(bfiles[i].data());
    std::vector<TGraphErrors*> vgraphs(graphs.size(), 0);
    std::vector<TGraph*> vlgraphs(graphs.size(), 0);
    for (std::size_t i=0; i<graphs.size(); ++i) {
@@ -437,11 +428,11 @@ int graph(configurer* conf) {
       int gcolour = TColor::GetColor(gcolours[i].data());
       gstyle(vgraphs[i], gmstyles[i], gcolour, gmsizes[i]);
       vlgraphs[i] = (TGraph*)vgraphs[i]->Clone();
-      if (i < glalphas.size()) lestyle(vlgraphs[i], gcolour, glalphas[i]);
+      lestyle(vlgraphs[i], gcolour, glalphas[i]);
    }
    std::vector<TGraphErrors*> vgbands(gbands.size(), 0);
    for (std::size_t i=0; i<gbands.size(); ++i)
-      vgbands[i] = (TGraphErrors*)vbfiles[gbassocf[i]]->Get(gbands[i].data());
+      vgbands[i] = (TGraphErrors*)vfiles[gbassocf[i]]->Get(gbands[i].data());
    std::vector<TH1F*> vhists(hists.size(), 0);
    for (std::size_t i=0; i<hists.size(); ++i) {
       vhists[i] = (TH1F*)vfiles[hassocf[i]]->Get(hists[i].data());
