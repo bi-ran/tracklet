@@ -1,24 +1,7 @@
 std::string figure = hist
 
-std::string input = output/results-v5.s.all.root
-std::string sinput = output/results-v5.s.all.root
 std::string output = Figure_002-b.pdf
 std::string title = ;#it{#eta};d#it{N}_{ch}/d#kern[-0.08]{#it{#eta}}
-
-std::vector<std::string> data = hr_hsym_19_20 hr_hsym_10_11 hr_hsym_19_20_over_hr_hsym_10_11
-token ;
-std::vector<std::string> legends =  data;  data; data (0 - 5% / 50 - 55%)
-token
-std::vector<uint32_t> assocl = 0 1 2
-std::vector<uint32_t> assocc = 1 1 2
-std::vector<std::string> lopts = pf pf pf
-std::vector<std::string> systs = hs_hsym_19_20 hs_hsym_10_11 hs_hsym_19_20_over_hsym_10_11
-std::vector<std::string> colours = #ef5253 #61afef #9999cc
-std::vector<int> markers = 21 20 21
-std::vector<float> sizes = 0.64 0.64 0.64
-
-std::vector<std::string> stags = total
-float alpha = 0.32
 
 std::vector<bool> logscale = 0 1
 std::vector<float> xrange = -3.6 3.6
@@ -26,8 +9,8 @@ std::vector<float> yrange = 90 3000
 std::vector<int> ndivs = 508 1003
 
 uint32_t nl = 3
-std::vector<float> lx0 = 0.25 0.61 0.34
-std::vector<float> lx1 = 0.50 0.86 0.53
+std::vector<float> lx0 = 0.25 0.61 0.33
+std::vector<float> lx1 = 0.50 0.86 0.52
 std::vector<float> ly0 = 0.30 0.30 0.80
 std::vector<float> ly1 = 0.59 0.59 0.96
 token ;
@@ -40,42 +23,58 @@ std::vector<int> hfonts = 63 63 63
 std::vector<float> hsizes = 15 15 15
 
 std::vector<std::string> files = \
-   data/gen-cent.root output/results-sim.root
-std::vector<std::string> hists =                         \
-   hepos_19_20 hhydjet_19_20 hamptnm_19_20               \
-   hepos_10_11 hhydjet_10_11 hamptnm_10_11               \
-   hr_hepos_19_20_eta_over_hr_hepos_10_11_eta            \
-   hr_hhydjet_19_20_eta_over_hr_hhydjet_10_11_eta        \
+   output/results-v5.s.all.root \
+   data/gen-cent.root \
+   output/results-sim.root
+std::vector<std::string> hists =                                  \
+   hr_hsym_19_20 hr_hsym_10_11 hr_hsym_19_20_over_hr_hsym_10_11   \
+   hepos_19_20 hhydjet_19_20 hamptnm_19_20                        \
+   hepos_10_11 hhydjet_10_11 hamptnm_10_11                        \
+   hr_hepos_19_20_eta_over_hr_hepos_10_11_eta                     \
+   hr_hhydjet_19_20_eta_over_hr_hhydjet_10_11_eta                 \
    hr_hamptnm_19_20_eta_over_hr_hamptnm_10_11_eta
-std::vector<uint32_t> hassocc = 1 1 1 1 1 1 2 2 2
-std::vector<uint32_t> hassocf = 0 0 0 0 0 0 1 1 1
-std::vector<uint32_t> hassocl = 0 0 0 1 1 1 9 9 9
+std::vector<uint32_t> hassocc = 1 1 2 1 1 1 1 1 1 2 2 2
+std::vector<uint32_t> hassocf = 0 0 0 1 1 1 1 1 1 2 2 2
+std::vector<int> hlstyles = 1 1 1 1 1 1 7 7 7 1 1 1
+std::vector<float> hlwidths = 1 1 1 3.2 3.2 3.2 3.2 3.2 3.2 3.2 3.2 3.2
+std::vector<int> hmstyles = 21 20 21 1 1 1 1 1 1 1 1 1
+std::vector<float> hmsizes = 0.64 0.64 0.64 0 0 0 0 0 0 0 0 0
+std::vector<std::string> hcolours = \
+   #ef5253 #61afef #9999cc          \
+   #33cc99 #8267d1 #f3594a          \
+   #33cc99 #8267d1 #f3594a          \
+   #33cc99 #8267d1 #f3594a
+token ;
+std::vector<std::string> hdopts = \
+   same e x0; same e x0; same e x0; \
+   hist c same; hist c same; hist c same; \
+   hist c same; hist c same; hist c same; \
+   hist c same; hist c same; hist c same
+
+token
+std::vector<uint32_t> hassocl = 0 1 2 0 0 0 1 1 1 3 3 3
+std::vector<float> hlalphas = 0.32 0.32 0.32 0 0 0 0 0 0 0 0 0
+std::vector<std::string> hldopts = pf pf pf l l l l l l l l l
 token ;
 std::vector<std::string> hlegends =  \
+   data;  data; data (0 - 5% / 50 - 55%);  \
    E#scale[0.8]{POS} #scale[0.9]{LHC};  \
    H#scale[0.8]{YDJET} 1.9;  \
    A#scale[0.9]{MPT};  \
    E#scale[0.8]{POS} #scale[0.9]{LHC};  \
    H#scale[0.8]{YDJET} 1.9;  \
    A#scale[0.9]{MPT}
-token
-std::vector<std::string> hlopts = l l l l l l l l l
-std::vector<int> hlstyles = 1 1 1 7 7 7 1 1 1
-std::vector<float> hlwidths = \
-   3.2 3.2 3.2 3.2 3.2 3.2 3.2 3.2 3.2
-std::vector<int> hmstyles = 1 1 1 1 1 1 1 1 1
-std::vector<float> hmsizes = 0 0 0 0 0 0 0 0 0
-std::vector<std::string> hcolours = \
-   #33cc99 #8267d1 #f3594a          \
-   #33cc99 #8267d1 #f3594a          \
-   #33cc99 #8267d1 #f3594a
-token ;
-std::vector<std::string> hgopts = \
-   hist c same; hist c same; hist c same; \
-   hist c same; hist c same; hist c same; \
-   hist c same; hist c same; hist c same
 
 token
+std::vector<std::string> hbands = \
+   hs_hsym_19_20_total \
+   hs_hsym_10_11_total \
+   hs_hsym_19_20_over_hsym_10_11_total
+std::vector<uint32_t> hbassocf = 0 0 0
+std::vector<uint32_t> hbassoch = 0 1 2
+std::vector<std::string> hbcolours = #ef5253 #61afef #9999cc
+std::vector<float> hbalphas = 0.32 0.32 0.32
+
 uint32_t nlatex = 2
 std::vector<int> lxfonts = 63 43
 std::vector<float> lxsizes = 19 15

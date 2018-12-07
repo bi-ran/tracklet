@@ -1,19 +1,7 @@
 std::string figure = hist
 
-std::string input = output/results-spectra.root
-std::string sinput = output/results-spectra.root
 std::string output = Figure_001.pdf
 std::string title = ;#Delta#it{r};#frac{1}{#it{N}}#kern[0.1]{#frac{d#it{N}}{d(#Delta#it{r})}}
-
-std::vector<std::string> data = hr_ht12f0dr_data
-token ;
-std::vector<std::string> legends = data
-token
-std::vector<uint32_t> assocl = 0
-std::vector<std::string> lopts = p
-std::vector<std::string> colours = #242424
-std::vector<int> markers = 21
-std::vector<float> sizes = 0.64
 
 std::vector<bool> logscale = 0 1
 std::vector<float> xrange = 0 0.5
@@ -35,34 +23,35 @@ std::vector<float> hsizes = 15
 
 std::vector<std::string> files = output/results-spectra.root
 std::vector<std::string> hists =             \
+   hr_ht12f0dr_data                          \
    hr_ht12f4dr_epos                          \
    hr_ht12f2dr_hydjet                        \
    hr_ht12f1dr_ampt                          \
    hr_ht12f4dr_epos_over_hr_ht12f0dr_data    \
    hr_ht12f2dr_hydjet_over_hr_ht12f0dr_data  \
    hr_ht12f1dr_ampt_over_hr_ht12f0dr_data
-std::vector<uint32_t> hassocc = 1 1 1 2 2 2
-std::vector<uint32_t> hassocf = 0 0 0 0 0 0
-std::vector<uint32_t> hassocl = 0 0 0 9 9 9
+std::vector<uint32_t> hassocc = 1 1 1 1 2 2 2
+std::vector<uint32_t> hassocf = 0 0 0 0 0 0 0
+std::vector<int> hlstyles = 1 5 1 7 5 1 7
+std::vector<float> hlwidths = 1 3.6 3.6 3.6 3.6 3.6 3.6
+std::vector<int> hmstyles = 21 1 1 1 1 1 1
+std::vector<float> hmsizes = 0.64 0 0 0 0 0 0
+std::vector<std::string> hcolours = #242424 #33cc99 #8267d1 #f3594a #33cc99 #8267d1 #f3594a
+token ;
+std::vector<std::string> hdopts = \
+   same e x0; hist c same; hist c same; hist c same; hist c same; hist c same; hist c same
+
+token
+std::vector<uint32_t> hassocl = 0 0 0 0 1 1 1
+std::vector<std::string> hldopts = p l l l
 token ;
 std::vector<std::string> hlegends = \
+   data; \
    E#scale[0.8]{POS} #scale[0.9]{LHC}; \
    H#scale[0.8]{YDJET} 1.9; \
    A#scale[0.9]{MPT}
-token
-std::vector<std::string> hlopts = l l l
-std::vector<int> hlstyles = 5 1 7 5 1 7
-std::vector<float> hlwidths = 3.6 3.6 3.6 3.6 3.6 3.6
-std::vector<int> hmstyles = 1 1 1 1 1 1
-std::vector<float> hmsizes = 0 0 0 0 0 0
-std::vector<std::string> hcolours = #33cc99 #8267d1 #f3594a #33cc99 #8267d1 #f3594a
-token ;
-std::vector<std::string> hgopts = \
-   hist c same; hist c same; hist c same; hist c same; hist c same; hist c same
 
 token
-bool redraw = 1
-
 uint32_t nlatex = 2
 std::vector<int> lxfonts = 63 43
 std::vector<float> lxsizes = 19 15

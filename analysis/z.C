@@ -21,26 +21,8 @@
 #include "git/config/configurer.h"
 
 int hist(configurer* conf) {
-   auto input = conf->get<std::string>("input");
-   auto sinput = conf->get<std::string>("sinput");
    auto output = conf->get<std::string>("output");
    auto title = conf->get<std::string>("title");
-
-   auto data = conf->get<std::vector<std::string>>("data");
-   auto legends = conf->get<std::vector<std::string>>("legends");
-   auto assocl = conf->get<std::vector<uint32_t>>("assocl");
-   auto assocc = conf->get<std::vector<uint32_t>>("assocc");
-   auto lopts = conf->get<std::vector<std::string>>("lopts");
-   auto systs = conf->get<std::vector<std::string>>("systs");
-   auto colours = conf->get<std::vector<std::string>>("colours");
-   auto markers = conf->get<std::vector<int>>("markers");
-   auto sizes = conf->get<std::vector<float>>("sizes");
-   for (auto& s : systs) { ltrim(s); }
-   std::size_t nd = data.size();
-
-   auto stags = conf->get<std::vector<std::string>>("stags");
-   auto alpha = conf->get<float>("alpha");
-   std::size_t ns = stags.size();
 
    auto logscale = conf->get<std::vector<bool>>("logscale");
    auto xrange = conf->get<std::vector<float>>("xrange");
@@ -65,12 +47,13 @@ int hist(configurer* conf) {
    auto graphs = conf->get<std::vector<std::string>>("graphs");
    auto gassocc = conf->get<std::vector<uint32_t>>("gassocc");
    auto gassocf = conf->get<std::vector<uint32_t>>("gassocf");
-   auto gassocl = conf->get<std::vector<uint32_t>>("gassocl");
-   auto glegends = conf->get<std::vector<std::string>>("glegends");
    auto gmstyles = conf->get<std::vector<int>>("gmstyles");
    auto gmsizes = conf->get<std::vector<float>>("gmsizes");
    auto gcolours = conf->get<std::vector<std::string>>("gcolours");
    auto gdopts = conf->get<std::vector<std::string>>("gdopts");
+
+   auto gassocl = conf->get<std::vector<uint32_t>>("gassocl");
+   auto glegends = conf->get<std::vector<std::string>>("glegends");
    auto glalphas = conf->get<std::vector<float>>("glalphas");
    auto gldopts = conf->get<std::vector<std::string>>("gldopts");
 
@@ -85,9 +68,6 @@ int hist(configurer* conf) {
    auto hists = conf->get<std::vector<std::string>>("hists");
    auto hassocc = conf->get<std::vector<uint32_t>>("hassocc");
    auto hassocf = conf->get<std::vector<uint32_t>>("hassocf");
-   auto hassocl = conf->get<std::vector<uint32_t>>("hassocl");
-   auto hlegends = conf->get<std::vector<std::string>>("hlegends");
-   auto hlopts = conf->get<std::vector<std::string>>("hlopts");
    auto hlstyles = conf->get<std::vector<int>>("hlstyles");
    auto hlwidths = conf->get<std::vector<float>>("hlwidths");
    auto hmstyles = conf->get<std::vector<int>>("hmstyles");
@@ -95,7 +75,16 @@ int hist(configurer* conf) {
    auto hcolours = conf->get<std::vector<std::string>>("hcolours");
    auto hdopts = conf->get<std::vector<std::string>>("hdopts");
 
-   auto redraw = conf->get<bool>("redraw");
+   auto hassocl = conf->get<std::vector<uint32_t>>("hassocl");
+   auto hlegends = conf->get<std::vector<std::string>>("hlegends");
+   auto hlalphas = conf->get<std::vector<float>>("hlalphas");
+   auto hldopts = conf->get<std::vector<std::string>>("hldopts");
+
+   auto hbands = conf->get<std::vector<std::string>>("hbands");
+   auto hbassocf = conf->get<std::vector<uint32_t>>("hbassocf");
+   auto hbassoch = conf->get<std::vector<uint32_t>>("hbassoch");
+   auto hbcolours = conf->get<std::vector<std::string>>("hbcolours");
+   auto hbalphas = conf->get<std::vector<float>>("hbalphas");
 
    auto nlatex = conf->get<uint32_t>("nlatex");
    auto lxfonts = conf->get<std::vector<int>>("lxfonts");
@@ -136,19 +125,6 @@ int hist(configurer* conf) {
    auto rtksizes = conf->get<std::vector<float>>("rtksizes");
    auto rndiv = conf->get<int>("rndiv");
 
-   TFile* f = new TFile(input.data());
-   TFile* fs = new TFile(sinput.data());
-   std::vector<TH1F*> h(nd, 0); std::vector<TH1F*> hl(nd, 0);
-   std::vector<std::vector<TH1F*>> hs(nd, std::vector<TH1F*>(ns, 0));
-   for (std::size_t i=0; i<nd; ++i) {
-      h[i] = (TH1F*)f->Get(data[i].data());
-      if (systs.empty() || systs[i].empty()) { continue; }
-      for (std::size_t j=0; j<ns; ++j) {
-         std::string stag = systs[i] + "_" + stags[j];
-         hs[i][j] = (TH1F*)fs->Get(stag.data());
-      }
-   }
-
    std::vector<TLine*> lines(nlines, 0);
    std::vector<TFile*> vfiles(files.size(), 0);
    for (std::size_t i=0; i<files.size(); ++i)
@@ -166,12 +142,19 @@ int hist(configurer* conf) {
    for (std::size_t i=0; i<gbands.size(); ++i)
       vgbands[i] = (TGraphErrors*)vfiles[gbassocf[i]]->Get(gbands[i].data());
    std::vector<TH1F*> vhists(hists.size(), 0);
+   std::vector<TH1F*> vlhists(hists.size(), 0);
    for (std::size_t i=0; i<hists.size(); ++i) {
       vhists[i] = (TH1F*)vfiles[hassocf[i]]->Get(hists[i].data());
       int hcolour = TColor::GetColor(hcolours[i].data());
       hstyle(vhists[i], hmstyles[i], hcolour, hmsizes[i]);
       hline(vhists[i], hlstyles[i], hcolour, hlwidths[i]);
+      vlhists[i] = (TH1F*)vhists[i]->Clone();
+      if (i < hlalphas.size() && hlalphas[i])
+         lestyle(vlhists[i], hcolour, hlalphas[i]);
    }
+   std::vector<TH1F*> vhbands(hbands.size(), 0);
+   for (std::size_t i=0; i<hbands.size(); ++i)
+      vhbands[i] = (TH1F*)vfiles[hbassocf[i]]->Get(hbands[i].data());
 
    TCanvas* c1 = new TCanvas("c1", "", 400, 400);
    TPad* t1 = new TPad("t1", "", 0, cdivide, 1, 1);
@@ -245,16 +228,6 @@ int hist(configurer* conf) {
       if (i < gassocc.size()) c1->cd(gassocc[i]);
       if (i < gdopts.size()) vgraphs[i]->Draw(gdopts[i].data());
       else vgraphs[i]->Draw("p same"); }
-   c1->cd(1); for (std::size_t i=0; i<nd; ++i) {
-      if (i < assocc.size()) c1->cd(assocc[i]);
-      int col = TColor::GetColor(colours[i].data());
-      if (!hs.empty()) for (const auto& hsi : hs[i])
-      if (hsi) box(h[i], hsi, col, alpha);
-      hstyle(h[i], markers[i], col, sizes[i]); h[i]->Draw("same e x0");
-      if (assocl[i] >= nl) continue;
-      hl[i] = (TH1F*)h[i]->Clone();
-      if (i < systs.size() && !systs[i].empty()) lestyle(hl[i], col, 0.4);
-      l1[assocl[i]]->AddEntry(hl[i], legends[i].data(), lopts[i].data()); }
    for (std::size_t i=0; i<nl; ++i)
       l1[i] = new TLegend(lx0[i], ly0[i], lx1[i], ly1[i]);
    for (std::size_t i=0; i<headers.size() && !headers[i].empty(); ++i)
@@ -265,15 +238,20 @@ int hist(configurer* conf) {
       lines[i]->SetLineStyle(lnstyles[i]); lines[i]->Draw(); }
    c1->cd(1); for (std::size_t i=0; i<hists.size(); ++i) {
       if (i < hassocc.size()) c1->cd(hassocc[i]);
+      std::vector<uint32_t> hbassoci;
+      std::vector<uint32_t> hbindices(hbands.size());
+      std::iota(hbindices.begin(), hbindices.end(), 0);
+      std::copy_if(hbindices.begin(), hbindices.end(),
+         std::back_inserter(hbassoci),
+         [&](auto const& h) { return hbassoch[h] == i; });
+      for (auto const& h : hbassoci) {
+         int col = TColor::GetColor(hbcolours[h].data());
+         box(vhists[i], vhbands[h], col, hbalphas[h]); }
       vhists[i]->Draw(hdopts[i].data()); }
-   c1->cd(1); if (redraw) {
-      for (std::size_t i=0; i<hists.size(); ++i) {
-         if (i < hassocc.size()) c1->cd(hassocc[i]);
-         vhists[i]->Draw(hdopts[i].data()); } }
    for (std::size_t i=0; i<hists.size(); ++i) {
       if (hassocl[i] >= nl) continue;
-      l1[hassocl[i]]->AddEntry(vhists[i], hlegends[i].data(),
-         hlopts[i].data()); }
+      l1[hassocl[i]]->AddEntry(vlhists[i], hlegends[i].data(),
+         hldopts[i].data()); }
    for (std::size_t i=0; i<graphs.size(); ++i) {
       if (gassocl[i] >= nl) continue;
       l1[gassocl[i]]->AddEntry(vlgraphs[i], glegends[i].data(),
