@@ -1,5 +1,3 @@
-std::string figure = graph
-
 std::string output = Figure_005-b.pdf
 std::string title = \
    ;#scale[1.2]{#LT}\

@@ -1,5 +1,3 @@
-std::string figure = graph
-
 std::string output = Figure_004-b.pdf
 token ,
 std::string title = \

@@ -1,5 +1,3 @@
-std::string figure = hist
-
 std::string output = Figure_002-a.pdf
 std::string title = ;#it{#eta};d#it{N}_{ch}/d#kern[-0.08]{#it{#eta}}
 
