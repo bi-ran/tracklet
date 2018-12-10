@@ -32,6 +32,30 @@ int z(const char* config) {
    auto yrange = conf->get<std::vector<float>>("yrange");
    auto ndivs = conf->get<std::vector<int>>("ndivs");
 
+   auto naxes = conf->get<uint32_t>("naxes");
+   auto apathx0 = conf->get<std::vector<float>>("apathx0");
+   auto apathx1 = conf->get<std::vector<float>>("apathx1");
+   auto apathy0 = conf->get<std::vector<float>>("apathy0");
+   auto apathy1 = conf->get<std::vector<float>>("apathy1");
+   auto arange0 = conf->get<std::vector<float>>("arange0");
+   auto arange1 = conf->get<std::vector<float>>("arange1");
+   auto afuncs = conf->get<std::vector<std::string>>("afuncs");
+   auto afrange0 = conf->get<std::vector<float>>("afrange0");
+   auto afrange1 = conf->get<std::vector<float>>("afrange1");
+   auto aassocc = conf->get<std::vector<uint32_t>>("aassocc");
+   auto andivs = conf->get<std::vector<int>>("andivs");
+   auto aopts = conf->get<std::vector<std::string>>("aopts");
+   for (auto& afunc : afuncs) { ltrim(afunc); }
+
+   auto atitles = conf->get<std::vector<std::string>>("atitles");
+   auto atfonts = conf->get<std::vector<int>>("atfonts");
+   auto atsizes = conf->get<std::vector<float>>("atsizes");
+   auto atoffsets = conf->get<std::vector<float>>("atoffsets");
+   auto alfonts = conf->get<std::vector<int>>("alfonts");
+   auto alsizes = conf->get<std::vector<float>>("alsizes");
+   auto aloffsets = conf->get<std::vector<float>>("aloffsets");
+   for (auto& atitle : atitles) { ltrim(atitle); }
+
    auto nl = conf->get<uint32_t>("nl");
    auto lx0 = conf->get<std::vector<float>>("lx0");
    auto lx1 = conf->get<std::vector<float>>("lx1");
@@ -193,6 +217,25 @@ int z(const char* config) {
       if (!rlsizes.empty()) hlsize(hrframe, rlsizes[0], rlsizes[1]);
       if (!rtksizes.empty()) htksize(hrframe, rtksizes[0], rtksizes[1]);
       hndiv(hrframe, ndivs[0], rndiv); hrframe->Draw();
+   }
+
+   std::vector<TGaxis*> axes(naxes, 0); std::vector<TF1*> faxes(naxes, 0);
+   if (naxes) { hframe->SetLabelOffset(9, "X"); hframe->SetTickLength(0, "X"); }
+   c1->cd(1); for (std::size_t i=0; i<naxes; ++i) {
+      if (afuncs.empty() || afuncs[i].empty()) {
+         axes[i] = new TGaxis(apathx0[i], apathy0[i], apathx1[i], apathy1[i],
+            arange0[i], arange1[i], andivs[i], aopts[i].data());
+      } else {
+         faxes[i] = new TF1(Form("f%zu", i), afuncs[i].data(),
+            afrange0[i], afrange1[i]);
+         axes[i] = new TGaxis(apathx0[i], apathy0[i], apathx1[i], apathy1[i],
+            Form("f%zu", i), andivs[i], aopts[i].data()); }
+      if (i < atitles.size()) {
+         axes[i]->SetTitle(atitles[i].data()); axes[i]->CenterTitle(); }
+      atstyle(axes[i], atfonts[i], atsizes[i], atoffsets[i]);
+      alstyle(axes[i], alfonts[i], alsizes[i], aloffsets[i]);
+      if (i < aassocc.size()) c1->cd(aassocc[i]);
+      axes[i]->Draw();
    }
 
    std::vector<TLine*> lines(nlines, 0);
