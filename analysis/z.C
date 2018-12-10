@@ -149,7 +149,6 @@ int z(const char* config) {
    auto rlsizes = conf->get<std::vector<float>>("rlsizes");
    auto rloffsets = conf->get<std::vector<float>>("rloffsets");
    auto rtksizes = conf->get<std::vector<float>>("rtksizes");
-   auto rndiv = conf->get<int>("rndiv");
 
    std::vector<TFile*> vfiles(files.size(), 0);
    for (std::size_t i=0; i<files.size(); ++i)
@@ -216,7 +215,8 @@ int z(const char* config) {
       if (!rlfonts.empty()) hlfont(hrframe, rlfonts[0], rlfonts[1]);
       if (!rlsizes.empty()) hlsize(hrframe, rlsizes[0], rlsizes[1]);
       if (!rtksizes.empty()) htksize(hrframe, rtksizes[0], rtksizes[1]);
-      hndiv(hrframe, ndivs[0], rndiv); hrframe->Draw();
+      if (!ndivs.empty()) hndiv(hrframe, ndivs[0], ndivs[2]);
+      hrframe->Draw();
    }
 
    std::vector<TGaxis*> axes(naxes, 0); std::vector<TF1*> faxes(naxes, 0);

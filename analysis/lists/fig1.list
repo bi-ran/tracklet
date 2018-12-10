@@ -4,7 +4,7 @@ std::string title = ;#Delta#it{r};#frac{1}{#it{N}}#kern[0.1]{#frac{d#it{N}}{d(#D
 std::vector<bool> logscale = 0 1
 std::vector<float> xrange = 0 0.5
 std::vector<float> yrange = 0.100001 50
-std::vector<int> ndivs = 505 1003
+std::vector<int> ndivs = 505 1003 206
 
 uint32_t nl = 1
 std::vector<float> lx0 = 0.47
@@ -89,4 +89,3 @@ std::vector<int> rlfonts = 43 43
 std::vector<float> rlsizes = 15 13
 std::vector<float> rloffsets = 0.02 0.005
 std::vector<float> rtksizes = 0.08 0.04
-int rndiv = 206

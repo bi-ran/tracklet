@@ -4,7 +4,7 @@ std::string title = ;#it{#eta};d#it{N}_{ch}/d#kern[-0.08]{#it{#eta}}
 std::vector<bool> logscale = 0 1
 std::vector<float> xrange = -3.6 3.6
 std::vector<float> yrange = 90 3000
-std::vector<int> ndivs = 508 1003
+std::vector<int> ndivs = 508 1003 504
 
 uint32_t nl = 3
 std::vector<float> lx0 = 0.25 0.61 0.33
@@ -104,4 +104,3 @@ std::vector<int> rlfonts = 43 43
 std::vector<float> rlsizes = 14 13
 std::vector<float> rloffsets = 0.02 0.005
 std::vector<float> rtksizes = 0.08 0.04
-int rndiv = 504
