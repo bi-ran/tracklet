@@ -222,6 +222,13 @@ int y(const char* config, const char* label) {
    SAVE(phobos_cucu_0p2_n2a)
    SAVE(phobos_auau_0p2_n2a)
 
+   TGraph* gpp_5p02_n2a_x_npart2a = new TGraph(1);
+   gpp_5p02_n2a_x_npart2a->SetName("gcms_pp_5p02_interpolate_n2a_x_npart2a");
+   gpp_5p02_n2a_x_npart2a->SetPoint(0, 1,
+      (2.716 - 0.307 * log(5020 * 5020) +
+      0.0267 * log(5020 * 5020) * log(5020 * 5020)) / 2);
+   gpp_5p02_n2a_x_npart2a->Write("", TObject::kOverwrite);
+
    fout->Write("", TObject::kOverwrite);
    fout->Close();
 
