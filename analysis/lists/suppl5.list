@@ -1,126 +1,102 @@
-std::string figure = graph
+std::string output = Figure-aux_005.pdf
+std::string title = ;#it{y};d#it{N}_{ch}/d#kern[-0.08]{#it{y}}
 
-std::string input = keep/data/sgdep-epos.root
-std::string output = multiplicity-bias-epos-paper.pdf
-std::string title = \
-   ;#scale[1.2]{#LT}\
-   #it{N}#lower[0.4]{#scale[0.7]{#kern[-0.05]{part}}}\
-   #scale[1.2]{#GT};\
-   #scale[1.2]{#LT}\
-   d#it{N}_{ch}/d#kern[-0.08]{#it{#eta}}\
-   #scale[1.2]{#GT}\
-   #lower[0.1]{#scale[1.5]{#kern[0.36]{#lbar}}}\
-   #lower[0.6]{#scale[0.6]{#kern[0.15]{#cbar}#it{#eta}#kern[-0.4]{#cbar}}}\
-   #lower[1.2]{#scale[0.45]{#kern[0.16]{#LT}}}\
-   #lower[1.1]{#scale[0.6]{#kern[0.1]{0.5}}}\
-   #lower[0.36]{#kern[0.36]{#scale[2.7]{#/}}}\
-   #kern[-1.5]{#scale[1.2]{#LT}}\
-   #lower[0.1]{#it{N}}\
-   #lower[0.5]{#scale[0.6]{#kern[-0.08]{part}}}\
-   #scale[1.2]{#GT}
-std::string data = gnpart
+std::vector<bool> logscale = 0 0
+std::vector<float> xrange = -3.6 3.6
+std::vector<float> yrange = 0 2500
+std::vector<int> ndivs = 508 505
+
+uint32_t nl = 3
+std::vector<float> lx0 = 0.36 0.57 0.20
+std::vector<float> lx1 = 0.63 0.84 0.44
+std::vector<float> ly0 = 0.40 0.25 0.16
+std::vector<float> ly1 = 0.52 0.38 0.38
 token ;
-std::string legend = \
-   #lower[0.1]{#it{N}}#lower[0.5]{#scale[0.6]{#kern[-0.08]{part}}}\
-   #minusweighted events
+std::vector<std::string> headers = CMS; ALICE PbPb; BRAHMS AuAu
 token
-std::string colour = #ef5253
-std::string ldopt = p
+std::vector<int> lgfonts = 43 43 43
+std::vector<float> lgsizes = 15 15 15
+std::vector<int> hfonts = 63 63 63
+std::vector<float> hsizes = 15 15 15
 
-std::vector<bool> logscale = 1 0
-std::vector<float> xrange = 1 425
-std::vector<float> yrange = 0 6
-
-uint32_t naxes = 2
-std::vector<float> apathx0 = 1 2
-std::vector<float> apathx1 = 425 258
-std::vector<float> apathy0 = 0 6
-std::vector<float> apathy1 = 0 6
-std::vector<float> arange0 = 1
-std::vector<float> arange1 = 425
+std::vector<std::string> files = output/results-v5.s.all.root output/results-v5.midy.root
+std::vector<std::string> hists = hy_hsym_19_20
+std::vector<uint32_t> hassocf = 0
+std::vector<int> hlstyles = 1
+std::vector<float> hlwidths = 1
+std::vector<int> hmstyles = 21
+std::vector<float> hmsizes = 0.6
+std::vector<std::string> hcolours = #ef5253
 token ;
-std::vector<std::string> afuncs = ;252.555*(1+(1-0.685474)*-0.0276135*exp((x-1)/(425-1)*log(425)))**(1/(1-0.685474))+1.63534
-token
-std::vector<float> afrange0 = 0 0
-std::vector<float> afrange1 = 0 100
-std::vector<uint32_t> aassocc = 2 1
-std::vector<int> andivs = 510 510
-std::vector<std::string> aopts = G -
-
-token ;
-std::vector<std::string> atitles = ;centrality [%]
-token
-std::vector<int> atfonts = 43 43
-std::vector<float> atsizes = 14 14
-std::vector<float> atoffsets = 0 1.25
-std::vector<int> alfonts = 43 43
-std::vector<float> alsizes = 14 13
-std::vector<float> aloffsets = 0.005 0.005
-
-uint32_t nl = 2
-std::vector<float> lx0 = 0.41 0.41
-std::vector<float> lx1 = 0.68 0.68
-std::vector<float> ly0 = 0.19 0.13
-std::vector<float> ly1 = 0.35 0.16
-token ;
-std::vector<std::string> headers = #splitline{            E#scale[0.8]{POS} #scale[0.9]{LHC}}{    #scale[0.9]{XeXe 5.44 TeV}}
+std::vector<std::string> hdopts = same e x0
 
 token
-std::vector<std::string> files = keep/data/sgdep-epos.root
-std::vector<std::string> graphs = ghft gratio
-std::vector<uint32_t> gassocc = 1 2
-std::vector<uint32_t> gassocf = 0 0
-std::vector<uint32_t> gassocl = 1 2
+std::vector<uint32_t> hassocl = 0
+std::vector<float> hlalphas = 0.24
+std::vector<std::string> hldopts = pf
+token ;
+std::vector<std::string> hlegends = #it{h}^{#pm} XeXe 5.44 TeV
+
+token
+std::vector<std::string> hbands = hsy_hsym_19_20_total
+std::vector<uint32_t> hbassocf = 0
+std::vector<uint32_t> hbassoch = 0
+std::vector<std::string> hbcolours = #ef5253
+std::vector<float> hbalphas = 0.24
+
+std::vector<std::string> graphs =   \
+   galice_pbpb_5p02_y_c0t5          \
+   galice_pbpb_2p76_y_c0t5          \
+   gcms_pbpb_2p76_y_c0t5            \
+   gbrahms_auau_0p2_y_c0t5_pip      \
+   gbrahms_auau_0p2_y_c0t5_pim      \
+   gbrahms_auau_0p2_y_c0t5_kp       \
+   gbrahms_auau_0p2_y_c0t5_km
+std::vector<uint32_t> gassocf = 1 1 1 1 1 1 1
+std::vector<int> gmstyles = 22 23 20 46 47 28 34
+std::vector<float> gmsizes = 0.72 0.72 0.64 0.72 0.72 0.72 0.72
+std::vector<std::string> gcolours = #61afef #61afef #f9a257 #ffcc66 #ffcc66 #9999cc #9999cc
+std::vector<std::string> gdopts = pxsame pxsame pxsame pxsame pxsame pxsame pxsame
+
+std::vector<uint32_t> gassocl = 1 1 0 2 2 2 2
+std::vector<float> glalphas = 0.24 0.24 0.24 0.24 0.24 0.24 0.24
+std::vector<std::string> gldopts = pf pf pf pe pe pe pe
 token ;
 std::vector<std::string> glegends = \
-   #lower[0.3]{#scale[2.0]{#Sigma}}#kern[-0.7]{#lower[1.25]{#scale[0.75]{3<|#eta|<5}}}#kern[-0.7]{#it{E}}_{T}#minusbased event selection
-token
-std::vector<int> gmstyles = 20 21
-std::vector<float> gmsizes = 0.64 0.64
-std::vector<std::string> gcolours = #61afef #9999cc
-std::vector<std::string> gdopts = psame psame
-std::vector<std::string> gldopts = p
+   #it{h}^{#pm} 5.02 TeV; \
+   #it{h}^{#pm} 2.76 TeV; \
+   #it{h}^{#pm} PbPb 2.76 TeV; \
+   #it{#pi}^{#plus} 200 GeV; \
+   #it{#pi}^{#minus} 200 GeV; \
+   #it{K}^{#plus} 200 GeV; \
+   #it{K}^{#minus} 200 GeV
 
-uint32_t nlatex = 3
-std::vector<int> lxfonts = 63 53 53
-std::vector<float> lxsizes = 18 11 11
-std::vector<int> lxaligns = 13 13 13
-std::vector<float> lxx = 0.18 0.18 0.18
-std::vector<float> lxy = 0.915 0.87 0.84
+token
+std::vector<std::string> gbands =   \
+   galice_pbpb_5p02_y_c0t5          \
+   galice_pbpb_2p76_y_c0t5          \
+   gcms_pbpb_2p76_y_c0t5
+std::vector<int> gbtypes = 2 2 2
+std::vector<uint32_t> gbassocf = 1 1 1
+std::vector<uint32_t> gbassocg = 0 1 2
+std::vector<std::string> gbcolours = #61afef #61afef #f9a257
+std::vector<float> gbalphas = 0.24 0.24 0.24
+
+uint32_t nlatex = 5
+std::vector<int> lxfonts = 63 53 43 43 43
+std::vector<float> lxsizes = 19 12 15 13 13
+std::vector<int> lxaligns = 13 13 33 33 33
+std::vector<float> lxx = 0.18 0.18 0.93 0.93 0.93
+std::vector<float> lxy = 0.91 0.865 0.99 0.91 0.88
 token ;
-std::vector<std::string> lxtexts = CMS; Simulation; Supplementary
+std::vector<std::string> lxtexts = CMS; Supplementary; XeXe #sqrt{#it{s}_{NN}} = 5.44 TeV; 0 - 5 %; centrality
 
 token
-uint32_t nlines = 1
-std::vector<float> lnx0 = 1
-std::vector<float> lnx1 = 425
-std::vector<float> lny0 = 1
-std::vector<float> lny1 = 1
-std::vector<int> lnstyles = 7
-std::vector<uint32_t> lnassocc = 2
-
 std::vector<int> csizes = 400 400
-std::vector<float> cmargins = 0.8 0.12 0.15 0.05
-float cdivide = 0.30
+std::vector<float> cmargins = 0.06 0.12 0.15 0.05
 
 std::vector<int> tfonts = 43 43
-std::vector<float> tsizes = 16 16
-std::vector<float> toffsets = 1.25 1.6
+std::vector<float> tsizes = 17 18
+std::vector<float> toffsets = 1.2 1.44
 std::vector<int> lfonts = 43 43
-std::vector<float> lsizes = 14 14
-
-token ,
-std::string rtitle = \
-   ;#scale[1.2]{#LT}\
-   #it{N}#lower[0.4]{#scale[0.7]{#kern[-0.05]{part}}}\
-   #scale[1.2]{#GT};\
-   ratio
-token
-std::vector<float> rrange = 0 5
-std::vector<int> rtfonts = 43 43
-std::vector<float> rtsizes = 15 14
-std::vector<float> rtoffsets = 4.5 1.6
-std::vector<int> rlfonts = 43 43
-std::vector<float> rlsizes = 14 13
-std::vector<float> rloffsets = 9 0.005
-int rndiv = 203
+std::vector<float> lsizes = 15 15
