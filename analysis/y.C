@@ -222,6 +222,11 @@ int y(const char* config, const char* label) {
    SAVE(phobos_cucu_0p2_n2a)
    SAVE(phobos_auau_0p2_n2a)
 
+   SAVE(cms_pbpb_2p76)
+   SAVE(alice_pbpb_2p76)
+   SAVE(alice_pbpb_5p02)
+   SAVE(alice_xexe_5p44)
+
    TGraph* gpp_5p02_n2a_x_npart2a = new TGraph(1);
    gpp_5p02_n2a_x_npart2a->SetName("gcms_pp_5p02_interpolate_n2a_x_npart2a");
    gpp_5p02_n2a_x_npart2a->SetPoint(0, 1,
