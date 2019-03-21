@@ -1,21 +1,21 @@
 std::string output = Figure_005-b.pdf
+token ,
 std::string title = \
    ;#scale[1.2]{#LT}\
    #it{N}#lower[0.4]{#scale[0.7]{#kern[-0.05]{part}}}\
    #scale[1.2]{#GT}\
-   #kern[0.2]{#lower[0.3]{#scale[2.4]{#/}}}\
-   #kern[-1.0]{2}#it{A};\
+   #kern[0.1]{#lower[0.15]{#scale[1.25]{/}}}2#it{A};\
+   #lower[-0.05]{(}1/#kern[0.1]{#scale[1.2]{#LT}}\
+   #lower[0.1]{#it{N}}\
+   #lower[0.5]{#scale[0.6]{#kern[-0.08]{part}}}\
+   #scale[1.2]{#GT}#lower[-0.05]{)}#kern[-0.1]{ }\
    #scale[1.2]{#LT}\
    d#it{N}_{ch}/d#kern[-0.08]{#it{#eta}}\
    #scale[1.2]{#GT}\
-   #lower[0.1]{#scale[1.5]{#kern[0.36]{#lbar}}}\
-   #lower[0.6]{#scale[0.6]{#kern[0.15]{#cbar}#it{#eta}#kern[-0.4]{#cbar}#kern[0.2]{<}#kern[0.2]{0.5}}}\
-   #lower[0.36]{#kern[0.36]{#scale[2.7]{#/}}}\
-   #kern[-1.5]{#scale[1.2]{#LT}}\
-   #lower[0.1]{#it{N}}\
-   #lower[0.5]{#scale[0.6]{#kern[-0.08]{part}}}\
-   #scale[1.2]{#GT}
+   #lower[0.05]{#scale[1.5]{#kern[-0.6]{#cbar}}}\
+   #lower[0.6]{#scale[0.6]{#kern[0.15]{#cbar}#it{#eta}#kern[-0.4]{#cbar}#kern[0.2]{<}#kern[0.2]{0.5}}}
 
+token
 std::vector<bool> logscale = 0 0
 std::vector<float> xrange = -0.0601 1.0216
 std::vector<float> yrange = 0 6
@@ -113,6 +113,6 @@ std::vector<float> cmargins = 0.06 0.12 0.15 0.05
 
 std::vector<int> tfonts = 43 43
 std::vector<float> tsizes = 17 18
-std::vector<float> toffsets = 0.9 1.6
+std::vector<float> toffsets = 1.15 1.25
 std::vector<int> lfonts = 43 43
 std::vector<float> lsizes = 15 15

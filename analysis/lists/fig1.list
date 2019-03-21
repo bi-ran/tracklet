@@ -12,7 +12,7 @@ std::vector<float> lx1 = 0.72
 std::vector<float> ly0 = 0.40
 std::vector<float> ly1 = 0.74
 token ;
-std::vector<std::string> headers = XeXe 0 - 80%
+std::vector<std::string> headers = XeXe 0#kern[0.15]{#lower[-0.1]{#minus}}#kern[0.05]{80%}
 token
 std::vector<int> lgfonts = 43
 std::vector<float> lgsizes = 15
@@ -73,17 +73,17 @@ std::vector<float> cmargins = 0.06 0.12 0.15 0.05
 float cdivide = 0.30
 
 std::vector<int> tfonts = 43 43
-std::vector<float> tsizes = 17 20
+std::vector<float> tsizes = 15 18
 std::vector<float> toffsets = 1.2 1.12
 std::vector<int> lfonts = 43 43
 std::vector<float> lsizes = 15 15
 
 token ,
-std::string rtitle = ;#Delta#it{r};ratio
+std::string rtitle = ;#Delta#it{r};model/data  ,
 token
 std::vector<float> rrange = 0.5 1.5
 std::vector<int> rtfonts = 43 43
-std::vector<float> rtsizes = 19 18
+std::vector<float> rtsizes = 18 15
 std::vector<float> rtoffsets = 3.2 1.44
 std::vector<int> rlfonts = 43 43
 std::vector<float> rlsizes = 15 13

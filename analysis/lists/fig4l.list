@@ -5,7 +5,7 @@ std::string title = \
    #scale[1.2]{#LT}\
    d#it{N}_{ch}/d#kern[-0.08]{#it{#eta}}\
    #scale[1.2]{#GT}\
-   #lower[0.1]{#scale[1.5]{#kern[0.36]{#lbar}}}\
+   #lower[0.05]{#scale[1.5]{#kern[-0.6]{#cbar}}}\
    #lower[0.6]{#scale[0.6]{#kern[0.15]{#cbar}#it{#eta}#kern[-0.4]{#cbar}#kern[0.2]{<}#kern[0.2]{0.5}}}
 
 token
@@ -55,7 +55,7 @@ std::vector<std::string> gcolours = #73c844 #61afef #61afef #ef5253 #f9a257
 std::vector<std::string> gdopts = pxsame pxsame pxsame pxsame pxsame
 
 std::vector<uint32_t> gassocl = 1 1 1 0 0
-std::vector<float> glalphas = 0.24 0.24 0.24 0.32 0.24
+std::vector<float> glalphas = 0.24 0.24 0.24 0.24 0.24
 std::vector<std::string> gldopts = pf pf pf pf pf
 token ;
 std::vector<std::string> glegends = \

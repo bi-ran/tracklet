@@ -14,7 +14,7 @@ std::vector<float> ly1 = 0.45 0.30
 std::vector<float> lfonts = 43 43
 std::vector<float> lsizes = 15 15
 token ;
-std::vector<std::string> headers = XeXe 0 - 80%
+std::vector<std::string> headers = XeXe 0#kern[0.15]{#lower[-0.1]{#minus}}#kern[0.05]{80%}
 token
 std::vector<int> lgfonts = 43 43
 std::vector<float> lgsizes = 15 15

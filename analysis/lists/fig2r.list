@@ -11,8 +11,9 @@ std::vector<float> lx0 = 0.25 0.61 0.33
 std::vector<float> lx1 = 0.50 0.86 0.52
 std::vector<float> ly0 = 0.30 0.30 0.80
 std::vector<float> ly1 = 0.59 0.59 0.96
-token ;
-std::vector<std::string> headers = 0 - 5%; 50 - 55%
+std::vector<std::string> headers = \
+   0#kern[0.15]{#lower[-0.1]{#minus}}#kern[0.1]{5%} \
+   50#kern[0.15]{#lower[-0.1]{#minus}}#kern[0.05]{55%}
 token
 std::vector<uint32_t> lassocc = 1 1 2
 std::vector<int> lgfonts = 43 43 43
@@ -55,7 +56,9 @@ std::vector<float> hlalphas = 0.32 0.32 0.32 0 0 0 0 0 0 0 0 0
 std::vector<std::string> hldopts = pf pf pf l l l l l l l l l
 token ;
 std::vector<std::string> hlegends =  \
-   data;  data; data (0 - 5% / 50 - 55%);  \
+   data;  data; data \
+   (0#kern[0.15]{#lower[-0.1]{#minus}}#kern[0.1]{5%} / \
+   50#kern[0.15]{#lower[-0.1]{#minus}}#kern[0.05]{55%});  \
    E#scale[0.8]{POS} #scale[0.9]{LHC};  \
    H#scale[0.8]{YDJET} 1.9;  \
    A#scale[0.9]{MPT};  \

@@ -2,13 +2,12 @@ std::string output = Figure_004-b.pdf
 token ,
 std::string title = \
    ;centrality [%];\
+   #lower[-0.05]{(}1/#kern[0.05]{2#it{A}}#lower[-0.05]{)}#kern[-0.1]{ }\
    #scale[1.2]{#LT}\
    d#it{N}_{ch}/d#kern[-0.08]{#it{#eta}}\
    #scale[1.2]{#GT}\
-   #lower[0.1]{#scale[1.5]{#kern[0.36]{#lbar}}}\
-   #lower[0.6]{#scale[0.6]{#kern[0.15]{#cbar}#it{#eta}#kern[-0.4]{#cbar}#kern[0.2]{<}#kern[0.2]{0.5}}}\
-   #lower[0.36]{#kern[0.36]{#scale[2.7]{#/}}}\
-   #kern[-0.5]{2#it{A}}
+   #lower[0.05]{#scale[1.5]{#kern[-0.6]{#cbar}}}\
+   #lower[0.6]{#scale[0.6]{#kern[0.15]{#cbar}#it{#eta}#kern[-0.4]{#cbar}#kern[0.2]{<}#kern[0.2]{0.5}}}
 
 token
 std::vector<bool> logscale = 0 0
@@ -35,8 +34,8 @@ std::vector<float> aloffsets = -0.036
 uint32_t nl = 3
 std::vector<float> lx0 = 0.20 0.20 0.52
 std::vector<float> lx1 = 0.44 0.44 0.76
-std::vector<float> ly0 = 0.63 0.40 0.63
-std::vector<float> ly1 = 0.77 0.59 0.77
+std::vector<float> ly0 = 0.64 0.40 0.64
+std::vector<float> ly1 = 0.78 0.59 0.78
 std::vector<std::string> headers = CMS ALICE PHOBOS
 std::vector<int> lgfonts = 43 43 43
 std::vector<float> lgsizes = 14 14 14
@@ -60,7 +59,7 @@ std::vector<std::string> gcolours = #73c844 #61afef #61afef #5151e8 #9966cc #ef5
 std::vector<std::string> gdopts = pxsame pxsame pxsame pxsame pxsame pxsame pxsame pxsame
 
 std::vector<uint32_t> gassocl = 1 1 1 2 2 0 0
-std::vector<float> glalphas = 0.24 0.24 0.24 0.24 0.24 0.24 0.32
+std::vector<float> glalphas = 0.24 0.24 0.24 0.24 0.24 0.24 0.24
 std::vector<std::string> gldopts = pf pf pf pf pf pf pf
 token ;
 std::vector<std::string> glegends = \
@@ -102,6 +101,6 @@ std::vector<float> cmargins = 0.06 0.12 0.15 0.05
 
 std::vector<int> tfonts = 43 43
 std::vector<float> tsizes = 17 18
-std::vector<float> toffsets = 1.25 1.6
+std::vector<float> toffsets = 1.25 1.25
 std::vector<int> lfonts = 43 43
 std::vector<float> lsizes = 15 15

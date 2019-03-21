@@ -1,19 +1,20 @@
 std::string output = Figure_005-a.pdf
+token ,
 std::string title = \
    ;#scale[1.2]{#LT}\
    #it{N}#lower[0.4]{#scale[0.7]{#kern[-0.05]{part}}}\
    #scale[1.2]{#GT};\
+   #lower[-0.05]{(}1/#kern[0.1]{#scale[1.2]{#LT}}\
+   #lower[0.1]{#it{N}}\
+   #lower[0.5]{#scale[0.6]{#kern[-0.08]{part}}}\
+   #scale[1.2]{#GT}#lower[-0.05]{)}#kern[-0.1]{ }\
    #scale[1.2]{#LT}\
    d#it{N}_{ch}/d#kern[-0.08]{#it{#eta}}\
    #scale[1.2]{#GT}\
-   #lower[0.1]{#scale[1.5]{#kern[0.36]{#lbar}}}\
-   #lower[0.6]{#scale[0.6]{#kern[0.15]{#cbar}#it{#eta}#kern[-0.4]{#cbar}#kern[0.2]{<}#kern[0.2]{0.5}}}\
-   #lower[0.36]{#kern[0.36]{#scale[2.7]{#/}}}\
-   #kern[-1.5]{#scale[1.2]{#LT}}\
-   #lower[0.1]{#it{N}}\
-   #lower[0.5]{#scale[0.6]{#kern[-0.08]{part}}}\
-   #scale[1.2]{#GT}
+   #lower[0.05]{#scale[1.5]{#kern[-0.6]{#cbar}}}\
+   #lower[0.6]{#scale[0.6]{#kern[0.15]{#cbar}#it{#eta}#kern[-0.4]{#cbar}#kern[0.2]{<}#kern[0.2]{0.5}}}
 
+token
 std::vector<bool> logscale = 0 0
 std::vector<float> xrange = -25 425
 std::vector<float> yrange = 0 6
@@ -40,7 +41,7 @@ std::vector<float> aloffsets = 0.005
 uint32_t nl = 4
 std::vector<float> lx0 = 0.40 0.40 0.40 0.40
 std::vector<float> lx1 = 0.67 0.67 0.67 0.67
-std::vector<float> ly0 = 0.462 0.15 0.34 0.395
+std::vector<float> ly0 = 0.46 0.15 0.34 0.395
 std::vector<float> ly1 = 0.55 0.32 0.39 0.46
 std::vector<std::string> headers = CMS ALICE
 std::vector<int> lgfonts = 43 43 43 43
@@ -111,6 +112,6 @@ std::vector<float> cmargins = 0.06 0.12 0.15 0.05
 
 std::vector<int> tfonts = 43 43
 std::vector<float> tsizes = 17 18
-std::vector<float> toffsets = 1.25 1.6
+std::vector<float> toffsets = 1.25 1.25
 std::vector<int> lfonts = 43 43
 std::vector<float> lsizes = 15 15
