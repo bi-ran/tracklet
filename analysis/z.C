@@ -78,6 +78,7 @@ int z(const char* config) {
    auto gdopts = conf->get<std::vector<std::string>>("gdopts");
    auto gassocl = conf->get<std::vector<uint32_t>>("gassocl");
    auto glalphas = conf->get<std::vector<float>>("glalphas");
+   auto glstyles = conf->get<std::vector<int>>("glstyles");
    auto gldopts = conf->get<std::vector<std::string>>("gldopts");
    auto glegends = conf->get<std::vector<std::string>>("glegends");
 
@@ -87,6 +88,7 @@ int z(const char* config) {
    auto gbtypes = conf->get<std::vector<int>>("gbtypes");
    auto gbcolours = conf->get<std::vector<std::string>>("gbcolours");
    auto gbalphas = conf->get<std::vector<float>>("gbalphas");
+   auto gbstyles = conf->get<std::vector<int>>("gbstyles");
    auto gbassocl = conf->get<std::vector<uint32_t>>("gbassocl");
    auto gblalphas = conf->get<std::vector<float>>("gblalphas");
    auto gbldopts = conf->get<std::vector<std::string>>("gbldopts");
@@ -160,7 +162,9 @@ int z(const char* config) {
       int gcolour = TColor::GetColor(gcolours[i].data());
       gstyle(vgraphs[i], gmstyles[i], gcolour, gmsizes[i]);
       vlgraphs[i] = (TGraph*)vgraphs[i]->Clone();
-      lestyle(vlgraphs[i], gcolour, glalphas[i]); }
+      if (i < glstyles.size() && glstyles[i] != 1001)
+         lestyle(vlgraphs[i], gcolour, glalphas[i], glstyles[i]);
+      else lestyle(vlgraphs[i], gcolour, glalphas[i]); }
    std::vector<TGraphErrors*> vgbands(gbands.size(), 0);
    std::vector<TGraph*> vlgbands(gbands.size(), 0);
    for (std::size_t i=0; i<gbands.size(); ++i)
@@ -267,7 +271,10 @@ int z(const char* config) {
             case 3: band(vgraphs[i], vgbands[g], gbcol, gbalphas[g]); break;
             case 4: band(vgbands[g], gbcol, gbalphas[g]); break;
             case 5: lestyle(vgbands[g], gbcol, gbalphas[g]);
-               vgbands[g]->Draw("f"); break; } }
+               vgbands[g]->Draw("f"); break;
+            case 6: band(vgbands[g], gbcol, gbalphas[g], gbstyles[g]); break;
+            case 7: lestyle(vgbands[g], gbcol, gbalphas[g], gbstyles[g]);
+               vgbands[g]->Draw("l"); break; } }
       vgraphs[i]->Draw(gdopts[i].data()); }
    for (std::size_t i=0; i<nl; ++i)
       l1[i] = new TLegend(lx0[i], ly0[i], lx1[i], ly1[i]);

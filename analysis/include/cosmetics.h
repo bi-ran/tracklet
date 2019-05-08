@@ -216,4 +216,13 @@ void lestyle(T* o, int colour, float alpha) {
    o->SetLineColorAlpha(0, 0);
 }
 
+template<typename T>
+void lestyle(T* o, int colour, float alpha, int style) {
+   o->SetFillColorAlpha(colour, alpha);
+   o->SetFillStyle(style);
+   o->SetLineColor(colour);
+   o->SetLineStyle(2);
+   o->SetLineWidth(2);
+}
+
 #endif  /* COSMETICS_H */

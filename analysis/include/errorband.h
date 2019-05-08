@@ -107,4 +107,29 @@ void band(TGraphErrors* g, int colour, float alpha) {
     gr->DrawClone("f");
 }
 
+void band(TGraphErrors* g, int colour, float alpha, int style) {
+    TGraph* gr = new TGraph(); gr->SetFillStyle(style);
+    gr->SetFillColorAlpha(colour, alpha);
+
+    int n = g->GetN();
+    double* x = g->GetX();
+    double* val = g->GetY();
+    double* err = g->GetEY();
+
+    for (int i=0; i<n; ++i) {
+        gr->SetPoint(i, x[i], val[i] + err[i]);
+        gr->SetPoint(2*n-1-i, x[i], val[i] - err[i]);
+    }
+
+    gr->DrawClone("f");
+
+    TGraph* grl = (TGraph*)gr->Clone();
+    grl->SetFillStyle(0);
+    grl->SetLineStyle(2);
+    grl->SetLineWidth(2);
+    grl->SetLineColor(colour);
+
+    grl->DrawClone("l");
+}
+
 #endif  /* ERRORBAND_H */
