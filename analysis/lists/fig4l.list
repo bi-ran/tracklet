@@ -56,6 +56,7 @@ std::vector<std::string> gdopts = pxsame pxsame pxsame pxsame pxsame
 
 std::vector<uint32_t> gassocl = 1 1 1 0 0
 std::vector<float> glalphas = 0.24 0.24 0.24 0.24 0.24
+std::vector<int> glstyles = 3145 3145 3145
 std::vector<std::string> gldopts = pf pf pf pf pf
 token ;
 std::vector<std::string> glegends = \
@@ -74,9 +75,10 @@ std::vector<std::string> gbands =   \
    gcms_pbpb_2p76
 std::vector<uint32_t> gbassocf = 0 0 0 0 0
 std::vector<uint32_t> gbassocg = 0 1 2 3 4
-std::vector<int> gbtypes = 4 4 4 5 4
+std::vector<int> gbtypes = 6 6 6 5 4
 std::vector<std::string> gbcolours = #73c844 #61afef #61afef #ef5253 #f9a257
 std::vector<float> gbalphas = 0.24 0.24 0.24 0.24 0.24
+std::vector<int> gbstyles = 3145 3145 3145
 
 uint32_t nlatex = 1
 std::vector<int> lxfonts = 63
